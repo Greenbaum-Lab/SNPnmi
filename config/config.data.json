@@ -1,0 +1,6 @@
+{
+    "hgdp": {
+        "source": "ftp://ngs.sanger.ac.uk/production/hgdp/hgdp_wgs.20190516/",
+        "files_names": ["hgdp_wgs.20190516.full.chrY.vcf.gz.tbi", "hgdp_wgs.20190516.full.chrY.vcf.gz"]
+    }
+}

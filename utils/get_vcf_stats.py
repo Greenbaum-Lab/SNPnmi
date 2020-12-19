@@ -10,7 +10,7 @@ def get_vcf_stats():
 
     os.makedirs(output_folder, exist_ok=True)
 
-    cmd_parts_base = ['vcftools', '--gzvcf', '\"' + gzvcf_file + '\"', '--out', '\"' + output_folder + '\"', '--max-alleles', '2', '--min-alleles', '2']
+    cmd_parts_base = ['vcftools', '--gzvcf', gzvcf_file, '--out', output_folder, '--max-alleles', '2', '--min-alleles', '2']
 
     print(cmd_parts_base)
 

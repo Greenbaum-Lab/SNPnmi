@@ -17,4 +17,4 @@ def get_local_data_folder(data_name):
     if not (data_name in config_data):
         raise Exception('data_name ' + data_name + ' must be detailed in the config.data.json file')
     config_local = get_config(CONFIG_NAME_LOCAL)
-    return config_local['data_folder'] + '/' + data_name + '/'
+    return config_local['data_folder'] + data_name + '/'

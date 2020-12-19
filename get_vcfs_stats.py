@@ -8,7 +8,6 @@ import sys
 def get_vcfs_stats():
     input_schema = sys.argv[1]
     assert 'chr_name' in input_schema
-    gzvcf_file = sys.argv[1]
     output_folder = sys.argv[2]
     chr_names = sys.argv[3]
     for chr_name in chr_names.split(','):

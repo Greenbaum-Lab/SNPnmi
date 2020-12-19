@@ -2,13 +2,19 @@ import subprocess
 import sys
 import os
 
-# params are: input, output folder, prefix(chr name is good, like chr9)
+# params are: input gzvcf_file, output folder, prefix(chr name is good, like chr9)
 # example:
-# python get_vcf_stats.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9
-def get_vcf_stats():
-    gzvcf_file = sys.argv[1]
-    output_folder = sys.argv[2]
-    output_file_prefix = output_folder + sys.argv[3] # like chr9
+# python vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9
+
+
+# on 28512 sites and 929 individuals (chr 9), this took 30 secodns
+# depth_i_cmd - 7
+# depth_s_cmd - 7
+# quality_s_cmd - 4
+# missing_i_cmd - 6
+# missing_s_cmd - 6
+def get_vcf_stats(gzvcf_file, output_folder, chr_name):
+    output_file_prefix = output_folder + chr_name
     print(f'Will extract stats of {gzvcf_file}, output to: {output_file_prefix}')
 
     os.makedirs(output_folder, exist_ok=True)
@@ -43,4 +49,7 @@ def get_vcf_stats():
     subprocess.run(missing_s_cmd)
 
 if __name__ == '__main__':
-    get_vcf_stats()
+    gzvcf_file = sys.argv[1]
+    output_folder = sys.argv[2]
+    chr_name = sys.argv[3] # like chr9
+    get_vcf_stats(gzvcf_file, output_folder, chr_name)

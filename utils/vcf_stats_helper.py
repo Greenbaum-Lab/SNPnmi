@@ -4,7 +4,7 @@ import os
 
 # params are: input gzvcf_file, output folder, prefix(chr name is good, like chr9)
 # example:
-# python vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9
+# python3 vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9
 
 
 # on 28512 sites and 929 individuals (chr 9), this took 30 secodns
@@ -24,9 +24,9 @@ def get_vcf_stats(gzvcf_file, output_folder, chr_name):
     print(cmd_parts_base)
 
     # Calculate mean depth per individual
-    depth_i_cmd = cmd_parts_base + ['--depth', '--out', output_file_prefix + '.idepth']
-    print('depth_i_cmd')
-    subprocess.run(depth_i_cmd)
+    #depth_i_cmd = cmd_parts_base + ['--depth', '--out', output_file_prefix + '.idepth']
+    #print('depth_i_cmd')
+    #subprocess.run(depth_i_cmd)
 
     # Calculate mean depth per site
     depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', output_file_prefix + '.ldepth']
@@ -34,14 +34,14 @@ def get_vcf_stats(gzvcf_file, output_folder, chr_name):
     subprocess.run(depth_s_cmd)
 
     # Calculate site quality
-    quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', output_file_prefix + '.lqual']
-    print('quality_s_cmd')
-    subprocess.run(quality_s_cmd)
+    #quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', output_file_prefix + '.lqual']
+    #print('quality_s_cmd')
+    #subprocess.run(quality_s_cmd)
 
     # Calculate proportion of missing data per individual
-    missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', output_file_prefix + '.imiss']
-    print('missing_i_cmd')
-    subprocess.run(missing_i_cmd)
+    #missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', output_file_prefix + '.imiss']
+    #print('missing_i_cmd')
+    #subprocess.run(missing_i_cmd)
 
     # Calculate proportion of missing data per site
     missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', output_file_prefix + '.lmiss']

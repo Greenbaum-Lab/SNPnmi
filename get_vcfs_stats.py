@@ -13,7 +13,7 @@ def get_vcfs_stats():
     output_folder = sys.argv[2]
     chr_names = sys.argv[3]
     number_of_done = 0
-    while number_of_done<len(chr_names):
+    while number_of_done<len(chr_names.split(',')):
         print('sleep')
         time.sleep(5)
         for chr_name in chr_names.split(','):

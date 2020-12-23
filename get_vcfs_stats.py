@@ -4,7 +4,6 @@ import time
 from os import path
 # params are: input_schema, output_folder, comma separated chr_names
 # example:
-# NOTE chr 9 is donwloading, so we will do it in the future
 # python3 get_vcfs_stats.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.\{chr_name\}.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY
 
 def get_vcfs_stats():
@@ -13,9 +12,8 @@ def get_vcfs_stats():
     output_folder = sys.argv[2]
     chr_names = sys.argv[3]
     number_of_done = 0
+    # there is a problem with this - the file are partially avail while downloading, so it is dangerous to scan this until they appear..
     while number_of_done<len(chr_names.split(',')):
-        print('sleep')
-        time.sleep(5)
         for chr_name in chr_names.split(','):
             gzvcf_file = input_schema.format(chr_name=chr_name)
             # vcf file exist
@@ -26,6 +24,6 @@ def get_vcfs_stats():
                     print(f'done - {chr_name}')
                     number_of_done+=1
                     print(f'number_of_done: {number_of_done}')
-
+        time.sleep(60)
 if __name__ == '__main__':
     get_vcfs_stats()

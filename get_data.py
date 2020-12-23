@@ -37,3 +37,23 @@ def main(in_args):
 
 if __name__ == '__main__':
     main(sys.argv[1:])
+
+
+'''
+The following was used to compare the sized of source to those on the cluster:
+
+sizes_cluster = "C:\Data\HUJI\hgdp\sizes_cluster.tsv"
+sizes_source = "C:\Data\HUJI\hgdp\sizes_source.tsv"
+import pandas as pd
+source = pd.read_csv(sizes_source, sep='\t', header=None, names =  ['key','size2'])
+source['size2'] = source['size2'].str.replace(' KB', '')
+source.head()
+cluster = pd.read_csv(sizes_cluster, sep=' ', header=None, names =  ['size1','1','2','3','4','key'])
+cluster['size1'] = cluster['size1'].str.replace('K', '')
+
+cluster.head()
+joined = cluster.join(source.set_index('key'), on='key')
+joined = joined[joined['key'].str.endswith('.gz')]
+joined[joined['size1']!=joined['size2']]
+
+'''

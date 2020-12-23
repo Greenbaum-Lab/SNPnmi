@@ -6,13 +6,6 @@ import os
 # example:
 # python3 vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9
 
-
-# on 28512 sites and 929 individuals (chr 9), this took 30 secodns
-# depth_i_cmd - 7
-# depth_s_cmd - 7
-# quality_s_cmd - 4
-# missing_i_cmd - 6
-# missing_s_cmd - 6
 def get_vcf_stats(gzvcf_file, output_folder, chr_name):
     output_file_prefix = output_folder + chr_name
     print(f'Will extract stats of {gzvcf_file}, output to: {output_file_prefix}')
@@ -30,7 +23,7 @@ def get_vcf_stats(gzvcf_file, output_folder, chr_name):
 
     # Calculate mean depth per site
     depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', output_file_prefix + '.ldepth']
-    print('depth_s_cmd')
+    print('depth_s_cmd', depth_s_cmd)
     subprocess.run(depth_s_cmd)
 
     # Calculate site quality
@@ -45,7 +38,7 @@ def get_vcf_stats(gzvcf_file, output_folder, chr_name):
 
     # Calculate proportion of missing data per site
     missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', output_file_prefix + '.lmiss']
-    print('missing_s_cmd')
+    print('missing_s_cmd', missing_s_cmd)
     subprocess.run(missing_s_cmd)
 
 if __name__ == '__main__':

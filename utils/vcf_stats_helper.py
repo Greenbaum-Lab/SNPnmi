@@ -56,4 +56,5 @@ if __name__ == '__main__':
     gzvcf_file = sys.argv[1]
     output_folder = sys.argv[2]
     chr_name = sys.argv[3] # like chr9
-    get_vcf_stats(gzvcf_file, output_folder, chr_name)
+    stat_type = sys.argv[4]
+    get_vcf_stats(gzvcf_file, output_folder, chr_name, stat_type)

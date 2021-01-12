@@ -57,7 +57,7 @@ do
     fi
 done
 
-for maf in $maf_values
+for maf in $(seq $maf_min_range $maf_delta $maf_max_range)
 do
     # we only perform this if the file does not exist
     output_file="${output_folder}maf_$maf.log"

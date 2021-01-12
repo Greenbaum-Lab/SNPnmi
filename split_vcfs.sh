@@ -2,8 +2,6 @@
 #SBATCH --mem=4G
 #SBATCH --time=24:0:0
 #SBATCH --comment=="Split vcf file using mac and/or maf values"
-
-
 # Will split the given vcf.gz file according to the mac (minor allele count) and maf (minor allele freq)
 
 # Example:
@@ -41,7 +39,7 @@ echo "maf_delta: $maf_delta"
 
 for mac in $(seq $mac_min_range $mac_delta $mac_max_range)
 do
-    # TODO - we only perform this if the file does not exist
+    # we only perform this if the (log) file does not exist
     output_file="${output_folder}mac_$mac.log"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
@@ -53,7 +51,7 @@ do
         # as mac are integers, we take the range to be [mac, mac + delta ** - 1 **]
         # otherwise, for delta=1, we would have classes of mac in [2,3] (the --mac and --max-mac are inclusive to the value)
 
-        vcfcmd="vcftools $vcftools_params --mac $mac --max-mac $(($mac+$mac_delta-1)) --gzvcf $vcffile --out ${output_folder}mac_$mac --temp ${output_folder}temp_mac_$mac"
+        vcfcmd='vcftools "'$vcftools_params'" --mac '$mac' --max-mac '$(($mac+$mac_delta-1))' --gzvcf "'$vcffile'" --out "'${output_folder}'mac_'$mac'" --temp "'${output_folder}'temp_mac_'$mac
         echo "$vcfcmd"
         #eval "$vcfcmd"
     fi
@@ -61,7 +59,7 @@ done
 
 for maf in $maf_values
 do
-    # TODO - we only perform this if the file does not exist
+    # we only perform this if the file does not exist
     output_file="${output_folder}maf_$maf.log"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
@@ -70,7 +68,7 @@ do
         # example cmd: vcftools --gzvcf  --maf 2 --max-maf 3 --max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --recode --out /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/maf_2
         # we create a folder for temp output
         mkdir $output_folder"temp_maf_"$maf
-        vcfcmd="vcftools $vcftools_params --maf $maf --max-maf $(($maf+$maf_delta)) --gzvcf $vcffile --out ${output_folder}maf_$maf --temp ${output_folder}temp_maf_$maf"
+        vcfcmd='vcftools "'$vcftools_params'" --maf '$maf' --max-maf '$(($maf+$maf_delta))' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf
         echo "$vcfcmd"
         #eval "$vcfcmd"
     fi

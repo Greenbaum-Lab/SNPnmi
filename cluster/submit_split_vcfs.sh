@@ -4,7 +4,8 @@
 # --error="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/split_vcfs_chr_N_mac_N.stderr"
 # --output="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stdout/split_vcfs_chr_N_mac_N.stdout"
 # --job-name=split_vcfs_chr_N_mac_N
-# NOT READY - submit_split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/" "hgdp_wgs.20190516.full.chr1.vcf.gz,hgdp_wgs.20190516.full.chr2.vcf.gz,hgdp_wgs.20190516.full.chr3.vcf.gz,hgdp_wgs.20190516.full.chr4.vcf.gz,hgdp_wgs.20190516.full.chr5.vcf.gz,hgdp_wgs.20190516.full.chr6.vcf.gz,hgdp_wgs.20190516.full.chr7.vcf.gz,hgdp_wgs.20190516.full.chr8.vcf.gz,hgdp_wgs.20190516.full.chr9.vcf.gz,hgdp_wgs.20190516.full.chr10.vcf.gz,hgdp_wgs.20190516.full.chr11.vcf.gz,hgdp_wgs.20190516.full.chr12.vcf.gz,hgdp_wgs.20190516.full.chr13.vcf.gz,hgdp_wgs.20190516.full.chr14.vcf.gz,hgdp_wgs.20190516.full.chr15.vcf.gz,hgdp_wgs.20190516.full.chr16.vcf.gz,hgdp_wgs.20190516.full.chr17.vcf.gz,hgdp_wgs.20190516.full.chr18.vcf.gz,hgdp_wgs.20190516.full.chr19.vcf.gz,hgdp_wgs.20190516.full.chr20.vcf.gz,hgdp_wgs.20190516.full.chr21.vcf.gz,hgdp_wgs.20190516.full.chr22.vcf.gz" "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22"
+
+# submit_split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/" "hgdp_wgs.20190516.full.chr1.vcf.gz hgdp_wgs.20190516.full.chr2.vcf.gz hgdp_wgs.20190516.full.chr3.vcf.gz hgdp_wgs.20190516.full.chr4.vcf.gz hgdp_wgs.20190516.full.chr5.vcf.gz hgdp_wgs.20190516.full.chr6.vcf.gz hgdp_wgs.20190516.full.chr7.vcf.gz hgdp_wgs.20190516.full.chr8.vcf.gz hgdp_wgs.20190516.full.chr9.vcf.gz hgdp_wgs.20190516.full.chr10.vcf.gz hgdp_wgs.20190516.full.chr11.vcf.gz hgdp_wgs.20190516.full.chr12.vcf.gz hgdp_wgs.20190516.full.chr13.vcf.gz hgdp_wgs.20190516.full.chr14.vcf.gz hgdp_wgs.20190516.full.chr15.vcf.gz hgdp_wgs.20190516.full.chr16.vcf.gz hgdp_wgs.20190516.full.chr17.vcf.gz hgdp_wgs.20190516.full.chr18.vcf.gz hgdp_wgs.20190516.full.chr19.vcf.gz hgdp_wgs.20190516.full.chr20.vcf.gz hgdp_wgs.20190516.full.chr21.vcf.gz hgdp_wgs.20190516.full.chr22.vcf.gz" "chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22" - - - 0.01 0.49 0.01 "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stdout/"
 
 # submit_split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/" "hgdp_wgs.20190516.full.chr22.vcf.gz hgdp_wgs.20190516.full.chr21.vcf.gz" "chr22 chr21" 2 3 1 1 49 1 "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stdout/"
 vcfs_folder=$1
@@ -85,7 +86,7 @@ for i in "${!vcfs_files_arr[@]}"; do
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
         cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" '$mac' '$mac' 1 - - -'
         echo ${cmd_to_run}
-        #eval ${cmd_to_run}
+        eval ${cmd_to_run}
     done
     echo "go over maf"
         for maf in $(seq $maf_min_range $maf_delta $maf_max_range); do
@@ -93,7 +94,9 @@ for i in "${!vcfs_files_arr[@]}"; do
         job_stdout_file="${job_stdout_folder}${vcf_short_name}_maf${maf}.stdout"
         job_name="${vcf_short_name}_maf${maf}"
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
-        cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - - '$maf' '$(($maf+$maf_delta))' '$maf_delta
+	max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
+	cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - - '$maf' '$max_maf' '$maf_delta
         echo ${cmd_to_run}
-        #eval ${cmd_to_run}
+        eval ${cmd_to_run}
+    done
 done

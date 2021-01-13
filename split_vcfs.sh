@@ -5,8 +5,7 @@
 # Will split the given vcf.gz file according to the mac (minor allele count) and maf (minor allele freq)
 
 # Example:
-# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" "2 3 4 .. 18" "1 2 3 .. 49" 1
-# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 1 - - -
+# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 1 0.4 0.41 0.01
 
 module load bio
 
@@ -39,8 +38,8 @@ echo "maf_delta: $maf_delta"
 
 for mac in $(seq $mac_min_range $mac_delta $mac_max_range)
 do
-    # we only perform this if the (log) file does not exist
-    output_file="${output_folder}mac_$mac.log"
+    # TODO - this is only checking 012 suffix! we only perform this if the 012 file does not exist
+    output_file="${output_folder}mac_$mac.012"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
     else 
@@ -53,23 +52,25 @@ do
 
         vcfcmd='vcftools '$vcftools_params' --mac '$mac' --max-mac '$(($mac+$mac_delta-1))' --gzvcf "'$vcffile'" --out "'${output_folder}'mac_'$mac'" --temp "'${output_folder}'temp_mac_'$mac'"'
         echo "$vcfcmd"
-        #eval "$vcfcmd"
+        eval "$vcfcmd"
     fi
 done
 
 for maf in $(seq $maf_min_range $maf_delta $maf_max_range)
 do
-    # we only perform this if the file does not exist
-    output_file="${output_folder}maf_$maf.log"
+    # we only perform this if the 012 file does not exist
+    output_file="${output_folder}maf_$maf.012"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
     else 
         echo "Will execute vcftools - $output_file does not exist."
-        # example cmd: vcftools --gzvcf  --maf 2 --max-maf 3 --max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --recode --out /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/maf_2
+        # example cmd: vcftools --gzvcf  --maf 0.02 --max-maf 0.03 --max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --recode --out /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/maf_2
         # we create a folder for temp output
         mkdir $output_folder"temp_maf_"$maf
-        vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '$(($maf+$maf_delta))' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'"'
+
+	max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
+        vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'"'
         echo "$vcfcmd"
-        #eval "$vcfcmd"
+        eval "$vcfcmd"
     fi
 done

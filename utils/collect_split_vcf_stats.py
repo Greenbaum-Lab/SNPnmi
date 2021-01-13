@@ -109,11 +109,11 @@ def collect_split_vcf_stats(logs_folder, log_files, chr_name_names, split_vcf_st
         log_file = log_files[i]
         values = get_split_vcf_stats(logs_folder, log_file, chr_name_name)
         write_values_to_csv(values, split_vcf_stats_csv_path)
-        print(f'done with file {i} out of {len(log_files)}')
+        print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
 def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range, max_mac_range, mac_delta, min_maf_range, max_maf_range, maf_delta):
     macs = range(min_mac_range,max_mac_range+1, mac_delta)
-    mafs = [float(v)/100 for v in range(min_maf_range,max_maf_range+1, maf_delta)]
+    mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1, maf_delta)]
     log_files = []
     chr_names_for_logs = []
     for chr_name in chr_names:
@@ -128,7 +128,7 @@ def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_pat
 
 #HGDP
 logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
-chr_names = [f'chr{i}' for i in range(1,23)]
+chr_names = [f'chr{i}' for i in range(22,23)]
 split_vcf_stats_csv_path = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/split_vcf_output_stats.csv'
 
-call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range=2, max_mac_range=18, mac_delta=1, min_maf_range=1, max_maf_range=49, maf_delta=1)
+call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range=2, max_mac_range=1, mac_delta=1, min_maf_range=10, max_maf_range=49, maf_delta=1)

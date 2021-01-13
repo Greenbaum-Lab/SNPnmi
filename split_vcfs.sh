@@ -5,7 +5,7 @@
 # Will split the given vcf.gz file according to the mac (minor allele count) and maf (minor allele freq)
 
 # Example:
-# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 1 0.4 0.41 0.01
+# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 0.4 0.41
 
 module load bio
 
@@ -15,30 +15,25 @@ vcffile=$1
 vcftools_params=$2
 output_folder=$3
 # by mac
-mac_min_range=$4
-mac_max_range=$5
-mac_delta=$6
+mac=$4
+max_mac=$5
 # by maf
-maf_min_range=$7
-maf_max_range=$8
-maf_delta=$9
+maf=$6
+max_maf=$7
 
 
 echo "vcffile: $vcffile"
 echo "vcftools_params: $vcftools_params"
 echo "output_folder: $output_folder"
 
-echo "mac_min_range: $mac_min_range"
-echo "mac_max_range: $mac_max_range"
-echo "mac_delta: $mac_delta"
+echo "mac: $mac"
+echo "max_mac: $max_mac"
 
-echo "maf_min_range: $maf_min_range"
-echo "maf_max_range: $maf_max_range"
-echo "maf_delta: $maf_delta"
+echo "maf: $maf"
+echo "max_maf: $max_maf"
 
-for mac in $(seq $mac_min_range $mac_delta $mac_max_range)
-do
     # TODO - this is only checking 012 suffix! we only perform this if the 012 file does not exist
+    if [ $mac != "-" ]; then
     output_file="${output_folder}mac_$mac.012"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
@@ -50,15 +45,15 @@ do
         # as mac are integers, we take the range to be [mac, mac + delta ** - 1 **]
         # otherwise, for delta=1, we would have classes of mac in [2,3] (the --mac and --max-mac are inclusive to the value)
 
-        vcfcmd='vcftools '$vcftools_params' --mac '$mac' --max-mac '$(($mac+$mac_delta-1))' --gzvcf "'$vcffile'" --out "'${output_folder}'mac_'$mac'" --temp "'${output_folder}'temp_mac_'$mac'"'
+        vcfcmd='vcftools '$vcftools_params' --mac '$mac' --max-mac '$max_mac' --gzvcf "'$vcffile'" --out "'${output_folder}'mac_'$mac'" --temp "'${output_folder}'temp_mac_'$mac'"'
         echo "$vcfcmd"
         eval "$vcfcmd"
     fi
-done
+    fi
 
-for maf in $(seq $maf_min_range $maf_delta $maf_max_range)
-do
     # we only perform this if the 012 file does not exist
+    # TODO - this has a bug, if the maf is 0.4, the file is with '0.40' and we think it doesnt exists..
+    if [ $maf != "-" ]; then
     output_file="${output_folder}maf_$maf.012"
     if [ -f "$output_file" ]; then
         echo "$output_file exists."
@@ -68,9 +63,8 @@ do
         # we create a folder for temp output
         mkdir $output_folder"temp_maf_"$maf
 
-	max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
         vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'"'
         echo "$vcfcmd"
         eval "$vcfcmd"
     fi
-done
+    fi

@@ -75,7 +75,7 @@ if [ $maf != "-" ]; then
             #eval "$vcfcmd"
         fi
 
-        vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'" --exclude-positions "'${output_folder}'temp_maf_'${maf}'/exactly_'${max_maf}'.kept.sites --012'
+        vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'" --exclude-positions "'${output_folder}'temp_maf_'${maf}'/exactly_'${max_maf}'.kept.sites" --012'
         echo "$vcfcmd"
         #eval "$vcfcmd"
     fi

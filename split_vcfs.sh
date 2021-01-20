@@ -45,7 +45,7 @@ if [ $mac != "-" ]; then
 
         vcfcmd='vcftools '$vcftools_params' --mac '$mac' --max-mac '$max_mac' --gzvcf "'$vcffile'" --out "'${output_folder}'mac_'$mac'" --temp "'${output_folder}'temp_mac_'$mac'" --012'
         echo "$vcfcmd"
-        eval "$vcfcmd"
+        #eval "$vcfcmd"
     fi
 fi
 
@@ -72,11 +72,11 @@ if [ $maf != "-" ]; then
             echo "First identify sites with maf==max_maf, as we wish to exclude them from the analysis"
             vcfcmd='vcftools '$vcftools_params' --maf '${max_maf}' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'$output_folder'temp_maf_'$maf'/exactly_'${max_maf}'" --temp "'${output_folder}'temp_maf_'$maf'" --kept-sites'
             echo "$vcfcmd"
-            #eval "$vcfcmd"
+            eval "$vcfcmd"
         fi
 
         vcfcmd='vcftools '$vcftools_params' --maf '$maf' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'${output_folder}'maf_'$maf'" --temp "'${output_folder}'temp_maf_'$maf'" --exclude-positions "'${output_folder}'temp_maf_'${maf}'/exactly_'${max_maf}'.kept.sites" --012'
         echo "$vcfcmd"
-        #eval "$vcfcmd"
+        eval "$vcfcmd"
     fi
 fi

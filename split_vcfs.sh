@@ -68,7 +68,7 @@ if [ $maf != "-" ]; then
         # and, using an empty exclusion file, we got 1585, again, as expected
         echo '' > "${output_folder}temp_maf_${maf}/exactly_${max_maf}.kept.sites"
         # we dont filter out mafs==0.5, as this is the last run
-        if [ $max_maf != "0.5" ] && [ $max_maf != "0.50" ]; then
+        if [ $max_maf != "0.5" ] && [ $max_maf != "0.50" ] && [ $max_maf != ".50" ] && [ $max_maf != "0.5" ]; then
             echo "First identify sites with maf==max_maf, as we wish to exclude them from the analysis"
             vcfcmd='vcftools '$vcftools_params' --maf '${max_maf}' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'$output_folder'temp_maf_'$maf'/exactly_'${max_maf}'" --temp "'${output_folder}'temp_maf_'$maf'" --kept-sites'
             echo "$vcfcmd"

@@ -5,7 +5,7 @@
 # Will split the given vcf.gz file according to the mac (minor allele count) and maf (minor allele freq)
 
 # Example:
-# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9 --012" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 0.4 0.41
+# sbatch split_vcfs.sh "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr22.vcf.gz" "--max-alleles 2 --min-alleles 2 --remove-indels --max-missing 0.9" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/chr22/" 2 2 0.4 0.41
 
 module load bio
 
@@ -68,7 +68,7 @@ if [ $maf != "-" ]; then
         # and, using an empty exclusion file, we got 1585, again, as expected
         echo '' > "${output_folder}temp_maf_${maf}/exactly_${max_maf}.kept.sites"
         # we dont filter out mafs==0.5, as this is the last run
-        if [ $max_maf != "0.5" & $max_maf != "0.50" ]; then
+        if [ $max_maf != "0.5" ] && [ $max_maf != "0.50" ]; then
             echo "First identify sites with maf==max_maf, as we wish to exclude them from the analysis"
             vcfcmd='vcftools '$vcftools_params' --maf '${max_maf}' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'$output_folder'temp_maf_'$maf'/exactly_'${max_maf}'" --temp "'${output_folder}'temp_maf_'$maf'" --kept-sites'
             echo "$vcfcmd"

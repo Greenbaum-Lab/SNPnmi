@@ -128,7 +128,7 @@ def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_pat
 
 #HGDP
 logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
-chr_names = [f'chr{i}' for i in range(22,23)]
+chr_names = [f'chr{i}' for i in range(1,23)]
 split_vcf_stats_csv_path = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/split_vcf_output_stats.csv'
 
-call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range=2, max_mac_range=1, mac_delta=1, min_maf_range=10, max_maf_range=49, maf_delta=1)
+call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range=2, max_mac_range=18, mac_delta=1, min_maf_range=1, max_maf_range=9, maf_delta=1)

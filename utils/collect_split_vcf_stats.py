@@ -28,7 +28,7 @@ def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
     indv_regex = re.compile(r)
     with open(filepath) as fp:
         for cnt, line in enumerate(fp):
-            if (not 'input_file' in values.keys()) and ('--gzvcf ' in line):
+            if ('--gzvcf ' in line):
                 values['input_file'] = line.split('--gzvcf ')[1].strip()
                 continue
             elif ('--mac ' in line):
@@ -43,26 +43,23 @@ def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
             elif ('--max-maf ' in line):
                 values['max_maf'] = line.split('--max-maf ')[1].strip()
                 continue
-            elif (not 'out_path' in values.keys()) and ('--out ' in line):
+            elif ('--out ' in line):
                 values['out_path'] = line.split('--out ')[1].strip()
                 continue
             else:
-                if not 'num_of_indv_after_filter' in values.keys():
-                    match = indv_regex.match(line)
-                    if match:
-                        values['num_of_indv_after_filter'] = match.groups()[0]
-                        values['num_of_possible_indv'] = match.groups()[1]
-                        continue
-                if not 'num_of_sites_after_filter' in values.keys():
-                    match = sites_regex.match(line)
-                    if match:
-                        values['num_of_sites_after_filter'] = match.groups()[0]
-                        values['num_of_possible_sites'] = match.groups()[1]
-                        continue
-                if not 'run_time_in_seconds' in values.keys():
-                    match = time_regex.match(line)
-                    if match:
-                        values['run_time_in_seconds'] = match.groups()[0]
+                match = indv_regex.match(line)
+                if match:
+                    values['num_of_indv_after_filter'] = match.groups()[0]
+                    values['num_of_possible_indv'] = match.groups()[1]
+                    continue
+                match = sites_regex.match(line)
+                if match:
+                    values['num_of_sites_after_filter'] = match.groups()[0]
+                    values['num_of_possible_sites'] = match.groups()[1]
+                    continue
+                match = time_regex.match(line)
+                if match:
+                    values['run_time_in_seconds'] = match.groups()[0]
 
     # based on the values we analyze the output files
     # analyze indv file
@@ -136,9 +133,9 @@ def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_pat
     collect_split_vcf_stats(logs_folder, log_files, chr_names_for_logs, split_vcf_stats_csv_path)
 
 #HGDP
-#logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
+logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
 # macs folder:
-logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/with_upper_bound_stderr/'
+#logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/with_upper_bound_stderr/'
 chr_names = [f'chr{i}' for i in range(1,23)]
 split_vcf_stats_csv_path = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/split_vcf_output_stats.csv'
 

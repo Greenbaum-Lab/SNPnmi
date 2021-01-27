@@ -150,7 +150,7 @@ def build_windows_indexes_files(split_vcf_output_stats_file,window_size,output_f
 #HGDP
 window_size=100
 split_vcf_output_stats_file = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/split_vcf_output_stats.csv'
-output_folder=r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/windows/indexes/'
+output_folder=r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/'
 num_ind = 929
 min_mac = 2
 max_mac = 18

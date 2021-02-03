@@ -127,6 +127,7 @@ for window_index in range(4):
                                                     min_minor_count_expected,
                                                     max_minor_count_expected)
     print(window_pairwise_dist)
+    print(window_pairwise_counts)
     for zero_based_i1 in range(len(window_pairwise_dist)):
         i1 = 1 + zero_based_i1
         distances = window_pairwise_dist[zero_based_i1]

@@ -3,6 +3,8 @@ import json
 import os
 import gzip
 
+# python3 calc_distances_in_window.py maf 0.49 0 0.49 0.5 -1 -1
+
 def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index):
     # read indexes of window
     with open(windows_indexes_path) as f:
@@ -303,7 +305,6 @@ def main(args):
 
     windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
     output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
-    # python3 calc_distances_in_window.py maf 0.49 0 0.49 0.5 -1 -1
     calc_distances_in_window(
         class_012_path_template,
         windows_indexes_path,

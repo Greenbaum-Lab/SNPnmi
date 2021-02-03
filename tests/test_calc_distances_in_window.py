@@ -98,7 +98,7 @@ class_name='all'
 # UTILS FOR PARAMS
 classes_folder = r"./mock/classes/"
 class_012_path_template = classes_folder + "chr{chr_id}/{class_name}.012"
-windows_indexes_files_folder = classes_folder + r"windows_indexes/"
+windows_indexes_files_folder = classes_folder + r"windows/indexes/"
 windows_indexes_path_template = windows_indexes_files_folder + "windows_indexes_for_class_{class_name}.json"
 
 # if we have less than this which are valid (not -1), site is not included in calc.

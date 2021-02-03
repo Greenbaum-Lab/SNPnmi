@@ -254,9 +254,12 @@ def calc_distances_in_window(
 
 # PARAMS
 # UTILS FOR PARAMS
+# local
 classes_folder = r"C:\Data\HUJI\hgdp\classes/"
+# huji
+classes_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
 class_012_path_template = classes_folder + "chr{chr_id}\{mac_maf}_{class_name}.012"
-windows_indexes_files_folder = classes_folder + r"windows_indexes/"
+windows_indexes_files_folder = classes_folder + r"windows/indexes/"
 windows_indexes_path_template = windows_indexes_files_folder + "windows_indexes_for_class_{class_name}.json"
 
 # if we have less than this which are valid (not -1), site is not included in calc.
@@ -269,7 +272,6 @@ max_minor_count_expected = -1
 mac_maf = 'maf'
 class_name = '0.49'
 window_index = 0
-chr_id='10'
 
 windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
 output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'

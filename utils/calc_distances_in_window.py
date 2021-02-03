@@ -202,7 +202,6 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
             else:            
                 # this is a valid entry, we add 1 to the count
                 window_pairwise_counts[i1][i2-i1-1] += 1
-                print(i1_val, i2_val, ref_freq, non_ref_freq)
                 window_pairwise_dist[i1][i2-i1-1] += _calc_dist_directly(i1_val, i2_val, ref_freq, non_ref_freq)
 
 # the output is in couples of <count>,<distance>
@@ -258,9 +257,9 @@ def calc_distances_in_window(
 classes_folder = r"C:\Data\HUJI\hgdp\classes/"
 # huji
 classes_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
-class_012_path_template = classes_folder + "chr{chr_id}\{mac_maf}_{class_name}.012"
-windows_indexes_files_folder = classes_folder + r"windows/indexes/"
-windows_indexes_path_template = windows_indexes_files_folder + "windows_indexes_for_class_{class_name}.json"
+class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
+windows_indexes_files_folder = classes_folder + r'windows/indexes/'
+windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
 
 # if we have less than this which are valid (not -1), site is not included in calc.
 min_valid_sites_precentage = 0.1
@@ -275,7 +274,7 @@ window_index = 0
 
 windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
 output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
-"""
+
 calc_distances_in_window(
     class_012_path_template,
     windows_indexes_path,
@@ -288,4 +287,4 @@ calc_distances_in_window(
     max_minor_freq_expected,
     min_minor_count_expected,
     max_minor_count_expected)
-"""
+

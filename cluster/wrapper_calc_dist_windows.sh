@@ -25,4 +25,4 @@ echo "max_mac: $max_mac"
 
 cmd="python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py $mac_or_maf $class_name ${window_id} ${maf} ${max_maf} ${mac} ${max_mac}"
 echo "$cmd"
-#eval "$cmd"
+eval "$cmd"

@@ -27,11 +27,11 @@ def submit_calc_dist_windows(number_of_windows_per_class_path, mac_min_range, ma
                 job_stderr_file=f'{job_stderr_folder}mac{mac}_window{window_id}.stderr'
                 job_stdout_file=f'{job_stdout_folder}mac{mac}_window{window_id}.stderr'
                 job_name=f'c{mac}_w{window_id}'
-                cluster_setting=f'sbatch --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch'# --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run=f'{cluster_setting} wrapper_calc_dist_windows.sh mac {mac} {window_id} -1 -1 {mac} {mac}'
-                print(cmd_to_run)
-                #eval ${cmd_to_run}
+                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {window_id} -1 -1 {mac} {mac}'
+                #print(cmd_to_run)
+                subprocess.run(cmd_to_run.split(' '))
     if maf_min_range>0:
         for maf_int in range(maf_min_range, maf_max_range+1, maf_delta):
             maf = f'{maf_int*1.0/100}'
@@ -43,26 +43,25 @@ def submit_calc_dist_windows(number_of_windows_per_class_path, mac_min_range, ma
                 job_stderr_file=f'{job_stderr_folder}maf{maf}_window{window_id}.stderr'
                 job_stdout_file=f'{job_stdout_folder}maf{maf}_window{window_id}.stderr'
                 job_name=f'f{maf}_w{window_id}'
-                cluster_setting=f'sbatch --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch'# --error="{job_stderr_file}"'# --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run=f'{cluster_setting} wrapper_calc_dist_windows.sh maf {maf} {window_id} {maf} {max_maf} -1 -1'
-                print(cmd_to_run)
-                #eval ${cmd_to_run}
+                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {window_id} {maf} {max_maf} -1 -1'
+                #print(cmd_to_run)
+                subprocess.run(cmd_to_run.split(' '))
 
+#submit_calc_dist_windows(r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt",-1,-1,1,49,49,1,r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/", r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/")
 
-submit_calc_dist_windows( r"C:\Data\HUJI\hgdp\classes\number_of_windows_per_class.txt",-1,-1,1,49,49,1,r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/", r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/")
-
-if __name__ == 'XXX__main__':
+if __name__ == '__main__':
     number_of_windows_per_class_path = sys.argv[1]
     # by mac
-    mac_min_range = sys.argv[2]
-    mac_max_range = sys.argv[3]
-    mac_delta = sys.argv[4]
+    mac_min_range = int(sys.argv[2])
+    mac_max_range = int(sys.argv[3])
+    mac_delta = int(sys.argv[4])
 
     # by maf
-    maf_min_range = sys.argv[5]
-    maf_max_range = sys.argv[6]
-    maf_delta = sys.argv[7]
+    maf_min_range = int(sys.argv[5])
+    maf_max_range = int(sys.argv[6])
+    maf_delta = int(sys.argv[7])
 
     # submission details
     job_stderr_folder = sys.argv[8]

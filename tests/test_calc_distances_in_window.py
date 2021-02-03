@@ -133,6 +133,6 @@ for window_index in range(4):
         for relative_i2 in range(len(distances)):
             i2 = i1 + 1 + relative_i2
             dist = distances[relative_i2]
-            # we use 2 chrs, so the expected should be twice
+            # we use 2 chrs, so the expected should be twice what we have
             print('i1', i1, 'i2',  i2, 'dist', dist, 'expected', 2*expected_distances_per_locus[window_index+1][i1][i2])
             assert dist == 2*expected_distances_per_locus[window_index+1][i1][i2]

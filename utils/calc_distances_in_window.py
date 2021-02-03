@@ -264,27 +264,58 @@ windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_
 # if we have less than this which are valid (not -1), site is not included in calc.
 min_valid_sites_precentage = 0.1
 # if not in range - will raise a warning
-min_minor_freq_expected = 0.49
-max_minor_freq_expected = 0.5
-min_minor_count_expected = -1
-max_minor_count_expected = -1
-mac_maf = 'maf'
-class_name = '0.49'
-window_index = 0
+#mac_maf = 'maf'
+#class_name = '0.49'
+#window_index = 0
+#min_minor_freq_expected = 0.49
+#max_minor_freq_expected = 0.5
+#min_minor_count_expected = -1
+#max_minor_count_expected = -1
 
-windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
-output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
 
-calc_distances_in_window(
-    class_012_path_template,
-    windows_indexes_path,
-    mac_maf,
-    class_name,
-    window_index,
-    output_dir,
-    min_valid_sites_precentage,
-    min_minor_freq_expected,
-    max_minor_freq_expected,
-    min_minor_count_expected,
-    max_minor_count_expected)
+import sys
+def main(args):
+    print ('Number of arguments:', len(args), 'arguments.')
+    print ('Argument List:', str(args))
+    mac_maf = args[0]
+    assert mac_maf=='mac' or mac_maf=='maf'
+    class_name = args[1]
+    window_index = int(args[2])
+    assert window_index>=0
+    min_minor_freq_expected = float(args[3])
+    assert min_minor_freq_expected>=-1
+    assert min_minor_freq_expected<=1
+    max_minor_freq_expected = float(args[4])
+    assert max_minor_freq_expected>=-1
+    assert max_minor_freq_expected<=1
+    min_minor_count_expected = int(args[5])
+    assert min_minor_count_expected>=-1
+    max_minor_count_expected = int(args[6])
+    assert max_minor_count_expected>=-1
 
+    print('mac_maf',mac_maf)
+    print('class_name',class_name)
+    print('window_index',window_index)
+    print('min_minor_freq_expected',min_minor_freq_expected)
+    print('max_minor_freq_expected',max_minor_freq_expected)
+    print('min_minor_count_expected',min_minor_count_expected)
+    print('max_minor_count_expected',max_minor_count_expected)
+
+    windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
+    output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
+    # python3 calc_distances_in_window.py maf 0.49 0 0.49 0.5 -1 -1
+    calc_distances_in_window(
+        class_012_path_template,
+        windows_indexes_path,
+        mac_maf,
+        class_name,
+        window_index,
+        output_dir,
+        min_valid_sites_precentage,
+        min_minor_freq_expected,
+        max_minor_freq_expected,
+        min_minor_count_expected,
+        max_minor_count_expected)
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

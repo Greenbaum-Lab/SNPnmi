@@ -1,4 +1,4 @@
-# Used to add the root to the sys path, so that we can import using absolute path when runnign scripts in this folder
+# This is broken, as calc_distances_in_window no longer returns any value
 import sys
 from pathlib import Path
 
@@ -120,6 +120,7 @@ for window_index in range(4):
                                                     mac_maf,
                                                     class_name,
                                                     window_index,
+                                                    window_index+1,
                                                     output_dir,
                                                     min_valid_sites_precentage,
                                                     min_minor_freq_expected,

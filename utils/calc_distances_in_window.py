@@ -2,8 +2,10 @@ import pandas as pd
 import json
 import os
 import gzip
+import sys
+import time
 
-# python3 calc_distances_in_window.py maf 0.49 0 0.49 0.5 -1 -1
+# python3 calc_distances_in_window.py maf 0.49 0 4 0.49 0.5 -1 -1
 
 def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index):
     # read indexes of window
@@ -29,7 +31,7 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
         # get number of columns in chr:
         with open(class_012_path,'r') as f:
             num_columns = len(f.readline().split('\t'))
-        print(f'{len(indexes)} / {num_columns-1} sites will be used from file {class_012_path}')
+        #print(f'{len(indexes)} / {num_columns-1} sites will be used from file {class_012_path}')
         names = [f'chr{chr_id}_idx{i}' for i in range(num_columns)]
         # we add one as the csv contains the individual is in the first index
         cols_to_uset = [i+1 for i in indexes]
@@ -52,47 +54,52 @@ def window_calc_pairwise_distances_with_guardrails(window_df, min_valid_sites_pr
     # for performance, we use 2 lists of lists, one for distances and one for counts
     window_pairwise_counts = _build_pairwise_db(len(window_df), 0)
     window_pairwise_dist = _build_pairwise_db(len(window_df), 0.0)
+
+    i=0
     for site_index in range(len(window_df.columns)):
+        i+=1
+        if i%10==0:
+            print(f'\tDone {i} out of {len(window_df.columns)} sites in window')
         site_calc_pairwise_distances_with_guardrails(window_df, site_index, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, window_pairwise_counts, window_pairwise_dist)
     return window_pairwise_counts, window_pairwise_dist
 
 def _check_guardrails(num_individuals, num_valid_genotypes, ref_count, non_ref_count, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected):
-    print(f'Check guardrails')
+    #print(f'Check guardrails')
     # guardrail #1 - min_valid_sites_precentage
     percentage_valid_sites = float(num_valid_genotypes)/num_individuals
-    print(f'Precentage of valid sites: {percentage_valid_sites}')
+    #print(f'Precentage of valid sites: {percentage_valid_sites}')
     if percentage_valid_sites < min_valid_sites_precentage:
-        print(f'ERROR: % of valid sites is {percentage_valid_sites}, lower than allowd: {min_valid_sites_precentage}.')
+        #print(f'ERROR: % of valid sites is {percentage_valid_sites}, lower than allowd: {min_valid_sites_precentage}.')
         assert percentage_valid_sites < min_valid_sites_precentage
 
     # guardrail #2 mac/maf validation
     if (min_minor_freq_expected==-1 or max_minor_freq_expected==-1) and (min_minor_count_expected==-1 or max_minor_count_expected==-1):
-        print(f'ERROR: min_minor_freq_expected, max_minor_freq_expected or min_minor_count_expected, max_minor_count_expected must be >-1')
+        #print(f'ERROR: min_minor_freq_expected, max_minor_freq_expected or min_minor_count_expected, max_minor_count_expected must be >-1')
         assert (min_minor_freq_expected==-1 or max_minor_freq_expected==-1) and (min_minor_count_expected==-1 or max_minor_count_expected==-1)
     
     #if maf: validate min_minor_freq_expected and max_minor_freq_expected
     if min_minor_freq_expected>-1 and max_minor_freq_expected>-1:
         minor_count = min(ref_count, non_ref_count)
         minor_freq = float(minor_count)/(2*num_valid_genotypes)
-        print(f'Minor allele frequency: {minor_freq}')
+        #print(f'Minor allele frequency: {minor_freq}')
         if minor_freq < min_minor_freq_expected:
-            print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
+            #print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
             assert minor_freq < min_minor_freq_expected
         if minor_freq > max_minor_freq_expected:
-            print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
+            #print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
             assert minor_freq > max_minor_freq_expected
     
     #if mac: validate min_minor_count_expected and max_minor_count_expected
     if min_minor_count_expected>-1 and max_minor_count_expected>-1:
         minor_count = min(ref_count, non_ref_count)
-        print(f'Minor allele count: {minor_count}')
+        #print(f'Minor allele count: {minor_count}')
         if minor_count < min_minor_count_expected:
-            print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
+            #print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
             assert minor_count < min_minor_count_expected
         if minor_count > max_minor_count_expected:
-            print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
+            #print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
             assert minor_count > max_minor_count_expected
-    print(f'Passed guardrails')
+    #print(f'Passed guardrails')
 
 def site_calc_pairwise_distances_with_guardrails(window_df, site_index, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, window_pairwise_counts, window_pairwise_dist):
     genotypes = window_df.iloc[:,site_index].values
@@ -104,8 +111,8 @@ def site_calc_pairwise_distances_with_guardrails(window_df, site_index, min_vali
     ref_count = 2*num_valid_genotypes-non_ref_count
     non_ref_freq = float(non_ref_count)/(2*num_valid_genotypes)
     ref_freq = float(ref_count)/(2*num_valid_genotypes)
-    print(f'Site index: {site_index}, non ref allele frequency: {non_ref_freq}')
-    print(f'Site index: {site_index}, ref allele frequency: {ref_freq}')
+    #print(f'Site index: {site_index}, non ref allele frequency: {non_ref_freq}')
+    #print(f'Site index: {site_index}, ref allele frequency: {ref_freq}')
     # guardrails 
     assert abs(ref_freq+non_ref_freq-1)<1e-04
     _check_guardrails(num_individuals, num_valid_genotypes, ref_count, non_ref_count, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected)
@@ -193,8 +200,8 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
     for i1 in range(num_individuals-1):
         i1_val = genotypes[i1]
         # if this entry is not valid for i1, no need to go over all the others, nothing to add to freq nor counts
-        if i1%100==0:
-            print(f'Done with individual {i1}/{len(genotypes)}')
+        #if i1%100==0:
+        #    print(f'Done with individual {i1}/{len(genotypes)}')
         if i1_val == -1:
             continue
         for i2 in range(i1+1, num_individuals):
@@ -213,6 +220,7 @@ def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, win
         for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
             s = ' '.join(f'{c};{round(d, 5)}' for c,d in zip(counts, dists)) + '\n'
             f.write(s.encode())
+    
 
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 
@@ -221,7 +229,8 @@ def calc_distances_in_window(
     windows_indexes_path,
     mac_maf,
     class_name,
-    window_index,
+    min_window_index,
+    max_window_index,
     output_dir,
     min_valid_sites_precentage,
     min_minor_freq_expected,
@@ -230,87 +239,98 @@ def calc_distances_in_window(
     max_minor_count_expected):
 
     os.makedirs(output_dir, exist_ok=True)
+    print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
+    for window_index in range(min_window_index, max_window_index):
+        print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
+        window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
 
-    print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
-    window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
-    # TODO remove
-    window_df = window_df[window_df.columns[:2]]
-    # 100 indexes takes ~5 minutes 
-    # using percision of 5 decimals we generates a file of ~5MB
-    # we have 322,483 windows of 100
-    # will take over 3 years to process on one machine
-    # output is about 12 TB
-    window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
-        window_df,
-        min_valid_sites_precentage,
-        min_minor_freq_expected,
-        max_minor_freq_expected,
-        min_minor_count_expected,
-        max_minor_count_expected)
+        # 100 indexes in a window takes ~5 minutes 
+        # 100 windows will take about 9 hours
+        # using percision of 5 decimals will generates a file of ~1600KB in gz format
+        # we have 322,483 windows of 100 indexes each
+        # will take over 3 years to process on one machine
+        # will generate about 515 GB of data
+        window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
+            window_df,
+            min_valid_sites_precentage,
+            min_minor_freq_expected,
+            max_minor_freq_expected,
+            min_minor_count_expected,
+            max_minor_count_expected)
 
-    output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
-    print(f'output distances file to {output_count_dist_file}')
-    write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
-    return window_pairwise_counts, window_pairwise_dist
+        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
+        print(f'output distances file to {output_count_dist_file}')
+        write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
 
 # PARAMS
 # UTILS FOR PARAMS
-# local
-classes_folder = r"C:\Data\HUJI\hgdp\classes/"
-# huji
-classes_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
-class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
-windows_indexes_files_folder = classes_folder + r'windows/indexes/'
-windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
-
 # if we have less than this which are valid (not -1), site is not included in calc.
 min_valid_sites_precentage = 0.1
-# if not in range - will raise a warning
-#mac_maf = 'maf'
-#class_name = '0.49'
-#window_index = 0
-#min_minor_freq_expected = 0.49
-#max_minor_freq_expected = 0.5
-#min_minor_count_expected = -1
-#max_minor_count_expected = -1
+
+# huji
+classes_folder_cluster = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
+class_012_path_template = classes_folder_cluster + r'chr{chr_id}/{mac_maf}_{class_name}.012'
+windows_indexes_files_folder = classes_folder_cluster + r'windows/indexes/'
 
 
-import sys
+# local
+# classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
+# class_012_path_template = classes_folder_local + r'chr{chr_id}/{mac_maf}_{class_name}.012'
+# windows_indexes_files_folder = classes_folder_local + r'windows/indexes/'
+# mac_maf = 'maf'
+# class_name = '0.49'
+# min_window_index = 0
+# max_window_index = 1
+# min_minor_freq_expected = 0.49
+# max_minor_freq_expected = 0.5
+# min_minor_count_expected = -1
+# max_minor_count_expected = -1
+# windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
+# output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
+# calc_distances_in_window(class_012_path_template,windows_indexes_path,mac_maf,class_name,min_window_index,max_window_index,output_dir,min_valid_sites_precentage,min_minor_freq_expected,max_minor_freq_expected,min_minor_count_expected,max_minor_count_expected)
+
+windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
+
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
     mac_maf = args[0]
     assert mac_maf=='mac' or mac_maf=='maf'
     class_name = args[1]
-    window_index = int(args[2])
-    assert window_index>=0
-    min_minor_freq_expected = float(args[3])
+    min_window_index = int(args[2])
+    max_window_index = int(args[3])
+    assert min_window_index>=0
+    assert max_window_index>=0
+    assert min_window_index>max_window_index
+    min_minor_freq_expected = float(args[4])
     assert min_minor_freq_expected>=-1
     assert min_minor_freq_expected<=1
-    max_minor_freq_expected = float(args[4])
+    max_minor_freq_expected = float(args[5])
     assert max_minor_freq_expected>=-1
     assert max_minor_freq_expected<=1
-    min_minor_count_expected = int(args[5])
+    min_minor_count_expected = int(args[6])
     assert min_minor_count_expected>=-1
-    max_minor_count_expected = int(args[6])
+    max_minor_count_expected = int(args[7])
     assert max_minor_count_expected>=-1
 
     print('mac_maf',mac_maf)
     print('class_name',class_name)
-    print('window_index',window_index)
+    print('min_window_index',min_window_index)
+    print('max_window_index',max_window_index)
     print('min_minor_freq_expected',min_minor_freq_expected)
     print('max_minor_freq_expected',max_minor_freq_expected)
     print('min_minor_count_expected',min_minor_count_expected)
     print('max_minor_count_expected',max_minor_count_expected)
 
     windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
-    output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
+    output_dir = f'{classes_folder_cluster}windows/{mac_maf}_{class_name}/'
     calc_distances_in_window(
         class_012_path_template,
         windows_indexes_path,
         mac_maf,
         class_name,
-        window_index,
+        min_window_index,
+        max_window_index,
         output_dir,
         min_valid_sites_precentage,
         min_minor_freq_expected,

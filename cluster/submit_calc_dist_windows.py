@@ -61,7 +61,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 #maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1 {classes_folder}'
                 print(cmd_to_run)
-                #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')

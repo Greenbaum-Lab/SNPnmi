@@ -4,6 +4,7 @@ import os
 import gzip
 import sys
 import time
+from common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file
 
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 
@@ -69,14 +70,11 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
     print(f'{class_012_df.shape[1]} sites in window')
     return class_012_df
 
-def _build_pairwise_db(number, value):
-    return [[value]*(number-i) for i in range (1,number)]
-
 def window_calc_pairwise_distances_with_guardrails(window_df, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected):
     # for each column, we calc the pairwise distances and add it to the grand total
     # for performance, we use 2 lists of lists, one for distances and one for counts
-    window_pairwise_counts = _build_pairwise_db(len(window_df), 0)
-    window_pairwise_dist = _build_pairwise_db(len(window_df), 0.0)
+    window_pairwise_counts = build_empty_upper_left_matrix(len(window_df), 0)
+    window_pairwise_dist = build_empty_upper_left_matrix(len(window_df), 0.0)
 
     i=0
     for site_index in range(len(window_df.columns)):
@@ -241,10 +239,8 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
 def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
     with gzip.open(output_count_dist_file,'wb') as f:
         for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
-            s = ' '.join(f'{c};{round(d, 5)}' for c,d in zip(counts, dists)) + '\n'
+            s = ' '.join(f'{c};{round(d, 7)}' for c,d in zip(counts, dists)) + '\n'
             f.write(s.encode())
-    
-
 
 def calc_distances_in_windows(
     class_012_path_template,

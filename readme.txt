@@ -4,5 +4,7 @@ The order of scripts to run:
 - cluster/submit_split_vcfs.sh
 - collect_split_vcf_stats.py
 - generate_windows_indexes_files.py
+- submit_calc_dist_windows.py (TODO)
 - 
+
 ONMI - from https://github.com/aaronmcdaid/Overlapping-NMI

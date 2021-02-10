@@ -1,17 +1,14 @@
 import subprocess
 import sys
 import os
+from pathlib import Path
+root_path = str(Path(__file__).parents[1])
+sys.path.append(root_path)
+from utils.common import get_number_of_windows_by_class
 
 # will submit calc_distances_in_window of given classes and windows
 
 # python3 submit_calc_dist_windows.py "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt" 2 2 1 1 49 1 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/" 2 5 0 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/"
-def get_number_of_windows_by_class(number_of_windows_per_class_path):
-    class2num_windows = dict()
-    with open(number_of_windows_per_class_path) as f:
-        for l in f.readlines():
-            classname, num_windows = l.split(' ',1)
-            class2num_windows[classname] = int(num_windows)
-    return class2num_windows
 
 def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index,  number_of_windows_per_class_path, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, job_stderr_folder, job_stdout_folder, classes_folder):
     os.makedirs(job_stderr_folder, exist_ok=True)

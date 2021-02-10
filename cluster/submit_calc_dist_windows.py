@@ -21,10 +21,12 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
     class2num_windows = get_number_of_windows_by_class(number_of_windows_per_class_path)
     if mac_min_range>0:
         for mac in range(mac_min_range, mac_max_range+1, mac_delta):
+            if number_of_submitted_jobs == max_number_of_jobs:
+                break
             num_windows = class2num_windows[str(mac)]
             print(f'mac {mac}, num_windows {num_windows}')
             max_window_id = initial_window_index
-            while max_window_id < num_windows:
+            while max_window_id < num_windows:                
                 min_window_id = max_window_id
                 max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
                 # go over all windows
@@ -38,8 +40,11 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
+                    break
     if maf_min_range>0:
         for maf_int in range(maf_min_range, maf_max_range+1, maf_delta):
+            if number_of_submitted_jobs == max_number_of_jobs:
+                break
             maf = f'{maf_int*1.0/100}'
             max_maf = f'{(maf_int + maf_delta)*1.0/100}' 
             num_windows = class2num_windows[maf]
@@ -60,6 +65,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
+                    break
 
 #submit_calc_dist_windows(r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt",-1,-1,1,49,49,1,r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/", r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/", 1000)
 

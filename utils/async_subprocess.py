@@ -16,13 +16,19 @@ def generate_cmd(min_window_index, max_window_index):
     max_minor_freq_expected = 0.5
     min_minor_count_expected = -1
     max_minor_count_expected = -1
-    return f'python3 ./calc_distances_in_window.py {mac_maf} {class_name} {min_window_index} {max_window_index} {min_minor_freq_expected} {max_minor_freq_expected} {min_minor_count_expected} {max_minor_count_expected}'
+    classes_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
+    cmd = f'python3 ./calc_distances_in_window.py {mac_maf} {class_name} {min_window_index} {max_window_index} {min_minor_freq_expected} {max_minor_freq_expected} {min_minor_count_expected} {max_minor_count_expected} {classes_folder}'
+    print(cmd)
+    return cmd
 
 async def main():
+    import time
+    s = time.time()
     await asyncio.gather(
         run(generate_cmd(0,1)),
         run(generate_cmd(1,2)),
         run(generate_cmd(2,3)),
         run(generate_cmd(3,4)))
+    print(f'{(time.time()-s)/60} minutes')
 
 asyncio.run(main())

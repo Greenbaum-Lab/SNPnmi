@@ -286,6 +286,8 @@ def calc_distances_in_window(
         write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
 
 def main(args):
+    import time
+    s = time.time()
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
     mac_maf = args[0]
@@ -341,6 +343,7 @@ def main(args):
         max_minor_freq_expected,
         min_minor_count_expected,
         max_minor_count_expected)
+    print(f'{(time.time()-s)/60} minutes')
 
 #main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, classes_folder_local])
 

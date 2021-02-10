@@ -5,7 +5,29 @@ import gzip
 import sys
 import time
 
-# python3 calc_distances_in_window.py maf 0.49 0 4 0.49 0.5 -1 -1
+OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
+
+# PARAMS
+# UTILS FOR PARAMS
+# if we have less than this which are valid (not -1), site is not included in calc.
+min_valid_sites_precentage = 0.1
+
+# # huji
+# classes_folder_cluster = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
+
+# # local
+classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
+
+mac_maf = 'maf'
+class_name = '0.49'
+min_window_index = 0
+max_window_index = 3
+min_minor_freq_expected = 0.49
+max_minor_freq_expected = 0.5
+min_minor_count_expected = -1
+max_minor_count_expected = -1
+# python3 calc_distances_in_window.py maf 0.49 0 4 0.49 0.5 -1 -1 classes_folder_cluster
+
 
 def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index):
     # read indexes of window
@@ -14,8 +36,9 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
     window_indexes = windows_indexes[window_index]
     print(f'There are {len(window_indexes)} indexes in window indexes list')
     chr_id2indexes = dict()
-    for char_id_index in window_indexes:
-        chr_id, index = char_id_index.split(';',1)
+    print('Read sites from appropriate chrs')
+    for chr_id_index in window_indexes:
+        chr_id, index = chr_id_index.split(';',1)
         # if chr_id not in the dict, we get an empty list
         indexes = chr_id2indexes.get(chr_id, [])
         indexes.append(int(index))
@@ -34,9 +57,9 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
         #print(f'{len(indexes)} / {num_columns-1} sites will be used from file {class_012_path}')
         names = [f'chr{chr_id}_idx{i}' for i in range(num_columns)]
         # we add one as the csv contains the individual is in the first index
-        cols_to_uset = [i+1 for i in indexes]
+        indexes_to_use = [i+1 for i in indexes]
         # read file to pandas df
-        selected_indexes_012_df = pd.read_csv(class_012_path, sep='\t', names= names, usecols = cols_to_uset)
+        selected_indexes_012_df = pd.read_csv(class_012_path, sep='\t', names= names, usecols = indexes_to_use)
         if class_012_df.empty:
             class_012_df = selected_indexes_012_df
         else:
@@ -211,7 +234,7 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
             else:            
                 # this is a valid entry, we add 1 to the count
                 window_pairwise_counts[i1][i2-i1-1] += 1
-                window_pairwise_dist[i1][i2-i1-1] += _calc_dist_directly(i1_val, i2_val, ref_freq, non_ref_freq)
+                window_pairwise_dist[i1][i2-i1-1] += _calc_dist(i1_val, i2_val, ref_freq, non_ref_freq)
 
 # the output is in couples of <count>,<distance>
 # the count is the number of valied sites on which the distances is calculated
@@ -222,7 +245,6 @@ def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, win
             f.write(s.encode())
     
 
-OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 
 def calc_distances_in_window(
     class_012_path_template,
@@ -243,7 +265,8 @@ def calc_distances_in_window(
     for window_index in range(min_window_index, max_window_index):
         print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
         window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
-
+        #window_df = window_df.head(2)
+        assert len(window_df)>2
         # 100 indexes in a window takes ~5 minutes 
         # 100 windows will take about 9 hours
         # using percision of 5 decimals will generates a file of ~1600KB in gz format
@@ -262,35 +285,6 @@ def calc_distances_in_window(
         print(f'output distances file to {output_count_dist_file}')
         write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
 
-# PARAMS
-# UTILS FOR PARAMS
-# if we have less than this which are valid (not -1), site is not included in calc.
-min_valid_sites_precentage = 0.1
-
-# huji
-classes_folder_cluster = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
-class_012_path_template = classes_folder_cluster + r'chr{chr_id}/{mac_maf}_{class_name}.012'
-windows_indexes_files_folder = classes_folder_cluster + r'windows/indexes/'
-
-
-# local
-# classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
-# class_012_path_template = classes_folder_local + r'chr{chr_id}/{mac_maf}_{class_name}.012'
-# windows_indexes_files_folder = classes_folder_local + r'windows/indexes/'
-# mac_maf = 'maf'
-# class_name = '0.49'
-# min_window_index = 0
-# max_window_index = 1
-# min_minor_freq_expected = 0.49
-# max_minor_freq_expected = 0.5
-# min_minor_count_expected = -1
-# max_minor_count_expected = -1
-# windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
-# output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
-# calc_distances_in_window(class_012_path_template,windows_indexes_path,mac_maf,class_name,min_window_index,max_window_index,output_dir,min_valid_sites_precentage,min_minor_freq_expected,max_minor_freq_expected,min_minor_count_expected,max_minor_count_expected)
-
-windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
-
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
@@ -301,7 +295,7 @@ def main(args):
     max_window_index = int(args[3])
     assert min_window_index>=0
     assert max_window_index>=0
-    assert min_window_index>max_window_index
+    assert min_window_index<max_window_index
     min_minor_freq_expected = float(args[4])
     assert min_minor_freq_expected>=-1
     assert min_minor_freq_expected<=1
@@ -312,6 +306,7 @@ def main(args):
     assert min_minor_count_expected>=-1
     max_minor_count_expected = int(args[7])
     assert max_minor_count_expected>=-1
+    classes_folder = args[8]
 
     print('mac_maf',mac_maf)
     print('class_name',class_name)
@@ -321,9 +316,18 @@ def main(args):
     print('max_minor_freq_expected',max_minor_freq_expected)
     print('min_minor_count_expected',min_minor_count_expected)
     print('max_minor_count_expected',max_minor_count_expected)
+    print('classes_folder',classes_folder)
 
+    # Prepare paths
+    class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
+    windows_indexes_files_folder = classes_folder + r'windows/indexes/'
+    windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
     windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
-    output_dir = f'{classes_folder_cluster}windows/{mac_maf}_{class_name}/'
+    output_dir = f'{classes_folder}windows/{mac_maf}_{class_name}/'
+    print('windows_indexes_files_folder',windows_indexes_files_folder)
+    print('windows_indexes_path',windows_indexes_path)
+    print('output_dir',output_dir)
+
     calc_distances_in_window(
         class_012_path_template,
         windows_indexes_path,
@@ -337,6 +341,8 @@ def main(args):
         max_minor_freq_expected,
         min_minor_count_expected,
         max_minor_count_expected)
+
+#main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, classes_folder_local])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

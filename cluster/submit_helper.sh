@@ -2,7 +2,7 @@
 
 module load bio
 
-cdm2run=$1
+cmd2run=$1
 
-echo "$cdm2run"
-#eval "$cdm2run"
+echo "$cmd2run"
+#eval "$cmd2run"

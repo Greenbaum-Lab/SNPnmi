@@ -16,16 +16,16 @@ min_valid_sites_precentage = 0.1
 # classes_folder_cluster = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
 
 # # local
-classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
+# classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
 
-mac_maf = 'maf'
-class_name = '0.49'
-min_window_index = 0
-max_window_index = 3
-min_minor_freq_expected = 0.49
-max_minor_freq_expected = 0.5
-min_minor_count_expected = -1
-max_minor_count_expected = -1
+# mac_maf = 'maf'
+# class_name = '0.49'
+# min_window_index = 0
+# max_window_index = 3
+# min_minor_freq_expected = 0.49
+# max_minor_freq_expected = 0.5
+# min_minor_count_expected = -1
+# max_minor_count_expected = -1
 # python3 calc_distances_in_window.py maf 0.49 0 4 0.49 0.5 -1 -1 classes_folder_cluster
 
 
@@ -246,7 +246,7 @@ def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, win
     
 
 
-def calc_distances_in_window(
+def calc_distances_in_windows(
     class_012_path_template,
     windows_indexes_path,
     mac_maf,
@@ -263,6 +263,7 @@ def calc_distances_in_window(
     os.makedirs(output_dir, exist_ok=True)
     print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
     for window_index in range(min_window_index, max_window_index):
+        start_time = time.time()
         print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
         window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
         #window_df = window_df.head(2)
@@ -284,9 +285,9 @@ def calc_distances_in_window(
         output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
         print(f'output distances file to {output_count_dist_file}')
         write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
+        print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window index: {window_index}')
 
 def main(args):
-    import time
     s = time.time()
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
@@ -330,7 +331,7 @@ def main(args):
     print('windows_indexes_path',windows_indexes_path)
     print('output_dir',output_dir)
 
-    calc_distances_in_window(
+    calc_distances_in_windows(
         class_012_path_template,
         windows_indexes_path,
         mac_maf,
@@ -343,7 +344,7 @@ def main(args):
         max_minor_freq_expected,
         min_minor_count_expected,
         max_minor_count_expected)
-    print(f'{(time.time()-s)/60} minutes')
+    print(f'{(time.time()-s)/60} minutes total run time')
 
 #main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, classes_folder_local])
 

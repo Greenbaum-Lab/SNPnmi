@@ -8,7 +8,7 @@ from utils.common import get_number_of_windows_by_class
 
 # will submit calc_distances_in_window of given classes and windows
 
-# python3 submit_calc_dist_windows.py "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt" 2 2 1 1 49 1 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/" 2 5 0 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/"
+# python3 submit_calc_dist_windows.py "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt" 100 2 1 49 50 1 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/" 25 50 0 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/"
 
 def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index,  number_of_windows_per_class_path, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, job_stderr_folder, job_stdout_folder, classes_folder):
     os.makedirs(job_stderr_folder, exist_ok=True)
@@ -30,7 +30,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_stderr_file=f'{job_stderr_folder}mac{mac}_windows{min_window_id}-{max_window_id}.stderr'
                 job_stdout_file=f'{job_stdout_folder}mac{mac}_windows{min_window_id}-{max_window_id}.stdout'
                 job_name=f'c{mac}_w{min_window_id}'
-                cluster_setting=f'sbatch --time=10:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac} {classes_folder}'
                 print(cmd_to_run)
                 #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
@@ -54,7 +54,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_stderr_file=f'{job_stderr_folder}maf{maf}_windows{min_window_id}-{max_window_id}.stderr'
                 job_stdout_file=f'{job_stdout_folder}maf{maf}_windows{min_window_id}-{max_window_id}.stdout'
                 job_name=f'f{maf}_w{min_window_id}'
-                cluster_setting=f'sbatch --time=10:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1 {classes_folder}'
                 print(cmd_to_run)

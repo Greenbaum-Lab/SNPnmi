@@ -95,7 +95,7 @@ class_name='all'
 # PARAMS
 # UTILS FOR PARAMS
 classes_folder = r"./mock/classes/"
-class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{float(class_name):.2f}.012'
+class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
 windows_indexes_files_folder = classes_folder + r"windows/indexes/"
 windows_indexes_path_template = windows_indexes_files_folder + "windows_indexes_for_class_{class_name}.json"
 

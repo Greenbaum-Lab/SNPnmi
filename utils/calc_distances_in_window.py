@@ -51,7 +51,7 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
     # go over the chr_ids, and get from the file the correct columns
     class_012_df = pd.DataFrame()
     for chr_id, indexes in chr_id2indexes.items():
-        class_012_path = class_012_path_template.format(chr_id = chr_id, mac_maf = mac_maf, class_name = class_name)
+        class_012_path = class_012_path_template.format(chr_id = chr_id, mac_maf = mac_maf, class_name = f'{float(class_name):.2f}')
         # get number of columns in chr:
         with open(class_012_path,'r') as f:
             num_columns = len(f.readline().split('\t'))
@@ -318,7 +318,7 @@ def main(args):
     print('classes_folder',classes_folder)
 
     # Prepare paths
-    class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{float(class_name):.2f}.012'
+    class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
     windows_indexes_files_folder = classes_folder + r'windows/indexes/'
     windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
     windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)

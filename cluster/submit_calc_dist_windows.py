@@ -1,8 +1,8 @@
 import subprocess
 import sys
 import os
-from pathlib import Path
-root_path = str(Path(__file__).parents[1])
+from os.path import dirname, abspath
+root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class
 
@@ -23,7 +23,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
             num_windows = class2num_windows[str(mac)]
             print(f'mac {mac}, num_windows {num_windows}')
             max_window_id = initial_window_index
-            while max_window_id < num_windows:                
+            while max_window_id < num_windows:
                 min_window_id = max_window_id
                 max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
                 # go over all windows

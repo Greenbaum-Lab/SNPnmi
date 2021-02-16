@@ -5,8 +5,8 @@ import os
 import glob
 import gzip
 
-from pathlib import Path
-root_path = str(Path(__file__).parents[1])
+from os.path import dirname, abspath
+root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file

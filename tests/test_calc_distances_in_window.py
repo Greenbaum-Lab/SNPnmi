@@ -1,9 +1,7 @@
 # This is broken, as calc_distances_in_window no longer returns any value
 import sys
-from pathlib import Path
-
-root_path = str(Path(__file__).parents[1])
-sys.path.append(root_path)
+from os.path import dirname, abspath
+root_path = dirname(dirname(os.path.abspath(__file__)))
 
 from utils.calc_distances_in_window import *
 
@@ -97,7 +95,7 @@ class_name='all'
 # PARAMS
 # UTILS FOR PARAMS
 classes_folder = r"./mock/classes/"
-class_012_path_template = classes_folder + "chr{chr_id}/{class_name}.012"
+class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{float(class_name):.2f}.012'
 windows_indexes_files_folder = classes_folder + r"windows/indexes/"
 windows_indexes_path_template = windows_indexes_files_folder + "windows_indexes_for_class_{class_name}.json"
 

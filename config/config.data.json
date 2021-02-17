@@ -1,6 +1,8 @@
 {
     "hgdp": {
         "source": "ftp://ngs.sanger.ac.uk/production/hgdp/hgdp_wgs.20190516/",
-        "files_names": ["hgdp_wgs.20190516.full.chrY.vcf.gz.tbi", "hgdp_wgs.20190516.full.chrY.vcf.gz"]
+        "num_individulas": 929,
+        "num_chrs": 22,
+        "files_names": ["hgdp_wgs.20190516.full.chr21.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr21.vcf.gz"]
     }
 }

@@ -53,7 +53,8 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 # go over all windows
                 job_stderr_file=f'{job_stderr_folder}maf{maf}_windows{min_window_id}-{max_window_id}.stderr'
                 job_stdout_file=f'{job_stdout_folder}maf{maf}_windows{min_window_id}-{max_window_id}.stdout'
-                job_name=f'f{maf}_w{min_window_id}'
+                # to make the jobs name short we only take the last two digits of maf
+                job_name=f'f{str(maf)[-2:]}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1 {classes_folder}'

@@ -3,7 +3,7 @@ import gzip
 from utils.config import *
 
 def is_cluster():
-   return 'gil.greenbaum/amir.rubin' in os.path.abspath(__file__)
+   return 'cs/icore/amir.rubin2' in os.path.abspath(__file__)
 
 def get_paths_helper(data_set_name=DataSetNames.hdgp):
     # from utils.common import get_paths_helper

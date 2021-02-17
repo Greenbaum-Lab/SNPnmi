@@ -19,13 +19,12 @@ def file_len(fname):
     return i + 1
 
 def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
-    total_len = len(classes_names)
     for class_name in classes_names:
         win_dir = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
         num_windows = class2num_windows[str(class_name)]
         for i in range(num_windows):
             count_dist_file = f'{win_dir}count_dist_window_{i}.tsv.gz'
-            print(f'Assert len of {count_dist_file} / {total_len}')
+            print(f'Assert len of {count_dist_file} / {num_windows}')
             assert file_len(count_dist_file) == get_num_individuals()-1
 
 def main(args):

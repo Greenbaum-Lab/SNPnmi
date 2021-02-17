@@ -44,7 +44,7 @@ def main(args):
     print('min_maf',min_maf)
     print('max_maf',max_maf)
 
-    paths_helper = get_paths_helper(False)
+    paths_helper = get_paths_helper()
     class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
 
     go_over_classes('mac', range(min_mac, max_mac), paths_helper, class2num_windows)

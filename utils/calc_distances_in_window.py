@@ -4,7 +4,12 @@ import os
 import gzip
 import sys
 import time
-from common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file
+import sys
+from os.path import dirname, abspath
+root_path = dirname(dirname(abspath(__file__)))
+sys.path.append(root_path)
+
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file
 
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 

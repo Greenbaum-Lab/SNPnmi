@@ -1,3 +1,5 @@
+# python3 validate_calc_distances_in_windows.py 2 18 1 49
+
 import sys
 import os
 from os.path import dirname, abspath
@@ -9,7 +11,6 @@ from utils.common import get_paths_helper
 from utils.common import get_number_of_windows_by_class
 from utils.config import get_num_individuals
 
-# python3 validate_calc_distances_in_windows.py 2 18 1 49
 
 def file_len(fname):
     with gzip.open(fname,'rb') as f:
@@ -29,13 +30,13 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
-    min_mac = int(args[1])
+    min_mac = int(args[0])
     assert min_mac >= 0
-    max_mac = int(args[2])
+    max_mac = int(args[1])
     assert max_mac >= 0
-    min_maf = int(args[3])
+    min_maf = int(args[2])
     assert min_maf >= 0
-    max_maf = int(args[4])
+    max_maf = int(args[3])
     assert max_maf >= 0
 
     print('min_mac',min_mac)

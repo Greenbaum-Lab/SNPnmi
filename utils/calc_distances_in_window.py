@@ -56,7 +56,10 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
     # go over the chr_ids, and get from the file the correct columns
     class_012_df = pd.DataFrame()
     for chr_id, indexes in chr_id2indexes.items():
-        class_012_path = class_012_path_template.format(chr_id = chr_id, mac_maf = mac_maf, class_name = f'{float(class_name):.2f}')
+        class_name_for_012 = class_name
+        if mac_maf=='maf':
+            class_name_for_012 = f'{float(class_name):.2f}'
+        class_012_path = class_012_path_template.format(chr_id = chr_id, mac_maf = mac_maf, class_name = class_name_for_012)
         # get number of columns in chr:
         with open(class_012_path,'r') as f:
             num_columns = len(f.readline().split('\t'))

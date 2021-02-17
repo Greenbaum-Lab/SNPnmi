@@ -1,7 +1,7 @@
 # This is broken, as calc_distances_in_window no longer returns any value
 import sys
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
 from utils.calc_distances_in_window import *

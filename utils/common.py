@@ -1,11 +1,15 @@
+import os
 import gzip
 from utils.config import *
 
-def get_paths_helper(is_cluster=True, data_set_name=DataSetNames.hdgp):
+def is_cluster():
+   return 'gil.greenbaum/amir.rubin' in os.path.abspath(__file__)
+
+def get_paths_helper(data_set_name=DataSetNames.hdgp):
     # from utils.common import get_paths_helper
     # paths_helper = get_paths_helper()
     paths_config = get_config(CONFIG_NAME_PATHS)
-    root_folder = paths_config['cluster_root_folder'] if is_cluster else paths_config['local_root_folder']
+    root_folder = paths_config['cluster_root_folder'] if is_cluster() else paths_config['local_root_folder']
     return PathsHelper(root_folder, data_set_name)
 
 class PathsHelper:
@@ -14,6 +18,9 @@ class PathsHelper:
         self.data_folder = f'{root_folder}vcf/'
         self.classes_folder = f'{self.data_folder}{data_set_name}/classes/'
         self.windows_folder = f'{self.classes_folder}windows/'
+        self.slices_folder = f'{self.classes_folder}slices/'
+        self.random_slices_folder = f'{self.classes_folder}random_slices/'
+
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
         self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
 
@@ -42,3 +49,12 @@ def write_upper_left_matrix_to_file(output_file, values):
         for v in values:
             s = ' '.join([str(i) for i in v]) + '\n'
             f.write(s.encode())    
+
+def str2bool(v) -> bool:
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    if v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    raise 'Boolean value expected.'

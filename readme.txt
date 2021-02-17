@@ -5,7 +5,7 @@ The order of scripts to run:
 - collect_split_vcf_stats.py
 - generate_windows_indexes_files.py
 - submit_calc_dist_windows.py (in progress. submitted maf 1-10,15-49)
-- TODO - validate submit_calc_dist_windows
+- TODO - validate submit_calc_dist_windows (done maf 48 49)
 - TODO - merge_windows_all / for baseline
 - TODO - merge_windows_randomly
 

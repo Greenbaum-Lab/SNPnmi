@@ -4,10 +4,10 @@ The order of scripts to run:
 - cluster/submit_split_vcfs.sh
 - collect_split_vcf_stats.py
 - generate_windows_indexes_files.py
-- submit_calc_dist_windows.py (in progress. submitted maf 1-10,15-49)
-- TODO - validate submit_calc_dist_windows (done maf 48 49)
-- TODO - merge_windows_all / for baseline
-- TODO - merge_windows_randomly
+- submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
+- TODO - validate_calc_distances_in_windows (done maf 48 49)
+- TODO - submit_merge_windows (is_random=False to join all for baseline)
+- TODO - submit_merge_windows (is_random=True to generate random slices)
 
 
 ONMI - from https://github.com/aaronmcdaid/Overlapping-NMI
@@ -27,5 +27,5 @@ Discussion on building base line
 --------------------------------------
 We will build a baseline per class.
 Then we can easily merge all classes to one.
-So, how to do this? If in a class we have N=5K windows(of 100 sites each), we first need to work on groups of sqrt(N), which wil create 50 sub resutls, which we can later merge.
-For the largest class, mac=2, we have 73031 windows, we will group every 270 windows, which will results in 271 big-windows, which we can group to the distnaces based on class mac=2.
+Seems like merging 1000 windows takes about 7 minutes, so we will simply merge 1000 windows at a job.
+For the biggest class, mac 2, we have 73K windows, so only 73 jobs.

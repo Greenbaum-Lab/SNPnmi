@@ -33,7 +33,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac} {classes_folder}'
                 print(cmd_to_run)
-                #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')

@@ -5,9 +5,13 @@ The order of scripts to run:
 - collect_split_vcf_stats.py
 - generate_windows_indexes_files.py
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
-- TODO - validate_calc_distances_in_windows (done maf 48 49)
-- TODO - submit_merge_windows (is_random=False to join all for baseline)
+- TODO - validate_calc_distances_in_windows (takes ~1 minute for 1K windows)
+- TODO - submit_merge_windows (is_random=False to join all for baseline) (takes ~13 minutes to process 1K windows)
+- TODO - merge_slices_to_normalized_dist_matrix (to generate ground truth)
 - TODO - submit_merge_windows (is_random=True to generate random slices)
+- TODO - run_netstruct
+- TODO - calc ONMI
+- TODO - collect ONMI
 
 
 ONMI - from https://github.com/aaronmcdaid/Overlapping-NMI

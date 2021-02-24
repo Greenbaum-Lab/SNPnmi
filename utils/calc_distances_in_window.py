@@ -242,8 +242,8 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
                 window_pairwise_counts[i1][i2-i1-1] += 1
                 window_pairwise_dist[i1][i2-i1-1] += _calc_dist(i1_val, i2_val, ref_freq, non_ref_freq)
 
-# the output is in couples of <count>,<distance>
-# the count is the number of valied sites on which the distances is calculated
+# the output is in couples of <count>;<distance>
+# the count is the number of valid sites on which the distances is calculated
 def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
     with gzip.open(output_count_dist_file,'wb') as f:
         for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):

@@ -17,11 +17,21 @@ def get_paths_helper(data_set_name=DataSetNames.hdgp):
     root_folder = paths_config['cluster_root_folder'] if is_cluster() else paths_config['local_root_folder']
     return PathsHelper(root_folder, data_set_name)
 
+
+def normalize_distances(distances, counts):
+    num_ind = len(distances) + 1
+    norm_dists = build_empty_upper_left_matrix(num_ind, 0.0)
+    for r_i, (r_dist, r_count) in enumerate(zip(distances, counts)):
+        for c_i, (c_dist, c_count) in enumerate(zip(r_dist, r_count)):
+            norm_dists[r_i][c_i] = float(c_dist)/float(c_count)
+    return norm_dists
+
 class PathsHelper:
     # example: root_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
     def __init__(self, root_folder: str, data_set_name: str):
-        self.data_folder = f'{root_folder}vcf/'
-        self.classes_folder = f'{self.data_folder}{data_set_name}/classes/'
+        self.vcf_folder = f'{root_folder}vcf/'
+        self.data_folder = f'{self.vcf_folder}{data_set_name}/'
+        self.classes_folder = f'{self.data_folder}classes/'
         self.windows_folder = f'{self.classes_folder}windows/'
         self.slices_folder = f'{self.classes_folder}slices/'
         self.random_slices_folder = f'{self.classes_folder}random_slices/'

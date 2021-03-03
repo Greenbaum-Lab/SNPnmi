@@ -20,34 +20,68 @@ def append_to_dic(dic, key, value):
         dic[key] = []
     dic[key].append(value)
 
-def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template):
+def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template, batch_size=2000):
     # load file to memory
     with open(chr_class_file,'r') as f:
-            num_columns = len(f.readline().split('\t'))
-    names = [f'idx{i}' for i in range(num_columns)]
-    df_012 = pd.read_csv(chr_class_file, sep='\t', names= names)
-    print(f'Number of sites: {len(df_012.columns)}')
-    num_ind = len(df_012)
-    assert num_ind == get_num_individuals()
-
+        num_columns = len(f.readline().split('\t'))
+    print(f'Number of sites: {num_columns}')
     window_index_2_site_index = dict()
+    with open(chr_class_file,'r') as f:
+        # the first column is the index!
+        num_columns = len(f.readline().split('\t'))
+    # the first column is the index!
+    min_col_index_in_batch = 1
+    max_col_index_in_batch = min(num_columns, batch_size)
+    batch_index = 1
+    num_batches = int(num_columns/batch_size) + 1
+    print(f'Will have {num_batches}, each of max size {batch_size}')
+    while min_col_index_in_batch < max_col_index_in_batch:
+        print(f'Process [{min_col_index_in_batch}, {max_col_index_in_batch}) in batch {batch_index}/{num_batches}')
+        usecols = range(min_col_index_in_batch, max_col_index_in_batch)
+        names = [str(i) for i in usecols]
+        batch_df = pd.read_csv(chr_class_file, sep='\t', usecols=usecols, index_col=False, names=names)
+        # validate we dont have the index column
+        assert batch_df.iloc[:,0].max() <= 2
+
+        process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_template)
+        
+        min_col_index_in_batch = min(num_columns, max_col_index_in_batch)
+        max_col_index_in_batch = min(num_columns, max_col_index_in_batch + batch_size)
+        batch_index += 1
+
+    validate_windows_indexes(window_index_2_site_index, chr_id, num_columns-1, number_of_windows)
+
+    with open(windows_indexes_file, "w" ) as f:
+            json.dump(window_index_2_site_index, f )
+
+def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_template):
     i = 0
-    for (columnName, columnData) in df_012.iteritems():
+    for (columnName, columnData) in batch_df.iteritems():
         i += 1
-        if i%1000 == 0:
-            print(f'Done {i}/{len(df_012.columns)} sites' )
-        window_index = random.randint(1, number_of_windows)
+        if i%500 == 0:
+            print(f'\t\tDone {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}' )
+        window_index = random.randint(0, number_of_windows-1)
         # store the index in the file mapping windows to indexes used
-        append_to_dic(window_index_2_site_index, window_index, f'{chr_id};{columnName[3:]}')
+        append_to_dic(window_index_2_site_index, window_index, f'{chr_id};{columnName}')
         # append the column as a row to the right window file
         window_transposed_file = window_transposed_template.format(window_id=window_index)
         with gzip.open(window_transposed_file,'ab') as f:
-            s = '\t'.join([str(i) for i in columnData.values]) + '\n'
-            f.write(s.encode()) 
+                s = '\t'.join([str(i) for i in columnData.values]) + '\n'
+                f.write(s.encode())
 
-    with open(windows_indexes_file, "w" ) as f: 
-            json.dump(window_index_2_site_index, f )
-    
+def validate_windows_indexes(windows_indexes, chr_id, expected_num_indexes, expected_num_windows):
+    all_indexes = []
+    for k in windows_indexes.keys():
+        for c_i in windows_indexes[k]:
+            c,i = c_i.split(';',2)
+            assert c==str(chr_id)
+            ii = int(i)
+            assert not ii in all_indexes
+            all_indexes.append(ii)
+    assert len(all_indexes) == expected_num_indexes
+    assert len(windows_indexes.keys()) <= expected_num_windows
+    assert len(windows_indexes.keys()) > expected_num_windows/2
+    print(f'validate_windows_indexes passed: {expected_num_indexes} indexes writen to {len(windows_indexes.keys())} windows')
 
 def generate_windows_and_indexes_files(mac_maf, class_name):
     #  we dont want to use the same seed here, as we will have the same values for all clasees
@@ -84,6 +118,8 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
         chr_class_file = input_per_chr_template.format(chr_id=chr_id)
         windows_indexes_file = windows_indexes_file_template.format(chr_id=chr_id)
         random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template)
+        # TODO remove
+        break
 
 def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
     # transpose and output to file

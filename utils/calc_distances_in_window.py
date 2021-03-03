@@ -65,7 +65,7 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
             num_columns = len(f.readline().split('\t'))
         #print(f'{len(indexes)} / {num_columns-1} sites will be used from file {class_012_path}')
         names = [f'chr{chr_id}_idx{i}' for i in range(num_columns)]
-        # we add one as the csv contains the individual is in the first index
+        # we add one as the csv contains the individual id in the first index
         indexes_to_use = [i+1 for i in indexes]
         # read file to pandas df
         selected_indexes_012_df = pd.read_csv(class_012_path, sep='\t', names= names, usecols = indexes_to_use)

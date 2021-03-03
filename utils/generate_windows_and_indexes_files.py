@@ -56,13 +56,14 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
             json.dump(window_index_2_site_index, f )
 
 def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_files):
+    paths_helper = get_paths_helper()
     i = 0
     for (columnName, columnData) in batch_df.iteritems():
         i += 1
         if i%200 == 0:
             msg = f'\t\tChr{chr_id}: done {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}'
             print(msg)
-            with open('./log.txt', 'a') as f:
+            with open(paths_helper.logs_cluster_folder + 'split_class_log.txt', 'a') as f:
                 f.write(msg + '\n')
         window_index = random.randint(0, number_of_windows-1)
         # store the index in the file mapping windows to indexes used
@@ -128,8 +129,6 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
         chr_class_file = input_per_chr_template.format(chr_id=chr_id)
         windows_indexes_file = windows_indexes_file_template.format(chr_id=chr_id)
         random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_files)
-        print('TODO remove')
-        break
 
     print(f'Close {number_of_windows} window_transposed_files')
     for f in window_transposed_files:

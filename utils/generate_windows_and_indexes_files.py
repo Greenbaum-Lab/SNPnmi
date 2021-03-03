@@ -36,8 +36,8 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
     num_batches = int(num_columns/batch_size) + 1
     print(f'Will have {num_batches}, each of max size {batch_size}')
     #TODO remove
-    return
     print('REMOVE')
+    return
     while min_col_index_in_batch < max_col_index_in_batch:
         print(f'Process [{min_col_index_in_batch}, {max_col_index_in_batch}) in batch {batch_index}/{num_batches}')
         usecols = range(min_col_index_in_batch, max_col_index_in_batch)

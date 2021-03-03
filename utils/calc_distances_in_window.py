@@ -267,28 +267,32 @@ def calc_distances_in_windows(
     os.makedirs(output_dir, exist_ok=True)
     print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
     for window_index in range(min_window_index, max_window_index):
+        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
+        if os.path.isfile(output_count_dist_file):
+            print(f'Window file exist, do not calc! {output_count_dist_file}')
+            continue
         start_time = time.time()
         print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
         window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
-        #window_df = window_df.head(2)
-        assert len(window_df)>2
         # 100 indexes in a window takes ~5 minutes 
         # 100 windows will take about 9 hours
         # using percision of 5 decimals will generates a file of ~1600KB in gz format
         # we have 322,483 windows of 100 indexes each
         # will take over 3 years to process on one machine
         # will generate about 515 GB of data
-        window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
-            window_df,
-            min_valid_sites_precentage,
-            min_minor_freq_expected,
-            max_minor_freq_expected,
-            min_minor_count_expected,
-            max_minor_count_expected)
+        # TODO uncomment
+        print('TODO uncomment')
+        # window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
+        #     window_df,
+        #     min_valid_sites_precentage,
+        #     min_minor_freq_expected,
+        #     max_minor_freq_expected,
+        #     min_minor_count_expected,
+        #     max_minor_count_expected)
 
-        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
         print(f'output distances file to {output_count_dist_file}')
-        write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
+        print('TODO uncomment')
+        # write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
         print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window index: {window_index}')
 
 def main(args):

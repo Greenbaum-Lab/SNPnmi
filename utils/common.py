@@ -37,6 +37,8 @@ class PathsHelper:
         self.random_slices_folder = f'{self.classes_folder}random_slices/'
 
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
+        self.windows_indexes_template = self.windows_indexes_folder + 'windows_indexes_for_class_{class_name}.json'
+
         self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
 
         self.logs_folder = f'{root_folder}logs/'
@@ -46,7 +48,10 @@ class PathsHelper:
 
         self.split_vcf_stats_csv_path = f'{self.logs_cluster_folder}split_vcfs/split_vcf_output_stats.csv'
 
-def get_number_of_windows_by_class(number_of_windows_per_class_path):
+def get_number_of_windows_by_class(number_of_windows_per_class_path=None):
+    if not number_of_windows_per_class_path:
+        paths_helper = get_paths_helper()
+        number_of_windows_per_class_path = paths_helper.number_of_windows_per_class_path
     class2num_windows = dict()
     with open(number_of_windows_per_class_path) as f:
         for l in f.readlines():

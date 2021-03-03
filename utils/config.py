@@ -16,3 +16,7 @@ def get_config(config_name):
 def get_num_individuals(data_set_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[data_set_name]['num_individulas']
+
+def get_num_chrs(data_set_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[data_set_name]['num_chrs']    

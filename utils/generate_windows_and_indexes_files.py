@@ -35,9 +35,11 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
     batch_index = 1
     num_batches = int(num_columns/batch_size) + 1
     print(f'Will have {num_batches}, each of max size {batch_size}')
-    #TODO remove
-    print('REMOVE')
-    return
+
+    print(f'Open {number_of_windows} window_transposed_files')
+    window_transposed_files = [gzip.open(window_transposed_template.format(window_id=i), 'ab') for i in range(number_of_windows)]
+    print(f'Done')
+
     while min_col_index_in_batch < max_col_index_in_batch:
         print(f'Process [{min_col_index_in_batch}, {max_col_index_in_batch}) in batch {batch_index}/{num_batches}')
         usecols = range(min_col_index_in_batch, max_col_index_in_batch)
@@ -46,31 +48,35 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
         # validate we dont have the index column
         assert batch_df.iloc[:,0].max() <= 2
 
-        process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_template)
+        process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_files)
         
         min_col_index_in_batch = min(num_columns, max_col_index_in_batch)
         max_col_index_in_batch = min(num_columns, max_col_index_in_batch + batch_size)
         batch_index += 1
+
+    print(f'Close {number_of_windows} window_transposed_files')
+    for f in window_transposed_files:
+        f.close()
+    print(f'Done')
 
     validate_windows_indexes(window_index_2_site_index, chr_id, num_columns-1, number_of_windows)
 
     with open(windows_indexes_file, "w" ) as f:
             json.dump(window_index_2_site_index, f )
 
-def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_template):
+def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_files):
     i = 0
     for (columnName, columnData) in batch_df.iteritems():
         i += 1
-        if i%500 == 0:
+        if i%100 == 0:
             print(f'\t\tDone {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}' )
         window_index = random.randint(0, number_of_windows-1)
         # store the index in the file mapping windows to indexes used
         append_to_dic(window_index_2_site_index, window_index, f'{chr_id};{columnName}')
         # append the column as a row to the right window file
-        window_transposed_file = window_transposed_template.format(window_id=window_index)
-        with gzip.open(window_transposed_file,'ab') as f:
-                s = '\t'.join([str(i) for i in columnData.values]) + '\n'
-                f.write(s.encode())
+        window_transposed_file = window_transposed_files[window_index]
+        s = '\t'.join([str(i) for i in columnData.values]) + '\n'
+        window_transposed_file.write(s.encode())
 
 def validate_windows_indexes(windows_indexes, chr_id, expected_num_indexes, expected_num_windows):
     all_indexes = []
@@ -121,6 +127,8 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
         chr_class_file = input_per_chr_template.format(chr_id=chr_id)
         windows_indexes_file = windows_indexes_file_template.format(chr_id=chr_id)
         random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template)
+        print('TODO remove')
+        break
 
 def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
     # transpose and output to file

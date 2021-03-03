@@ -20,7 +20,7 @@ def append_to_dic(dic, key, value):
         dic[key] = []
     dic[key].append(value)
 
-def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template, batch_size=2000):
+def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_files, batch_size=2000):
     # load file to memory
     with open(chr_class_file,'r') as f:
         num_columns = len(f.readline().split('\t'))
@@ -36,10 +36,6 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
     num_batches = int(num_columns/batch_size) + 1
     print(f'Will have {num_batches}, each of max size {batch_size}')
 
-    print(f'Open {number_of_windows} window_transposed_files')
-    window_transposed_files = [gzip.open(window_transposed_template.format(window_id=i), 'ab') for i in range(number_of_windows)]
-    print(f'Done')
-
     while min_col_index_in_batch < max_col_index_in_batch:
         print(f'Process [{min_col_index_in_batch}, {max_col_index_in_batch}) in batch {batch_index}/{num_batches}')
         usecols = range(min_col_index_in_batch, max_col_index_in_batch)
@@ -52,12 +48,7 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
         
         min_col_index_in_batch = min(num_columns, max_col_index_in_batch)
         max_col_index_in_batch = min(num_columns, max_col_index_in_batch + batch_size)
-        batch_index += 1
-
-    print(f'Close {number_of_windows} window_transposed_files')
-    for f in window_transposed_files:
-        f.close()
-    print(f'Done')
+        batch_index += 1    
 
     validate_windows_indexes(window_index_2_site_index, chr_id, num_columns-1, number_of_windows)
 
@@ -71,7 +62,7 @@ def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, wind
         if i%200 == 0:
             msg = f'\t\tChr{chr_id}: done {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}'
             print(msg)
-            with open('.\log.txt', 'a') as f:
+            with open('./log.txt', 'a') as f:
                 f.write(msg + '\n')
         window_index = random.randint(0, number_of_windows-1)
         # store the index in the file mapping windows to indexes used
@@ -117,11 +108,18 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
     # make sure output folders exists
     os.makedirs(paths_helper.windows_indexes_folder, exist_ok=True)
     os.makedirs('/'.join(window_transposed_template.split('/')[:-1]), exist_ok=True)
-    number_of_windows = get_number_of_windows_by_class()[str(class_name)]
+    number_of_windows = 7303 # get_number_of_windows_by_class()[str(class_name)]
+    # TODO - this is a brute force to solve the problem I have with mac2
+    # Forcing 7303 instead of 73031 windows
+
     print(number_of_windows)
 
     num_chrs = get_num_chrs()
     print(num_chrs)
+
+    print(f'Open {number_of_windows} window_transposed_files')
+    window_transposed_files = [gzip.open(window_transposed_template.format(window_id=i), 'ab') for i in range(number_of_windows)]
+    print(f'Done')
 
     # go over chrs
     for chr_id in range(1,num_chrs+1):
@@ -129,9 +127,14 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
         print(f'{s} Start process chr {chr_id}')
         chr_class_file = input_per_chr_template.format(chr_id=chr_id)
         windows_indexes_file = windows_indexes_file_template.format(chr_id=chr_id)
-        random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template)
+        random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_files)
         print('TODO remove')
         break
+
+    print(f'Close {number_of_windows} window_transposed_files')
+    for f in window_transposed_files:
+        f.close()
+    print(f'Done')
 
 def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
     # transpose and output to file

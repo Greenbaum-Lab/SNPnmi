@@ -68,8 +68,11 @@ def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, wind
     i = 0
     for (columnName, columnData) in batch_df.iteritems():
         i += 1
-        if i%100 == 0:
-            print(f'\t\tDone {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}' )
+        if i%200 == 0:
+            msg = f'\t\tChr{chr_id}: done {i}/{len(batch_df.columns)} sites in batch {batch_index}/{num_batches}'
+            print(msg)
+            with open('.\log.txt', 'a') as f:
+                f.write(msg + '\n')
         window_index = random.randint(0, number_of_windows-1)
         # store the index in the file mapping windows to indexes used
         append_to_dic(window_index_2_site_index, window_index, f'{chr_id};{columnName}')

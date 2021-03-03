@@ -35,6 +35,9 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
     batch_index = 1
     num_batches = int(num_columns/batch_size) + 1
     print(f'Will have {num_batches}, each of max size {batch_size}')
+    #TODO remove
+    return
+    print('REMOVE')
     while min_col_index_in_batch < max_col_index_in_batch:
         print(f'Process [{min_col_index_in_batch}, {max_col_index_in_batch}) in batch {batch_index}/{num_batches}')
         usecols = range(min_col_index_in_batch, max_col_index_in_batch)
@@ -118,8 +121,6 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
         chr_class_file = input_per_chr_template.format(chr_id=chr_id)
         windows_indexes_file = windows_indexes_file_template.format(chr_id=chr_id)
         random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_windows, windows_indexes_file, window_transposed_template)
-        # TODO remove
-        break
 
 def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
     # transpose and output to file
@@ -151,11 +152,11 @@ def main(args):
     print(f'{(time.time()-s)/60} minutes total run time')
 
 # params
-mac=-1
-maf=0.49
-main([mac, maf])
+# mac=-1
+# maf=0.49
+# main([mac, maf])
 
-if __name__ == "__XXXmain__":
+if __name__ == "__main__":
     # go over chrs one by one
     # load the mac_2.012 file to pandas
     # go over the COLUMNS

@@ -1,4 +1,4 @@
-# python3 split_transposed_windows.py 2 -1 0 72
+# python3 split_transposed_windows.py 2 -1 1 10 72
 import sys
 import time
 import os
@@ -105,9 +105,10 @@ def main(args):
 # params
 # mac = -1
 # maf = 0.49
-# window_id = 0
-# numbe_of_splits = 3
-# main([mac, maf, window_id, numbe_of_splits])
+# min_window_id = 0
+# max_window_id = 0
+# number_of_splits = 3
+# main([mac, maf, min_window_id, max_window_id, number_of_splits])
 
 if __name__ == "__main__":
     main(sys.argv[1:])

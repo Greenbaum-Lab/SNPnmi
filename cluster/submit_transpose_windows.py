@@ -8,7 +8,7 @@ from utils.common import get_paths_helper
 
 # will submit transpose_windows of given classes and windows
 
-# python3 submit_transpose_windows.py TODO
+# python3 submit_transpose_windows.py 2 -1 2 4 144 72
 
 def submit_transpose_windows(mac, maf, window_id, first_index_to_use, expected_number_of_files):
     paths_helper = get_paths_helper()
@@ -31,8 +31,8 @@ def main(args):
     maf = args[1]
     min_input_window_id = int(args[2])
     max_input_window_id = int(args[3])
-    first_index_to_use = int(args[3])
-    expected_number_of_files_per_input_window = int(args[4])
+    first_index_to_use = int(args[4])
+    expected_number_of_files_per_input_window = int(args[5])
     print('mac',mac)
     print('maf',maf)
     print('min_input_window_id',min_input_window_id)

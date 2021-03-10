@@ -53,7 +53,7 @@ def random_split_class_from_chr_to_windows(chr_id, chr_class_file, number_of_win
     validate_windows_indexes(window_index_2_site_index, chr_id, num_columns-1, number_of_windows)
 
     with open(windows_indexes_file, "w" ) as f:
-            json.dump(window_index_2_site_index, f )
+        json.dump(window_index_2_site_index, f )
 
 def process_batch_df(batch_df, batch_index, num_batches, number_of_windows, window_index_2_site_index, chr_id, window_transposed_files):
     paths_helper = get_paths_helper()
@@ -134,16 +134,6 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
     for f in window_transposed_files:
         f.close()
     print(f'Done')
-
-def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
-    # transpose and output to file
-    with gzip.open(window_transposed_file,'rb') as f:
-            num_columns = len(f.readline().decode().split('\t'))
-    names = [f'{i+1}' for i in range(num_columns)]
-    df1 = pd.read_csv(window_transposed_file, compression='gzip', sep='\t', names=names) 
-    df1.transpose()
-    df1.transpose().to_csv(window_not_transposed_file, index=True, header=False, compression='gzip')
-
 
 def main(args):
     s = time.time()

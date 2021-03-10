@@ -16,6 +16,8 @@ from utils.config import get_num_chrs, get_num_individuals
 
 random.seed(a='42', version=2)
 
+is_gzip = True
+
 def append_to_dic(dic, key, value):
     if not key in dic.keys():
         dic[key] = []
@@ -24,12 +26,10 @@ def append_to_dic(dic, key, value):
 def split_file(input_file, output_file_name_template, number_of_splits, split_index_2_original_line_numbers_file, metadata_for_dic):
         split_index_2_original_line_numbers = dict()
         print(f'Open {number_of_splits} output_files')
-        output_files = [gzip.open(output_file_name_template.format(split_id=i), 'ab') for i in range(number_of_splits)]
-        #output_files = [open(output_file_name_template.format(split_id=i), 'a') for i in range(number_of_splits)]
+        output_files = [gzip.open(output_file_name_template.format(split_id=i), 'ab') for i in range(number_of_splits)] if is_gzip else [open(output_file_name_template.format(split_id=i), 'a') for i in range(number_of_splits)]
         print(f'Done')
 
-        with gzip.open(input_file, 'rb') as f:
-        #with open(input_file, 'r') as f:
+        with gzip.open(input_file, 'rb') if is_gzip else open(input_file, 'r') as f:
             l =  f.readline()
             i = 0
             while l:
@@ -103,7 +103,7 @@ def main(args):
 # mac = -1
 # maf = 0.49
 # window_id = 0
-# numbe_of_splits = 10
+# numbe_of_splits = 3
 # main([mac, maf, window_id, numbe_of_splits])
 
 if __name__ == "__main__":

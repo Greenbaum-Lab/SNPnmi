@@ -84,7 +84,7 @@ def main(args):
     maf = args[1]
     min_window_id = int(args[2])
     max_window_id = int(args[3])
-    number_of_splits = args[4]
+    number_of_splits = int(args[4])
 
     print('mac',mac)
     print('maf',maf)
@@ -95,10 +95,10 @@ def main(args):
     for window_id in range(min_window_id,max_window_id+1):
         if int(mac) > 0:
             print(f'Will split window {window_id} for mac {mac}')
-            split_transposed_windows('mac', mac, window_id, number_of_splits)
+            split_transposed_windows('mac', mac, str(window_id), number_of_splits)
         if float(maf) > 0:
             print(f'Will split window {window_id} for maf {maf}')
-            split_transposed_windows('maf', maf, window_id, number_of_splits)
+            split_transposed_windows('maf', maf, str(window_id), number_of_splits)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

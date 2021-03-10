@@ -1,4 +1,4 @@
-# python3 split_transposed_windows.py 2 -1 0 72
+# python3 transpose_windows.py 2 -1 0 0 72
 import sys
 import time
 import os
@@ -26,7 +26,7 @@ def transpose_and_gzip(window_transposed_file, window_not_transposed_file):
     df1 = pd.read_csv(window_transposed_file, compression='gzip' if is_gzip else None, sep='\t', names=names) 
     df1.transpose().to_csv(window_not_transposed_file, index=True, header=False, sep='\t', compression='gzip')
 
-def transpose_windows(mac_maf, class_name, window_id, first_index_to_use):
+def transpose_windows(mac_maf, class_name, window_id, first_index_to_use, expected_number_of_files):
     #  we dont want to use the same seed here, as we will have the same values for all clasees
     paths_helper = get_paths_helper()
 
@@ -50,14 +50,15 @@ def transpose_windows(mac_maf, class_name, window_id, first_index_to_use):
 
     output_index_counter = first_index_to_use - 1
     input_2_output = dict()
-    for split_file_name in os.listdir(input_splits_transposed_folder):
-        if split_file_name.endswith('_transposed.012.tsv.gz'):
-            output_index_counter += 1
-            window_transposed_file = input_splits_transposed_folder + split_file_name
-            window_not_transposed_file = output_windows_012_file_template.format(window_id=output_index_counter)
-            transpose_and_gzip(window_transposed_file, window_not_transposed_file)
-            # only take file names
-            input_2_output[window_transposed_file.split('/')[-1]] = window_not_transposed_file.split('/')[-1]
+    files = [name for name in os.listdir(input_splits_transposed_folder) if name.endswith('_transposed.012.tsv.gz')]
+    assert len(files) == expected_number_of_files, f'expecting {expected_number_of_files}, found {len(files)}'
+    for split_file_name in files:
+        output_index_counter += 1
+        window_transposed_file = input_splits_transposed_folder + split_file_name
+        window_not_transposed_file = output_windows_012_file_template.format(window_id=output_index_counter)
+        transpose_and_gzip(window_transposed_file, window_not_transposed_file)
+        # only take file names
+        input_2_output[window_transposed_file.split('/')[-1]] = window_not_transposed_file.split('/')[-1]
 
     with open(output_mapping_file, "w" ) as f:
         json.dump(input_2_output, f )
@@ -69,28 +70,30 @@ def main(args):
     mac = args[0]
     maf = args[1]
     window_id = args[2]
-    first_index_to_use = args[3]
-
+    first_index_to_use = int(args[3])
+    expected_number_of_files = int(args[4])
     print('mac',mac)
     print('maf',maf)
     print('window_id',window_id)
     print('first_index_to_use',first_index_to_use)
+    print('expected_number_of_files',expected_number_of_files)
 
     if int(mac) > 0:
         print(f'Will transpose splits of window {window_id} for mac {mac}')
-        transpose_windows('mac', mac, window_id, first_index_to_use)
+        transpose_windows('mac', mac, window_id, first_index_to_use, expected_number_of_files)
     if float(maf) > 0:
         print(f'Will transpose splits of window {window_id} for maf {maf}')
-        transpose_windows('maf', maf, window_id, first_index_to_use)
+        transpose_windows('maf', maf, window_id, first_index_to_use, expected_number_of_files)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# params
+# #params
 # mac = -1
 # maf = 0.49
 # window_id = 1
 # first_index_to_use = 3
-# main([mac, maf, window_id, first_index_to_use])
+# expected_number_of_files = 3
+# main([mac, maf, window_id, first_index_to_use, expected_number_of_files])
 
 if __name__ == "__main__":
     main(sys.argv[1:])

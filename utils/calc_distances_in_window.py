@@ -280,19 +280,16 @@ def calc_distances_in_windows(
         # we have 322,483 windows of 100 indexes each
         # will take over 3 years to process on one machine
         # will generate about 515 GB of data
-        # TODO uncomment
-        print('TODO uncomment')
-        # window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
-        #     window_df,
-        #     min_valid_sites_precentage,
-        #     min_minor_freq_expected,
-        #     max_minor_freq_expected,
-        #     min_minor_count_expected,
-        #     max_minor_count_expected)
+        window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
+            window_df,
+            min_valid_sites_precentage,
+            min_minor_freq_expected,
+            max_minor_freq_expected,
+            min_minor_count_expected,
+            max_minor_count_expected)
 
         print(f'output distances file to {output_count_dist_file}')
-        print('TODO uncomment')
-        # write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
+        write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
         print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window index: {window_index}')
 
 def main(args):

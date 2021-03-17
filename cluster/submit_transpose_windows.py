@@ -22,7 +22,7 @@ def submit_transpose_windows(mac, maf, window_id, first_index_to_use, expected_n
     cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_transpose_windows.sh {mac} {maf} {window_id} {first_index_to_use} {expected_number_of_files}'
     print(cmd_to_run)
-    #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
 
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')

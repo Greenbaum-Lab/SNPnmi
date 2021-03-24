@@ -1,3 +1,7 @@
+Bookmark:
+    adjust submit_calc_dist_windows to support use_specific_012_file ,min_input_012_file_index, max_input_012_file_index)
+
+
 The order of scripts to run:
 - GetData.sh
 - get_vcfs_stats.py
@@ -10,8 +14,8 @@ The order of scripts to run:
     OPTION: do this per chr, and merge in the end, this will require a chr param, and a seperate output
     (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
     - split_transposed_windows.py - seems like this is done
-    - validate the above (validate_split_transposed_windows)
-    - TODO transpose_files - 0 and 1 are done already
+    - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
+    - RUNNING transpose_files - 0 and 1 are done already submitted in screen 13484.mac2transpose
 - regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
 - rerun preivous step to deal with missing

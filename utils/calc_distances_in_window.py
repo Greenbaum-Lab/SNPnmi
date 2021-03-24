@@ -1,3 +1,5 @@
+# specific input 012 file:
+# python3 calc_distances_in_window.py mac 2 0 1 -1 -1 2 2 NONE True 0
 import pandas as pd
 import json
 import os
@@ -9,7 +11,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper
 
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 
@@ -18,11 +20,6 @@ OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 # if we have less than this which are valid (not -1), site is not included in calc.
 min_valid_sites_precentage = 0.1
 
-# # huji
-# classes_folder_cluster = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/'
-
-# # local
-# classes_folder_local = r"C:\Data\HUJI\hgdp\classes/"
 
 # mac_maf = 'maf'
 # class_name = '0.49'
@@ -32,7 +29,8 @@ min_valid_sites_precentage = 0.1
 # max_minor_freq_expected = 0.5
 # min_minor_count_expected = -1
 # max_minor_count_expected = -1
-# python3 calc_distances_in_window.py maf 0.49 0 4 0.49 0.5 -1 -1 classes_folder_cluster
+# python3 calc_distances_in_window.py mac 0.49 0 4 0.49 0.5 -1 -1
+
 
 
 def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index):
@@ -77,6 +75,17 @@ def get_window(class_012_path_template, windows_indexes_path, mac_maf, class_nam
     assert class_012_df.shape[1] == len(window_indexes)
     print(f'{class_012_df.shape[1]} sites in window')
     return class_012_df
+
+def get_012_df(input_012_path):
+    # get number of columns in chr:
+    with gzip.open(input_012_path,'rb') as f:
+        num_columns = len(f.readline().decode().split('\t'))
+    #print(f'{len(indexes)} / {num_columns-1} sites will be used from file {class_012_path}')
+    names = [f'idx{i}' for i in range(num_columns)]
+    # read file to pandas df
+    # we drop the first column as the csv contains the individual id in the first index
+    df = pd.read_csv(input_012_path, sep='\t', names= names, compression='gzip')
+    return df.iloc[:, 1:]
 
 def window_calc_pairwise_distances_with_guardrails(window_df, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected):
     # for each column, we calc the pairwise distances and add it to the grand total
@@ -262,24 +271,18 @@ def calc_distances_in_windows(
     min_minor_freq_expected,
     max_minor_freq_expected,
     min_minor_count_expected,
-    max_minor_count_expected):
+    max_minor_count_expected,
+    # we can either sample the file by min and max window indexes, or use an entire 012 file
+    use_specific_012_file,
+    input_012_file=None,
+    input_012_index=-1):
 
     os.makedirs(output_dir, exist_ok=True)
-    print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
-    for window_index in range(min_window_index, max_window_index):
-        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
-        if os.path.isfile(output_count_dist_file):
-            print(f'Window file exist, do not calc! {output_count_dist_file}')
-            continue
+    if use_specific_012_file:
         start_time = time.time()
-        print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
-        window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
-        # 100 indexes in a window takes ~5 minutes 
-        # 100 windows will take about 9 hours
-        # using percision of 5 decimals will generates a file of ~1600KB in gz format
-        # we have 322,483 windows of 100 indexes each
-        # will take over 3 years to process on one machine
-        # will generate about 515 GB of data
+        window_df = get_012_df(input_012_file)
+        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=input_012_index)
+
         window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
             window_df,
             min_valid_sites_precentage,
@@ -290,7 +293,34 @@ def calc_distances_in_windows(
 
         print(f'output distances file to {output_count_dist_file}')
         write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
-        print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window index: {window_index}')
+        print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, input_012_index: {input_012_index}')
+    else:
+        print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
+        for window_index in range(min_window_index, max_window_index):
+            output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=window_index)
+            if os.path.isfile(output_count_dist_file):
+                print(f'Window file exist, do not calc! {output_count_dist_file}')
+                continue
+            start_time = time.time()
+            print(f'Class: {mac_maf}_{class_name}, window index: {window_index}')
+            window_df = get_window(class_012_path_template, windows_indexes_path, mac_maf, class_name, window_index)
+            # 100 indexes in a window takes ~5 minutes 
+            # 100 windows will take about 9 hours
+            # using percision of 5 decimals will generates a file of ~1600KB in gz format
+            # we have 322,483 windows of 100 indexes each
+            # will take over 3 years to process on one machine
+            # will generate about 515 GB of data
+            window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
+                window_df,
+                min_valid_sites_precentage,
+                min_minor_freq_expected,
+                max_minor_freq_expected,
+                min_minor_count_expected,
+                max_minor_count_expected)
+
+            print(f'output distances file to {output_count_dist_file}')
+            write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
+            print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window index: {window_index}')
 
 def main(args):
     s = time.time()
@@ -314,7 +344,13 @@ def main(args):
     assert min_minor_count_expected>=-1
     max_minor_count_expected = int(args[7])
     assert max_minor_count_expected>=-1
-    classes_folder = args[8]
+    use_specific_012_file = False
+    input_012_file_index = -1
+    if len(args) > 8:
+        use_specific_012_file = bool(args[8])
+    if use_specific_012_file:
+        input_012_file_index = int(args[9])
+
 
     print('mac_maf',mac_maf)
     print('class_name',class_name)
@@ -324,10 +360,17 @@ def main(args):
     print('max_minor_freq_expected',max_minor_freq_expected)
     print('min_minor_count_expected',min_minor_count_expected)
     print('max_minor_count_expected',max_minor_count_expected)
-    print('classes_folder',classes_folder)
+    print('use_specific_012_file',use_specific_012_file)
+    print('input_012_file_index',input_012_file_index)
 
     # Prepare paths
+    paths_helper = get_paths_helper()
+
+    # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/transposed/
+    classes_folder = paths_helper.classes_folder
     class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
+    input_012_file = paths_helper.windows_folder + f'{mac_maf}_{class_name}/window_{input_012_file_index}.012.tsv.gz'
+
     windows_indexes_files_folder = classes_folder + r'windows/indexes/'
     windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
     windows_indexes_path = windows_indexes_path_template.format(class_name=class_name)
@@ -348,10 +391,21 @@ def main(args):
         min_minor_freq_expected,
         max_minor_freq_expected,
         min_minor_count_expected,
-        max_minor_count_expected)
+        max_minor_count_expected,
+        use_specific_012_file,
+        input_012_file,
+        input_012_file_index)
     print(f'{(time.time()-s)/60} minutes total run time')
 
-#main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, classes_folder_local])
+# mac_maf = 'mac'
+# class_name = '2'
+# min_window_index = 0
+# max_window_index = 1
+# min_minor_freq_expected = -1
+# max_minor_freq_expected = -1
+# min_minor_count_expected = 2
+# max_minor_count_expected = 2
+# main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, 'True', 15003])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

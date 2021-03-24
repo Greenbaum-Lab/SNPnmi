@@ -4,19 +4,45 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
-from utils.common import get_number_of_windows_by_class
+from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
+job_type ='calc_dist_windows'
 
-# python3 submit_calc_dist_windows.py "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt" 100 2 1 49 50 1 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/" "/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/" 25 50 0 "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/"
+# python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 5"
+def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file ,min_input_012_file_index, max_input_012_file_index):
+    # create output folders
+    paths_helper = get_paths_helper()
+    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
+    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
 
-def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index,  number_of_windows_per_class_path, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, job_stderr_folder, job_stdout_folder, classes_folder):
-    os.makedirs(job_stderr_folder, exist_ok=True)
-    os.makedirs(job_stdout_folder, exist_ok=True)
     number_of_submitted_jobs = 0
-    print('go over mac values')
-    class2num_windows = get_number_of_windows_by_class(number_of_windows_per_class_path)
+    if use_specific_012_file:
+        print('use_specific_012_file - currently only mac is supported!')
+        if mac_min_range>0:
+            print('go over mac values')
+            for mac in range(mac_min_range, mac_max_range+1, mac_delta):
+                if number_of_submitted_jobs == max_number_of_jobs:
+                    break
+                for input_012_file_index in range(min_input_012_file_index, max_input_012_file_index + 1):
+                    job_long_name = f'mac{mac}_012_file{input_012_file_index}'
+                    job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+                    job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
+                    job_name=f'c{mac}_i{input_012_file_index}'
+                    cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                    cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} -1 -1 -1 -1 {mac} {mac} True {input_012_file_index}'
+                    print(cmd_to_run)
+                    #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                    number_of_submitted_jobs += 1
+                    if number_of_submitted_jobs == max_number_of_jobs:
+                        print(f'No more jobs will be submitted. Next input_012_file_index index to process is {input_012_file_index + 1}')
+                        break
+        # if a specific input file is used, we wont go over macs and mafs
+        return
+
+    class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
     if mac_min_range>0:
+        print('go over mac values')
         for mac in range(mac_min_range, mac_max_range+1, mac_delta):
             if number_of_submitted_jobs == max_number_of_jobs:
                 break
@@ -27,11 +53,12 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 min_window_id = max_window_id
                 max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
                 # go over all windows
-                job_stderr_file=f'{job_stderr_folder}fill_mac{mac}_windows{min_window_id}-{max_window_id}.stderr'
-                job_stdout_file=f'{job_stdout_folder}fill_mac{mac}_windows{min_window_id}-{max_window_id}.stdout'
+                job_long_name = f'fill_mac{mac}_windows{min_window_id}-{max_window_id}'
+                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f'c{mac}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac} {classes_folder}'
+                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
                 print(cmd_to_run)
                 subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -39,6 +66,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
     if maf_min_range>0:
+        print('go over maf values')
         for maf_int in range(maf_min_range, maf_max_range+1, maf_delta):
             if number_of_submitted_jobs == max_number_of_jobs:
                 break
@@ -51,13 +79,14 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 min_window_id = max_window_id
                 max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
                 # go over all windows
-                job_stderr_file=f'{job_stderr_folder}fill_maf{maf}_windows{min_window_id}-{max_window_id}.stderr'
-                job_stdout_file=f'{job_stdout_folder}fill_maf{maf}_windows{min_window_id}-{max_window_id}.stdout'
+                job_long_name = f'fill_maf{maf}_windows{min_window_id}-{max_window_id}'
+                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 # to make the jobs name short we only take the last two digits of maf
                 job_name=f'f{str(maf)[-2:]}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1 {classes_folder}'
+                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
                 print(cmd_to_run)
                 subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -65,41 +94,47 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
 
-#submit_calc_dist_windows(r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/indexes/number_of_windows_per_class.txt",-1,-1,1,49,49,1,r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stderr/", r"/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows/stdout/", 1000)
 
 if __name__ == '__main__':
-    number_of_windows_per_class_path = sys.argv[1]
     # by mac
-    mac_min_range = int(sys.argv[2])
-    mac_max_range = int(sys.argv[3])
-    mac_delta = int(sys.argv[4])
+    mac_min_range = int(sys.argv[1])
+    mac_max_range = int(sys.argv[2])
+    mac_delta = int(sys.argv[3])
 
     # by maf
-    maf_min_range = int(sys.argv[5])
-    maf_max_range = int(sys.argv[6])
-    maf_delta = int(sys.argv[7])
+    maf_min_range = int(sys.argv[4])
+    maf_max_range = int(sys.argv[5])
+    maf_delta = int(sys.argv[6])
 
     # submission details
-    job_stderr_folder = sys.argv[8]
-    job_stdout_folder = sys.argv[9]
-    number_of_windows_to_process_per_job =  int(sys.argv[10])
-    max_number_of_jobs =  int(sys.argv[11])
-    initial_window_index =  int(sys.argv[12])
-    classes_folder = sys.argv[13]
+    number_of_windows_to_process_per_job =  int(sys.argv[7])
+    max_number_of_jobs =  int(sys.argv[8])
+    initial_window_index =  int(sys.argv[9])
+
+    # use specific 012 input files
+    # when true, for each mac/maf in range, we will process 012 files with index in range [min_input_012_file_index, max_input_012_file_index]
+    use_specific_012_file = False
+    min_input_012_file_index = -1
+    max_input_012_file_index = -1
+
+    if len(sys.argv) > 10:
+        use_specific_012_file = bool(sys.argv[10])
+    if use_specific_012_file:
+        min_input_012_file_index = int(sys.argv[11])
+        max_input_012_file_index = int(sys.argv[12])
 
     # print the inputs
-    print('number_of_windows_per_class_path', number_of_windows_per_class_path)
     print('mac_min_range', mac_min_range)
     print('mac_max_range', mac_max_range)
     print('mac_delta', mac_delta)
     print('maf_min_range', maf_min_range)
     print('maf_max_range', maf_max_range)
     print('maf_delta', maf_delta)
-    print('job_stderr_folder', job_stderr_folder)
-    print('job_stdout_folder', job_stdout_folder)
     print('number_of_windows_to_process_per_job', number_of_windows_to_process_per_job)
     print('max_number_of_jobs', max_number_of_jobs)
     print('initial_window_index', initial_window_index)
-    print('classes_folder', classes_folder)
+    print('use_specific_012_file', use_specific_012_file)
+    print('min_input_012_file_index', min_input_012_file_index)
+    print('max_input_012_file_index', max_input_012_file_index)
 
-    submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, number_of_windows_per_class_path, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, job_stderr_folder, job_stdout_folder, classes_folder)
+    submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file ,min_input_012_file_index, max_input_012_file_index)

@@ -14,7 +14,8 @@ maf=$5
 max_maf=$6
 mac=$7
 max_mac=$8
-classes_folder=$9
+use_specific_012_file=$9
+input_012_file_index=${10}
 
 # print the inputs
 echo "mac_or_maf: $mac_or_maf"
@@ -25,8 +26,9 @@ echo "maf: $maf"
 echo "max_maf: $max_maf"
 echo "mac: $mac"
 echo "max_mac: $max_mac"
-echo "classes_folder: $classes_folder"
+echo "use_specific_012_file: $use_specific_012_file"
+echo "input_012_file_index: $input_012_file_index"
 
-cmd="python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py $mac_or_maf $class_name ${min_window_id} ${max_window_id} ${maf} ${max_maf} ${mac} ${max_mac} ${classes_folder}"
+cmd="python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py $mac_or_maf $class_name ${min_window_id} ${max_window_id} ${maf} ${max_maf} ${mac} ${max_mac} ${use_specific_012_file} ${input_012_file_index}"
 echo "$cmd"
 eval "$cmd"

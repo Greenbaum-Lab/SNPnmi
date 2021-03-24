@@ -1,5 +1,13 @@
 Bookmark:
-    verify submit_calc_dist_windows with support use_specific_012_file: run "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 5"
+    DONE - created 100 count_dist_window in mac 2, submitted 101-400
+    SANITYCHECK:
+    -> collect from each class 100 distances files (check and run 1_per_class_sum_n_windows)
+    - sum per class and run NetStruct
+    - sum all and run NetStruct
+    - visualize all
+    - compare per class to all using ONMI
+
+
 
 
 The order of scripts to run:
@@ -16,8 +24,8 @@ The order of scripts to run:
     - split_transposed_windows.py - seems like this is done
     - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
     - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
-    - TODO - validae - we should have 73031 of 100 windows each, but we got 73512 - need to check the sum of them, to make sure we have all data there.
-    - TODO calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
+    - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
+    - RUNNING (cluster) 100/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
 - regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
 - rerun preivous step to deal with missing

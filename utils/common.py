@@ -1,10 +1,13 @@
 import sys
+import time
+
 from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
 import os
 import gzip
+
 from utils.config import *
 
 def is_cluster():
@@ -39,6 +42,8 @@ class PathsHelper:
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + 'windows_indexes_for_class_{class_name}.json'
 
+        self.count_dist_window_template = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
+
         self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
 
         self.logs_folder = f'{root_folder}logs/'
@@ -47,6 +52,13 @@ class PathsHelper:
         self.logs_cluster_jobs_stdout_template = self.logs_cluster_folder + '{job_type}/{job_name}.stdout'
 
         self.split_vcf_stats_csv_path = f'{self.logs_cluster_folder}split_vcfs/split_vcf_output_stats.csv'
+
+        # sanity check folders:
+        self.sanity_check_folder = f'{self.classes_folder}sanity_check/'
+        self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'
+        self.sanity_check_netstruct_folder = f'{self.sanity_check_folder}netstruct/'
+        self.sanity_check_onmi_folder = f'{self.sanity_check_folder}onmi/'
+
 
 def get_number_of_windows_by_class(number_of_windows_per_class_path=None):
     if not number_of_windows_per_class_path:
@@ -78,3 +90,35 @@ def str2bool(v) -> bool:
     if v.lower() in ('no', 'false', 'f', 'n', '0'):
         return False
     raise 'Boolean value expected.'
+
+
+
+def calc_distances_based_on_files(files):
+    # use the first file to understand the number of individuals
+    with gzip.open(files[0], 'rb') as f:
+        num_ind = len(f.readline().split()) + 1
+    dists = build_empty_upper_left_matrix(num_ind, 0.0)
+    counts = build_empty_upper_left_matrix(num_ind, 0)
+
+    # sum up the distances (and counts) file by file.
+    file_i = 0
+    print(f'{time.time()}: process file 1/{len(files)}')
+    for path in files:
+        file_i += 1
+        if file_i % 10 == 0:
+            print(f'{time.time()}: process file {file_i}/{len(files)}')
+        with gzip.open(path, 'rb') as f:
+            line = f.readline().decode()
+            i = -1
+            while line:
+                i += 1
+                parts = line.replace('\n','').split()
+                assert len(parts) == num_ind - 1 - i
+                for j, count_dist in enumerate(parts):
+                    count, dist = count_dist.split(';', 2)
+                    counts[i][j] += int(count)
+                    dists[i][j] += float(dist)
+                line = f.readline().decode()
+            # minus 1 as we only have i to j (without i to i) minus another one as the count is zero based
+            assert i == num_ind - 1 - 1
+    return dists, counts

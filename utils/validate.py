@@ -66,7 +66,7 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
         if entry.name.endswith('.012.tsv.gz'):
             c += 1
             if c%1000==0:
-                print(c)
+                print(total_number_of_sites)
             print(entry.name)
             num_012_files += 1
             # first index is individual index

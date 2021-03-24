@@ -331,9 +331,6 @@ def main(args):
     class_name = args[1]
     min_window_index = int(args[2])
     max_window_index = int(args[3])
-    assert min_window_index>=0
-    assert max_window_index>=0
-    assert min_window_index<max_window_index
     min_minor_freq_expected = float(args[4])
     assert min_minor_freq_expected>=-1
     assert min_minor_freq_expected<=1
@@ -350,7 +347,10 @@ def main(args):
         use_specific_012_file = bool(args[8])
     if use_specific_012_file:
         input_012_file_index = int(args[9])
-
+    if not use_specific_012_file:
+        assert min_window_index>=0
+        assert max_window_index>=0
+        assert min_window_index<max_window_index
 
     print('mac_maf',mac_maf)
     print('class_name',class_name)

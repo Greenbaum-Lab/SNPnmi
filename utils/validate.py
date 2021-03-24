@@ -59,12 +59,18 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/transposed/
     folder_012_files = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
 
+    c = 0
     num_012_files = 0
     total_number_of_sites = 0
     for entry in os.scandir(folder_012_files):
         if entry.name.endswith('.012.tsv.gz'):
+            c += 1
+            if c%1000==0:
+                print(c)
             print(entry.name)
             num_012_files += 1
             # first index is individual index
             total_number_of_sites += get_num_columns_in_file(entry)-1
     print('total_number_of_sites', total_number_of_sites)
+
+validate_012_files('mac', 2, 0)

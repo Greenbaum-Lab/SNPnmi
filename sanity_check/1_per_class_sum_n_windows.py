@@ -1,5 +1,7 @@
 # given a class and N, we will take N windows from the class and create a distance matrix based on them
 # python3 1_per_class_sum_n_windows.py mac 18 0 100
+
+# takes ~40 seconds for 100 windows.
 import pandas as pd
 import json
 import os
@@ -20,9 +22,7 @@ def sum_windows(mac_maf, class_name, min_window_index, max_window_index, count_d
     slice_counts_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_index}_count.tsv.gz'
     slice_norm_distances_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
     dists, counts = calc_distances_based_on_files(windows_files)
-    print(dists[-2])
-    print(counts[-2])
-    
+
     write_upper_left_matrix_to_file(slice_distances_file, dists)
     print(f'slice_distances_file : {slice_distances_file}')
     write_upper_left_matrix_to_file(slice_counts_file, counts)

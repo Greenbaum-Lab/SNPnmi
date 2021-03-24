@@ -70,11 +70,11 @@ def main(args):
         output_dir)
     print(f'{(time.time()-s)/60} minutes total run time')
 
-mac_maf = 'maf'
-class_name = '0.49'
-min_window_index = 0
-max_window_index = 5
-main([mac_maf, class_name, min_window_index, max_window_index])
+# mac_maf = 'maf'
+# class_name = '0.49'
+# min_window_index = 0
+# max_window_index = 5
+# main([mac_maf, class_name, min_window_index, max_window_index])
 
-if __name__ == "__XXmain__":
+if __name__ == "__main__":
    main(sys.argv[1:])

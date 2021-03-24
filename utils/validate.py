@@ -63,6 +63,7 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
     total_number_of_sites = 0
     for entry in os.scandir(folder_012_files):
         if entry.name.endswith('.012.tsv.gz'):
+            print(entry.name)
             num_012_files += 1
             # first index is individual index
             total_number_of_sites += get_num_columns_in_file(entry)-1

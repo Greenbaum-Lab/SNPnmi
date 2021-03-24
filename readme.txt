@@ -1,5 +1,5 @@
 Bookmark:
-    adjust submit_calc_dist_windows to support use_specific_012_file ,min_input_012_file_index, max_input_012_file_index)
+    verify submit_calc_dist_windows with support use_specific_012_file: run "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 5"
 
 
 The order of scripts to run:
@@ -15,7 +15,9 @@ The order of scripts to run:
     (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
     - split_transposed_windows.py - seems like this is done
     - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
-    - RUNNING transpose_files - 0 and 1 are done already submitted in screen 13484.mac2transpose
+    - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
+    - TODO - validae - we should have 73031 of 100 windows each, but we got 73512 - need to check the sum of them, to make sure we have all data there.
+    - TODO calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
 - regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
 - rerun preivous step to deal with missing

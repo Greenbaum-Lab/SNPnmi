@@ -1,5 +1,5 @@
-#python3 submit_1_per_class_sum_n_windows 2 2 -1 -1 0 100 1
-#python3 submit_1_per_class_sum_n_windows 2 18 1 49 0 100 100
+#python3 submit_1_per_class_sum_n_windows.py 2 2 -1 -1 0 100 1
+#python3 submit_1_per_class_sum_n_windows.py 2 18 1 49 0 100 100
 
 import subprocess
 import sys
@@ -41,7 +41,7 @@ def submit_1_per_class_sum_n_windows(mac_min_range, mac_max_range, maf_min_range
                 python_script_params = f'{mac_maf} {val} {min_window_index} {max_window_index}'
                 cmd_to_run=f'{cluster_setting} {path_to_wrapper} {path_to_python_script_to_run} {python_script_params}'
                 print(cmd_to_run)
-                #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted.')

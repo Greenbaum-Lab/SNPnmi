@@ -8,8 +8,8 @@ from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
 job_type ='calc_dist_windows'
-
-# python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 100"
+# python3 submit_calc_dist_windows.py 20 1 1 8 10 1 50 140 0 False 0 100
+# python3 submit_calc_dist_windows.py 2 2 1 8 10 1 -1 -1 -1 True 0 100
 def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file ,min_input_012_file_index, max_input_012_file_index):
     # create output folders
     paths_helper = get_paths_helper()
@@ -32,7 +32,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                     cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                     cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} -1 -1 -1 -1 {mac} {mac} True {input_012_file_index}'
                     print(cmd_to_run)
-                    #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                     number_of_submitted_jobs += 1
                     if number_of_submitted_jobs == max_number_of_jobs:
                         print(f'No more jobs will be submitted. Next input_012_file_index index to process is {input_012_file_index + 1}')
@@ -93,7 +93,6 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
-
 
 if __name__ == '__main__':
     # by mac

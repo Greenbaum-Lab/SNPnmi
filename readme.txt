@@ -1,11 +1,18 @@
+TODO P0:
+    Running -(cluster) maf 0.08 0.09 0.1 (fill /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/maf_0.1)
+    maf 0.2 0.3
+    FILL maf 39 40 41 43-49
+    Support less than 1000 files in 1_per_class_sum_n_windows
 Bookmark:
-    DONE - created 100 count_dist_window in mac 2, submitted 101-400
+    DONE - created 0-400 count_dist_window in mac 2 (submitted 401-1000)
     SANITYCHECK:
-    -> collect from each class 100 distances files (check and run 1_per_class_sum_n_windows)
-    - sum per class and run NetStruct
-    - sum all and run NetStruct
+    - collect from each class 1000 distances files (100 is already done)
+    -> Running -(cluster) sum per class 0-999 windows (1_per_class_sum_n_windows)
+    - todo - run the above on maf 0.08-0.1
+    - sum all (2_sum_distances_from_all_classes)
+    - run NetStruct on sums per class (3_run_NetStruct_on_matrix)
     - visualize all
-    - compare per class to all using ONMI
+    - compare per class to all using ONMI (4_run_onmi)
 
 
 

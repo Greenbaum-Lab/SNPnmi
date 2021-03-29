@@ -18,7 +18,7 @@ from utils.common import get_number_of_windows_by_class, build_empty_upper_left_
 def sum_windows(mac_maf, class_name, min_window_index, max_window_index, count_dist_window_template, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     # if we have less than max_window_index, we will use the max available
-    max_window_index = min(max_window_index, get_number_of_windows_by_class[str(class_name)])
+    max_window_index = min(max_window_index, get_number_of_windows_by_class()[str(class_name)])
     slice_distances_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_index}_dist.tsv.gz'
     if os.path.isfile(slice_distances_file):
         print(f'slice_distances_file exist, do not calc! {slice_distances_file}')

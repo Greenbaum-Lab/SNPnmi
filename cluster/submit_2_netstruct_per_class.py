@@ -8,7 +8,7 @@ root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
-job_type ='sanity_check_2'
+job_type ='sanity_check_2_v2'
 path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 
 def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, max_number_of_jobs):
@@ -34,7 +34,7 @@ def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, ma
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f's2_{val}'
-                cluster_setting=f'sbatch --time=72:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch --time=72:00:00 --mem=5G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 netstruct_cmd = build_netstructh_cmd(mac_maf, val, min_window_index, max_window_index)
                 cmd_to_run=f'{cluster_setting} {path_to_wrapper} {netstruct_cmd}'
                 print(cmd_to_run)
@@ -48,7 +48,7 @@ def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, ma
 def build_netstructh_cmd(mac_maf, val, min_window_index, max_window_index):
     paths_helper = get_paths_helper()
     jar_path = paths_helper.netstruct_jar
-    output_folder = paths_helper.sanity_check_netstruct_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}/'
+    output_folder = paths_helper.sanity_check_netstruct_folder + f'v2_{mac_maf}_{val}_{min_window_index}-{max_window_index}/'
     os.makedirs(output_folder, exist_ok=True)
 
     distances_matrix_path = paths_helper.sanity_check_dist_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'

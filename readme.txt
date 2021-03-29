@@ -3,7 +3,7 @@ Bookmark:
     - collect from each class 500 distances files (100 is already done)
     - sum per class 0-499 windows (1_per_class_sum_n_windows)
     - validate windows of 0-499 per class:
-        ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*c* | wc -l
+        ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
         (should have 66 = 17+49)
     -> run NetStruct on sums per class (submit_2_netstruct_per_class)
     - sum all (2_sum_distances_from_all_classes)

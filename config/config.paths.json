@@ -1,4 +1,6 @@
 {
-    "cluster_root_folder": "/vol/sci/bio/data/gil.greenbaum/amir.rubin/",
-    "local_root_folder": "C:/Data/HUJI/"
+    "cluster_data_folder": "/vol/sci/bio/data/gil.greenbaum/amir.rubin/",
+    "cluster_code_folder": "/cs/icore/amir.rubin2/code/",
+    "local_data_folder": "C:/Data/HUJI/",
+    "local_code_folder": "C:/Repos/"
 }

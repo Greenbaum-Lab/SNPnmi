@@ -17,8 +17,10 @@ def get_paths_helper(data_set_name=DataSetNames.hdgp):
     # from utils.common import get_paths_helper
     # paths_helper = get_paths_helper()
     paths_config = get_config(CONFIG_NAME_PATHS)
-    root_folder = paths_config['cluster_root_folder'] if is_cluster() else paths_config['local_root_folder']
-    return PathsHelper(root_folder, data_set_name)
+    root_data_folder = paths_config['cluster_data_folder'] if is_cluster() else paths_config['local_data_folder']
+    root_code_folder = paths_config['cluster_code_folder'] if is_cluster() else paths_config['local_code_folder']
+
+    return PathsHelper(root_data_folder, root_code_folder, data_set_name)
 
 
 def normalize_distances(distances, counts):
@@ -30,9 +32,9 @@ def normalize_distances(distances, counts):
     return norm_dists
 
 class PathsHelper:
-    # example: root_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
-    def __init__(self, root_folder: str, data_set_name: str):
-        self.vcf_folder = f'{root_folder}vcf/'
+    # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
+    def __init__(self, root_data_folder: str, root_code_folder: str, data_set_name: str):
+        self.vcf_folder = f'{root_data_folder}vcf/'
         self.data_folder = f'{self.vcf_folder}{data_set_name}/'
         self.classes_folder = f'{self.data_folder}classes/'
         self.windows_folder = f'{self.classes_folder}windows/'
@@ -46,7 +48,7 @@ class PathsHelper:
 
         self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
 
-        self.logs_folder = f'{root_folder}logs/'
+        self.logs_folder = f'{root_data_folder}logs/'
         self.logs_cluster_folder = f'{self.logs_folder}cluster/'
         self.logs_cluster_jobs_stderr_template = self.logs_cluster_folder + '{job_type}/{job_name}.stderr'
         self.logs_cluster_jobs_stdout_template = self.logs_cluster_folder + '{job_type}/{job_name}.stdout'
@@ -58,6 +60,14 @@ class PathsHelper:
         self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'
         self.sanity_check_netstruct_folder = f'{self.sanity_check_folder}netstruct/'
         self.sanity_check_onmi_folder = f'{self.sanity_check_folder}onmi/'
+
+        # Netstuct inputs paths
+        self.netstructh_indlist_path = f'{self.data_folder}indlist.csv'
+        self.netstructh_sample_sites_path = f'{self.data_folder}SampleSites.txt'
+
+        # access to code
+        self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
+
 
 
 def get_number_of_windows_by_class(number_of_windows_per_class_path=None):

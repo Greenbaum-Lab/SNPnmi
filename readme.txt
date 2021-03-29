@@ -1,19 +1,17 @@
-TODO P0:
-    Running -(cluster) maf 0.08 0.09 0.1 (fill /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/maf_0.1)
-    maf 0.2 0.3
-    FILL maf 39 40 41 43-49
-    Support less than 1000 files in 1_per_class_sum_n_windows
 Bookmark:
-    DONE - created 0-400 count_dist_window in mac 2 (submitted 401-1000)
-    SANITYCHECK:
-    - collect from each class 1000 distances files (100 is already done)
-    -> Running -(cluster) sum per class 0-999 windows (1_per_class_sum_n_windows)
-    - todo - run the above on maf 0.08-0.1
+    SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
+    - collect from each class 500 distances files (100 is already done)
+    - RUNNING - sum per class maf 8-10,20,30 0-499 windows (1_per_class_sum_n_windows)
+    - validate windows of 0-499 per class:
+        ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*c* | wc -l
+        (should have 66 = 17+49)
     - sum all (2_sum_distances_from_all_classes)
     - run NetStruct on sums per class (3_run_NetStruct_on_matrix)
     - visualize all
     - compare per class to all using ONMI (4_run_onmi)
 
+NetStruct:
+    java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.01 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w true
 
 
 
@@ -32,7 +30,7 @@ The order of scripts to run:
     - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
     - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
     - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
-    - RUNNING (cluster) 100/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
+    - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
 - regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
 - rerun preivous step to deal with missing

@@ -5,9 +5,10 @@ Bookmark:
     - validate windows of 0-499 per class:
         ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
         (should have 66 = 17+49)
-    -> run NetStruct on sums per class (submit_2_netstruct_per_class)
     - sum all (2_sum_distances_from_all_classes)
-    - run NetStruct on sum of all (TODO)
+    -> RUNNING (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
+    -> Submitted (for 72 hours, job 10206621) run NetStruct on sum of all
+        cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
     - visualize all
     - compare per class to all using ONMI (4_run_onmi)
 

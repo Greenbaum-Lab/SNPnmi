@@ -1,7 +1,11 @@
 # will use all classes distances matrixes to create a big matrix with all data
-# python3 2_sum_distances_from_all_classes mac 18 0 100
+# takes about 1 minute to group 66 windows
+# python3 2_sum_distances_from_all_classes 2 18 1 49 0 499
 
-# takes ~40 seconds for 100 windows.
+# the command to use to run netstruct on the result:
+# sbatch --time=72:00:00 --error="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.stderr" --output="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.stdout" --job-name="s3_ns_a" /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -minb 3 -mino 3 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499_norm_dist/ -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/mac_2-18_maf_1-49_windows_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt
+
+
 import pandas as pd
 import json
 import os
@@ -15,13 +19,10 @@ sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
 
-#TODO below not stable
-
-
 def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index):
 
     paths_helper = get_paths_helper()
-
+    dist_dir = paths_helper.sanity_check_dist_folder
     # get inputs
     windows_files = []
     for mac_maf in ['mac', 'maf']:
@@ -36,16 +37,15 @@ def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range, 
                         val = f'{val * 1.0/100}'
                     # input template
                     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.04_0-499_count_dist.tsv.gz
-                    slice_count_distances_file = f'{paths_helper.sanity_check_dist_folder}{mac_maf}_{val}_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
+                    slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
                     windows_files.append(slice_count_distances_file)
 
     # calc distances and counts
     dists, counts = calc_distances_based_on_files(windows_files)
 
     # output results
-    output_dir = paths_helper.sanity_check_netstruct_folder
-    all_count_distances_file = f'{output_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
-    all_norm_distances_file = f'{output_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
+    all_count_distances_file = f'{dist_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
+    all_norm_distances_file = f'{dist_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
     
 
     write_pairwise_distances(all_count_distances_file, counts, dists)

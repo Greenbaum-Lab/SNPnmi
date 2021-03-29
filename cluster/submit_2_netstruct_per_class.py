@@ -38,7 +38,7 @@ def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, ma
                 netstruct_cmd = build_netstructh_cmd(mac_maf, val, min_window_index, max_window_index)
                 cmd_to_run=f'{cluster_setting} {path_to_wrapper} {netstruct_cmd}'
                 print(cmd_to_run)
-                #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted.')

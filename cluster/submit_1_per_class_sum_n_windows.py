@@ -1,5 +1,5 @@
 #python3 submit_1_per_class_sum_n_windows.py 2 2 -1 -1 0 100 1
-#python3 submit_1_per_class_sum_n_windows.py 2 18 1 49 0 100 100
+#python3 submit_1_per_class_sum_n_windows.py 2 18 1 49 0 499 100
 
 import subprocess
 import sys

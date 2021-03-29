@@ -68,7 +68,13 @@ class PathsHelper:
         # access to code
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
 
-
+# the output is in couples of <count>;<distance>
+# the count is the number of valid sites on which the distances is calculated
+def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
+    with gzip.open(output_count_dist_file,'wb') as f:
+        for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
+            s = ' '.join(f'{c};{round(d, 7)}' for c,d in zip(counts, dists)) + '\n'
+            f.write(s.encode())
 
 def get_number_of_windows_by_class(number_of_windows_per_class_path=None):
     if not number_of_windows_per_class_path:

@@ -11,7 +11,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, write_pairwise_distances
 
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
 
@@ -250,14 +250,6 @@ def site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_f
                 # this is a valid entry, we add 1 to the count
                 window_pairwise_counts[i1][i2-i1-1] += 1
                 window_pairwise_dist[i1][i2-i1-1] += _calc_dist(i1_val, i2_val, ref_freq, non_ref_freq)
-
-# the output is in couples of <count>;<distance>
-# the count is the number of valid sites on which the distances is calculated
-def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
-    with gzip.open(output_count_dist_file,'wb') as f:
-        for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
-            s = ' '.join(f'{c};{round(d, 7)}' for c,d in zip(counts, dists)) + '\n'
-            f.write(s.encode())
 
 def calc_distances_in_windows(
     class_012_path_template,

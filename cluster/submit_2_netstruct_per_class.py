@@ -1,4 +1,4 @@
-# python3 submit_3_netstruct_per_class.py 2 18 1 49 0 499 100
+# python3 submit_2_netstruct_per_class.py 2 18 1 49 0 499 100
 
 import subprocess
 import sys

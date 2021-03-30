@@ -26,7 +26,7 @@ def _run_onmi(input1, input2, output_path):
     with open(output_path) as f:
         f.write(onmi_output)
 
-    with open(output_path) as f:
+    with open(output_path,'w') as f:
         for line in f:
             print(line)
 

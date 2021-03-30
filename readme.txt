@@ -1,16 +1,8 @@
 Bookmark:
 
-1. the distribution of weights in the matrix using 500 windows per class is not so good:
-    Does not seem to have a clear signal, see notebook "sanitycheck distances".
-    Thing is, we have 500 windows *66 classes, in each we have 100 sites, this is 3,300,000 SNPs, which is ALOT - in the previous work we had in total ~700K.
-    Now, mac 2-18 were not included in the previous work, but still, maf 1-49 which were include in this analysis ~2,450,000 SNPs.
-2. Submitted both weighted and not weighted netstruct.
-    logs:
-        single class not weighted: /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_2_v2/maf0.4_0-499_weighted_false.std*
+ TODO - rerun netstruct using the new hgdp_wgs.20190516.indlist.csv
 
-    done: all not weighted /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/test2_mac_2-18_maf_1-49_windows_0-499_norm_dist/W_0_D_0_Min_3_SS_0.001_B_1.0/
-
-    3. SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
+    SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
     - collect from each class 500 distances files (100 is already done)
     - sum per class 0-499 windows (1_per_class_sum_n_windows)
     - validate windows of 0-499 per class:
@@ -24,28 +16,29 @@ Bookmark:
     - compare per class to all using ONMI (4_run_onmi)
     - collect NMI results to figure - notebooks/collect ONMI
 
-NetStruct:
+NetStruct TODO update to using hgdp_wgs.20190516.indlist.csv
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w false
 
 
-
+------------------------------------------
 The order of scripts to run:
+------------------------------------------
 - GetData.sh
 - get_vcfs_stats.py
 - cluster/submit_split_vcfs.sh
 - collect_split_vcf_stats.py
-- select: 
--  big classes(next steps will be more time efficient, but requires a lot of storage): 
-    - generate_windows_and_indexes_files.py
-    (takes 35 sec to prepare 2000 sites. We have 7300000/2000 = 3650 * 35 = 127750 / (60*60) = 35 hours)
-    OPTION: do this per chr, and merge in the end, this will require a chr param, and a seperate output
-    (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
-    - split_transposed_windows.py - seems like this is done
-    - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
-    - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
-    - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
-    - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
-- regular size classes: generate_windows_indexes_files.py 
+- one of the below: 
+    1.  big classes(next steps will be more time efficient, but requires a lot of storage): 
+        - generate_windows_and_indexes_files.py
+        (takes 35 sec to prepare 2000 sites. We have 7300000/2000 = 3650 * 35 = 127750 / (60*60) = 35 hours)
+        OPTION: do this per chr, and merge in the end, this will require a chr param, and a seperate output
+        (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
+        - split_transposed_windows.py - seems like this is done
+        - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
+        - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
+        - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
+        - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
+    2. regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
 - rerun preivous step to deal with missing
 - TODO - validate_calc_distances_in_windows (takes ~1 minute for 1K windows)
@@ -81,3 +74,15 @@ We will build a baseline per class.
 Then we can easily merge all classes to one.
 Seems like merging 1000 windows takes about 7 minutes, so we will simply merge 1000 windows at a job.
 For the biggest class, mac 2, we have 73K windows, so only 73 jobs.
+
+
+----------------------------------------
+Validation plan
+----------------------------------------
+0. check that individual id in vcf match to indlist
+    compare the ".012.indv" files per class, make sure they are the same, and the same as the indlist
+1. vcftools - use --singletons and see if any of the indexes is included in any other class (which is not the doubletons)
+1. split_vcfs
+    select an individual and a maf, and validate the 012 output:
+     - make sure the index exist
+     - make sure the individuals data is in the same index

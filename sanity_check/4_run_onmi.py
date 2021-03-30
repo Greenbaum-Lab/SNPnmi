@@ -23,10 +23,10 @@ def _run_onmi(input1, input2, output_path):
     onmi_path = paths_helper.onmi_exe
     onmi_process = subprocess.Popen((onmi_path, input1, input2), stdout=subprocess.PIPE)
     onmi_output = onmi_process.stdout.read().decode()
-    with open(output_path) as f:
+    with open(output_path, 'w') as f:
         f.write(onmi_output)
 
-    with open(output_path,'w') as f:
+    with open(output_path) as f:
         for line in f:
             print(line)
 

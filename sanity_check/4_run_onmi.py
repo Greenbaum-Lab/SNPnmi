@@ -20,9 +20,7 @@ from utils.common import get_number_of_windows_by_class, build_empty_upper_left_
 
 def _run_onmi(input1, input2, output_path):
     paths_helper = get_paths_helper()
-
     onmi_path = paths_helper.onmi_exe
-
     onmi_process = subprocess.Popen((onmi_path, input1, input2), stdout=subprocess.PIPE)
     onmi_output = onmi_process.stdout.read().decode()
     with open(output_path) as f:
@@ -57,6 +55,8 @@ def run_onmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, 
     paths_helper = get_paths_helper()
     netstruct_base_folder = paths_helper.sanity_check_netstruct_folder
     onmi_output_folder = paths_helper.sanity_check_onmi_folder
+
+    os.makedirs(onmi_output_folder, exist_ok=True)
 
     # ground truth files
     ground_truth_folder = f'{netstruct_base_folder}{ground_truth}/{netstruct_folder_name}/'
@@ -125,7 +125,7 @@ def main(args):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-main([2, 4, 100, 49, 0, 499, 'v2_mac_2-18_maf_1-49_windows_0-499', 'W_1_D_0_Min_3_SS_0.001_B_1.0', ])
+#main([2, 4, 100, 49, 0, 499, 'v2_mac_2-18_maf_1-49_windows_0-499', 'W_1_D_0_Min_3_SS_0.001_B_1.0', ])
 
-if __name__ == "__XXmain__":
+if __name__ == "__main__":
    main(sys.argv[1:])

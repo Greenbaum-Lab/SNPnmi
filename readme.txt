@@ -1,5 +1,16 @@
 Bookmark:
-    SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
+
+1. the distribution of weights in the matrix using 500 windows per class is not so good:
+    Does not seem to have a clear signal, see notebook "sanitycheck distances".
+    Thing is, we have 500 windows *66 classes, in each we have 100 sites, this is 3,300,000 SNPs, which is ALOT - in the previous work we had in total ~700K.
+    Now, mac 2-18 were not included in the previous work, but still, maf 1-49 which were include in this analysis ~2,450,000 SNPs.
+2. Submitted both weighted and not weighted netstruct.
+    logs:
+        single class not weighted: /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_2_v2/maf0.4_0-499_weighted_false.std*
+
+    done: all not weighted /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/test2_mac_2-18_maf_1-49_windows_0-499_norm_dist/W_0_D_0_Min_3_SS_0.001_B_1.0/
+
+    3. SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
     - collect from each class 500 distances files (100 is already done)
     - sum per class 0-499 windows (1_per_class_sum_n_windows)
     - validate windows of 0-499 per class:
@@ -7,13 +18,13 @@ Bookmark:
         (should have 66 = 17+49)
     - sum all (2_sum_distances_from_all_classes)
     -> RUNNING (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
-    -> Submitted (for 72 hours, job 10206621) run NetStruct on sum of all
+    -> Submitted (for 72 hours, job 10206675 and not weighted 10206760) run NetStruct on sum of all
         cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
     - visualize all
     - compare per class to all using ONMI (4_run_onmi)
 
 NetStruct:
-    java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.01 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w true
+    java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w false
 
 
 

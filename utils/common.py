@@ -67,6 +67,7 @@ class PathsHelper:
 
         # access to code
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
+        self.onmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
 
 # the output is in couples of <count>;<distance>
 # the count is the number of valid sites on which the distances is calculated

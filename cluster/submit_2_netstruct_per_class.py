@@ -30,7 +30,7 @@ def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, ma
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0/100}'
-                job_long_name = f'{mac_maf}{val}_{min_window_index}-{max_window_index}_weighted_false'
+                job_long_name = f'{mac_maf}{val}_{min_window_index}-{max_window_index}_weighted_true'
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f's2_{val}'
@@ -54,7 +54,7 @@ def build_netstructh_cmd(mac_maf, val, min_window_index, max_window_index):
     distances_matrix_path = paths_helper.sanity_check_dist_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
     indlist_path = paths_helper.netstructh_indlist_path
     sample_sites_path = paths_helper.netstructh_sample_sites_path
-    return f'java -jar {jar_path} -ss 0.001 -minb 3 -mino 3 -pro {output_folder} -pm {distances_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w false'
+    return f'java -jar {jar_path} -ss 0.001 -minb 3 -mino 3 -pro {output_folder} -pm {distances_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
 
 if __name__ == '__main__':
     # by mac

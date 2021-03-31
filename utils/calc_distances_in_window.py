@@ -1,5 +1,5 @@
 # specific input 012 file:
-# python3 calc_distances_in_window.py mac 2 0 1 -1 -1 2 2 NONE True 1000 1000
+# python3 calc_distances_in_window.py mac 2 0 1 -1 -1 2 2 True 1000 1000
 import pandas as pd
 import json
 import os
@@ -275,6 +275,7 @@ def calc_distances_in_windows(
         start_time = time.time()
         for input_012_index in range(min_input_012_index, max_input_012_index + 1):
             input_012_file = input_012_template.format(input_012_index=input_012_index)
+            print(f'process {input_012_file}')
             window_df = get_012_df(input_012_file)
             output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=input_012_index)
 

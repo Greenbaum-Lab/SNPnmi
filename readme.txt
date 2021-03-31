@@ -1,6 +1,11 @@
 Bookmark:
 
- TODO - rerun netstruct using the new hgdp_wgs.20190516.indlist.csv
+    running netstruct
+    check when done: squeue | grep amir | grep s220 | wc -l
+    once done TODO: need to rename 9 folders: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/take_2_maf_* (remove "take_2")
+    (I had to resubmit these, seems like too much context switch on VMs)
+
+    running calc dist on mac 2 windows
 
     SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
     - collect from each class 500 distances files (100 is already done)

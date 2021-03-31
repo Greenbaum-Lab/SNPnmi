@@ -13,6 +13,7 @@ from utils.config import get_num_individuals
 
 
 def file_len(fname):
+    i = -1
     with gzip.open(fname,'rb') as f:
         for i, l in enumerate(f):
             pass
@@ -21,11 +22,17 @@ def file_len(fname):
 def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
     for class_name in classes_names:
         win_dir = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
-        num_windows = class2num_windows[str(class_name)]
-        for i in range(num_windows):
-            count_dist_file = f'{win_dir}count_dist_window_{i}.tsv.gz'
-            print(f'Assert len of {count_dist_file} / {num_windows}')
-            assert file_len(count_dist_file) == get_num_individuals()-1
+        with open(win_dir + 'validate_calc_distances_in_windows.log', 'w') as logf:
+            num_windows = class2num_windows[str(class_name)]
+            for i in range(num_windows):
+                count_dist_file = f'{win_dir}count_dist_window_{i}.tsv.gz'
+                if not os.path.isfile(count_dist_file):
+                    print(f'File is missing: {count_dist_file}')
+                    logf.write(f'File is missing: {count_dist_file}\n')
+                    continue
+                if file_len(count_dist_file) != get_num_individuals()-1:
+                    print(f'Not enough rows in: {count_dist_file}')
+                    logf.write(f'Not enough rows in: {count_dist_file}\n')
 
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')

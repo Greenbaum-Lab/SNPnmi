@@ -1,5 +1,5 @@
 # specific input 012 file:
-# python3 calc_distances_in_window.py mac 2 0 1 -1 -1 2 2 NONE True 0
+# python3 calc_distances_in_window.py mac 2 0 1 -1 -1 2 2 NONE True 1000 1000
 import pandas as pd
 import json
 import os
@@ -151,7 +151,7 @@ def site_calc_pairwise_distances_with_guardrails(window_df, site_index, min_vali
     ref_freq = float(ref_count)/(2*num_valid_genotypes)
     #print(f'Site index: {site_index}, non ref allele frequency: {non_ref_freq}')
     #print(f'Site index: {site_index}, ref allele frequency: {ref_freq}')
-    # guardrails 
+    # guardrails
     assert abs(ref_freq+non_ref_freq-1)<1e-04
     _check_guardrails(num_individuals, num_valid_genotypes, ref_count, non_ref_count, min_valid_sites_precentage, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected)
     site_calc_pairwise_distances(genotypes, num_individuals, ref_freq, non_ref_freq, window_pairwise_counts, window_pairwise_dist)
@@ -266,26 +266,30 @@ def calc_distances_in_windows(
     max_minor_count_expected,
     # we can either sample the file by min and max window indexes, or use an entire 012 file
     use_specific_012_file,
-    input_012_file=None,
-    input_012_index=-1):
+    input_012_template=None,
+    min_input_012_index=-1,
+    max_input_012_index=-1):
 
     os.makedirs(output_dir, exist_ok=True)
     if use_specific_012_file:
         start_time = time.time()
-        window_df = get_012_df(input_012_file)
-        output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=input_012_index)
+        for input_012_index in range(min_input_012_index, max_input_012_index + 1):
+            input_012_file = input_012_template.format(input_012_index=input_012_index)
+            window_df = get_012_df(input_012_file)
+            output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=input_012_index)
 
-        window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
-            window_df,
-            min_valid_sites_precentage,
-            min_minor_freq_expected,
-            max_minor_freq_expected,
-            min_minor_count_expected,
-            max_minor_count_expected)
+            window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
+                window_df,
+                min_valid_sites_precentage,
+                min_minor_freq_expected,
+                max_minor_freq_expected,
+                min_minor_count_expected,
+                max_minor_count_expected)
 
-        print(f'output distances file to {output_count_dist_file}')
-        write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
-        print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, input_012_index: {input_012_index}')
+            print(f'output distances file to {output_count_dist_file}')
+            write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist)
+            print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, input_012_index: {input_012_index}')
+
     else:
         print(f'Class: {mac_maf}_{class_name}, window indexes: [{min_window_index} , {max_window_index})')
         for window_index in range(min_window_index, max_window_index):
@@ -334,11 +338,13 @@ def main(args):
     max_minor_count_expected = int(args[7])
     assert max_minor_count_expected>=-1
     use_specific_012_file = False
-    input_012_file_index = -1
+    min_input_012_index = -1
+    max_input_012_index = -1
     if len(args) > 8:
         use_specific_012_file = bool(args[8])
     if use_specific_012_file:
-        input_012_file_index = int(args[9])
+        min_input_012_index = int(args[9])
+        max_input_012_index = int(args[10])
     if not use_specific_012_file:
         assert min_window_index>=0
         assert max_window_index>=0
@@ -353,7 +359,8 @@ def main(args):
     print('min_minor_count_expected',min_minor_count_expected)
     print('max_minor_count_expected',max_minor_count_expected)
     print('use_specific_012_file',use_specific_012_file)
-    print('input_012_file_index',input_012_file_index)
+    print('min_input_012_index',min_input_012_index)
+    print('max_input_012_index',max_input_012_index)
 
     # Prepare paths
     paths_helper = get_paths_helper()
@@ -361,7 +368,7 @@ def main(args):
     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/transposed/
     classes_folder = paths_helper.classes_folder
     class_012_path_template = classes_folder + r'chr{chr_id}/{mac_maf}_{class_name}.012'
-    input_012_file = paths_helper.windows_folder + f'{mac_maf}_{class_name}/window_{input_012_file_index}.012.tsv.gz'
+    input_012_template = paths_helper.windows_folder + f'{mac_maf}_{class_name}/window_' + '{input_012_index}.012.tsv.gz'
 
     windows_indexes_files_folder = classes_folder + r'windows/indexes/'
     windows_indexes_path_template = windows_indexes_files_folder + 'windows_indexes_for_class_{class_name}.json'
@@ -385,8 +392,10 @@ def main(args):
         min_minor_count_expected,
         max_minor_count_expected,
         use_specific_012_file,
-        input_012_file,
-        input_012_file_index)
+        input_012_template,
+        min_input_012_index,
+        max_input_012_index)
+
     print(f'{(time.time()-s)/60} minutes total run time')
 
 # mac_maf = 'mac'
@@ -397,7 +406,7 @@ def main(args):
 # max_minor_freq_expected = -1
 # min_minor_count_expected = 2
 # max_minor_count_expected = 2
-# main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected, 'True', 15003])
+# main([mac_maf, class_name, min_window_index, max_window_index, min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected, max_minor_count_expected])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

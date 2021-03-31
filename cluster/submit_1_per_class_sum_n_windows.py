@@ -1,5 +1,7 @@
 #python3 submit_1_per_class_sum_n_windows.py 2 2 -1 -1 0 100 1
 #python3 submit_1_per_class_sum_n_windows.py 2 18 1 49 0 499 100
+# sum all classes with less than 10K (max we have is 20K)
+#python3 submit_1_per_class_sum_n_windows.py 7 18 2 49 0 10000 100
 
 import subprocess
 import sys
@@ -10,7 +12,7 @@ sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
-job_type ='sanity_check_1'
+job_type = 'per_class_sum_n_windows.py'
 path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/sanity_check/1_per_class_sum_n_windows.py'
 path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 # python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 100"

@@ -1,9 +1,5 @@
 Bookmark:
 
-    running netstruct
-    check when done: squeue | grep amir | grep s220 | wc -l
-    once done TODO: need to rename 9 folders: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/take_2_maf_* (remove "take_2")
-    (I had to resubmit these, seems like too much context switch on VMs)
 
     running calc dist on mac 2 windows
 
@@ -14,15 +10,15 @@ Bookmark:
         ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
         (should have 66 = 17+49)
     - sum all (3_sum_distances_from_all_classes)
-    -> RUNNING (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
-    - DONE run NetStruct on sum of all
+    - (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
+    - run NetStruct on sum of all
         cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
     - visualize all
-    - compare per class to all using nmi (4_run_nmi)
-    - collect NMI results to figure - notebooks/collect nmi
+    -compare per class to all using nmi (4_run_nmi)
+    -> collect NMI results to figure - notebooks/collect nmi
 
-NetStruct TODO update to using hgdp_wgs.20190516.indlist.csv
-    java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w false
+NetStruct cmd
+    java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 5 -mino 5 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-19_maf_1-49_0-499/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -nvl 1 -w true
 
 
 ------------------------------------------

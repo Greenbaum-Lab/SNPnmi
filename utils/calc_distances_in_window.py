@@ -278,6 +278,9 @@ def calc_distances_in_windows(
             print(f'process {input_012_file}')
             window_df = get_012_df(input_012_file)
             output_count_dist_file = output_dir + OUTPUT_PATTERN_DIST_FILE.format(window_index=input_012_index)
+            if os.path.isfile(output_count_dist_file):
+                print(f'Window file exist, do not calc! {output_count_dist_file}')
+                continue
 
             window_pairwise_counts, window_pairwise_dist = window_calc_pairwise_distances_with_guardrails(
                 window_df,

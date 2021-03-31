@@ -1,12 +1,12 @@
 # Run nmi on all outputs of netstruct w.r.t ground truth
-# python3 4_run_nmi.py 2 18 1 49 0 499 v2_mac_2-18_maf_1-49_windows_0-499 W_1_D_0_Min_3_SS_0.001_B_1.0
+# python3 4_run_nmi.py 2 18 1 49 0 499 mac_2-18_maf_1-49_windows_0-499 W_1_D_0_Min_5_SS_0.001_B_1.0
 
 DEBUG=False
 
 # paths 
 # /code/Overlapping-NMI/nmi
-# /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/v2_mac_9_0-499/W_1_D_0_Min_3_SS_0.001_B_1.0/2_Leafs_WithOverlap.txt
-# /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/v2_mac_2-18_maf_1-49_windows_0-499
+# /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_9_0-499/W_1_D_0_Min_5_SS_0.001_B_1.0/2_Leafs_WithOverlap.txt
+# /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499
 
 import os
 import subprocess
@@ -78,7 +78,7 @@ def run_nmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, m
                         val = f'{val * 1.0/100}'
                     print(val)
                     # input template
-                    class_netstuct_folder = f'{netstruct_base_folder}v2_{mac_maf}_{val}_{min_window_index}-{max_window_index}/{netstruct_folder_name}/'
+                    class_netstuct_folder = f'{netstruct_base_folder}{mac_maf}_{val}_{min_window_index}-{max_window_index}/{netstruct_folder_name}/'
                     class_leafs_overlap = f'{class_netstuct_folder}2_Leafs_WithOverlap.txt'
                     class_leafs_no_overlap = f'{class_netstuct_folder}2_Leafs_NoOverlap.txt'
                     # first, we need to create a set of all levels of the tree
@@ -125,7 +125,7 @@ def main(args):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-#main([2, 4, 100, 49, 0, 499, 'v2_mac_2-18_maf_1-49_windows_0-499', 'W_1_D_0_Min_3_SS_0.001_B_1.0', ])
+#main([2, 4, 100, 49, 0, 499, 'mac_2-18_maf_1-49_windows_0-499', 'W_1_D_0_Min_5_SS_0.001_B_1.0', ])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

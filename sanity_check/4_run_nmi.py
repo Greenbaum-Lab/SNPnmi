@@ -86,9 +86,9 @@ def run_nmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, m
                     class_nmi_output = f'{nmi_output_folder}{mac_maf}_{val}_{min_window_index}-{max_window_index}_nmi_'
 
                     # calc nmi
-                    _run_nmi(ground_truth_leafs_overlap, class_leafs_overlap, class_nmi_output + 'Leafs_WithOverlap.txt')
+                    _run_nmi(ground_truth_leafs_overlap, class_leafs_overlap, class_nmi_output + 'Leaves_WithOverlap.txt')
 
-                    _run_nmi(ground_truth_leafs_no_overlap, class_leafs_no_overlap, class_nmi_output + 'Leafs_NoOverlap.txt')
+                    _run_nmi(ground_truth_leafs_no_overlap, class_leafs_no_overlap, class_nmi_output + 'Leaves_NoOverlap.txt')
 
                     _run_nmi(ground_truth_all_nodes, class_all_nodes, class_nmi_output + 'AllNodes.txt')
 

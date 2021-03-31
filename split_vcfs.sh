@@ -62,7 +62,7 @@ if [ $maf != "-" ]; then
         mkdir "${output_folder}temp_maf_${maf}"
 
         # create a placeholder for the max_maf sites
-        # we validate this in chr22 which had 1585 fo maf in [0.48-0.49]:
+        # we validate this in chr22 which had 1585 of maf in [0.48-0.49]:
         # in maf==0.49 we have 1
         # runnig exclusion we got 1584, as expected
         # and, using an empty exclusion file, we got 1585, again, as expected

@@ -31,6 +31,7 @@ def normalize_distances(distances, counts):
             norm_dists[r_i][c_i] = float(c_dist)/float(c_count)
     return norm_dists
 
+# TODO refactor this to a stand alone file
 class PathsHelper:
     # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
     def __init__(self, root_data_folder: str, root_code_folder: str, data_set_name: str):
@@ -59,15 +60,15 @@ class PathsHelper:
         self.sanity_check_folder = f'{self.classes_folder}sanity_check/'
         self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'
         self.sanity_check_netstruct_folder = f'{self.sanity_check_folder}netstruct/'
-        self.sanity_check_onmi_folder = f'{self.sanity_check_folder}onmi/'
+        self.sanity_check_nmi_folder = f'{self.sanity_check_folder}nmi/'
 
         # Netstuct inputs paths
-        self.netstructh_indlist_path = f'{self.data_folder}indlist.csv'
-        self.netstructh_sample_sites_path = f'{self.data_folder}SampleSites.txt'
+        self.netstructh_indlist_path = f'{self.data_folder}{get_indlist_file_name()}'
+        self.netstructh_sample_sites_path = f'{self.data_folder}{get_sample_sites_file_name()}'
 
         # access to code
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
-        self.onmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
+        self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
 
 # the output is in couples of <count>;<distance>
 # the count is the number of valid sites on which the distances is calculated

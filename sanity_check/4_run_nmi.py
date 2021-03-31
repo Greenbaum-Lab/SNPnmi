@@ -1,10 +1,10 @@
-# Run onmi on all outputs of netstruct w.r.t ground truth
-# python3 4_run_onmi.py 2 18 1 49 0 499 v2_mac_2-18_maf_1-49_windows_0-499 W_1_D_0_Min_3_SS_0.001_B_1.0
+# Run nmi on all outputs of netstruct w.r.t ground truth
+# python3 4_run_nmi.py 2 18 1 49 0 499 v2_mac_2-18_maf_1-49_windows_0-499 W_1_D_0_Min_3_SS_0.001_B_1.0
 
 DEBUG=False
 
 # paths 
-# /code/Overlapping-NMI/onmi
+# /code/Overlapping-NMI/nmi
 # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/v2_mac_9_0-499/W_1_D_0_Min_3_SS_0.001_B_1.0/2_Leafs_WithOverlap.txt
 # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/v2_mac_2-18_maf_1-49_windows_0-499
 
@@ -18,13 +18,13 @@ sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
 
-def _run_onmi(input1, input2, output_path):
+def _run_nmi(input1, input2, output_path):
     paths_helper = get_paths_helper()
-    onmi_path = paths_helper.onmi_exe
-    onmi_process = subprocess.Popen((onmi_path, input1, input2), stdout=subprocess.PIPE)
-    onmi_output = onmi_process.stdout.read().decode()
+    nmi_path = paths_helper.nmi_exe
+    nmi_process = subprocess.Popen((nmi_path, input1, input2), stdout=subprocess.PIPE)
+    nmi_output = nmi_process.stdout.read().decode()
     with open(output_path, 'w') as f:
-        f.write(onmi_output)
+        f.write(nmi_output)
 
     with open(output_path) as f:
         for line in f:
@@ -32,7 +32,7 @@ def _run_onmi(input1, input2, output_path):
 
     if DEBUG:
         print(input1, input2, output_path)
-        print(onmi_output)
+        print(nmi_output)
 
 def _collect_all_nodes_if_needed(folder):
     #only if output file does not exist we will create it
@@ -50,13 +50,13 @@ def _collect_all_nodes_if_needed(folder):
     return all_nodes_path
 
 
-def run_onmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, ground_truth, netstruct_folder_name):
+def run_nmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, ground_truth, netstruct_folder_name):
     # prepare paths
     paths_helper = get_paths_helper()
     netstruct_base_folder = paths_helper.sanity_check_netstruct_folder
-    onmi_output_folder = paths_helper.sanity_check_onmi_folder
+    nmi_output_folder = paths_helper.sanity_check_nmi_folder
 
-    os.makedirs(onmi_output_folder, exist_ok=True)
+    os.makedirs(nmi_output_folder, exist_ok=True)
 
     # ground truth files
     ground_truth_folder = f'{netstruct_base_folder}{ground_truth}/{netstruct_folder_name}/'
@@ -83,14 +83,14 @@ def run_onmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, 
                     class_leafs_no_overlap = f'{class_netstuct_folder}2_Leafs_NoOverlap.txt'
                     # first, we need to create a set of all levels of the tree
                     class_all_nodes = _collect_all_nodes_if_needed(class_netstuct_folder)
-                    class_onmi_output = f'{onmi_output_folder}{mac_maf}_{val}_{min_window_index}-{max_window_index}_onmi_'
+                    class_nmi_output = f'{nmi_output_folder}{mac_maf}_{val}_{min_window_index}-{max_window_index}_nmi_'
 
-                    # calc ONMI
-                    _run_onmi(ground_truth_leafs_overlap, class_leafs_overlap, class_onmi_output + 'Leafs_WithOverlap.txt')
+                    # calc nmi
+                    _run_nmi(ground_truth_leafs_overlap, class_leafs_overlap, class_nmi_output + 'Leafs_WithOverlap.txt')
 
-                    _run_onmi(ground_truth_leafs_no_overlap, class_leafs_no_overlap, class_onmi_output + 'Leafs_NoOverlap.txt')
+                    _run_nmi(ground_truth_leafs_no_overlap, class_leafs_no_overlap, class_nmi_output + 'Leafs_NoOverlap.txt')
 
-                    _run_onmi(ground_truth_all_nodes, class_all_nodes, class_onmi_output + 'AllNodes.txt')
+                    _run_nmi(ground_truth_all_nodes, class_all_nodes, class_nmi_output + 'AllNodes.txt')
 
 def main(args):
     s = time.time()
@@ -121,7 +121,7 @@ def main(args):
     print('ground_truth', ground_truth)
     print('netstruct_folder_name', netstruct_folder_name)
 
-    run_onmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, ground_truth, netstruct_folder_name)
+    run_nmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, ground_truth, netstruct_folder_name)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

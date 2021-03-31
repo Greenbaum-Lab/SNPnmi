@@ -8,13 +8,13 @@ Bookmark:
     - validate windows of 0-499 per class:
         ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
         (should have 66 = 17+49)
-    - sum all (2_sum_distances_from_all_classes)
+    - sum all (3_sum_distances_from_all_classes)
     -> RUNNING (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
-    -> Submitted (for 72 hours, job 10206675 and not weighted 10206760) run NetStruct on sum of all
+    - DONE run NetStruct on sum of all
         cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
     - visualize all
-    - compare per class to all using ONMI (4_run_onmi)
-    - collect NMI results to figure - notebooks/collect ONMI
+    - compare per class to all using nmi (4_run_nmi)
+    - collect NMI results to figure - notebooks/collect nmi
 
 NetStruct TODO update to using hgdp_wgs.20190516.indlist.csv
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 3 -mino 3 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/SampleSites.txt -nvl 1 -w false
@@ -46,8 +46,8 @@ The order of scripts to run:
 - TODO - merge_slices_to_normalized_dist_matrix (to generate ground truth)
 - TODO - submit_merge_windows (is_random=True to generate random slices)
 - TODO - run_netstruct
-- TODO - calc ONMI
-- TODO - collect ONMI
+- TODO - calc nmi
+- TODO - collect nmi
 
 --------------------------------------
 missing:
@@ -55,7 +55,7 @@ missing:
 --------------------------------------
 
 
-ONMI - from https://github.com/aaronmcdaid/Overlapping-NMI
+nmi - from https://github.com/aaronmcdaid/Overlapping-NMI
 
 --------------------------------------
 Discussion on submit_calc_dist_windows

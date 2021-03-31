@@ -2,6 +2,8 @@
 # python3 1_per_class_sum_n_windows.py mac 18 0 100
 
 # takes ~40 seconds for 100 windows.
+# 6 minutes for 500 windows.
+# 10k windows will take 2 hours
 import pandas as pd
 import json
 import os
@@ -67,7 +69,7 @@ def main(args):
     count_dist_window_template = paths_helper.count_dist_window_template.replace('{mac_maf}',mac_maf).replace('{class_name}',class_name)
 
     output_dir = paths_helper.sanity_check_dist_folder
-    print('count_dist_window_template',count_dist_window_template)
+    print('count_dist_window_template', count_dist_window_template)
     print('output_dir',output_dir)
 
     sum_windows(

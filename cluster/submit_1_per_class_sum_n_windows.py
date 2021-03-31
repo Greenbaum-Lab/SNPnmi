@@ -1,6 +1,7 @@
 #python3 submit_1_per_class_sum_n_windows.py 2 2 -1 -1 0 100 1
 #python3 submit_1_per_class_sum_n_windows.py 2 18 1 49 0 499 100
-# sum all classes with less than 10K (max we have is 20K)
+
+# sum all classes with less than 10K
 #python3 submit_1_per_class_sum_n_windows.py 7 18 2 49 0 10000 100
 
 import subprocess
@@ -20,7 +21,6 @@ def submit_1_per_class_sum_n_windows(mac_min_range, mac_max_range, maf_min_range
     # create output folders
     paths_helper = get_paths_helper()
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
-    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
 
     number_of_submitted_jobs = 0
     for mac_maf in ['mac', 'maf']:
@@ -39,7 +39,7 @@ def submit_1_per_class_sum_n_windows(mac_min_range, mac_max_range, maf_min_range
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f's1_{val}'
-                cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting=f'sbatch --time=24:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 python_script_params = f'{mac_maf} {val} {min_window_index} {max_window_index}'
                 cmd_to_run=f'{cluster_setting} {path_to_wrapper} python3 {path_to_python_script_to_run} {python_script_params}'
                 print(cmd_to_run)

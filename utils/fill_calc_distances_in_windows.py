@@ -122,7 +122,9 @@ def main(args):
 
     paths_helper = get_paths_helper()
     class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
-    assert max_index_to_fill <= class2num_windows[class_name]
+    # hack - mac2 has more windows than we have in class2num_windows
+    if not(mac_maf == 'mac' and class_name == '2'):
+        assert max_index_to_fill <= class2num_windows[class_name]
 
     fill_distances(mac_maf, class_name, min_index_to_fill, max_index_to_fill)
 

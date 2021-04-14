@@ -9,7 +9,7 @@ sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
-job_type = 'per_class_sum_n_windows.py'
+job_type = 'per_class_sum_n_windows'
 path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/sanity_check/1_per_class_sum_n_windows.py'
 path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 

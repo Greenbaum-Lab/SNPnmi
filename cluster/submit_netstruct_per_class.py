@@ -1,4 +1,4 @@
-# python3 submit_2_netstruct_per_class.py 2 18 1 49 0 499 100
+# python3 submit_netstruct_per_class.py 2 18 1 49 0 499 100
 
 import subprocess
 import sys
@@ -8,7 +8,7 @@ root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
-job_type ='sanity_check_2_v3'
+job_type ='netstruct_per_class'
 path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 
 def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, max_number_of_jobs):
@@ -48,10 +48,10 @@ def submit_2_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, ma
 def build_netstructh_cmd(mac_maf, val, min_window_index, max_window_index):
     paths_helper = get_paths_helper()
     jar_path = paths_helper.netstruct_jar
-    output_folder = paths_helper.sanity_check_netstruct_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}/'
+    output_folder = paths_helper.netstruct_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}/'
     os.makedirs(output_folder, exist_ok=True)
 
-    distances_matrix_path = paths_helper.sanity_check_dist_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
+    distances_matrix_path = paths_helper.dist_folder + f'{mac_maf}_{val}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
     indlist_path = paths_helper.netstructh_indlist_path
     sample_sites_path = paths_helper.netstructh_sample_sites_path
     return f'java -jar {jar_path} -ss 0.001 -minb 5 -mino 5 -pro {output_folder} -pm {distances_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
@@ -66,6 +66,7 @@ if __name__ == '__main__':
     maf_max_range = int(sys.argv[4])
 
     # submission details
+    # TODO - we need a way to support both "all" and specific files (which will be random samples)
     min_window_index =  int(sys.argv[5])
     max_window_index =  int(sys.argv[6])
     max_number_of_jobs =  int(sys.argv[7])

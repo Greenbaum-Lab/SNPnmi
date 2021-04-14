@@ -1,5 +1,6 @@
-#submit specific windows for mac 2
+# submit specific windows for mac 2
 # python3 submit_calc_dist_windows.py 2 2 1 8 10 1 -1 -1 -1 True 1014 73511
+# python3 submit_calc_dist_windows.py 2 18 1 1 49 1000 -1 0
 # max done so far is: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/count_dist_window_1013.tsv.gz
 # max window is: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/window_73511.012.tsv.gz
 import subprocess
@@ -16,7 +17,7 @@ calc_distances_in_window_cmd = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/
 job_type ='calc_dist_windows_mac_2'
 
 # will submit calc_distances_in_window of given classes and windows
-# python3 submit_calc_dist_windows.py 20 1 1 8 10 1 50 140 0
+# python3 submit_calc_dist_windows.py 3 3 1 80 10 1 1 1 2148
 def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range, mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file ,min_input_012_file_index, max_input_012_file_index, max_windows_per_job=210):
     # create output folders
     paths_helper = get_paths_helper()

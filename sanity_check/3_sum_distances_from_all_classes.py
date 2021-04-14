@@ -1,6 +1,6 @@
 # will use all classes distances matrixes to create a big matrix with all data
 # takes about 1 minute to group 66 windows
-# python3 3_sum_distances_from_all_classes 2 18 1 49 0 499
+# python3 3_sum_distances_from_all_classes 2 18 1 49 TODO params
 
 # the commands to use to run netstruct on the result:
 # mkdir /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499/
@@ -20,10 +20,10 @@ sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
 
-def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index):
+def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range):
 
     paths_helper = get_paths_helper()
-    dist_dir = paths_helper.sanity_check_dist_folder
+    dist_dir = paths_helper.dist_folder
     # get inputs
     windows_files = []
     for mac_maf in ['mac', 'maf']:
@@ -36,17 +36,15 @@ def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range, 
                     # in maf we take 0.x
                     if not is_mac:
                         val = f'{val * 1.0/100}'
-                    # input template
-                    # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.04_0-499_count_dist.tsv.gz
-                    slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
+                    slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_all_count_dist.tsv.gz'
                     windows_files.append(slice_count_distances_file)
 
     # calc distances and counts
     dists, counts = calc_distances_based_on_files(windows_files)
 
     # output results
-    all_count_distances_file = f'{dist_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
-    all_norm_distances_file = f'{dist_dir}mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_windows_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
+    all_count_distances_file = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_count_dist.tsv.gz'
+    all_norm_distances_file = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_norm_dist.tsv.gz'
     
 
     write_pairwise_distances(all_count_distances_file, counts, dists)
@@ -68,19 +66,17 @@ def main(args):
     maf_min_range = int(args[2])
     maf_max_range = int(args[3])
 
-    # submission details
-    min_window_index =  int(args[4])
-    max_window_index =  int(args[5])
+    # submission details - TODO maybe we can add this to support specific files
+    #min_window_index =  int(args[4])
+    #max_window_index =  int(args[5])
 
     # print the inputs
     print('mac_min_range', mac_min_range)
     print('mac_max_range', mac_max_range)
     print('maf_min_range', maf_min_range)
     print('maf_max_range', maf_max_range)
-    print('min_window_index', min_window_index)
-    print('max_window_index', max_window_index)
 
-    sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index)
+    sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

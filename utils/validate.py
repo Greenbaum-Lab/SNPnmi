@@ -75,12 +75,30 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
 
 #validate_012_files('mac', 2, 0)
 
+
 def _file_len(fname):
     i = -1
     with gzip.open(fname,'rb') as f:
         for i, l in enumerate(f):
             pass
     return i + 1
+
+# TODO - we can instead use seek to go to almost the end of the file, and verify that in the last two rows we have what we expect:
+# <>,<>
+# <>
+# need to check that this is indeed faster, and also deal with edge cases (short/empty file)
+def _validate_count_dist_file(count_dist_file):
+    try:
+        # if the file doesnt exist, or the structe of it is not good, we will catch it and return false
+        return _file_len(count_dist_file) == get_num_individuals()-1
+    except:
+        return False
+
+def _validate_count_dist_files(count_dist_files):
+    for count_dist_file in count_dist_files:
+        if not _validate_count_dist_file(count_dist_file):
+            return False, count_dist_file
+    return True, None
 
 
 def max_index_with_n_lines(mac_maf, class_name, n, min_index, max_index):

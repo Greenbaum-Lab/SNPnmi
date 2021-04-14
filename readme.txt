@@ -1,14 +1,8 @@
 Bookmark:
+ RUNNING - 1_per_class_sum_n_windows.py
+ NEXT - validate the above and run 2_per_class_sum_all_windows.py (need to check it is ok before running)
  Done -  fill_calc_distances_in_windows on all classes with windows of 1000.
 
-
- Last checkpoint:
-    1. running calc dist on mac 2 windows (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows_mac_2/mac2_012_file4179-4389.std*)
-    2. running 1_per_class_sum_n_windows on mac 7-18 and maf 2-49 cmd: python3 submit_1_per_class_sum_n_windows.py 7 18 2 49 0 10000 100
-        Also run 2 jobs for maf 1: 1-11000 and 11001-last 
-        and jobs for each 10k for mac 3-6 (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/per_class_sum_n_windows.py/mac3_*)
-        TODO 1. merge them once done
-        TODO 2. build similiary matrixes for mac 1
 
 NetStruct cmd
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 5 -mino 5 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-19_maf_1-49_0-499/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -nvl 1 -w true

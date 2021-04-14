@@ -56,6 +56,11 @@ class PathsHelper:
 
         self.split_vcf_stats_csv_path = f'{self.logs_cluster_folder}split_vcfs/split_vcf_output_stats.csv'
 
+        # distances
+        self.dist_folder = f'{self.classes_folder}distances/'
+        self.netstruct_folder = f'{self.classes_folder}netstruct/'
+        self.nmi_folder = f'{self.classes_folder}nmi/'
+
         # sanity check folders:
         self.sanity_check_folder = f'{self.classes_folder}sanity_check/'
         self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'

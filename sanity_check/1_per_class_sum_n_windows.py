@@ -24,14 +24,11 @@ def sum_windows(mac_maf, class_name, min_window_index, max_window_index, count_d
     # if we have less than max_window_index, we will use the max available
     max_window_index = min(max_window_index, max_window_index_in_class)
 
-    # we will use this for the output file name to make it easy for us to consume in the future
-    max_window_for_output_files = 'last' if max_window_index == max_window_index_in_class else str(max_window_index)
-
-    slice_counts_dist_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_for_output_files}_count_dist.tsv.gz'
+    slice_counts_dist_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_index}_count_dist.tsv.gz'
     if os.path.isfile(slice_counts_dist_file):
         print(f'slice_distances_file exist, do not calc! {slice_counts_dist_file}')
         return
-    slice_norm_distances_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_for_output_files}_norm_dist.tsv.gz'
+    slice_norm_distances_file = f'{output_dir}{mac_maf}_{class_name}_{min_window_index}-{max_window_index}_norm_dist.tsv.gz'
     windows_files = [count_dist_window_template.format(window_index=index) for index in range(min_window_index, max_window_index + 1)]
 
     dists, counts = calc_distances_based_on_files(windows_files)
@@ -68,7 +65,7 @@ def main(args):
     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/count_dist_window_724.tsv.gz
     count_dist_window_template = paths_helper.count_dist_window_template.replace('{mac_maf}',mac_maf).replace('{class_name}',class_name)
 
-    output_dir = paths_helper.sanity_check_dist_folder
+    output_dir = paths_helper.dist_folder
     print('count_dist_window_template', count_dist_window_template)
     print('output_dir',output_dir)
 

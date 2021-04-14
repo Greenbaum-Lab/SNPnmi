@@ -1,8 +1,6 @@
 Bookmark:
- TODO: execute fill_calc_distances_in_windows on all classes with windows of 1000.
- TODO mac 2 windows - we have up to window_73511 (although in num_window_per_class we have 73031!!)
- 1. How can this be?
- 2. fill calc distances for 73031-73511
+ Done -  fill_calc_distances_in_windows on all classes with windows of 1000.
+
 
  Last checkpoint:
     1. running calc dist on mac 2 windows (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows_mac_2/mac2_012_file4179-4389.std*)
@@ -34,8 +32,16 @@ The order of scripts to run:
         - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
         - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
     2. regular size classes: generate_windows_indexes_files.py 
-- submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
-- fill_calc_distances_in_windows - run this TWICE. Validate it (TODO write script)
+- submit_calc_dist_windows.py
+- fill_calc_distances_in_windows - run this twice before the validation as it generates flags consumed by the validation script
+-  validate_calc_distances_in_windows.py
+--------------------
+Build baseline
+- submit_1_per_class_sum_n_windows.py aggregating 1000 windows
+- TODO aggregate all windows per class
+- 3_sum_distances_from_all_classes.py
+--------------------
+
 - TODO - submit_merge_windows (is_random=False to join all for baseline) (takes ~13 minutes to process 1K windows)
 - TODO - merge_slices_to_normalized_dist_matrix (to generate ground truth)
 - TODO - submit_merge_windows (is_random=True to generate random slices)
@@ -79,6 +85,7 @@ Validation plan
 
 -------------------------------
 SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
+---------------------------------
     - collect from each class 500 distances files (100 is already done)
     - sum per class 0-499 windows (1_per_class_sum_n_windows)
     - validate windows of 0-499 per class:
@@ -91,4 +98,11 @@ SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity
     - visualize all
     -compare per class to all using nmi (4_run_nmi)
     - collect NMI results to figure - notebooks/collect nmi
+---------------------------------
+
+---------------------------------
+NOTE regarding num of mac 2 windows
+---------------------------------
+we have 73511 (although in num_window_per_class we have 73031!!)
+How can this be? This is because when we wnated to split the work in mac 2 - we first created 1000 slices, each with some indexes from all classes.
 ---------------------------------

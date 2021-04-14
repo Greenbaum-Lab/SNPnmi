@@ -29,7 +29,7 @@ def submit_fill_calc_distances_in_windows(number_of_windows_to_process_per_job, 
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0/100}'
-                num_windows = class2num_windows[val]
+                num_windows = class2num_windows[str(val)]
                 max_window_id = 0
                 # if we have 10 windows, we can only process 0-9
                 while max_window_id < num_windows-1:
@@ -68,7 +68,7 @@ def main(args):
 
     submit_fill_calc_distances_in_windows(number_of_windows_to_process_per_job, mac_min_range, mac_max_range, maf_min_range, maf_max_range)
 
-#main(['-1', '1', '49', '49','1000'])
+#main(['15', '18', '40', '49','1000'])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

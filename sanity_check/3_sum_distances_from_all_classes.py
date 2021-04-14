@@ -1,6 +1,6 @@
 # will use all classes distances matrixes to create a big matrix with all data
 # takes about 1 minute to group 66 windows
-# python3 3_sum_distances_from_all_classes 2 18 1 49 TODO params
+# python3 3_sum_distances_from_all_classes.py 2 18 1 49
 
 # the commands to use to run netstruct on the result:
 # mkdir /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499/
@@ -19,40 +19,48 @@ root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
+from utils.validate import _validate_count_dist_file
 
 def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range):
-
     paths_helper = get_paths_helper()
     dist_dir = paths_helper.dist_folder
     # get inputs
     windows_files = []
     for mac_maf in ['mac', 'maf']:
-            is_mac = mac_maf == 'mac'
-            min_range = mac_min_range if is_mac else maf_min_range
-            max_range = mac_max_range if is_mac else maf_max_range
-            if min_range>0:
-                print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-                for val in range(min_range, max_range+1):
-                    # in maf we take 0.x
-                    if not is_mac:
-                        val = f'{val * 1.0/100}'
-                    slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_all_count_dist.tsv.gz'
-                    windows_files.append(slice_count_distances_file)
+        is_mac = mac_maf == 'mac'
+        min_range = mac_min_range if is_mac else maf_min_range
+        max_range = mac_max_range if is_mac else maf_max_range
+        if min_range>0:
+            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
+            for val in range(min_range, max_range+1):
+                # in maf we take 0.x
+                if not is_mac:
+                    val = f'{val * 1.0/100}'
+                slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_all_count_dist.tsv.gz'
+                windows_files.append(slice_count_distances_file)
 
     # calc distances and counts
     dists, counts = calc_distances_based_on_files(windows_files)
 
     # output results
     all_count_distances_file = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_count_dist.tsv.gz'
+    all_counts_dist_file_validation_flag = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_count_dist.valid.flag'
     all_norm_distances_file = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_norm_dist.tsv.gz'
+    all_norm_distances_file_validation_flag = f'{dist_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_norm_dist.valid.flag'
     
 
     write_pairwise_distances(all_count_distances_file, counts, dists)
     print(f'all_count_distances_file : {all_count_distances_file}')
+    if _validate_count_dist_file(all_count_distances_file):
+        # create a flag that this file is valid
+        open(all_counts_dist_file_validation_flag, 'a').close()
 
     norm_distances = normalize_distances(dists, counts)
     write_upper_left_matrix_to_file(all_norm_distances_file, norm_distances)
     print(f'all_norm_distances_file : {all_norm_distances_file}')
+    if _validate_count_dist_file(all_norm_distances_file):
+        # create a flag that this file is valid
+        open(all_norm_distances_file_validation_flag, 'a').close()
 
 def main(args):
     s = time.time()
@@ -80,7 +88,7 @@ def main(args):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# main([2, 18, 1, 49, 0, 499])
+# main([2, 18, 1, 49])
 
 if __name__ == "__main__":
    main(sys.argv[1:])

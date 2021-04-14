@@ -31,7 +31,7 @@ def sum_all_windows(mac_maf, class_name, windows_files, output_dir):
     all_valid, promlematic_file = _validate_count_dist_files(windows_files)
 
     if not all_valid:
-        raise f'promlematic_file: {promlematic_file}'
+        raise Exception(f'promlematic_file: {promlematic_file}')
 
     dists, counts = calc_distances_based_on_files(windows_files)
 
@@ -54,7 +54,7 @@ def _get_windows_files_names(class_dist_files_names_log, slice_counts_dist_templ
     with open(class_dist_files_names_log, 'r') as f:
         lines = f.readlines()
         for line in lines:
-            min_index, max_index = line.split('-', 1)
+            min_index, max_index = line.strip().split('-', 1)
             windows_files.append(slice_counts_dist_template.format(min_window_index=min_index, max_window_index=max_index))
     return windows_files
 

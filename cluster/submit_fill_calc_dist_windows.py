@@ -68,7 +68,7 @@ def main(args):
 
     submit_fill_calc_distances_in_windows(number_of_windows_to_process_per_job, mac_min_range, mac_max_range, maf_min_range, maf_max_range)
 
-main(['-1', '1', '49', '49','1000'])
+#main(['-1', '1', '49', '49','1000'])
 
-if __name__ == "__XXXmain__":
+if __name__ == "__main__":
    main(sys.argv[1:])

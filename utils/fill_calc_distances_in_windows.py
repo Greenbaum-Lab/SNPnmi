@@ -11,13 +11,9 @@ from utils.common import get_paths_helper
 from utils.common import get_number_of_windows_by_class
 from utils.config import get_num_individuals
 import subprocess
+from utils.validate import _validate_count_dist_file
 
-def _validate_file(count_dist_file):
-    try:
-        # if the file doesnt exist, or the structe of it is not good, we will catch it and return false
-        return _file_len(count_dist_file) == get_num_individuals()-1
-    except:
-        return False
+
 
 def _submit_calc_dist_job(mac_maf, class_name, i):
     job_type ='fill_calc_dist_window'
@@ -48,17 +44,6 @@ def _log_job_submitted(fill_log_file, mac_maf, class_name, i):
     with open(fill_log_file, 'a') as logf:
         logf.write(f'{mac_maf},{class_name},{i}\n')
 
-
-# TODO - we can instead use seek to go to almost the end of the file, and verify that in the last two rows we have what we expect:
-# <>,<>
-# <>
-# need to check that this is indeed faster, and also deal with edge cases (short/empty file)
-def _file_len(fname):
-    i = -1
-    with gzip.open(fname,'rb') as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
 
 # We will go over all count_dist files in [min_index_to_fill, max_index_to_fill].
 # First we check if we already validated it.
@@ -91,7 +76,7 @@ def fill_distances(mac_maf, class_name, min_index_to_fill, max_index_to_fill):
         validated_flag = validated_flag_template.format(i=i)
         # check if we already validate
         if not os.path.isfile(validated_flag):
-            is_valid = _validate_file(count_dist_file) 
+            is_valid = _validate_count_dist_file(count_dist_file) 
             if is_valid:
                 # create a flag that this file is valid
                 open(validated_flag, 'a').close()

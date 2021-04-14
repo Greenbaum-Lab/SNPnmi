@@ -30,12 +30,7 @@ def submit_fill_calc_distances_in_windows(number_of_windows_to_process_per_job, 
                 if not is_mac:
                     val = f'{val * 1.0/100}'
                 num_windows = class2num_windows[str(val)]
-                # This is a very ugly and problematic hack - because we manully created mac2 windows, we have more than the nubmer of original windows.
-                # we have 73512, and not 73031 as appears in class2num_windows.
-                # note also that the sizes of them varies (they are not all 100), as we randomly allocate to windows.
-                if is_mac and val == 2:
-                    num_windows = 73512
-                max_window_id = 0 # one off for mac2 - to fill the gap we can use 73031
+                max_window_id = 0
                 # if we have 10 windows, we can only process 0-9
                 while max_window_id < num_windows-1:
                     min_window_id = max_window_id

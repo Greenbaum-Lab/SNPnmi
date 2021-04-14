@@ -22,8 +22,8 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
         num_windows = class2num_windows[str(class_name)]
         missing = []
         for i in range(num_windows):
-            if i%100 == 0:
-                print(f'done {i}/{num_windows}')
+            if i%500 == 0:
+                print(f'class {class_name}: done {i}/{num_windows}')
             validated_flag = validated_flag_template.format(i=i)
             if not os.path.isfile(validated_flag):
                 missing.append(i)

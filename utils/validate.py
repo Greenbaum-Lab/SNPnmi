@@ -113,4 +113,15 @@ def max_index_with_n_lines(mac_maf, class_name, n, min_index, max_index):
     print (valid_is)
     print (max_i_found)
 
-max_index_with_n_lines('mac', 2, 929, 73028, 73510)
+def validate_all_count_dist_files(mac_maf, class_name):
+    paths_helper = get_paths_helper()
+    assert os.path.isfile(f'{paths_helper.dist_folder}{mac_maf}_{class_name}_all_norm_dist.valid.flag')
+    assert os.path.isfile(f'{paths_helper.dist_folder}{mac_maf}_{class_name}_all_count_dist.valid.flag')
+
+def validate_all_classes_all_count_dist():
+    for i in range(2,19):
+        validate_all_count_dist_files('mac', str(i))
+    for i in range(1,50):
+        validate_all_count_dist_files('maf', str(i*1.0/100.0))
+
+validate_all_classes_all_count_dist()

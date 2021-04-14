@@ -1,25 +1,16 @@
 Bookmark:
+ TODO: execute fill_calc_distances_in_windows on all classes with windows of 1000.
 
-
-    running calc dist on mac 2 windows
-
-    SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
-    - collect from each class 500 distances files (100 is already done)
-    - sum per class 0-499 windows (1_per_class_sum_n_windows)
-    - validate windows of 0-499 per class:
-        ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
-        (should have 66 = 17+49)
-    - sum all (3_sum_distances_from_all_classes)
-    - (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
-    - run NetStruct on sum of all
-        cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
-    - visualize all
-    -compare per class to all using nmi (4_run_nmi)
-    -> collect NMI results to figure - notebooks/collect nmi
+ Last checkpoint:
+    1. running calc dist on mac 2 windows (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows_mac_2/mac2_012_file4179-4389.std*)
+    2. running 1_per_class_sum_n_windows on mac 7-18 and maf 2-49 cmd: python3 submit_1_per_class_sum_n_windows.py 7 18 2 49 0 10000 100
+        Also run 2 jobs for maf 1: 1-11000 and 11001-last 
+        and jobs for each 10k for mac 3-6 (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/per_class_sum_n_windows.py/mac3_*)
+        TODO 1. merge them once done
+        TODO 2. build similiary matrixes for mac 1
 
 NetStruct cmd
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 5 -mino 5 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-19_maf_1-49_0-499/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -nvl 1 -w true
-
 
 ------------------------------------------
 The order of scripts to run:
@@ -41,19 +32,13 @@ The order of scripts to run:
         - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
     2. regular size classes: generate_windows_indexes_files.py 
 - submit_calc_dist_windows.py (in progress. submitted mac 4-18, maf 1-49) ** this takes a long time and a lot of jobs **
-- rerun preivous step to deal with missing
-- TODO - validate_calc_distances_in_windows (takes ~1 minute for 1K windows)
+- fill_calc_distances_in_windows - run this TWICE. Validate it (TODO write script)
 - TODO - submit_merge_windows (is_random=False to join all for baseline) (takes ~13 minutes to process 1K windows)
 - TODO - merge_slices_to_normalized_dist_matrix (to generate ground truth)
 - TODO - submit_merge_windows (is_random=True to generate random slices)
 - TODO - run_netstruct
 - TODO - calc nmi
 - TODO - collect nmi
-
---------------------------------------
-missing:
-    /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_5/count_dist_window_7748 count_dist_window_7748
---------------------------------------
 
 
 nmi - from https://github.com/aaronmcdaid/Overlapping-NMI
@@ -87,3 +72,20 @@ Validation plan
     select an individual and a maf, and validate the 012 output:
      - make sure the index exist
      - make sure the individuals data is in the same index
+
+
+-------------------------------
+SANITYCHECK: (/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/)
+    - collect from each class 500 distances files (100 is already done)
+    - sum per class 0-499 windows (1_per_class_sum_n_windows)
+    - validate windows of 0-499 per class:
+        ls /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/*499_*count_dis* | wc -l
+        (should have 66 = 17+49)
+    - sum all (3_sum_distances_from_all_classes)
+    - (cluster) run NetStruct on sums per class (submit_2_netstruct_per_class)
+    - run NetStruct on sum of all
+        cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499.std*
+    - visualize all
+    -compare per class to all using nmi (4_run_nmi)
+    - collect NMI results to figure - notebooks/collect nmi
+---------------------------------

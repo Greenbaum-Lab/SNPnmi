@@ -25,6 +25,8 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
         with open(win_dir + 'validate_calc_distances_in_windows.log', 'w') as logf:
             num_windows = class2num_windows[str(class_name)]
             for i in range(num_windows):
+                if i%100 == 0:
+                    print(f'done {i}/{num_windows}')
                 count_dist_file = f'{win_dir}count_dist_window_{i}.tsv.gz'
                 if not os.path.isfile(count_dist_file):
                     print(f'File is missing: {count_dist_file}')
@@ -33,6 +35,7 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
                 if file_len(count_dist_file) != get_num_individuals()-1:
                     print(f'Not enough rows in: {count_dist_file}')
                     logf.write(f'Not enough rows in: {count_dist_file}\n')
+            print(f'done {mac_maf} {class_name}')
 
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')
@@ -54,7 +57,7 @@ def main(args):
     paths_helper = get_paths_helper()
     class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
 
-    go_over_classes('mac', range(min_mac, max_mac), paths_helper, class2num_windows)
+    go_over_classes('mac', range(min_mac, max_mac+1), paths_helper, class2num_windows)
 
     maf_classes_names = [str(maf/100) for maf in range(min_maf, max_maf+1)]
     go_over_classes('maf', maf_classes_names, paths_helper, class2num_windows)

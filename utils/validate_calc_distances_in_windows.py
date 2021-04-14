@@ -13,6 +13,7 @@ from utils.config import get_num_individuals
 
 
 def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
+    class2missing = dict()
     for class_name in classes_names:
         win_dir = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
         validated_dir = f'{win_dir}/validated_count_dist/'
@@ -28,8 +29,11 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
                 missing.append(i)
                 print(f'File is missing: {validated_flag}')
         print(f'done {mac_maf} {class_name}')
-        print(f'missing{len(missing)}')
+        print(f'missing {len(missing)}')
         print(missing)
+        if len(missing) > 0:
+            class2missing[class_name] = missing
+    return class2missing
 
 
 def main(args):
@@ -51,11 +55,13 @@ def main(args):
 
     paths_helper = get_paths_helper()
     class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
-
-    go_over_classes('mac', range(min_mac, max_mac+1), paths_helper, class2num_windows)
+    mac_class2missing = go_over_classes('mac', range(min_mac, max_mac+1), paths_helper, class2num_windows)
 
     maf_classes_names = [str(maf/100) for maf in range(min_maf, max_maf+1)]
-    go_over_classes('maf', maf_classes_names, paths_helper, class2num_windows)
+    maf_class2missing = go_over_classes('maf', maf_classes_names, paths_helper, class2num_windows)
+    print(mac_class2missing)
+    print(maf_class2missing)
+
 
 if __name__ == "__main__":
    main(sys.argv[1:])

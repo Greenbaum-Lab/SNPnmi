@@ -1,8 +1,9 @@
 Bookmark:
- RUNNING - 1_per_class_sum_n_windows.py
- NEXT - validate the above and run 2_per_class_sum_all_windows.py (need to check it is ok before running)
- Done -  fill_calc_distances_in_windows on all classes with windows of 1000.
-
+ - fill_calc_distances_in_windows on all classes with windows of 1000.
+ - 1_per_class_sum_n_windows.py
+ - 2_per_class_sum_all_windows
+ - run validate_all_classes_all_count_dist to validate 2_per_class_sum_all_windows
+- submit_netstruct_per_class.py will run per class + 1 run on data from all classes
 
 NetStruct cmd
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 5 -mino 5 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-19_maf_1-49_0-499/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -nvl 1 -w true
@@ -32,7 +33,8 @@ The order of scripts to run:
 --------------------
 Build baseline
 - submit_1_per_class_sum_n_windows.py aggregating 1000 windows
-- TODO aggregate all windows per class
+- 2_per_class_sum_all_windows
+- run validate_all_classes_all_count_dist to validate 2_per_class_sum_all_windows
 - 3_sum_distances_from_all_classes.py
 --------------------
 

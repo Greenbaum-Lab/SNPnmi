@@ -73,4 +73,26 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
             total_number_of_sites += get_num_columns_in_file(entry)-1
     print('total_number_of_sites', total_number_of_sites)
 
-validate_012_files('mac', 2, 0)
+#validate_012_files('mac', 2, 0)
+
+def _file_len(fname):
+    i = -1
+    with gzip.open(fname,'rb') as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+
+def max_index_with_n_lines(mac_maf, class_name, n, min_index, max_index):
+    paths_helper = get_paths_helper()
+    template_012_files = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'+'window_{i}.012.tsv.gz'
+    max_i_found = 0
+    valid_is = []
+    for i in range(min_index, max_index+1):
+        if (_file_len(template_012_files.format(i=i)) == n):
+            max_i_found = i
+            valid_is.append(i)
+    print (valid_is)
+    print (max_i_found)
+
+max_index_with_n_lines('mac', 2, 929, 73028, 73510)

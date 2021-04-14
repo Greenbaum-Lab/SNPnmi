@@ -1,5 +1,8 @@
 Bookmark:
  TODO: execute fill_calc_distances_in_windows on all classes with windows of 1000.
+ TODO mac 2 windows - we have up to window_73511 (although in num_window_per_class we have 73031!!)
+ 1. How can this be?
+ 2. fill calc distances for 73031-73511
 
  Last checkpoint:
     1. running calc dist on mac 2 windows (logs cat /vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/calc_dist_windows_mac_2/mac2_012_file4179-4389.std*)

@@ -111,7 +111,7 @@ def generate_windows_and_indexes_files(mac_maf, class_name):
     os.makedirs('/'.join(window_transposed_template.split('/')[:-1]), exist_ok=True)
     number_of_windows = 1000 # get_number_of_windows_by_class()[str(class_name)]
     # TODO - this is a brute force to solve the problem I have with mac2
-    # Forcing 7303 instead of 73031 windows
+    # Forcing 1000 windows with ~7303 in each instead of 73031 windows
 
     print(number_of_windows)
 

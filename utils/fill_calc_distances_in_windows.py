@@ -1,4 +1,4 @@
-# python3 fill_calc_distances_in_windows.py maf 49 0 10
+# python3 fill_calc_distances_in_windows.py maf 0.49 0 10
 
 import sys
 import os
@@ -27,17 +27,19 @@ def _submit_calc_dist_job(mac_maf, class_name, i):
     job_long_name = f'fill_{mac_maf}_{class_name}_window_{i}'
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
+    os.makedirs(dirname(job_stderr_file), exist_ok=True)
+
     job_name=f'{class_name}_w{i}'
     cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     if mac_maf == 'mac':
         # in mac 2 we use a specific input file
         if class_name == '2':
-            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {i} -1 -1 -1 -1 True {i} {i}'
+            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 -1 -1 True {i} {i}'
         else:
-            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {i} -1 -1 {class_name} {class_name}'
+            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 {class_name} {class_name}'
     else:
         max_maf = f'{float(class_name) + 0.01}'
-        cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} maf {class_name} {i} {i} {class_name} {max_maf} -1 -1'
+        cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} maf {class_name} {i} {int(i)+1} {class_name} {max_maf} -1 -1'
 
     print(cmd_to_run)
     subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])

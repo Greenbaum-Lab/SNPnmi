@@ -76,11 +76,7 @@ def fill_distances(mac_maf, class_name, min_index_to_fill, max_index_to_fill):
         validated_flag = validated_flag_template.format(i=i)
         # check if we already validate
         if not os.path.isfile(validated_flag):
-            is_valid = _validate_count_dist_file(count_dist_file) 
-            if is_valid:
-                # create a flag that this file is valid
-                open(validated_flag, 'a').close()
-            else:
+            if not _validate_count_dist_file(count_dist_file):
                 # delete dist file if exists
                 if os.path.isfile(count_dist_file):
                     os.remove(count_dist_file)

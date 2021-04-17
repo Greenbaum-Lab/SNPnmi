@@ -1,3 +1,4 @@
+# TODO deprecate?
 # python3 merge_windows_to_slices.py maf 0.49 2 2 True
 
 import sys
@@ -11,7 +12,9 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import normalize_distances, get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper, calc_distances_based_on_files
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
+from utils.similarity_helper import calc_distances_based_on_files
+from utils.similarity_helper import normalize_distances
 
 def write_metadata_to_file(windows_to_use, file):
     with open(file,'w') as f:

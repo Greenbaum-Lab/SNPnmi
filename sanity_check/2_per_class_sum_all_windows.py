@@ -13,40 +13,9 @@ import sys
 from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
-from utils.validate import _validate_count_dist_files, _validate_count_dist_file
 
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
-
-def sum_all_windows(mac_maf, class_name, windows_files, output_dir):
-
-    all_counts_dist_file = f'{output_dir}{mac_maf}_{class_name}_all_count_dist.tsv.gz'
-    all_counts_dist_file_validation_flag = f'{output_dir}/{mac_maf}_{class_name}_all_count_dist.valid.flag'
-
-    if os.path.isfile(all_counts_dist_file):
-        print(f'all_counts_dist_file exist, do not calc! {all_counts_dist_file}')
-        return
-    all_norm_distances_file = f'{output_dir}{mac_maf}_{class_name}_all_norm_dist.tsv.gz'
-    all_norm_distances_file_validation_flag = f'{output_dir}{mac_maf}_{class_name}_all_norm_dist.valid.flag'
-
-    all_valid, promlematic_file = _validate_count_dist_files(windows_files)
-
-    if not all_valid:
-        raise Exception(f'promlematic_file: {promlematic_file}')
-
-    dists, counts = calc_distances_based_on_files(windows_files)
-
-    write_pairwise_distances(all_counts_dist_file, counts, dists)
-    print(f'all_counts_dist_file : {all_counts_dist_file}')
-    if _validate_count_dist_file(all_counts_dist_file):
-        # create a flag that this file is valid
-        open(all_counts_dist_file_validation_flag, 'a').close()
-
-    norm_distances = normalize_distances(dists, counts)
-    write_upper_left_matrix_to_file(all_norm_distances_file, norm_distances)
-    print(f'all_norm_distances_file : {all_norm_distances_file}')
-    if _validate_count_dist_file(all_norm_distances_file):
-        # create a flag that this file is valid
-        open(all_norm_distances_file_validation_flag, 'a').close()
+from utils.common import get_paths_helper
+from utils.similarity_helper import generate_similarity_matrix
 
 def _get_windows_files_names(class_dist_files_names_log, slice_counts_dist_template):
     windows_files = []
@@ -80,7 +49,7 @@ def main(args):
 
     print('output_dir',output_dir)
 
-    sum_all_windows(mac_maf, class_name, windows_files, output_dir)
+    generate_similarity_matrix(windows_files, output_dir, f'{mac_maf}_{class_name}_all')
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

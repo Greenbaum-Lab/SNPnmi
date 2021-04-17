@@ -16,7 +16,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, calc_distances_based_on_files, normalize_distances, write_pairwise_distances
+from utils.common import get_paths_helper
 
 def _run_nmi(input1, input2, output_path):
     paths_helper = get_paths_helper()

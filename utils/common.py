@@ -23,14 +23,6 @@ def get_paths_helper(data_set_name=DataSetNames.hdgp):
     return PathsHelper(root_data_folder, root_code_folder, data_set_name)
 
 
-def normalize_distances(distances, counts):
-    num_ind = len(distances) + 1
-    norm_dists = build_empty_upper_left_matrix(num_ind, 0.0)
-    for r_i, (r_dist, r_count) in enumerate(zip(distances, counts)):
-        for c_i, (c_dist, c_count) in enumerate(zip(r_dist, r_count)):
-            norm_dists[r_i][c_i] = float(c_dist)/float(c_count)
-    return norm_dists
-
 # TODO refactor this to a stand alone file
 class PathsHelper:
     # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
@@ -116,32 +108,3 @@ def str2bool(v) -> bool:
 
 
 
-def calc_distances_based_on_files(files):
-    # use the first file to understand the number of individuals
-    with gzip.open(files[0], 'rb') as f:
-        num_ind = len(f.readline().split()) + 1
-    dists = build_empty_upper_left_matrix(num_ind, 0.0)
-    counts = build_empty_upper_left_matrix(num_ind, 0)
-
-    # sum up the distances (and counts) file by file.
-    file_i = 0
-    print(f'{time.time()}: process file 1/{len(files)}')
-    for path in files:
-        file_i += 1
-        if file_i % 10 == 0:
-            print(f'{time.time()}: process file {file_i}/{len(files)}')
-        with gzip.open(path, 'rb') as f:
-            line = f.readline().decode()
-            i = -1
-            while line:
-                i += 1
-                parts = line.replace('\n','').split()
-                assert len(parts) == num_ind - 1 - i
-                for j, count_dist in enumerate(parts):
-                    count, dist = count_dist.split(';', 2)
-                    counts[i][j] += int(count)
-                    dists[i][j] += float(dist)
-                line = f.readline().decode()
-            # minus 1 as we only have i to j (without i to i) minus another one as the count is zero based
-            assert i == num_ind - 1 - 1
-    return dists, counts

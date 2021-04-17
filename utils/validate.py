@@ -10,8 +10,8 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import normalize_distances, get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
-from utils.config import get_num_chrs, get_num_individuals
+from utils.common import get_paths_helper
+from utils.config import get_num_individuals
 
 def get_num_lines_in_file(p):
     with gzip.open(p, 'rb') as f:
@@ -89,8 +89,17 @@ def _file_len(fname):
 # need to check that this is indeed faster, and also deal with edge cases (short/empty file)
 def _validate_count_dist_file(count_dist_file):
     try:
-        # if the file doesnt exist, or the structe of it is not good, we will catch it and return false
-        return _file_len(count_dist_file) == get_num_individuals()-1
+        # we may have a valid flag for this file
+        valid_flag_file = count_dist_file.replace('.tsv.gz', '.valid.flag')
+        if os.path.isfile(valid_flag_file):
+            return True
+        # else, check the length
+        # note that if the file doesnt exist, or the structe of it is not good, we will catch it and return false
+        if _file_len(count_dist_file) == get_num_individuals()-1:
+            # create a flag that this file is valid
+            open(valid_flag_file, 'a').close()
+            return True
+        return False
     except:
         return False
 

@@ -1,4 +1,4 @@
-# TODO cmd
+# TODO deprecate?
 
 import sys
 import time
@@ -11,7 +11,8 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import normalize_distances, get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
+from utils.similarity_helper import normalize_distances
 
 def add_from_file_to_values(path, num_ind, values, cast_method):
     with gzip.open(path, 'rb') as f:

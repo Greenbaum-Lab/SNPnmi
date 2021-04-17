@@ -10,8 +10,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import normalize_distances, get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
-from utils.config import get_num_chrs, get_num_individuals
+from utils.common import get_paths_helper
 
 def get_num_lines_in_file(p):
     with open(p, 'r') as f:

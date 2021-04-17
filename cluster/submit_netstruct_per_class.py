@@ -32,6 +32,7 @@ def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_
 
     # now submit netstruct class by class
     for mac_maf in ['mac', 'maf']:
+        netstruct_cmd = None
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range

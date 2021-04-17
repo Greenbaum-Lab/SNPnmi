@@ -123,5 +123,3 @@ def validate_all_classes_all_count_dist():
         validate_all_count_dist_files('mac', str(i))
     for i in range(1,50):
         validate_all_count_dist_files('maf', str(i*1.0/100.0))
-
-validate_all_classes_all_count_dist()

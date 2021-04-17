@@ -4,6 +4,11 @@ Bookmark:
  - 2_per_class_sum_all_windows
  - run validate_all_classes_all_count_dist to validate 2_per_class_sum_all_windows
 - submit_netstruct_per_class.py will run per class + 1 run on data from all classes
+- TODO get data from /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/netstruct/all_mac_2-18_maf_1-49/W_1_D_0_Min_5_SS_0.001_B_1.0/
+- TODO run ONMI to compare main to per class
+
+- TODO looks like using all data is not good. For comparison with previosu work, try using only mafs.
+
 
 NetStruct cmd
     java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -dy false -mod true -minb 5 -mino 5 -b 1.0 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-19_maf_1-49_0-499/ -skip false -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/maf_0.49_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -nvl 1 -w true

@@ -18,9 +18,9 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, str2bool
 from utils.similarity_helper import generate_similarity_matrix
-
+from utils.netstrcut_helper import submit_netstcut
 
 def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range):
     paths_helper = get_paths_helper()
@@ -40,7 +40,9 @@ def sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range):
                 slice_count_distances_file = f'{dist_dir}{mac_maf}_{val}_all_count_dist.tsv.gz'
                 windows_files.append(slice_count_distances_file)
 
-    generate_similarity_matrix(windows_files, dist_dir, f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}', override=False)
+    output_files_name = f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    generate_similarity_matrix(windows_files, dist_dir, output_files_name, override=False)
+    return output_files_name
 
 def main(args):
     s = time.time()
@@ -53,6 +55,7 @@ def main(args):
     # by maf
     maf_min_range = int(args[2])
     maf_max_range = int(args[3])
+    run_netstruct = str2bool(args[4])
 
     # submission details - TODO maybe we can add this to support specific files
     #min_window_index =  int(args[4])
@@ -63,8 +66,17 @@ def main(args):
     print('mac_max_range', mac_max_range)
     print('maf_min_range', maf_min_range)
     print('maf_max_range', maf_max_range)
+    print('run_netstruct', run_netstruct)
 
-    sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range)
+    output_files_name = sum_all_classes(mac_min_range, mac_max_range, maf_min_range, maf_max_range)
+    if run_netstruct:
+        paths_helper = get_paths_helper()
+        job_type = 'netstruct_on_classes'
+        job_long_name = f'netstruct_on_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+        job_name = 'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
+        similarity_matrix_path = paths_helper.dist_folder + output_files_name + '_norm_dist.tsv.gz'
+        output_folder = paths_helper.netstruct_folder + output_files_name + '/'
+        submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

@@ -1,34 +1,31 @@
 # python3 submit_netstruct_per_class.py 2 18 1 49 70
 
-import subprocess
 import sys
 import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
+from utils.validate import _validate_count_dist_file
+from utils.netstrcut_helper import submit_netstcut
+
 
 job_type ='netstruct_per_class'
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 
-def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs):
-    # create output folders
+def submit_netstruct_for_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range):
     paths_helper = get_paths_helper()
-    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
-    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
-
-    number_of_submitted_jobs = 1
+    number_of_submitted_jobs = 0
     # submit one with all data
     job_long_name = f'all_weighted_true'
-    job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
-    job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
     job_name=f'ns_all'
-    cluster_setting=f'sbatch --time=72:00:00 --mem=5G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-    netstruct_cmd = build_netstructh_cmd('', '', True ,f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}')
-    cmd_to_run=f'{cluster_setting} {path_to_wrapper} {netstruct_cmd}'
-    if netstruct_cmd:
-        print(cmd_to_run)
-        subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+    input_name = f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    similarity_matrix_path = paths_helper.dist_folder + input_name + '_norm_dist.tsv.gz'
+    output_folder = paths_helper.netstruct_folder + input_name + '/'
+    submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
+
+def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs):
+    paths_helper = get_paths_helper()
+    number_of_submitted_jobs = 0
 
     # now submit netstruct class by class
     for mac_maf in ['mac', 'maf']:
@@ -45,43 +42,16 @@ def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_
                 if not is_mac:
                     val = f'{val * 1.0/100}'
                 job_long_name = f'{mac_maf}{val}_weighted_true'
-                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
-                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f'ns_{val}'
-                cluster_setting=f'sbatch --time=72:00:00 --mem=5G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                netstruct_cmd = build_netstructh_cmd(mac_maf, val)
-                if netstruct_cmd:
-                    cmd_to_run=f'{cluster_setting} {path_to_wrapper} {netstruct_cmd}'
-                    print(cmd_to_run)
-                    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                similarity_matrix_path = paths_helper.dist_folder + f'{mac_maf}_{val}_all_norm_dist.tsv.gz'
+                output_folder = paths_helper.netstruct_folder + f'{mac_maf}_{val}_all/'
+                submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
+
+                if submit_netstcut:
                     number_of_submitted_jobs += 1
                     if number_of_submitted_jobs == max_number_of_jobs:
                         print(f'No more jobs will be submitted.')
                         break
-
-
-def build_netstructh_cmd(mac_maf, val, run_on_all=False, all_classes_str=None):
-    paths_helper = get_paths_helper()
-    jar_path = paths_helper.netstruct_jar
-    output_folder = paths_helper.netstruct_folder + f'{mac_maf}_{val}_all/'
-    if run_on_all:
-        output_folder = paths_helper.netstruct_folder + all_classes_str + '/'
-
-    os.makedirs(output_folder, exist_ok=True)
-
-    # per class /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/mac_2_all_norm_dist.tsv.gz
-    distances_matrix_path = paths_helper.dist_folder + f'{mac_maf}_{val}_all_norm_dist.tsv.gz'
-    if run_on_all:
-    # all classes /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/all_mac_2-18_maf_1-49_norm_dist.tsv.gz
-        distances_matrix_path = paths_helper.dist_folder + all_classes_str + '_norm_dist.tsv.gz'
-    # validate the input
-    if not os.path.isfile(distances_matrix_path.replace('.tsv.gz', '.valid.flag')):
-        print(f'{distances_matrix_path} doesnt have a valid.flag file to validate it!')
-        return None
-
-    indlist_path = paths_helper.netstructh_indlist_path
-    sample_sites_path = paths_helper.netstructh_sample_sites_path
-    return f'java -jar {jar_path} -ss 0.001 -minb 5 -mino 5 -pro {output_folder} -pm {distances_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
 
 #submit_netstruct_per_class(2, 18, 1, 49, 70)
 
@@ -107,4 +77,5 @@ if __name__ == '__main__':
     print('maf_max_range', maf_max_range)
     print('max_number_of_jobs', max_number_of_jobs)
 
+    submit_netstruct_for_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range)
     submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs)

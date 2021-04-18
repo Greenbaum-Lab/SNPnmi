@@ -77,7 +77,7 @@ def main(args):
         similarity_matrix_path = paths_helper.dist_folder + output_files_name + '_norm_dist.tsv.gz'
         output_folder = paths_helper.netstruct_folder + output_files_name + '/'
         print(output_folder)
-        submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
+        submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss=0.0005)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 

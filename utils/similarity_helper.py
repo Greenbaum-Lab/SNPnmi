@@ -5,7 +5,7 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, get_paths_helper, normalize_distances, write_pairwise_distances
+from utils.common import  build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_distances
 from utils.validate import _validate_count_dist_file, _validate_count_dist_files
 
 # TODO rename - similiarty

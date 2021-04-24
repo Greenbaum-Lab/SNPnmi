@@ -1,3 +1,4 @@
+# TODO  - refactor to use config and paths_helper
 from utils.vcf_stats_helper import get_vcf_stats
 import sys
 import time

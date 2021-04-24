@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#TODO - needs to be migrated to python, so we can use config and paths_helper.. We can use subprocess to submit a job to the cluster..
+
+
 # will submit split_vcfs of given vcfs, using given mac and mafs values
 # --error="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/split_vcfs_chr_N_mac_N.stderr"
 # --output="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stdout/split_vcfs_chr_N_mac_N.stdout"
@@ -87,16 +90,17 @@ for i in "${!vcfs_files_arr[@]}"; do
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
         cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" '$mac' '$mac' - -'
         echo ${cmd_to_run}
-        #eval ${cmd_to_run}
+        eval ${cmd_to_run}
     done
+
     echo "go over maf"
-        for maf in $(seq $maf_min_range $maf_delta $maf_max_range); do
+    for maf in $(seq $maf_min_range $maf_delta $maf_max_range); do
         job_stderr_file="${job_stderr_folder}${vcf_short_name}_maf${maf}.stderr"
         job_stdout_file="${job_stdout_folder}${vcf_short_name}_maf${maf}.stdout"
         job_name="${vcf_short_name}f${maf}"
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
-	max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
-	cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - '$maf' '$max_maf
+        max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
+        cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - '$maf' '$max_maf
         echo ${cmd_to_run}
         eval ${cmd_to_run}
     done

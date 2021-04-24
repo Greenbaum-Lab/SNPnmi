@@ -95,7 +95,7 @@ def write_upper_left_matrix_to_file(output_file, values):
     with gzip.open(output_file,'wb') as f:
         for v in values:
             s = ' '.join([str(i) for i in v]) + '\n'
-            f.write(s.encode())    
+            f.write(s.encode())
 
 def str2bool(v) -> bool:
     if isinstance(v, bool):

@@ -1,12 +1,19 @@
+# TODO - this is the first script written. Need to go over it, see it can be used for other VCFs.
 import urllib.request
 import logging
 import argparse
 import sys
 from utils.config import *
 import os
+from os.path import dirname, abspath
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
+sys.path.append(root_path)
+from utils.common import get_number_of_windows_by_class, get_paths_helper
 
+# TODO - I gave up on the logger in other scripts, print works fine
 logger = logging.getLogger(__name__)
 
+# TODO - I gave up on the parser in other scripts.
 def init_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-name', type=str, dest='data_name', default='hgdp', help='the name of the dataset to work with')
@@ -21,7 +28,9 @@ def main(in_args):
     source = config_data[data_name]['source']
     files_names = config_data[data_name]['files_names']
 
-    local_data_folder = get_local_data_folder(data_name)
+    paths_helper = get_paths_helper()
+
+    local_data_folder = paths_helper.data_folder()
     logger.info('output folder is ' + local_data_folder)
     os.makedirs(local_data_folder, exist_ok=True)
 
@@ -32,8 +41,6 @@ def main(in_args):
         else:
             logger.info('Downloading ' + f)
             urllib.request.urlretrieve(source + f, dest)
-
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])

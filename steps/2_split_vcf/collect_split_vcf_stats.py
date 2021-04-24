@@ -78,12 +78,13 @@ def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
     values['012_max_num_of_sites'] = max_c-1
     return values
 
-
+# TODO move to common?
 def number_of_lines(file_path):
     count = 0
     for line in open(file_path).readlines(): count += 1
     return count
 
+# TODO move to common?
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
@@ -107,7 +108,8 @@ def write_values_to_csv(values, output_path):
             f.write(','.join(expected_keys) + '\n')
         # if file doesnt exist, write the header
         f.write(','.join([str(values[k]) for k in expected_keys]) + '\n')
-        
+
+
 def collect_split_vcf_stats(logs_folder, log_files, chr_name_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_name_names)
     for i in range(len(log_files)):
@@ -116,6 +118,7 @@ def collect_split_vcf_stats(logs_folder, log_files, chr_name_names, split_vcf_st
         values = get_split_vcf_stats(logs_folder, log_file, chr_name_name)
         write_values_to_csv(values, split_vcf_stats_csv_path)
         print(f'done with file {i} out of {len(log_files)} - {log_file}')
+
 
 def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range, max_mac_range, mac_delta, min_maf_range, max_maf_range, maf_delta):
     macs = range(min_mac_range,max_mac_range+1, mac_delta)
@@ -132,6 +135,7 @@ def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_pat
     print(f'will process {len(log_files)} files')
     collect_split_vcf_stats(logs_folder, log_files, chr_names_for_logs, split_vcf_stats_csv_path)
 
+# TODO - add main, use paths_helper
 #HGDP
 logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
 # macs folder:

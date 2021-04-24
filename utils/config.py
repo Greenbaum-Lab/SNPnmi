@@ -28,3 +28,8 @@ def get_sample_sites_file_name(data_set_name=DataSetNames.hdgp):
 def get_indlist_file_name(data_set_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[data_set_name]['indlist_file_name']
+
+def get_cluster_data_folder():
+    data_config = get_config(CONFIG_NAME_PATHS)
+    return data_config['cluster_data_folder']
+

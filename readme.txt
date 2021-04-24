@@ -4,11 +4,9 @@ Bookmark:
  - 2_per_class_sum_all_windows
  - run validate_all_classes_all_count_dist to validate 2_per_class_sum_all_windows
 - submit_netstruct_per_class.py will run per class + 1 run on data from all classes
-- TODO get data from /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/netstruct/all_mac_2-18_maf_1-49/W_1_D_0_Min_5_SS_0.001_B_1.0/
-- TODO run ONMI to compare main to per class
 
-- TODO looks like using all data is not good. For comparison with previosu work, try using only mafs:
-- TODO check the code of latests 2 commits - run 3_sum_distances_from_all_classes_and_run_netstrcut with mafs only
+- TODO check the code of 2 commits - run 3_sum_distances_from_all_classes_and_run_netstrcut with mafs only
+- TODO - add utility to analyze stepsizes: given a set of step sized generate plots of per step number of edges removed, total number of buckets, avg and std bucket sizes etc
 
 
 NetStruct cmd

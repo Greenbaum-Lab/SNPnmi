@@ -17,6 +17,7 @@ def submit_per_class(mac_maf, classes_names, paths_helper, num_windows_per_slice
         job_stdout_file=paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_name)
         job_name=f'mrg_c{classes_names}'
         cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+        # TODO wrapper_max_30_params
         cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_merge_windows.sh {mac_maf} {class_name} {num_windows_per_slice} {num_slices} {is_random}'
         print(cmd_to_run)
         #subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])

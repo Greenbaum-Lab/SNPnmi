@@ -75,7 +75,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f'c{mac}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
+                cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
                 print(cmd_to_run)
                 subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -103,7 +103,7 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_name=f'f{str(maf)[-2:]}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run=f'{cluster_setting} /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_calc_dist_windows.sh maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
+                cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
                 print(cmd_to_run)
                 subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
                 number_of_submitted_jobs += 1

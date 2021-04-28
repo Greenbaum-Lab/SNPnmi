@@ -159,6 +159,7 @@ def main(args):
 # maf=0.49
 # main([mac, maf])
 
+#TODO - we should have a cluster script to submit this by chr/class
 if __name__ == "__main__":
     # go over chrs one by one
     # load the mac_2.012 file to pandas

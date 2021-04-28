@@ -51,16 +51,36 @@ This is where we store configuration data for both the cluster enviorment (like 
 
 ### 1. 1_get_data (single run)
 
-    Gets the VCFS.
-    There is also a script to get stats of the VCFs - super useful for understanding the data we have! (some TODOs there, its an old script)
-    See the notebook Analyze basic vcftools stats.ipynb.
+Gets the VCFS.
+There is also a script to get stats of the VCFs - super useful for understanding the data we have! (some TODOs there, its an old script)
+See the notebook Analyze basic vcftools stats.ipynb.
 
-### 2. 2_split_vcf (cluster)
+### 2. 2_split_vcf_by_class (cluster)
 
-    Splits the VCFs by classes.
-    This is currently an ugly bash script. Need to migrate to python.
-    Use the collect_split_vcf_stats.py to get stats per class. Mandatory for next steps, and important to understand the data.
+Splits the VCFs by classes.
+This is currently an ugly bash script. Need to migrate to python.
+Use the collect_split_vcf_stats.py to get stats per class. Mandatory for next steps, and important to understand the data.
 
+### 3. 3_split_to_windows (single run - need to convert to cluster)
+
+Splits each class's indexes randomly to windows.
+Because in the next step we read the classes many times (as the number of windows), if we have a big class (for example mac 2 with 73K windows), it is more efficient to generate files with the windows data (and not just the indexes) which we will read in the next step.
+So, we have two options: 
+1.  big classes(next steps will be more time efficient, but requires a lot of storage):
+        There are a few steps to take:
+ - generate_windows_and_indexes_files.py
+        (takes 35 sec to prepare 2000 sites. We have 7300000/2000 = 3650 * 35 = 127750 / (60*60) = 35 hours)
+        OPTION: do this per chr, and merge in the end, this will require a chr param, and a seperate output
+        (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
+ - split_transposed_windows.py - the previous step generates big windows of 1000. In this step we further split them. 
+            TODO - get rid of this step.
+            TODO - we should improve so that the output will contain the desired number of sites per window (and not on average).
+ - validate_split_transposed_windows
+ - submit_transpose_windows.py - the output of the previous step is transposed, so we need to take care of it. TODO - get rid of this step, should be done with the previous.
+
+2. regular size classes: 
+ - generate_windows_indexes_files.py
+ - validate_windows_indexes.py
 
 # TODO
  -  Add a main script: user interactive, select data and step and params.

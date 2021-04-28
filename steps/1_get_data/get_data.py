@@ -1,3 +1,5 @@
+
+
 # TODO - this is the first script written. Need to go over it, see it can be used for other VCFs.
 import urllib.request
 import logging

@@ -88,7 +88,7 @@ for i in "${!vcfs_files_arr[@]}"; do
         job_stdout_file="${job_stdout_folder}${vcf_short_name}_mac${mac}.stdout"
         job_name="${vcf_short_name}c${mac}"
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
-        cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" '$mac' '$mac' - -'
+        cmd_to_run=${cluster_setting}' <TODO>split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" '$mac' '$mac' - -'
         echo ${cmd_to_run}
         eval ${cmd_to_run}
     done
@@ -100,7 +100,7 @@ for i in "${!vcfs_files_arr[@]}"; do
         job_name="${vcf_short_name}f${maf}"
         cluster_setting='sbatch --error="'${job_stderr_file}'" --output="'${job_stdout_file}'" --job-name="'${job_name}'"'
         max_maf=$(echo "scale=2;${maf} + ${maf_delta}" | bc)
-        cmd_to_run=${cluster_setting}' ../split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - '$maf' '$max_maf
+        cmd_to_run=${cluster_setting}' <TODO>split_vcfs.sh "'${full_vcf_file_path}'" "'${vcftools_params}'" "'${output_folder}'" - - '$maf' '$max_maf
         echo ${cmd_to_run}
         eval ${cmd_to_run}
     done

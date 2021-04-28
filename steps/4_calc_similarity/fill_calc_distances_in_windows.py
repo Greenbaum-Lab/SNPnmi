@@ -3,7 +3,7 @@
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from datetime import datetime
 import gzip
@@ -13,11 +13,9 @@ from utils.config import get_num_individuals
 import subprocess
 from utils.validate import _validate_count_dist_file
 
-
-
 def _submit_calc_dist_job(mac_maf, class_name, i):
     job_type ='fill_calc_dist_window'
-    path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
+    
     calc_distances_in_window_cmd = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py'
     paths_helper = get_paths_helper()
     job_long_name = f'fill_{mac_maf}_{class_name}_window_{i}'
@@ -30,15 +28,15 @@ def _submit_calc_dist_job(mac_maf, class_name, i):
     if mac_maf == 'mac':
         # in mac 2 we use a specific input file
         if class_name == '2':
-            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 -1 -1 True {i} {i}'
+            cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 -1 -1 True {i} {i}'
         else:
-            cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 {class_name} {class_name}'
+            cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {class_name} {i} {int(i)+1} -1 -1 {class_name} {class_name}'
     else:
         max_maf = f'{float(class_name) + 0.01}'
-        cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} maf {class_name} {i} {int(i)+1} {class_name} {max_maf} -1 -1'
+        cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} maf {class_name} {i} {int(i)+1} {class_name} {max_maf} -1 -1'
 
     print(cmd_to_run)
-    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+    subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
 def _log_job_submitted(fill_log_file, mac_maf, class_name, i):
     with open(fill_log_file, 'a') as logf:

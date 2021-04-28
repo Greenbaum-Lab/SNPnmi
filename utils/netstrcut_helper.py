@@ -9,7 +9,7 @@ from utils.common import get_paths_helper
 from utils.validate import _validate_count_dist_file
 import subprocess
 
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
+
 
 
 def submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss='0.001'):
@@ -24,9 +24,9 @@ def submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, o
    # build netstrcut cmd
     netstruct_cmd = build_netstruct_cmd(similarity_matrix_path, output_folder, netstrcut_ss)
     if netstruct_cmd:
-        cmd_to_run=f'{cluster_setting} {path_to_wrapper} {netstruct_cmd}'
+        cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
         print(cmd_to_run)
-        subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+        subprocess.run([paths_helper.submit_helper, cmd_to_run])
         return True
 
 

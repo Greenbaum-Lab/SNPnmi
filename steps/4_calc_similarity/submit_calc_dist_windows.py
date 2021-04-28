@@ -7,12 +7,12 @@ import subprocess
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
+
 calc_distances_in_window_cmd = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py'
 job_type ='calc_dist_windows_mac_2'
 
@@ -47,9 +47,9 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                     # it takes about 10 minutes to process each window. We have a max of 210 windows. This transalte to 35 hours. using 72 as a buffer.
 
                     cluster_setting=f'sbatch --time=72:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                    cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
+                    cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
                     print(cmd_to_run)
-                    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                    subprocess.run([paths_helper.submit_helper, cmd_to_run])
                     number_of_submitted_jobs += 1
                     if number_of_submitted_jobs == max_number_of_jobs:
                         print(f'No more jobs will be submitted. Last submitted {job_min_input_012_file_index}-{job_max_input_012_file_index}')
@@ -75,9 +75,9 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                 job_name=f'c{mac}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
+                cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
                 print(cmd_to_run)
-                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
@@ -103,9 +103,9 @@ def submit_calc_dist_windows(number_of_windows_to_process_per_job, max_number_of
                 job_name=f'f{str(maf)[-2:]}_w{min_window_id}'
                 cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 #maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run=f'{cluster_setting} {path_to_wrapper} {calc_distances_in_window_cmd} maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
+                cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
                 print(cmd_to_run)
-                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')

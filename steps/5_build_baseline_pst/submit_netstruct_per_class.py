@@ -3,7 +3,7 @@
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 from utils.validate import _validate_count_dist_file

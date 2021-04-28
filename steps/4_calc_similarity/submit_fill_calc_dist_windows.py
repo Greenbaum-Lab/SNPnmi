@@ -3,12 +3,12 @@ import subprocess
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
+
 fill_calc_distances_in_window_cmd = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/fill_calc_distances_in_windows.py'
 job_type ='fill_calc_distances_in_windows'
 
@@ -40,9 +40,9 @@ def submit_fill_calc_distances_in_windows(number_of_windows_to_process_per_job, 
                     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
                     job_name=f'f{val}_{min_window_id}'
                     cluster_setting=f'sbatch --time=48:00:00 --mem=5G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                    cmd_to_run=f'{cluster_setting} {path_to_wrapper} {fill_calc_distances_in_window_cmd} {mac_maf} {val} {min_window_id} {max_window_id}'
+                    cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {fill_calc_distances_in_window_cmd} {mac_maf} {val} {min_window_id} {max_window_id}'
                     print(cmd_to_run)
-                    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                    subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
 
 def main(args):

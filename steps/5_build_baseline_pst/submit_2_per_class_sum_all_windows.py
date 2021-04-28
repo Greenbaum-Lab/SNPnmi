@@ -4,14 +4,14 @@ import subprocess
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
 job_type = 'per_class_sum_all_windows'
 path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/sanity_check/2_per_class_sum_all_windows.py'
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
+
 
 def submit_2_per_class_sum_all_windows(mac_min_range, mac_max_range, maf_min_range, maf_max_range, num_windows_per_job):
     # create output folders
@@ -36,9 +36,9 @@ def submit_2_per_class_sum_all_windows(mac_min_range, mac_max_range, maf_min_ran
                 job_name=f's{val}_{num_windows_per_job}'
                 cluster_setting=f'sbatch --time=24:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 python_script_params = f'{mac_maf} {val} {num_windows_per_job}'
-                cmd_to_run=f'{cluster_setting} {path_to_wrapper} python3 {path_to_python_script_to_run} {python_script_params}'
+                cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
                 print(cmd_to_run)
-                subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+                subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
 if __name__ == '__main__':
     # by mac

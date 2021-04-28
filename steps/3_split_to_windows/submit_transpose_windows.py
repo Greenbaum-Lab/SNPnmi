@@ -2,14 +2,13 @@ import subprocess
 import sys
 import os
 from os.path import dirname, abspath
-root_path = dirname(dirname(os.path.abspath(__file__)))
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import get_paths_helper
 
 # will submit transpose_windows of given classes and windows
 
 # python3 submit_transpose_windows.py 2 -1 2 4 144 72
-path_to_wrapper = '/cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh'
 transpose_windows_python_call = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/transpose_windows.py'
 
 
@@ -23,9 +22,9 @@ def submit_transpose_windows(mac, maf, window_id, first_index_to_use, expected_n
     class_name = max(int(mac), float(maf))
     job_name=f't{class_name}w{window_id}'
     cluster_setting=f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-    cmd_to_run=f'{cluster_setting} {path_to_wrapper} {transpose_windows_python_call} {mac} {maf} {window_id} {first_index_to_use} {expected_number_of_files}'
+    cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {transpose_windows_python_call} {mac} {maf} {window_id} {first_index_to_use} {expected_number_of_files}'
     print(cmd_to_run)
-    subprocess.run(['/cs/icore/amir.rubin2/code/snpnmi/cluster/submit_helper.sh', cmd_to_run])
+    subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
 def main(args):
     print ('Number of arguments:', len(args), 'arguments.')

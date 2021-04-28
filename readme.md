@@ -28,8 +28,8 @@ If you add new dependencies, please include them with the stable version number 
 
 ## Structure
 
-### cluster
-A module which holds wrappers used to execute the various steps on the cluster
+### runner.py
+This script can be used to run a specific step on a specific data set
 
 ### steps
 A module which holds scripts used for every processing step
@@ -38,7 +38,7 @@ A module which holds scripts used for every processing step
 A module which holds utitlity modules and helpers
 
 ### tests
-A module  holds tests for the different steps
+A module which holds tests for the different steps
 
 ### notebooks
 This is where we store adhoc and dev-test notebooks
@@ -105,6 +105,7 @@ TODO - refactor - many of the code here should also be used in the next step.
 - 1_per_class_sum_n_windows.py
 - 2_per_class_sum_all_windows
 - run validate_all_classes_all_count_dist to validate _per_class_sum_all_windows
+Prior to the run of next step you need to manully creare sample_sites_file and indlist_file for netstucrt
 - submit_netstruct_per_class.py - will submit a run per class + a run on data from all classes
 
 ### 6. TODO - 6_compare_to_random_pst

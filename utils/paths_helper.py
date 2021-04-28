@@ -1,16 +1,23 @@
+import sys
+import os
+from os.path import dirname, abspath
+root_path = dirname(dirname(abspath(__file__)))
+sys.path.append(root_path)
 from utils.config import *
 
 repo_dir_name = 'snpnmi'
 class PathsHelper:
-    # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", data_set_name='hgdp'
-    def __init__(self, root_data_folder: str, root_code_folder: str, data_set_name: str):
+    # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", dataset_name='hgdp'
+    def __init__(self, root_data_folder: str, root_code_folder: str, dataset_name: str):
         # data main paths
         self.vcf_folder = f'{root_data_folder}vcf/'
-        self.data_folder = f'{self.vcf_folder}{data_set_name}/'
+        self.data_folder = f'{self.vcf_folder}{dataset_name}/'
+        self.checkpoints_folder = f'{self.data_folder}Checkpoints/'
         self.classes_folder = f'{self.data_folder}classes/'
         self.windows_folder = f'{self.classes_folder}windows/'
         self.slices_folder = f'{self.classes_folder}slices/'
         self.random_slices_folder = f'{self.classes_folder}random_slices/'
+
         # TODO - similarity?
         self.dist_folder = f'{self.classes_folder}distances/'
         self.netstruct_folder = f'{self.classes_folder}netstruct/'

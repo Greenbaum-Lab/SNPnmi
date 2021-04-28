@@ -13,12 +13,12 @@ from utils.config import *
 from utils.paths_helper import PathsHelper
 
 
-def get_paths_helper(data_set_name=DataSetNames.hdgp):
+def get_paths_helper(dataset_name=DataSetNames.hdgp):
     paths_config = get_config(CONFIG_NAME_PATHS)
     root_data_folder = paths_config['cluster_data_folder'] if is_cluster() else paths_config['local_data_folder']
     root_code_folder = paths_config['cluster_code_folder'] if is_cluster() else paths_config['local_code_folder']
 
-    return PathsHelper(root_data_folder, root_code_folder, data_set_name)
+    return PathsHelper(root_data_folder, root_code_folder, dataset_name)
 
 
 def is_cluster():

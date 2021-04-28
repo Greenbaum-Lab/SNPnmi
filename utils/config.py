@@ -8,26 +8,39 @@ CONFIG_NAME_PATHS = 'paths'
 
 class DataSetNames():
     hdgp = 'hgdp'
+    hdgp_test = 'hgdp_test'
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:
         return json.load(config_file)
 
-def get_num_individuals(data_set_name=DataSetNames.hdgp):
+def get_num_individuals(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[data_set_name]['num_individulas']
+    return data_config[dataset_name]['num_individulas']
 
-def get_num_chrs(data_set_name=DataSetNames.hdgp):
+def get_num_chrs(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[data_set_name]['num_chrs']
+    return data_config[dataset_name]['num_chrs']
 
-def get_sample_sites_file_name(data_set_name=DataSetNames.hdgp):
+def get_sample_sites_file_name(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[data_set_name]['sample_sites_file_name']
+    return data_config[dataset_name]['sample_sites_file_name']
 
-def get_indlist_file_name(data_set_name=DataSetNames.hdgp):
+def get_indlist_file_name(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[data_set_name]['indlist_file_name']
+    return data_config[dataset_name]['indlist_file_name']
+
+def get_dataset_ftp_source_host(dataset_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[dataset_name]['ftp_source_host']
+
+def get_dataset_ftp_source_path(dataset_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[dataset_name]['ftp_source_path']
+
+def get_dataset_files_names(dataset_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[dataset_name]['files_names']
 
 def get_cluster_data_folder():
     data_config = get_config(CONFIG_NAME_PATHS)

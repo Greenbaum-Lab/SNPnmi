@@ -38,9 +38,13 @@ def get_dataset_ftp_source_path(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['ftp_source_path']
 
-def get_dataset_files_names(dataset_name=DataSetNames.hdgp):
+def get_dataset_vcf_files_names(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[dataset_name]['files_names']
+    return data_config[dataset_name]['vcf_files_names']
+
+def get_dataset_metadata_files_names(dataset_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[dataset_name]['metadata_files_names']
 
 def get_cluster_data_folder():
     data_config = get_config(CONFIG_NAME_PATHS)

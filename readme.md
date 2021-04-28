@@ -1,3 +1,5 @@
+checkpoint - work on get_vcfs_stats.py
+
 # SNP NMI - using Netstrcut to analyze different classes
 (to view in vscode, hit ctrl+k, v)
 ## Useful links

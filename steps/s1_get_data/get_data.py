@@ -1,5 +1,3 @@
-
-
 ## Download files by config.
 ## Will check that the sized match, and can retry to download if they are not.
 ## Note that it can take a few hours to download 100GB, so better run in screen.
@@ -26,7 +24,7 @@ def get_files_by_dataset_name(dataset_name):
     ftp_source_path = get_dataset_ftp_source_path(dataset_name)
     ftp_source = get_ftp_source(ftp_source_host, ftp_source_path)
     print('Ftp source is ' + ftp_source)
-    files_names = get_dataset_files_names(dataset_name)
+    files_names = get_dataset_vcf_files_names(dataset_name) + get_dataset_metadata_files_names(dataset_name)
     print('Files are ' + ','.join(files_names))
 
     paths_helper = get_paths_helper(dataset_name)
@@ -97,24 +95,19 @@ def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folde
     return all_files_sizes_validated & no_missing_files
 
 
-# using checkpoint
-def main(args):
-    s = time.time()
+def get_data(args):
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
     dataset_name = args[0]
-    chekpoint_file = get_checkpoint_file_path(dataset_name, os.path.basename(__file__))
-    if os.path.exists(chekpoint_file):
-        checkpoint_time = get_checkpoint_time(chekpoint_file)
-        print (f'Checkpoint exists from {checkpoint_time}. ({chekpoint_file})Break.')
-        print(f'{(time.time()-s)/60} minutes total run time')
-        return 'checkpoint found'
+    return get_files_by_dataset_name(dataset_name)
 
-    success = get_files_by_dataset_name(dataset_name)
-    if success:
-        write_checkpoint_file(chekpoint_file)
+
+def main(args):
+    s = time.time()
+    execute_with_checkpoint(get_data, args)
     print(f'{(time.time()-s)/60} minutes total run time')
-    return 'done'
+
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    args = sys.argv[1:]
+    main(args)

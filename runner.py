@@ -17,7 +17,7 @@ def run_step(dataset_name, step):
         return get_data.main([dataset_name])
 
 
-def main(args):
+def runner(args):
     s = time.time()
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
@@ -29,6 +29,7 @@ def main(args):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-main(['hgdp_test','1'])
+runner(['hgdp_test','1'])
+
 if __name__ == "__Xmain__":
-   main(sys.argv[1:])
+   runner(sys.argv[1:])

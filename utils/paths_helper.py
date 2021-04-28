@@ -12,7 +12,8 @@ class PathsHelper:
         # data main paths
         self.vcf_folder = f'{root_data_folder}vcf/'
         self.data_folder = f'{self.vcf_folder}{dataset_name}/'
-        self.checkpoints_folder = f'{self.data_folder}Checkpoints/'
+        self.checkpoints_folder = f'{self.data_folder}checkpoints/'
+        self.vcf_stats_folder = f'{self.data_folder}stats/'
         self.classes_folder = f'{self.data_folder}classes/'
         self.windows_folder = f'{self.classes_folder}windows/'
         self.slices_folder = f'{self.classes_folder}slices/'

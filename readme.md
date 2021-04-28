@@ -99,5 +99,16 @@ So, we have two options:
  ---
  ---
 
+
+### 5. 5_build_baseline_pst
+TODO - refactor - many of the code here should also be used in the next step.
+- 1_per_class_sum_n_windows.py
+- 2_per_class_sum_all_windows
+- run validate_all_classes_all_count_dist to validate _per_class_sum_all_windows
+- submit_netstruct_per_class.py - will submit a run per class + a run on data from all classes
+
+### 6. TODO - 6_compare_to_random_pst
+We will need to build random PST, run onmi and collect results.
+
 # TODO
  -  Add a main script: user interactive, select data and step and params.

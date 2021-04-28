@@ -18,6 +18,7 @@ sys.path.append(root_path)
 
 from utils.common import get_paths_helper
 
+# TODO extract to nmi_helper
 def _run_nmi(input1, input2, output_path):
     paths_helper = get_paths_helper()
     nmi_path = paths_helper.nmi_exe

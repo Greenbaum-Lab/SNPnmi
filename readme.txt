@@ -42,13 +42,6 @@ Build baseline
 - 3_sum_distances_from_all_classes.py
 --------------------
 
-- TODO - submit_merge_windows (is_random=False to join all for baseline) (takes ~13 minutes to process 1K windows)
-- TODO - merge_slices_to_normalized_dist_matrix (to generate ground truth)
-- TODO - submit_merge_windows (is_random=True to generate random slices)
-- TODO - run_netstruct
-- TODO - calc nmi
-- TODO - collect nmi
-
 
 nmi - from https://github.com/aaronmcdaid/Overlapping-NMI
 

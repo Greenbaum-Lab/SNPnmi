@@ -12,6 +12,18 @@ from utils.config import *
 
 from utils.paths_helper import PathsHelper
 
+def hash_args(args):
+    hash_val  = 0
+    for i in args:
+        hash_val += hash_str(str(i))
+    return hash_val
+
+def hash_str(s):
+    hash_val  = 0
+    for c in s:
+        val = ord(c)*17
+        hash_val += val
+    return hash_val
 
 def get_paths_helper(dataset_name=DataSetNames.hdgp):
     paths_config = get_config(CONFIG_NAME_PATHS)

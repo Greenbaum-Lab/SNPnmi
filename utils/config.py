@@ -1,14 +1,18 @@
 import json
 import logging.config
 from pathlib import Path
+from enum import Enum
 
 CONFIG_DIR_PATTERN = str(Path(__file__).parents[1]) + '/config/config.{config_file}.json'
 CONFIG_NAME_DATA = 'data'
 CONFIG_NAME_PATHS = 'paths'
 
-class DataSetNames():
+class DataSetNames(Enum):
     hdgp = 'hgdp'
     hdgp_test = 'hgdp_test'
+
+def validate_dataset_name(dataset_name):
+    return dataset_name in [d.value for d in DataSetNames]
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:

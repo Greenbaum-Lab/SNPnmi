@@ -9,12 +9,15 @@ import ftplib
 from pathlib import Path
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
-from steps.s1_get_data import get_data
+from steps.s1_get_data import get_data, get_vcfs_stats
+from utils.config import *
 
 
-def run_step(dataset_name, step):
-    if step == "1":
-        return get_data.main([dataset_name])
+def run_step(dataset_name, step, step_args):
+    if step == "1.1":
+        return get_data.main(step_args)
+    if step == "1.2":
+        return get_vcfs_stats.main(step_args)
 
 
 def runner(args):
@@ -22,14 +25,19 @@ def runner(args):
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
     dataset_name = args[0]
+    assert validate_dataset_name(dataset_name)
     step = args[1]
+    step_args = args[2:]
 
-    print(f'Executing step {step} on dataset {dataset_name}.')
-    print(run_step(dataset_name, step))
+    print(f'Executing step {step} on dataset {dataset_name} with step args {step_args}.')
+    is_executed = run_step(dataset_name, step, step_args)
+    print(f'is executed: {is_executed}')
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-runner(['hgdp_test','1'])
+#runner(['hgdp_test','1.1','hgdp_test'])
 
-if __name__ == "__Xmain__":
+runner(['hgdp_test','1.2','hgdp_test','freq'])
+
+if __name__ == "__main__X":
    runner(sys.argv[1:])

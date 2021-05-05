@@ -9,53 +9,53 @@ import ftplib
 from pathlib import Path
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
-from utils.vcf_stats_helper import get_vcf_stats
+from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
 from utils.common import get_paths_helper
 from utils.config import *
 
-# params are: input_schema, output_folder, comma separated chr_names
-# example:
-# python3 get_vcfs_stats.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.\{chr_name\}.vcf.gz 
-# /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ freq chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY
+SCRIPT_NAME = os.path.basename(__file__)
+# python3 get_vcfs_stats.py hgdp freq
 
 def generate_vcfs_stats(dataset_name, stat_types):
     paths_helper = get_paths_helper(dataset_name)
     vcfs_folder = paths_helper.data_folder
-    #TODO from here
-    files_names = get_dataset_files_names(dataset_name)
+    files_names = get_dataset_vcf_files_names(dataset_name)
     output_folder = paths_helper.vcf_stats_folder
 
-    stats_done = True
+    all_stats_done = True
     for gzvcf_file in files_names:
-        # vcf file exist
-        if path.exists(vcfs_folder + gzvcf_file):
-            # stats not caclulated yet
-            get_vcf_stats(gzvcf_file, output_folder, chr_name, stat_type)
-            print(f'done - {chr_name}')
-        else:
-            print(f'one of the input files is missing: {gzvcf_file}')
-            stats_done = False
+        # check vcf file exist
+        if not path.exists(vcfs_folder + gzvcf_file):
+            print (f'vcf file is missing {vcfs_folder + gzvcf_file}')
+            all_stats_done = False
+            continue
+        # go over stats (with checkpoint)
+        for stat_type in stat_types:
+            output_path_prefix = output_folder + gzvcf_file
+            is_executed, msg = execute_with_checkpoint(get_vcf_stats, SCRIPT_NAME + gzvcf_file, dataset_name, [vcfs_folder, gzvcf_file, output_path_prefix, stat_type])
+            if is_executed:
+                print(f'done - {gzvcf_file} - {stat_type}')
+    return all_stats_done
+
+# wrappers for execution
+def get_vcfs_stats(dataset_name, stat_types):
+    assert validate_dataset_name(dataset_name)
+    stat_types = stat_types.split(',')
+    assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
+    return generate_vcfs_stats(dataset_name, stat_types)
 
 
-# using checkpoint
-def get_vcfs_stats(args):
+def main(args):
+    # args should be: [dataset_name, stat_types (comma seperated)]
     s = time.time()
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
     dataset_name = args[0]
-    chekpoint_file = get_checkpoint_file_path(dataset_name, os.path.basename(__file__))
-    if os.path.exists(chekpoint_file):
-        checkpoint_time = get_checkpoint_time(chekpoint_file)
-        print (f'Checkpoint exists from {checkpoint_time}. ({chekpoint_file})Break.')
-        print(f'{(time.time()-s)/60} minutes total run time')
-        return 'checkpoint found'
+    assert validate_dataset_name(dataset_name)
+    is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, dataset_name, args)
+    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    return is_executed
 
-    success = generate_vcfs_stats(dataset_name)
-    if success:
-        write_checkpoint_file(chekpoint_file)
-    print(f'{(time.time()-s)/60} minutes total run time')
-    return 'done'
+#main([DataSetNames.hdgp_test.value, 'freq'])
 
 if __name__ == "__main__":
-   get_vcfs_stats(sys.argv[1:])
+    main(sys.argv[1:])

@@ -94,20 +94,20 @@ def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folde
         print('All required files have same size on local machine as in the FTP server')
     return all_files_sizes_validated & no_missing_files
 
-
-def get_data(args):
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
-    dataset_name = args[0]
+# wrappers for execution
+def get_data(dataset_name):
+    assert validate_dataset_name(dataset_name)
     return get_files_by_dataset_name(dataset_name)
 
 
 def main(args):
+    # args should be: dataset_name
     s = time.time()
-    execute_with_checkpoint(get_data, args)
-    print(f'{(time.time()-s)/60} minutes total run time')
+    dataset_name = args[0]
+    is_executed, msg = execute_with_checkpoint(get_data, os.path.basename(__file__), dataset_name, args)
+    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    return is_executed
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    main(args)
+    main(sys.argv[1:])

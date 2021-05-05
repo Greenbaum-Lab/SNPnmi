@@ -40,8 +40,8 @@ class PathsHelper:
         self.split_vcf_stats_csv_path = f'{self.logs_cluster_folder}split_vcfs/split_vcf_output_stats.csv'
 
         # Netstuct inputs paths
-        self.netstructh_indlist_path = f'{self.data_folder}{get_indlist_file_name()}'
-        self.netstructh_sample_sites_path = f'{self.data_folder}{get_sample_sites_file_name()}'
+        self.netstructh_indlist_path = f'{self.data_folder}{get_indlist_file_name(dataset_name)}'
+        self.netstructh_sample_sites_path = f'{self.data_folder}{get_sample_sites_file_name(dataset_name)}'
 
         # paths to entry points
         self.submit_helper = f'{root_code_folder}{repo_dir_name}/utils/cluster/submit_helper.sh'

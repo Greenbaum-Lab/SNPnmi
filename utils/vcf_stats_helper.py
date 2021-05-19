@@ -16,7 +16,7 @@ def validate_stat_types(stat_types):
             return False
         return True
 
-
+# TODO - consider submiting to cluster
 def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
     assert stat_type in StatTypes, f'{stat_type} not one of {",".join(StatTypes)}'
 

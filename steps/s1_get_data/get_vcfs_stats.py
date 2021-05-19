@@ -1,4 +1,5 @@
 # Given a set of vcfs on local machine, submit vcftools jobs to get stats
+# TODO - conisder adding a "all_stats" param which will extract all stats, ideally using the cluster.
 from os import path
 import urllib.request
 import time

@@ -20,7 +20,7 @@ def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_m
     # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
     output_dir = paths_helper.classes_folder
-    vcfs_dir = paths_helper.vcf_folder
+    vcfs_dir = paths_helper.data_folder
     vcf_files = get_dataset_vcf_files_names(dataset_name)
     vcf_files_short_names = get_dataset_vcf_files_short_names(dataset_name)
     validate_dataset_vcf_files_short_names(dataset_name)

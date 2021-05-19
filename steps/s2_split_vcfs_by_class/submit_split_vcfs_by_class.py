@@ -17,9 +17,8 @@ path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/steps/s2_split
 
 
 def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint):
-    # create output folders
+    # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
-    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
     output_dir = paths_helper.classes_folder
     vcfs_dir = paths_helper.vcf_folder
     vcf_files = get_dataset_vcf_files_names(dataset_name)

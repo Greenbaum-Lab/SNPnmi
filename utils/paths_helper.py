@@ -34,8 +34,8 @@ class PathsHelper:
         # cluster runs logs paths
         self.logs_folder = f'{root_data_folder}logs/'
         self.logs_cluster_folder = f'{self.logs_folder}cluster/'
-        self.logs_cluster_jobs_stderr_template = self.logs_cluster_folder + '{job_type}/{job_name}.stderr'
-        self.logs_cluster_jobs_stdout_template = self.logs_cluster_folder + '{job_type}/{job_name}.stdout'
+        self.logs_cluster_jobs_stderr_template = self.logs_cluster_folder + '{dataset_name}/{job_type}/{job_name}.stderr'
+        self.logs_cluster_jobs_stdout_template = self.logs_cluster_folder + '{dataset_name}/{job_type}/{job_name}.stdout'
 
         self.split_vcf_stats_csv_path = f'{self.logs_cluster_folder}split_vcfs/split_vcf_output_stats.csv'
 

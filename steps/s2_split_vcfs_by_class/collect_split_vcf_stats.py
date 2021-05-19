@@ -1,4 +1,5 @@
 # collects stats from the split vcfs by class
+# TODO - add validation, see notebook Validate split_vcf output.ipynb
 import re
 import sys
 import os.path

@@ -1,4 +1,4 @@
-DEBUG=True
+DEBUG=False
 # Per vcf file, per class, will submit a job (if checkpoint does not exist)
 import sys
 import time

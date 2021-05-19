@@ -7,12 +7,12 @@ CONFIG_DIR_PATTERN = str(Path(__file__).parents[1]) + '/config/config.{config_fi
 CONFIG_NAME_DATA = 'data'
 CONFIG_NAME_PATHS = 'paths'
 
-class DataSetNames(Enum):
+class DataSetNames():
     hdgp = 'hgdp'
     hdgp_test = 'hgdp_test'
 
 def validate_dataset_name(dataset_name):
-    return dataset_name in [d.value for d in DataSetNames]
+    return dataset_name in [DataSetNames.hdgp, DataSetNames.hdgp_test]
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:
@@ -46,6 +46,10 @@ def get_dataset_vcf_files_names(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['vcf_files_names']
 
+def get_dataset_vcf_files_short_names(dataset_name=DataSetNames.hdgp):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return data_config[dataset_name]['vcf_files_short_names']
+
 def get_dataset_metadata_files_names(dataset_name=DataSetNames.hdgp):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['metadata_files_names']
@@ -54,3 +58,11 @@ def get_cluster_data_folder():
     data_config = get_config(CONFIG_NAME_PATHS)
     return data_config['cluster_data_folder']
 
+# order of vcf_files_short_names should match vcf_files_names.
+# we verify each short name is contained in the full name.
+def validate_dataset_vcf_files_short_names(dataset_name=DataSetNames.hdgp):
+    dataset_vcf_files_short_names = get_dataset_vcf_files_short_names(dataset_name)
+    dataset_vcf_files_names = get_dataset_vcf_files_names(dataset_name)
+    assert len(dataset_vcf_files_short_names) == len(dataset_vcf_files_names)
+    for i in range(len(dataset_vcf_files_names)):
+        assert  dataset_vcf_files_short_names[i] in dataset_vcf_files_names[i]

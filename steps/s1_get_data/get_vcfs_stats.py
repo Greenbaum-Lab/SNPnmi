@@ -51,7 +51,6 @@ def main(args):
     # args should be: [dataset_name, stat_types (comma seperated)]
     s = time.time()
     dataset_name = args[0]
-    assert validate_dataset_name(dataset_name)
     is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, dataset_name, args)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed

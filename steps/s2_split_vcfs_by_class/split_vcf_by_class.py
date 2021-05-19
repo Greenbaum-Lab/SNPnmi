@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 # Given a specific vcf file and class, will extract the relevant sites
 import subprocess
 import sys
@@ -41,9 +41,8 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
                       '--max-alleles', '2', 
                       '--min-alleles', '2', 
                       '--remove-indels', 
-                      '--max-missing', '0.9',
-                      '--recode', 
-                      '--012']
+                      '--max-missing', '0.9']
+                      #'--recode']
 
     min_val_param_name = '--mac' if is_mac else '--maf'
     max_val_param_name = '--max-mac' if is_mac else '--max-maf'
@@ -60,8 +59,8 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
         # note the use of class_max_val in both min and max!
         #vcfcmd='vcftools '$vcftools_params' --maf '${max_maf}' --max-maf '${max_maf}' --gzvcf "'$vcffile'" --out "'$output_folder'temp_maf_'$maf'/exactly_'${max_maf}'" --temp "'${output_folder}'temp_maf_'$maf'" --kept-sites'
         vcftools_cmd_exactly_max_maf = vcftools_cmd_parts_base + [
-                                        min_val_param_name, class_max_val, 
-                                        max_val_param_name, class_max_val, 
+                                        min_val_param_name, str(class_max_val), 
+                                        max_val_param_name, str(class_max_val), 
                                         '--out', output_path_exactly_max_maf, 
                                         '--temp', output_temp_dir,
                                         '--kept-sites']
@@ -73,8 +72,8 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
             subprocess.run(vcftools_cmd_exactly_max_maf)
 
     vcftools_cmd = vcftools_cmd_parts_base + [
-                            min_val_param_name, class_min_val, 
-                            max_val_param_name, class_max_val, 
+                            min_val_param_name, str(class_min_val), 
+                            max_val_param_name, str(class_max_val), 
                             '--out', output_path, 
                             '--temp', output_temp_dir,
                             '--012']
@@ -87,8 +86,7 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
 
 def _test_me():
     split_vcf_by_class('maf', 48, 'C:/Data/HUJI/vcf/hgdp_wgs.20190516.full.chr21.vcf.gz', 'chr21', r'C:/Data/HUJI/vcf/hgdp_test/classes/')
-
-_test_me()
+#_test_me()
 
 if __name__ == '__main__':
     mac_maf = sys.argv[1]

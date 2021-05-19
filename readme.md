@@ -55,10 +55,10 @@ This is where we store configuration data for both the cluster enviorment (like 
 
  1.1 get_data - gets the VCFs according to the config.
  1.2 get_vcfs_stats - gets VCFs stats. You should atleast look at 'freq' which is fundemental to this work. Others are super useful for understanding the data we have! See the notebook "Analyze basic vcftools stats.ipynb"
-### 2. 2_split_vcf_by_class (cluster)
+### 2. s2_split_vcfs_by_class (cluster)
 
-Splits the VCFs by classes.
-once done, run the collect_split_vcf_stats.py to get stats per class. Mandatory for next steps, and important to understand the data.
+2.1 Splits the VCFs by classes.
+2.2 collect_split_vcf_stats.py to get stats per class. Mandatory for next steps, and important to understand the data.
 
 ### 3. 3_split_to_windows (single run - need to convert to cluster)
 

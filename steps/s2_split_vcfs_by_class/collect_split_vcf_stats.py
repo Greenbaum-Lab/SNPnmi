@@ -1,20 +1,30 @@
-# TODO this is 2.2
+# collects stats from the split vcfs by class
 import re
 import sys
 import os.path
+import sys
+import os
+from os import path
+from os.path import dirname, abspath
+root_path = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(root_path)
+from utils.common import *
+from utils.checkpoint_helper import *
+from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class
 
-def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
+SCRIPT_NAME = os.path.basename(__file__)
+
+def get_split_vcf_stats(filepath, chr_name):
     # extract stats from the stderr file
     # return a dictionary
-    filepath = logs_folder + log_file
     values = dict()
-    values['chr_name_name'] = chr_name_name
+    values['chr_name'] = chr_name
     values['mac'] = '-'
     values['maf'] = '-'
     values['max_mac'] = '-'
     values['max_maf'] = '-'
+    print(filepath)
     #regexes
-
     # After filtering, kept 929 out of 929 Individuals
     r = r'After filtering, kept (\d+) out of (\d+) Individuals'
     indv_regex = re.compile(r)
@@ -65,13 +75,13 @@ def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
     # based on the values we analyze the output files
     # analyze indv file
     indv_file = values['out_path'] + '.012.indv'
-    values['indv_num_of_lines'] = number_of_lines(indv_file)
+    values['indv_num_of_lines'] = get_num_lines_in_file(indv_file)
 
     pos_file = values['out_path'] + '.012.pos'
-    values['pos_num_of_lines'] = number_of_lines(pos_file)
+    values['pos_num_of_lines'] = get_num_lines_in_file(pos_file)
 
     main_file = values['out_path'] + '.012'
-    values['012_num_of_lines'] = number_of_lines(main_file)
+    values['012_num_of_lines'] = get_num_lines_in_file(main_file)
 
     min_c, max_c = min_max_number_of_columns(main_file)
     # substract 1 as we have an index column
@@ -79,13 +89,6 @@ def get_split_vcf_stats(logs_folder, log_file, chr_name_name):
     values['012_max_num_of_sites'] = max_c-1
     return values
 
-# TODO move to common?
-def number_of_lines(file_path):
-    count = 0
-    for line in open(file_path).readlines(): count += 1
-    return count
-
-# TODO move to common?
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
@@ -99,7 +102,7 @@ def min_max_number_of_columns(file_path):
 
 def write_values_to_csv(values, output_path):
     # first, assert we have all values
-    expected_keys = ['chr_name_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines', '012_num_of_lines', 'num_of_possible_indv', 'num_of_sites_after_filter', 'pos_num_of_lines', '012_min_num_of_sites', '012_max_num_of_sites', 'num_of_possible_sites', 'run_time_in_seconds', 'input_file', 'out_path']
+    expected_keys = ['chr_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines', '012_num_of_lines', 'num_of_possible_indv', 'num_of_sites_after_filter', 'pos_num_of_lines', '012_min_num_of_sites', '012_max_num_of_sites', 'num_of_possible_sites', 'run_time_in_seconds', 'input_file', 'out_path']
     values_keys = values.keys()
     for exp_key in expected_keys:
         assert exp_key in values_keys
@@ -111,37 +114,53 @@ def write_values_to_csv(values, output_path):
         f.write(','.join([str(values[k]) for k in expected_keys]) + '\n')
 
 
-def collect_split_vcf_stats(logs_folder, log_files, chr_name_names, split_vcf_stats_csv_path):
-    assert len(log_files) == len(chr_name_names)
+def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
+    assert len(log_files) == len(chr_names)
     for i in range(len(log_files)):
-        chr_name_name = chr_name_names[i]
+        chr_name = chr_names[i]
         log_file = log_files[i]
-        values = get_split_vcf_stats(logs_folder, log_file, chr_name_name)
+        values = get_split_vcf_stats(log_file, chr_name)
         write_values_to_csv(values, split_vcf_stats_csv_path)
         print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
-
-def call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range, max_mac_range, mac_delta, min_maf_range, max_maf_range, maf_delta):
-    macs = range(min_mac_range,max_mac_range+1, mac_delta)
-    mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1, maf_delta)]
+# hgdp_text, 2, 8, 1, 49
+def call_collect_split_vcf_stats(dataset_name, min_mac_range, max_mac_range, min_maf_range, max_maf_range):
+    paths_helper = get_paths_helper(dataset_name)
+    split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
+    vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
+    macs = range(min_mac_range, max_mac_range+1)
+    #mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1)]
+    mafs = range(min_maf_range, max_maf_range+1)
     log_files = []
     chr_names_for_logs = []
-    for chr_name in chr_names:
+    job_type = submit_split_vcfs_by_class.job_type
+    for vcf_file_short_name in vcf_file_short_names:
         for mac in macs:
-            log_files.append(f'{chr_name}_mac{mac}.stderr')
-            chr_names_for_logs.append(chr_name)
+            job_long_name = submit_split_vcfs_by_class.generate_job_long_name('mac', mac, vcf_file_short_name)
+            job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+            log_files.append(job_stderr_file)
+            chr_names_for_logs.append(vcf_file_short_name)
         for maf in mafs:
-            log_files.append(f'{chr_name}_maf{maf}.stderr')
-            chr_names_for_logs.append(chr_name)
+            job_long_name = submit_split_vcfs_by_class.generate_job_long_name('maf', maf, vcf_file_short_name)
+            job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+            log_files.append(job_stderr_file)
+            chr_names_for_logs.append(vcf_file_short_name)
+
     print(f'will process {len(log_files)} files')
-    collect_split_vcf_stats(logs_folder, log_files, chr_names_for_logs, split_vcf_stats_csv_path)
 
-# TODO - add main, use paths_helper
-#HGDP
-logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/stderr/'
-# macs folder:
-#logs_folder = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/with_upper_bound_stderr/'
-chr_names = [f'chr{i}' for i in range(1,23)]
-split_vcf_stats_csv_path = r'/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/split_vcfs/split_vcf_output_stats.csv'
+    collect_split_vcf_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
 
-call_collect_split_vcf_stats(logs_folder, chr_names, split_vcf_stats_csv_path, min_mac_range=3, max_mac_range=2, mac_delta=1, min_maf_range=1, max_maf_range=9, maf_delta=1)
+def _test_me():
+    call_collect_split_vcf_stats(DataSetNames.hdgp_test, 20, 18, 1, 2)
+#_test_me()
+
+def main(args):
+    s = time.time()
+    dataset_name = args[0]
+    is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, dataset_name, args)
+    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    return is_executed
+
+# dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range
+if __name__ == '__main__':
+    main(sys.argv[1:])

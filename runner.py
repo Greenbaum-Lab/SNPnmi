@@ -10,7 +10,7 @@ from pathlib import Path
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from steps.s1_get_data import get_data, get_vcfs_stats
-from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class
+from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
 
 from utils.config import *
 
@@ -22,6 +22,8 @@ def run_step(dataset_name, step, step_args):
         return get_vcfs_stats.main(step_args)
     if step == "2.1":
         return submit_split_vcfs_by_class.main(step_args)
+    if step == "2.2":
+        return collect_split_vcf_stats.main(step_args)
 
 
 def runner(args):
@@ -43,7 +45,10 @@ def runner(args):
 
 #runner(['hgdp_test','1.2','hgdp_test','freq'])
 
-runner(['hgdp_test','2.1','hgdp_test', 2, 8, 1, 49, True])
+#runner(['hgdp_test','2.1','hgdp_test', 2, 18, 1, 49, True])
+
+runner(['hgdp_test','2.2','hgdp_test', 20, 18, 1, 2])
+
 
 if __name__ == "__main__X":
    runner(sys.argv[1:])

@@ -15,6 +15,8 @@ SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'split_vcf_by_class'
 path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
 
+def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
+    return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'
 
 def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint):
     # prepare output folders
@@ -37,7 +39,7 @@ def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_m
                 for (vcf_file, vcf_file_short_name)  in zip(vcf_files, vcf_files_short_names):
                     print(f'submit for {vcf_file_short_name} ({vcf_file})')
                     vcf_full_path = vcfs_dir + vcf_file
-                    job_long_name = f'class_{mac_maf}{val}_vcf_{vcf_file_short_name}'
+                    job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
                     job_name=f'2{val}_{vcf_file_short_name}'
                     python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
                     submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)

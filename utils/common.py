@@ -76,3 +76,22 @@ def str2bool(v) -> bool:
     if v.lower() in ('no', 'false', 'f', 'n', '0'):
         return False
     raise 'Boolean value expected.'
+
+
+def get_num_lines_in_file(p, gzip=False):
+    if gzip:
+        with gzip.open(p, 'rb') as f:
+            return sum(1 for _ in f)
+    else:
+        with open(p, 'r') as f:
+            return sum(1 for _ in f)
+
+def get_num_columns_in_file(p, sep='\t', gzip=False):
+    if gzip:
+        with gzip.open(p, 'rb') as f:
+            l = f.readline().decode()
+            return len(l.split(sep))
+    else:
+        with open(p, 'r') as f:
+            l = f.readline()
+            return len(l.split(sep))

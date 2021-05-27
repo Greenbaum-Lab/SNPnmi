@@ -25,7 +25,7 @@ def hash_str(s):
         hash_val += val
     return hash_val
 
-def get_paths_helper(dataset_name=DataSetNames.hdgp):
+def get_paths_helper(dataset_name):
     paths_config = get_config(CONFIG_NAME_PATHS)
     root_data_folder = paths_config['cluster_data_folder'] if is_cluster() else paths_config['local_data_folder']
     root_code_folder = paths_config['cluster_code_folder'] if is_cluster() else paths_config['local_code_folder']
@@ -34,7 +34,8 @@ def get_paths_helper(dataset_name=DataSetNames.hdgp):
 
 
 def is_cluster():
-   return 'cs/icore/amir.rubin2' in os.path.abspath(__file__)
+    # danger! make sure local code is not under this path!
+   return 'cs/icore/' in os.path.abspath(__file__)
 
 
 # the output is in couples of <count>;<distance>

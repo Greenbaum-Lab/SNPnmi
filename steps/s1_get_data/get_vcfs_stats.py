@@ -31,10 +31,10 @@ def generate_vcfs_stats(dataset_name, stat_types):
             print (f'vcf file is missing {vcfs_folder + gzvcf_file}')
             all_stats_done = False
             continue
-        # go over stats (with checkpoint)
+        # go over stats (with checkpoint per input file and stat type)
         for stat_type in stat_types:
             output_path_prefix = output_folder + gzvcf_file
-            is_executed, msg = execute_with_checkpoint(get_vcf_stats, SCRIPT_NAME + gzvcf_file, dataset_name, [vcfs_folder, gzvcf_file, output_path_prefix, stat_type])
+            is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', dataset_name, [vcfs_folder, gzvcf_file, output_path_prefix, stat_type])
             if is_executed:
                 print(f'done - {gzvcf_file} - {stat_type}')
     return all_stats_done

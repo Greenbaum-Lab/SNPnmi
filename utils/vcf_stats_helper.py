@@ -17,6 +17,8 @@ def validate_stat_types(stat_types):
         return True
 
 # TODO - consider submiting to cluster
+# TODO 2 - consider support in 'all_stats'
+# TODO - possibly can be refactored
 def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
     assert stat_type in StatTypes, f'{stat_type} not one of {",".join(StatTypes)}'
 
@@ -35,33 +37,34 @@ def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
         subprocess.run(freq_cmd)
 
     # Calculate mean depth per individual
-    if stat_type == 'idepth':
+    elif stat_type == 'idepth':
         depth_i_cmd = cmd_parts_base + ['--depth', '--out', output_path_prefix + '.idepth']
         print('depth_i_cmd')
         subprocess.run(depth_i_cmd)
 
     # Calculate mean depth per site
-    if stat_type == 'ldepth':
+    elif stat_type == 'ldepth':
         depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', output_path_prefix + '.ldepth']
         print('depth_s_cmd', depth_s_cmd)
         subprocess.run(depth_s_cmd)
 
     # Calculate site quality
-    if stat_type == 'lqual':
+    elif stat_type == 'lqual':
         quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', output_path_prefix + '.lqual']
         print('quality_s_cmd')
         subprocess.run(quality_s_cmd)
 
     # Calculate proportion of missing data per individual
-    if stat_type == 'imiss':
+    elif stat_type == 'imiss':
         missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', output_path_prefix + '.imiss']
         print('missing_i_cmd')
         subprocess.run(missing_i_cmd)
 
     # Calculate proportion of missing data per site
-    if stat_type == 'lmiss':
+    elif stat_type == 'lmiss':
         missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', output_path_prefix + '.lmiss']
         print('missing_s_cmd', missing_s_cmd)
         subprocess.run(missing_s_cmd)
 
+    # wrap with try catch?
     return True

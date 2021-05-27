@@ -50,4 +50,5 @@ def execute_with_checkpoint(func, checkpoint_name, dataset_name, args):
     success = func(*args)
     if success:
         write_checkpoint_file(checkpoint_file, args)
-    return True, 'done'
+        return True, 'successful run'
+    return True, 'non successful run'

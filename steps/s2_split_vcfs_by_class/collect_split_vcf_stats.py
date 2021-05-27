@@ -1,5 +1,6 @@
 # collects stats from the split vcfs by class
 # TODO - add validation, see notebook Validate split_vcf output.ipynb
+# TOD rename? - collect_vcf_classes_stats?
 import re
 import sys
 import os.path
@@ -115,6 +116,7 @@ def write_values_to_csv(values, output_path):
         f.write(','.join([str(values[k]) for k in expected_keys]) + '\n')
 
 
+# TODO renmae? collect_vcf_classes_stats
 def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_names)
     for i in range(len(log_files)):
@@ -125,6 +127,7 @@ def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
         print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
 # hgdp_text, 2, 8, 1, 49
+# TODO renmae? collect_and_validate_vcf_classes_stats
 def call_collect_split_vcf_stats(dataset_name, min_mac_range, max_mac_range, min_maf_range, max_maf_range):
     paths_helper = get_paths_helper(dataset_name)
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
@@ -146,6 +149,7 @@ def call_collect_split_vcf_stats(dataset_name, min_mac_range, max_mac_range, min
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
             log_files.append(job_stderr_file)
             chr_names_for_logs.append(vcf_file_short_name)
+    # TODO - Shahar? Add here validate_split_vcf_classes_stat()
 
     print(f'will process {len(log_files)} files')
 

@@ -13,7 +13,7 @@ from utils.checkpoint_helper import *
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'split_vcf_by_class'
-path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
 
 def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
     return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'
@@ -34,7 +34,7 @@ def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_m
         if min_range>0:
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range+1):                
+            for val in range(min_range, max_range+1):
                 # go over vcfs
                 for (vcf_file, vcf_file_short_name)  in zip(vcf_files, vcf_files_short_names):
                     print(f'submit for {vcf_file_short_name} ({vcf_file})')

@@ -19,7 +19,6 @@ def get_ftp_source(ftp_source_host, ftp_source_path):
     return f'ftp://{ftp_source_host}{ftp_source_path}'
 
 def get_files_by_dataset_name(dataset_name):
-    config_data = get_config(CONFIG_NAME_DATA)
     ftp_source_host = get_dataset_ftp_source_host(dataset_name)
     ftp_source_path = get_dataset_ftp_source_path(dataset_name)
     ftp_source = get_ftp_source(ftp_source_host, ftp_source_path)

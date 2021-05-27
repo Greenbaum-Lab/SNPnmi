@@ -1,6 +1,6 @@
 
 
-# given a dataset name and step number, will run the step.
+# given a step number and params, will run the step.
 import time
 import sys
 import os
@@ -13,42 +13,50 @@ from steps.s1_get_data import get_data, get_vcfs_stats
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
 
 from utils.config import *
+from utils.checkpoint_helper import execute_with_checkpoint
 
+step_to_func_and_name = {
+    "1.1" : (get_data.main, 'get_data'),
+    "1.2" : (get_vcfs_stats.main, 'get_vcfs_stats'),
+    "2.1" : (submit_split_vcfs_by_class.main, 'submit_split_vcfs_by_class'),
+    "2.2" : (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
+}
 
-def run_step(dataset_name, step, step_args):
-    if step == "1.1":
-        return get_data.main(step_args)
-    if step == "1.2":
-        return get_vcfs_stats.main(step_args)
-    if step == "2.1":
-        return submit_split_vcfs_by_class.main(step_args)
-    if step == "2.2":
-        return collect_split_vcf_stats.main(step_args)
+def run_step(step, dataset_name, step_args, use_checkpoint=True):
+    func, step_name = step_to_func_and_name(step)
+    if not use_checkpoint:
+        return func(step_args)
+    # note that we use the step number and name for the checkpont, so this will only not run if we used runner in the past.
+    is_executed, msg = execute_with_checkpoint(func, step+step_name, dataset_name, step_args)
+    print(msg)
+    return is_executed
 
 
 def runner(args):
     s = time.time()
     print ('Number of arguments:', len(args), 'arguments.')
     print ('Argument List:', str(args))
-    dataset_name = args[0]
-    assert validate_dataset_name(dataset_name)
-    step = args[1]
-    step_args = args[2:]
+    step = args[0]
+    step_args = args[1:]
+    # the first arg of the step must be dataset_name
+    dataset_name = step_args.split()[0]
+    assert validate_dataset_name(dataset_name), f'First arg of step should be the datasetname, got: {dataset_name}'
 
-    print(f'Executing step {step} on dataset {dataset_name} with step args {step_args}.')
-    is_executed = run_step(dataset_name, step, step_args)
+    print(f'Executing step {step} with step args {step_args}.')
+    is_executed = run_step(step, dataset_name, step_args)
     print(f'is executed: {is_executed}')
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-#runner(['hgdp_test','1.1','hgdp_test'])
+#runner(['1.1','hgdp_test'])
 
-#runner(['hgdp_test','1.2','hgdp_test','freq'])
+runner(['1.2','hgdp_test','freq'])
 
-#runner(['hgdp_test','2.1','hgdp_test', 2, 18, 1, 49, True])
+#runner(['2.1','hgdp_test', 2, 18, 1, 49, True])
 
-runner(['hgdp_test','2.2','hgdp_test', 20, 18, 1, 2])
+#runner(['2.2','hgdp_test', 20, 18, 1, 2])
 
 
-if __name__ == "__main__X":
-   runner(sys.argv[1:])
+# if __name__ == "__main__":
+# # optional - use argparse.ArgumentParser()
+#    runner(sys.argv[1:])

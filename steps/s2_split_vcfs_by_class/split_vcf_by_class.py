@@ -16,9 +16,15 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
 
     # check early break if output file already exists
     # if class_max_val is not given, we increse the class_min_val by 1
-    if not class_max_val:
-        class_max_val = class_min_val + 1
     is_mac = 'mac' in mac_maf
+    if not class_max_val:
+        # for mac, we want max_val == min_val [2,2]
+        if is_mac:
+            class_max_val = class_min_val
+        # for maf, we want max_val to be min_val+1 [2, 3) (/100)
+        # below we will make sure to exclude maf==0.3 from the interval
+        else:
+            class_max_val = class_min_val + 1
     # in maf we convert to 0.x
     if not is_mac:
         class_min_val = (class_min_val*1.0/100.0)
@@ -29,7 +35,7 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
     # early break if the output file already exists
     output_file = f'{output_path}.012'
     if path.exists(output_file):
-        print('output file already exist. Break. {output_file}')
+        print(f'output file already exist. Break. {output_file}')
         return False
 
     #prepare output and params
@@ -42,7 +48,6 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
                       '--min-alleles', '2', 
                       '--remove-indels', 
                       '--max-missing', '0.9']
-                      #'--recode']
 
     min_val_param_name = '--mac' if is_mac else '--maf'
     max_val_param_name = '--max-mac' if is_mac else '--max-maf'
@@ -53,7 +58,8 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
     output_temp_dir = f'{output_path}_tmp/'
     os.makedirs(output_temp_dir, exist_ok=True)
 
-    # If MAF, first identify sites with maf==max_maf, as we wish to exclude them from the analysis
+    # If maf, first identify sites with maf==max_maf, as we wish to exclude them from the interval
+    # The closed interval [0.49, 0.5] is allowed.
     if not is_mac and class_max_val != 0.5:
         output_path_exactly_max_maf = f'{output_temp_dir}exactly_{class_max_val}'
         # note the use of class_max_val in both min and max!
@@ -63,11 +69,13 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
                                         max_val_param_name, str(class_max_val), 
                                         '--out', output_path_exactly_max_maf, 
                                         '--temp', output_temp_dir,
+                                        # this will only output sites indexes, which we later use to exclude
                                         '--kept-sites']
         # add the exclusion to the cmd parts
         vcftools_cmd_parts_base = vcftools_cmd_parts_base + ['--exclude-positions', f'{output_path_exactly_max_maf}.kept.sites']
 
-        print('vcftools_cmd_exactly_max_maf', vcftools_cmd_exactly_max_maf)
+        print('vcftools_cmd_exactly_max_maf', ' '.join(vcftools_cmd_exactly_max_maf))
+
         if not DEBUG:
             subprocess.run(vcftools_cmd_exactly_max_maf)
 
@@ -79,16 +87,17 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
                             '--012']
 
 
-    print('vcftools_cmd', vcftools_cmd)
+    print('vcftools_cmd', ' '.join(vcftools_cmd))
     if not DEBUG:
         subprocess.run(vcftools_cmd)
     return True
 
 def _test_me():
     split_vcf_by_class('maf', 48, 'C:/Data/HUJI/vcf/hgdp_wgs.20190516.full.chr21.vcf.gz', 'chr21', r'C:/Data/HUJI/vcf/hgdp_test/classes/')
-#_test_me()
 
-if __name__ == '__main__':
+if DEBUG:
+    _test_me()
+elif __name__ == '__main__':
     mac_maf = sys.argv[1]
     class_val = int(sys.argv[2])
     vcf_full_path = sys.argv[3]

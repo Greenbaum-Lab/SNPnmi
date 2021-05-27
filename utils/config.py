@@ -58,6 +58,10 @@ def get_cluster_data_folder():
     data_config = get_config(CONFIG_NAME_PATHS)
     return data_config['cluster_data_folder']
 
+def get_cluster_code_folder():
+    data_config = get_config(CONFIG_NAME_PATHS)
+    return data_config['cluster_code_folder']
+
 # order of vcf_files_short_names should match vcf_files_names.
 # we verify each short name is contained in the full name.
 def validate_dataset_vcf_files_short_names(dataset_name=DataSetNames.hdgp):

@@ -47,7 +47,7 @@ def get_vcfs_stats(dataset_name, stat_types):
     return generate_vcfs_stats(dataset_name, stat_types)
 
 
-def main(args):
+def main(*args):
     # args should be: [dataset_name, stat_types (comma seperated)]
     s = time.time()
     dataset_name = args[0]

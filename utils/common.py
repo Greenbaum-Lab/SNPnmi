@@ -12,6 +12,38 @@ from utils.config import *
 
 from utils.paths_helper import PathsHelper
 
+# a class to represent classes of alleles count/frequency (mac/maf)
+class AlleleClass:
+    def __init__(self, mac_maf, class_min_int_val, class_max_int_val=None):
+        assert mac_maf in ['mac', 'maf']
+        self.mac_maf = mac_maf
+        self.is_mac = mac_maf == 'mac'
+        
+        assert isinstance(class_min_int_val, int), f'The class_min_int_val must be an int, even if its maf - we convert it.'
+        assert class_min_int_val >= 0, f'The class_min_int_val must be non-negative.'
+        # maf must be lower than 50
+        assert self.is_mac | class_min_int_val < 50
+        # the name of the class value is the int min value, even if its maf
+        self.class_val_name = class_min_int_val
+        # set the max val of the class
+        if not class_max_int_val:
+            # for mac, we want max_val == min_val [2,2]
+            if self.is_mac:
+                class_max_int_val = class_min_int_val
+            # for maf, we want max_val to be min_val+1 [2, 3) (/100)
+            # below we will make sure to exclude maf==0.3 from the interval
+            else:
+                class_max_int_val = class_min_int_val + 1
+        if self.is_mac:
+            self.class_min_val = class_min_int_val
+            self.class_max_val = class_max_int_val
+        # for maf we convert to 0.X
+        else:
+            self.class_min_val = (class_min_int_val*1.0/100.0)
+            self.class_max_val = (class_max_int_val*1.0/100.0)
+        
+        self.class_name = f'{mac_maf}_{self.class_val_name}'
+
 def hash_args(args):
     hash_val  = 0
     for i in args:
@@ -96,3 +128,23 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
         with open(p, 'r') as f:
             l = f.readline()
             return len(l.split(sep))
+
+# Deprecated?
+def get_class2sites(dataset_name):
+    path_helper = get_paths_helper(dataset_name)
+    split_vcf_output_stats_file = path_helper.split_vcf_stats_csv_path
+    df = pd.read_csv(split_vcf_output_stats_file)
+    df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)
+    class2sites = dict()
+    for c in df['mac_or_maf'].unique():
+        print('Prepare indexes for class',c)
+        all_class_indexes = []
+        for i,r in df[df['mac_or_maf']==c].iterrows():
+            chr_n = r['chr_name_name'][3:]
+            num_sites = r['num_of_sites_after_filter']
+            all_class_indexes = all_class_indexes + [f'{chr_n};{i}' for i in range(num_sites)]
+        print('List is ready, size is:', len(all_class_indexes),'. Shuffle the list')
+        random.shuffle(all_class_indexes)
+        class2sites[c] = all_class_indexes
+        print('Done with class',c)
+    return class2sites

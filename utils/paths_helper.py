@@ -25,7 +25,7 @@ class PathsHelper:
         self.nmi_folder = f'{self.classes_folder}nmi/'
 
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
-        self.windows_indexes_template = self.windows_indexes_folder + 'windows_indexes_for_class_{class_name}.json'
+        self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
 
         self.count_dist_window_template = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
 

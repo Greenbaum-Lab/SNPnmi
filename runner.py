@@ -34,8 +34,8 @@ def run_step(step, dataset_name, step_args, use_checkpoint=True):
 
 def runner(args):
     s = time.time()
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
+    print('Number of arguments:', len(args), 'arguments.')
+    print('Argument List:', str(args))
     step = args[0]
     step_args = args[1:]
     # the first arg of the step must be dataset_name
@@ -48,15 +48,14 @@ def runner(args):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-#runner(['1.1','hgdp_test'])
+# runner(['hgdp_test','1.1','hgdp_test'])
 
-# runner(['1.2','hgdp_test','freq'])
+# runner(['hgdp_test','1.2','hgdp_test','freq'])
 
 #runner(['2.1','hgdp_test', 2, 18, 1, 49, True])
 
-#runner(['2.2','hgdp_test', 20, 18, 1, 2])
+# runner(['hgdp_test','2.2','hgdp_test', 20, 18, 1, 2])
 
 
 if __name__ == "__main__":
-# optional - use argparse.ArgumentParser()
    runner(sys.argv[1:])

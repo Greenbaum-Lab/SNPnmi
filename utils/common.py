@@ -35,7 +35,7 @@ def get_paths_helper(dataset_name):
 
 def is_cluster():
     # danger! make sure local code is not under this path!
-   return 'cs/icore/' in os.path.abspath(__file__)
+    return '/vol/sci/' in os.path.abspath(__file__)
 
 
 # the output is in couples of <count>;<distance>

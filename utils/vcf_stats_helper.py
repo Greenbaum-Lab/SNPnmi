@@ -8,7 +8,13 @@ from os.path import dirname, abspath
 # python3 vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9 freq
 
 StatTypes = ['freq', 'idepth', 'ldepth', 'lqual', 'imiss', 'lmiss']
+type_flag = {'freq': '--freq', 'idepth': '--depth', 'ldepth': '--site-mean-depth', 'lqual': '--site-mean-depth',
+             'imiss': '--missing-indv', 'lmiss': '--missing-site'}
+print_names = {'freq': 'freq', 'idepth': 'depth_i', 'ldepth': 'depth_s', 'lqual': 'quality_s', 'imiss': 'missing_i',
+               'lmiss': 'missing_s'}
 
+# Make sure we didn't forget any stat
+assert all([stat in type_flag.keys() and stat in print_names.keys() for stat in StatTypes])
 
 def validate_stat_types(stat_types):
     for t in stat_types:
@@ -29,6 +35,11 @@ def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
     os.makedirs(output_folder, exist_ok=True)
 
     cmd_parts_base = ['vcftools', '--gzvcf', gzvcf_folder+gzvcf_file, '--max-alleles', '2', '--min-alleles', '2', '--remove-indels', '--max-missing', '0.9']
+
+    # Todo: consider the next comment code instead of the following (refactoring):
+    # cmd = cmd_parts_base + [type_flag[stat_type], '--out', output_path_prefix + f'.{stat_type}']
+    # print(f"{print_names[stat_type]}_cmd")
+    # subprocess.run(cmd)
 
     # Calculate loci freq
     if stat_type == 'freq':

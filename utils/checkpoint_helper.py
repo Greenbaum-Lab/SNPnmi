@@ -39,9 +39,9 @@ def checkpoint_file_check(dataset_name, checkpoint_name, args):
 # 1. the first argument in args is dataset_name
 # 2. func accepts args and returns bool
 def execute_with_checkpoint(func, checkpoint_name, dataset_name, args):
-    print ('Dataset name', dataset_name)
-    print ('Number of arguments:', len(args))
-    print ('Argument List:', str(args))
+    print('Dataset name', dataset_name)
+    print('Number of arguments:', len(args))
+    print('Argument List:', str(args))
     assert validate_dataset_name(dataset_name), f'{dataset_name} is not a known dataset name'
     is_checkpoint_exists, checkpoint_file = checkpoint_file_check(dataset_name, checkpoint_name, args)
     if is_checkpoint_exists:

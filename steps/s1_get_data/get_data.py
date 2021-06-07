@@ -99,7 +99,7 @@ def get_data(dataset_name):
     return get_files_by_dataset_name(dataset_name)
 
 
-def main(args):
+def main(*args):
     # args should be: dataset_name
     s = time.time()
     dataset_name = args[0]

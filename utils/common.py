@@ -96,3 +96,10 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
         with open(p, 'r') as f:
             l = f.readline()
             return len(l.split(sep))
+
+def are_running_submitions(username="shahar.m"):
+    os.system(f'squeue | grep {username}')
+
+
+if __name__ == '__main__':
+    are_running_submitions()

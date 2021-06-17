@@ -100,7 +100,7 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
 
 def are_running_submitions(username="shahar.m"):
     a = subprocess.check_output(['squeue', '|', 'grep', username])
-    return bool(len(a))
+    return print(len(a))
 
 
 if __name__ == '__main__':

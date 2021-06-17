@@ -65,7 +65,8 @@ def args_parser():
     parser.add_argument("--args", dest="args", help="Any additional args")
 
     options = parser.parse_args()
-    options.args = options.args.split(',')
+    options.args = options.args.split(',') if options.args else []
+    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
     return options
 
 

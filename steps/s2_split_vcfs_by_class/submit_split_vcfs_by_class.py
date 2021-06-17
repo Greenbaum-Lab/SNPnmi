@@ -18,7 +18,9 @@ path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s2_spli
 def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
     return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'
 
-def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint):
+def submit_split_vcfs_by_class(options):
+    dataset_name = options.dataset_name
+    mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint = options.args
     # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
     output_dir = paths_helper.classes_folder
@@ -42,16 +44,16 @@ def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_m
                     job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
                     job_name=f'2{val}_{vcf_file_short_name}'
                     python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                    submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
+                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                      python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
 
 def _test_me():
     submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)
 #_test_me()
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    is_executed, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, dataset_name, args)
+    is_executed, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, options)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 

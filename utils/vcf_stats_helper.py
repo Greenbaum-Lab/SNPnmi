@@ -25,16 +25,18 @@ def validate_stat_types(stat_types):
 # TODO - consider submiting to cluster
 # TODO 2 - consider support in 'all_stats'
 # TODO - possibly can be refactored
-def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
-    assert stat_type in StatTypes, f'{stat_type} not one of {",".join(StatTypes)}'
+def get_vcf_stats(options):
+    assert options.stat_type in StatTypes, f'{options.stat_type} not one of {",".join(StatTypes)}'
 
-    output_folder = dirname(output_path_prefix)
+    output_folder = dirname(options.output_path_prefix)
 
-    print(f'Will extract stats {stat_type} of {gzvcf_file} to path prefixed with: {output_path_prefix}')
+    print(f'Will extract stats {options.stat_type} of {options.gzvcf_file} to path prefixed with: '
+          f'{options.output_path_prefix}')
 
     os.makedirs(output_folder, exist_ok=True)
 
-    cmd_parts_base = ['vcftools', '--gzvcf', gzvcf_folder+gzvcf_file, '--max-alleles', '2', '--min-alleles', '2', '--remove-indels', '--max-missing', '0.9']
+    cmd_parts_base = ['vcftools', '--gzvcf', options.vcfs_folder+options.gzvcf_file, '--max-alleles', '2',
+                      '--min-alleles', '2', '--remove-indels', '--max-missing', '0.9']
 
     # Todo: consider the next comment code instead of the following (refactoring):
     # cmd = cmd_parts_base + [type_flag[stat_type], '--out', output_path_prefix + f'.{stat_type}']
@@ -42,38 +44,38 @@ def get_vcf_stats(gzvcf_folder, gzvcf_file, output_path_prefix, stat_type):
     # subprocess.run(cmd)
 
     # Calculate loci freq
-    if stat_type == 'freq':
-        freq_cmd = cmd_parts_base + ['--freq', '--out', output_path_prefix + '.freq']
+    if options.stat_type == 'freq':
+        freq_cmd = cmd_parts_base + ['--freq', '--out', options.output_path_prefix + '.freq']
         print('freq_cmd', freq_cmd)
         subprocess.run(freq_cmd)
 
     # Calculate mean depth per individual
-    elif stat_type == 'idepth':
-        depth_i_cmd = cmd_parts_base + ['--depth', '--out', output_path_prefix + '.idepth']
+    elif options.stat_type == 'idepth':
+        depth_i_cmd = cmd_parts_base + ['--depth', '--out', options.output_path_prefix + '.idepth']
         print('depth_i_cmd')
         subprocess.run(depth_i_cmd)
 
     # Calculate mean depth per site
-    elif stat_type == 'ldepth':
-        depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', output_path_prefix + '.ldepth']
+    elif options.stat_type == 'ldepth':
+        depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', options.output_path_prefix + '.ldepth']
         print('depth_s_cmd', depth_s_cmd)
         subprocess.run(depth_s_cmd)
 
     # Calculate site quality
-    elif stat_type == 'lqual':
-        quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', output_path_prefix + '.lqual']
+    elif options.stat_type == 'lqual':
+        quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', options.output_path_prefix + '.lqual']
         print('quality_s_cmd')
         subprocess.run(quality_s_cmd)
 
     # Calculate proportion of missing data per individual
-    elif stat_type == 'imiss':
-        missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', output_path_prefix + '.imiss']
+    elif options.stat_type == 'imiss':
+        missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', options.output_path_prefix + '.imiss']
         print('missing_i_cmd')
         subprocess.run(missing_i_cmd)
 
     # Calculate proportion of missing data per site
-    elif stat_type == 'lmiss':
-        missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', output_path_prefix + '.lmiss']
+    elif options.stat_type == 'lmiss':
+        missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', options.output_path_prefix + '.lmiss']
         print('missing_s_cmd', missing_s_cmd)
         subprocess.run(missing_s_cmd)
 

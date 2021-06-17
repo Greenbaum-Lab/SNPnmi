@@ -18,40 +18,43 @@ from utils.config import *
 SCRIPT_NAME = os.path.basename(__file__)
 # python3 get_vcfs_stats.py hgdp freq
 
-def generate_vcfs_stats(dataset_name, stat_types):
+def generate_vcfs_stats(options, stat_types):
+    dataset_name = options.dataset_name
     paths_helper = get_paths_helper(dataset_name)
-    vcfs_folder = paths_helper.data_folder
+    options.vcfs_folder = paths_helper.data_folder
     files_names = get_dataset_vcf_files_names(dataset_name)
     output_folder = paths_helper.vcf_stats_folder
 
     all_stats_done = True
     for gzvcf_file in files_names:
         # check vcf file exist
-        if not path.exists(vcfs_folder + gzvcf_file):
-            print (f'vcf file is missing {vcfs_folder + gzvcf_file}')
+        if not path.exists(options.vcfs_folder + gzvcf_file):
+            print (f'vcf file is missing {options.vcfs_folder + gzvcf_file}')
             all_stats_done = False
             continue
+        options.gzvcf_file = gzvcf_file
         # go over stats (with checkpoint per input file and stat type)
         for stat_type in stat_types:
-            output_path_prefix = output_folder + gzvcf_file
-            is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', dataset_name, [vcfs_folder, gzvcf_file, output_path_prefix, stat_type])
+            options.stat_type = stat_type
+            options.output_path_prefix = output_folder + gzvcf_file
+            is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', options)
             if is_executed:
                 print(f'done - {gzvcf_file} - {stat_type}')
     return all_stats_done
 
 # wrappers for execution
-def get_vcfs_stats(dataset_name, stat_types):
-    assert validate_dataset_name(dataset_name)
-    stat_types = stat_types.split(',')
+def get_vcfs_stats(options):
+    stat_types = options.args
+    assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
-    return generate_vcfs_stats(dataset_name, stat_types)
+    return generate_vcfs_stats(options, stat_types)
 
 
-def main(*args):
+def main(options):
     # args should be: [dataset_name, stat_types (comma seperated)]
     s = time.time()
-    dataset_name = args[0]
-    is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, dataset_name, args)
+    dataset_name = options.dataset_name
+    is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, options)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 

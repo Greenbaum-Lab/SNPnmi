@@ -38,17 +38,17 @@ def checkpoint_file_check(dataset_name, checkpoint_name, args):
 # require that:
 # 1. the first argument in args is dataset_name
 # 2. func accepts args and returns bool
-def execute_with_checkpoint(func, checkpoint_name, dataset_name, args):
-    print('Dataset name', dataset_name)
-    print('Number of arguments:', len(args))
-    print('Argument List:', str(args))
-    assert validate_dataset_name(dataset_name), f'{dataset_name} is not a known dataset name'
-    is_checkpoint_exists, checkpoint_file = checkpoint_file_check(dataset_name, checkpoint_name, args)
+def execute_with_checkpoint(func, checkpoint_name, options):
+    print('Dataset name', options.dataset_name)
+    print('Number of arguments:', len(options.args))
+    print('Argument List:', str(options.args))
+    assert validate_dataset_name(options.dataset_name), f'{options.dataset_name} is not a known dataset name'
+    is_checkpoint_exists, checkpoint_file = checkpoint_file_check(options.dataset_name, checkpoint_name, options.args)
     if is_checkpoint_exists:
         return False, 'checkpoint found'
 
-    success = func(args)
+    success = func(options)
     if success:
-        write_checkpoint_file(checkpoint_file, args)
+        write_checkpoint_file(checkpoint_file, options.args)
         return True, 'successful run'
     return True, 'non successful run'

@@ -47,7 +47,7 @@ def execute_with_checkpoint(func, checkpoint_name, dataset_name, args):
     if is_checkpoint_exists:
         return False, 'checkpoint found'
 
-    success = func(*args)
+    success = func(args)
     if success:
         write_checkpoint_file(checkpoint_file, args)
         return True, 'successful run'

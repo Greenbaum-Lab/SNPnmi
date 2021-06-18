@@ -64,13 +64,15 @@ This is where we store configuration data for both the cluster enviorment (like 
 
 ### 3. 3_split_to_windows (single run - need to convert to cluster)
 
-TODO - run this in the cluster
+TODO - validate this in the cluster
 1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to site index to window_index, so that each window size is window_size (or window_size + 1).
 
-TODO:
-2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} file using the mapping from the previous step.
+TODO - validate this in the cluster
+2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} file using the mapping from the previous step (TODO - think about the format - currently transposed w.r.t 012)
 
-3. Per window_id(s) we run a job which collects the files from the previous step to create {class}_{window_id} file.
+-checkpoint AMIR-
+TODO - make sure we validate in the end the size of the windows!
+3. Per class and window_id(s) we run a job which collects the files from the previous step to create {class}_{window_id} file (in a 012 gz format)
 
 
 Splits each class's indexes randomly to windows.

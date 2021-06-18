@@ -24,7 +24,7 @@ class AlleleClass:
         # maf must be lower than 50
         assert self.is_mac | class_min_int_val < 50
         # the name of the class value is the int min value, even if its maf
-        self.class_val_name = class_min_int_val
+        self.class_int_val_name = class_min_int_val
         # set the max val of the class
         if not class_max_int_val:
             # for mac, we want max_val == min_val [2,2]
@@ -41,8 +41,8 @@ class AlleleClass:
         else:
             self.class_min_val = (class_min_int_val*1.0/100.0)
             self.class_max_val = (class_max_int_val*1.0/100.0)
-        
-        self.class_name = f'{mac_maf}_{self.class_val_name}'
+
+        self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 def hash_args(args):
     hash_val  = 0

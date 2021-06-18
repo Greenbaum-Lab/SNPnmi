@@ -1,4 +1,4 @@
-DEBUG=True
+DEBUG = False
 # Per class will submit a job which will generate a file per chr, holding a mapping of sites indexes to windows ids
 # such that the windows sizes are window_size or window_size + 1 (across all chrs)
 import sys
@@ -31,7 +31,7 @@ def submit_prepare_for_split_to_windows(dataset_name, mac_min_range, mac_max_ran
             for class_int_val in range(min_range, max_range+1):
                 print(f'submit for {mac_maf} {class_int_val}')
                 job_long_name = generate_job_long_name(mac_maf, class_int_val)
-                job_name=f'3{mac_maf}{class_int_val}'
+                job_name=f'3p{mac_maf}{class_int_val}'
                 python_script_params = f'{dataset_name} {mac_maf} {class_int_val} {window_size}'
                 submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
 

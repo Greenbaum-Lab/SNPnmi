@@ -1,5 +1,5 @@
-DEBUG = True
-# given chr(vcf name), class and window_size, build a mapping of chr+index to window_index, so that each window size is window_size.
+DEBUG = False
+# given chr(vcf name), class and window_size, build a mapping of chr+index to window_index, so that each window size is ~window_size.
 # the output is a file per chr with a dict of index (not site name) to window_index
 # per class, we generate a shuffled list of sites (chr and index(!) not site name)
 # given a window size we split the shuffled list to windows of approximatly this size
@@ -78,7 +78,7 @@ def validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, m
     assert(len(chr_class_df[chr_class_df['mac']!=1])==0)
     print('PASSED - single line per chr and name')
 
-
+# TODO - I think this can be refactored and moved to a util file (vcf_helper?)
 def get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value):
     path_helper = get_paths_helper(dataset_name)
     df = pd.read_csv(path_helper.split_vcf_stats_csv_path)

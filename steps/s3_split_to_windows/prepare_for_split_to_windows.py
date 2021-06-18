@@ -1,5 +1,5 @@
 DEBUG = True
-# given chr, class and window_size, build a mapping of chr+index to window_index, so that each window size is window_size.
+# given chr(vcf name), class and window_size, build a mapping of chr+index to window_index, so that each window size is window_size.
 # the output is a file per chr with a dict of index (not site name) to window_index
 # per class, we generate a shuffled list of sites (chr and index(!) not site name)
 # given a window size we split the shuffled list to windows of approximatly this size
@@ -39,7 +39,7 @@ def validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, m
                 passed = False
                 print(f'chr{chr_i}, mac {mac} appears {count} times')
     assert passed
-    print(f'PASSED - all chrs has all relevant macs and mafs once')  
+    print(f'PASSED - all chrs has all relevant macs and mafs once')
 
     # next validate all have the correct num_ind
     passed = True

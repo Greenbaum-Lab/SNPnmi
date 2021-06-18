@@ -44,9 +44,7 @@ def submit_split_vcfs_by_class(dataset_name, mac_min_range, mac_max_range, maf_m
                     python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
                     submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
 
-def _test_me():
-    submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)
-#_test_me()
+
 
 def main(args):
     s = time.time()
@@ -55,6 +53,10 @@ def main(args):
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 
-# dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint
-if __name__ == '__main__':
+def _test_me():
+    submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)
+
+if DEBUG:
+    _test_me()
+elif __name__ == '__main__':
     main(sys.argv[1:])

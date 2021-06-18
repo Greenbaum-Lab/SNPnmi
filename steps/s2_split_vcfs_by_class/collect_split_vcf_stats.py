@@ -37,8 +37,6 @@ def get_split_vcf_stats(filepath, chr_name):
     r = r'Run Time = (\d+).00 seconds'
     time_regex = re.compile(r)
 
-    r = r'After filtering, kept (\d+) out of (\d+) Individuals'
-    indv_regex = re.compile(r)
     with open(filepath) as fp:
         for cnt, line in enumerate(fp):
             if ('--gzvcf ' in line):

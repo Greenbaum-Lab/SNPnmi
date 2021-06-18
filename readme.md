@@ -64,9 +64,10 @@ This is where we store configuration data for both the cluster enviorment (like 
 
 ### 3. 3_split_to_windows (single run - need to convert to cluster)
 
-TODO:
-1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr+index to window_index, so that each window size is window_size/window_size+1.
+TODO - run this in the cluster
+1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to site index to window_index, so that each window size is window_size (or window_size + 1).
 
+TODO:
 2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} file using the mapping from the previous step.
 
 3. Per window_id(s) we run a job which collects the files from the previous step to create {class}_{window_id} file.

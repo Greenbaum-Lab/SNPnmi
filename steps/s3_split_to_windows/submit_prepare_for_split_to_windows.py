@@ -1,5 +1,6 @@
 DEBUG=True
-# Per class will submit a job
+# Per class will submit a job which will generate a file per chr, holding a mapping of sites indexes to windows ids
+# such that the windows sizes are window_size or window_size + 1 (across all chrs)
 import sys
 import time
 import os
@@ -19,8 +20,6 @@ def generate_job_long_name(mac_maf, class_val):
     return f'class_{mac_maf}{class_val}'
 
 def submit_prepare_for_split_to_windows(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size):
-    #build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
-    # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
@@ -41,7 +40,6 @@ def submit_prepare_for_split_to_windows(dataset_name, mac_min_range, mac_max_ran
 def main(args):
     s = time.time()
     dataset_name = args[0]
-    #is_executed, msg = execute_with_checkpoint(submit_prepare_for_split_to_windows, SCRIPT_NAME, dataset_name, args)
     submit_prepare_for_split_to_windows(*args)
     print(f'{(time.time()-s)/60} minutes total run time')
     return True

@@ -56,24 +56,33 @@ This is where we store configuration data for both the cluster enviorment (like 
  1.1 get_data - gets the VCFs according to the config.
 
  1.2 get_vcfs_stats - gets VCFs stats. You should atleast look at 'freq' which is fundemental to this work. Others are super useful for understanding the data we have! See the notebook "Analyze basic vcftools stats.ipynb"
+
+ ---
+
 ### 2. s2_split_vcfs_by_class (cluster)
 
 2.1 Splits the VCFs by classes.
 
 2.2 collect_split_vcf_stats.py to get stats per class. Mandatory for next steps, and important to understand the data.
 
+---
+
 ### 3. 3_split_to_windows (single run - need to convert to cluster)
 
 TODO - validate this in the cluster
+
 1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to site index to window_index, so that each window size is window_size (or window_size + 1).
 
 TODO - validate this in the cluster
+
 2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} file using the mapping from the previous step (TODO - think about the format - currently transposed w.r.t 012)
 
--checkpoint AMIR-
-TODO - make sure we validate in the end the size of the windows!
-3. Per class and window_id(s) we run a job which collects the files from the previous step to create {class}_{window_id} file (in a 012 gz format)
+TODO - validate this in the cluster
 
+3. Per class and max number of window_ids to process in each run, we run a job which collects the files from the previous step to create {class}_{window_id} files (in a 012 gz format)
+
+```
+old 
 
 Splits each class's indexes randomly to windows.
 Because in the next step we read the classes many times (as the number of windows), if we have a big class (for example mac 2 with 73K windows), it is more efficient to generate files with the windows data (and not just the indexes) which we will read in the next step.
@@ -94,6 +103,10 @@ So, we have two options:
  - generate_windows_indexes_files.py
  - validate_windows_indexes.py
 
+end of old
+```
+
+---
 
 ### 4. 4_calc_similarity
 - submit_calc_dist_windows.py
@@ -104,6 +117,7 @@ So, we have two options:
  ---
  ---
 **CHECKPOINT**
+ 
  ---
 
   By this point what we have is per class a lot of random windows. Based on each we have similarity matrix, not normlized, with the count of sites used in evert entry.
@@ -120,8 +134,7 @@ TODO - refactor - many of the code here should also be used in the next step.
 Prior to the run of next step you need to manully creare sample_sites_file and indlist_file for netstucrt
 - submit_netstruct_per_class.py - will submit a run per class + a run on data from all classes
 
+---
+
 ### 6. TODO - 6_compare_to_random_pst
 We will need to build random PST, run onmi and collect results.
-
-# TODO
- -  Add a main script: user interactive, select data and step and params.

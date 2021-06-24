@@ -24,13 +24,16 @@ class PathsHelper:
         self.netstruct_folder = f'{self.classes_folder}netstruct/'
         self.nmi_folder = f'{self.classes_folder}nmi/'
         self.class_by_chr_template = self.classes_folder + '{chr_name}/{class_name}.012'
-        self.windows_per_class_and_chr_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
+        self.window_by_class_and_chr_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
+        self.window_by_class_template = self.windows_folder + '{class_name}/window_{window_id}.012.vcf.gz'
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
 
         self.count_dist_window_template = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
 
-        self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
+        # deprecated
+        # self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
+        self.number_of_windows_per_class_template = f'{self.windows_folder}/' + '{class_name}/number_of_windows.txt'
 
         # cluster runs logs paths
         self.logs_folder = f'{root_data_folder}logs/'

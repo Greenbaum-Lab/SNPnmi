@@ -120,8 +120,8 @@ def split_to_windows(chr_2_num_of_sites, window_size):
     total_num_of_windows = num_win_desired_size + num_win_size_plus_one
     print(f'{total_num_of_windows} total_num_of_windows')
     assert window_size*num_win_desired_size + (window_size+1)*num_win_size_plus_one == num_of_sites
+
     # note we use a fixed seed, so will always create the same output for reproducing the list.
-    
     shuffled_sites_indexes = []
     for chr_name, chr_num_sites in chr_2_num_of_sites.items():
          shuffled_sites_indexes += [f'{chr_name};{i}' for i in range(chr_num_sites)]
@@ -151,7 +151,7 @@ def split_to_windows(chr_2_num_of_sites, window_size):
     print(f'{covered} covered')
     assert covered == num_of_sites
     assert sum([len(index_2_window_id.keys()) for index_2_window_id in chr_2_index_2_window_id.values()]) == covered
-    return chr_2_index_2_window_id
+    return chr_2_index_2_window_id, total_num_of_windows
 
 def validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size):
     # we need to validate that we mapped all sites, and that each window size is either window_size or window_size+1.
@@ -180,6 +180,7 @@ def validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size):
     assert sum_window_sizes == num_of_sites
 
 def build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size):
+    class_value = int(class_value)
     # Removed - this should be done in the previous step! validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
@@ -189,8 +190,13 @@ def build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
     for chr_name in chr_2_num_of_sites.keys():
         print(f'chr {chr_name} has {chr_2_num_of_sites[chr_name]} sites')
 
-    chr_2_index_2_window_id = split_to_windows(chr_2_num_of_sites, window_size)
+    chr_2_index_2_window_id, total_num_of_windows = split_to_windows(chr_2_num_of_sites, window_size)
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
+
+    # log number of windows to file for future use
+    with open(path_helper.number_of_windows_per_class_template.format(class_name = allele_class.class_name), 'w') as number_of_windows_per_class_file:
+        number_of_windows_per_class_file.write(str(total_num_of_windows))
+
     for chr_short_name, index_2_window_id in chr_2_index_2_window_id.items():
         output_file = path_helper.windows_indexes_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
         os.makedirs(dirname(output_file), exist_ok=True)

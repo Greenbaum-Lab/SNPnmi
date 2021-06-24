@@ -79,7 +79,7 @@ def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, win
             f.write(s.encode())
 
 
-def get_number_of_windows_by_class(number_of_windows_per_class_path=None):
+def DEPRECATED_get_number_of_windows_by_class(number_of_windows_per_class_path=None):
     if not number_of_windows_per_class_path:
         paths_helper = get_paths_helper()
         number_of_windows_per_class_path = paths_helper.number_of_windows_per_class_path

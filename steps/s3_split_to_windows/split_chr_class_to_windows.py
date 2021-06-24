@@ -1,8 +1,8 @@
 DEBUG = False
 # given chr name and class split the sites of the class in the chr to files correspanding to windows.
-# in the next step we will merge per class and window the files from all chrs, generating a single file per window.
+# (in the next step we will merge per class and window the files from all chrs, generating a single file per window.)
 # the way this is done is using the output of the previous stpe (prepare_for_split_to_windows):
-# we go over the 012 file of the given char and class.
+# we go over the 012 file of the given chr and class.
 # each line contains data per individual.
 # we read line by line, and for each site, we look in the dictionary from the previous step, to which window id it should be writen.
 import os
@@ -28,6 +28,7 @@ def _write_values_to_windows(per_window_values, windows_files):
         window_file.write(to_write.encode())
 
 def split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_value):
+    class_value = int(class_value)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
     chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
@@ -43,7 +44,7 @@ def split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_valu
     assert min_window_id == 0, f'windows ids must be zero based, but the min index found is {min_window_id}'
 
     # TODO - we are potentialy opening a lot of files here. Need to try this for mac 2 chr 1.
-    window_per_class_and_chr_template = path_helper.windows_per_class_and_chr_template
+    window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
 
     # Generate the folder
     window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name = allele_class.class_name, chr_name=chr_short_name, window_id=0)
@@ -89,7 +90,7 @@ def main(args):
 
 def _test_me():
     dataset_name = 'hgdp_test'
-    chr_short_name = 'chr22'
+    chr_short_name = 'chr21'
     mac_maf = 'maf'
     class_value = 1
     split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_value)

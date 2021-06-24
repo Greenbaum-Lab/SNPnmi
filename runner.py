@@ -13,6 +13,7 @@ from steps.s1_get_data import get_data, get_vcfs_stats
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
 from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
+from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -24,6 +25,7 @@ step_to_func_and_name = {
     "2.2" : (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
     "3.1" : (submit_prepare_for_split_to_windows.main, 'submit_prepare_for_split_to_windows'),
     "3.2" : (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
+    "3.3" : (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
 }
 
 def run_step(step, dataset_name, step_args, use_checkpoint=True):
@@ -64,6 +66,8 @@ def runner(args):
 #runner(['3.1','hgdp_test', 20, 18, 1, 1, 100])
 
 #runner(['3.2','hgdp_test', 20, 18, 1, 1])
+
+#runner(['3.3','hgdp_test', 20, 18, 1, 1, 100])
 
 
 # if __name__ == "__main__":

@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, are_running_submitions
 from utils.config import *
 
 SCRIPT_NAME = os.path.basename(__file__)
@@ -47,8 +47,13 @@ def get_vcfs_stats(options):
     stat_types = options.args
     assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
-    return generate_vcfs_stats(options, stat_types)
-
+    all_stats_done = generate_vcfs_stats(options, stat_types)
+    if all_stats_done:
+        # return validate_stats()
+        for i in range(300):
+            time.sleep(1)
+            print(f"We are ready to validate stats! {i}")
+    return all_stats_done
 
 def main(options):
     # args should be: [dataset_name, stat_types (comma seperated)]

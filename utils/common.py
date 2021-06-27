@@ -105,8 +105,3 @@ def are_running_submitions(username="shahar.m"):
         return True
     except subprocess.CalledProcessError:
         return False
-
-
-
-if __name__ == '__main__':
-    are_running_submitions()

@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, are_running_submitions
 from utils.config import *
 
 SCRIPT_NAME = os.path.basename(__file__)
@@ -40,6 +40,11 @@ def generate_vcfs_stats(options, stat_types):
             is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', options)
             if is_executed:
                 print(f'done - {gzvcf_file} - {stat_type}')
+    i = 0
+    while are_running_submitions():
+        time.sleep(10)
+        print(f"Not done yet. Been already {i * 10} seconds")
+        i += 1
     return all_stats_done
 
 # wrappers for execution
@@ -47,8 +52,12 @@ def get_vcfs_stats(options):
     stat_types = options.args
     assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
-    return generate_vcfs_stats(options, stat_types)
-
+    all_stats_done = generate_vcfs_stats(options, stat_types)
+    if all_stats_done:
+        # return validate_stats()
+        pass
+        return True
+    return False
 
 def main(options):
     # args should be: [dataset_name, stat_types (comma seperated)]

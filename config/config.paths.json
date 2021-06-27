@@ -1,6 +1,6 @@
 {
     "cluster_data_folder": "/vol/sci/bio/data/gil.greenbaum/shahar.mazie/",
-    "cluster_code_folder": "/vol/sci/bio/data/gil.greenbaum/shahar.mazie/code/snpnmi/",
+    "cluster_code_folder": "/vol/sci/bio/data/gil.greenbaum/shahar.mazie/code/",
     "local_data_folder": "/home/lab2/Shahar/data/",
     "local_code_folder": "/home/lab2/Shahar/code/snpnmi/"
 }

@@ -1,4 +1,5 @@
 from utils import common
+from utils.loader import Loader
 
 DEBUG=False
 # Per vcf file, per class, will submit a job (if checkpoint does not exist)
@@ -35,7 +36,6 @@ def submit_split_vcfs_by_class(options):
         submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
                                vcf_files, vcf_files_short_names, vcfs_dir, with_checkpoint)
 
-    common.loading_animation(common.are_running_submitions)
 
 
 
@@ -55,8 +55,9 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
                 job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
                 job_name = f'2{val}_{vcf_file_short_name}'
                 python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
-                                  python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
+                with Loader("class split is running "):
+                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                      python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
 
 
 def _test_me():

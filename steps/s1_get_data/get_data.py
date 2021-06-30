@@ -14,6 +14,8 @@ from utils.common import get_paths_helper
 from utils.config import *
 from utils.checkpoint_helper import *
 
+from utils.loader import Loader
+
 
 def get_ftp_source(ftp_source_host, ftp_source_path):
     return f'ftp://{ftp_source_host}{ftp_source_path}'
@@ -43,7 +45,8 @@ def download_files(ftp_source, files_names, local_data_folder, override=False):
             print('File exists in ' + dest)
         else:
             print('Downloading ' + f)
-            urllib.request.urlretrieve(ftp_source + f, dest)
+            with Loader("Downloading files "):
+                urllib.request.urlretrieve(ftp_source + f, dest)
 
 
 def validate_downloaded_files_sizes(ftp_source_host, ftp_source_path, requested_files_names, local_data_folder):

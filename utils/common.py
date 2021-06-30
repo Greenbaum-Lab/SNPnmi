@@ -112,13 +112,3 @@ def are_running_submitions(username="shahar.m"):
         return False
 
 
-def loading_animation(is_done):
-    load_msg = "Don't give up! The program is still running😂😂😂"
-    for i in itertools.cycle(range(len(load_msg))):
-        if is_done():
-            break
-        sys.stdout.write('\rloading - ' + load_msg[:i])
-        time.sleep(0.1)
-        sys.stdout.flush()
-        time.sleep(0.1)
-    sys.stdout.write('\rDone!     ')

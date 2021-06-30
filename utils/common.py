@@ -1,3 +1,5 @@
+import itertools
+import random
 import subprocess
 import sys
 import time
@@ -70,6 +72,7 @@ def write_upper_left_matrix_to_file(output_file, values):
             s = ' '.join([str(i) for i in v]) + '\n'
             f.write(s.encode())
 
+
 def str2bool(v) -> bool:
     if isinstance(v, bool):
         return v
@@ -88,6 +91,7 @@ def get_num_lines_in_file(p, gzip=False):
         with open(p, 'r') as f:
             return sum(1 for _ in f)
 
+
 def get_num_columns_in_file(p, sep='\t', gzip=False):
     if gzip:
         with gzip.open(p, 'rb') as f:
@@ -98,10 +102,23 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
             l = f.readline()
             return len(l.split(sep))
 
+
 def are_running_submitions(username="shahar.m"):
     ps = subprocess.Popen('squeue', stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
-        output = subprocess.check_output(('grep', username), stdin=ps.stdout)
+        subprocess.check_output(('grep', username), stdin=ps.stdout)
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def loading_animation(is_done):
+    load_msg = "Don't give up! The program is still running😂😂😂"
+    for i in itertools.cycle(range(len(load_msg))):
+        if is_done():
+            break
+        sys.stdout.write('\rloading - ' + load_msg[:i])
+        time.sleep(0.1)
+        sys.stdout.flush()
+        time.sleep(0.1)
+    sys.stdout.write('\rDone!     ')

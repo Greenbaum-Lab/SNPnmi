@@ -16,11 +16,11 @@
         "ftp_source_host": "ngs.sanger.ac.uk",
         "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
         "num_individulas": 929,
-        "num_chrs": 1,
+        "num_chrs": 2,
         "sample_sites_file_name":"hgdp_wgs.20190516.SampleSites.txt",
         "indlist_file_name":"hgdp_wgs.20190516.indlist.csv",
         "indlist_coords_file_name":"hgdp_wgs.20190516.indlist_coords.csv",
-        "vcf_files_names": ["hgdp_wgs.20190516.full.chr21.vcf.gz"],
+        "vcf_files_names": ["hgdp_wgs.20190516.full.chr21.vcf.gz", "hgdp_wgs.20190516.full.chr20.vcf.gz"],
         "vcf_files_short_names": ["chr21"],
         "metadata_files_names": ["README.data-access.hgdp_wgs.20190516.txt"]
     }

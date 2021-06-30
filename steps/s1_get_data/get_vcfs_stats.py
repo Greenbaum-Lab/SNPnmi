@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
-from utils.common import get_paths_helper, are_running_submitions
+from utils.common import get_paths_helper
 from utils.config import *
 
 SCRIPT_NAME = os.path.basename(__file__)

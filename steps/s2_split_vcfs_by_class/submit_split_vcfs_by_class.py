@@ -1,3 +1,5 @@
+from utils import common
+
 DEBUG=False
 # Per vcf file, per class, will submit a job (if checkpoint does not exist)
 import sys
@@ -6,7 +8,7 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, are_running_submitions
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -30,22 +32,32 @@ def submit_split_vcfs_by_class(options):
     validate_dataset_vcf_files_short_names(dataset_name)
 
     for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range>0:
-            # Go over mac/maf values
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range+1):
-                # go over vcfs
-                for (vcf_file, vcf_file_short_name)  in zip(vcf_files, vcf_files_short_names):
-                    print(f'submit for {vcf_file_short_name} ({vcf_file})')
-                    vcf_full_path = vcfs_dir + vcf_file
-                    job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
-                    job_name=f'2{val}_{vcf_file_short_name}'
-                    python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
-                                      python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
+        submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
+                               vcf_files, vcf_files_short_names, vcfs_dir, with_checkpoint)
+
+    common.loading_animation(common.are_running_submitions)
+
+
+
+def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
+                           vcf_files, vcf_files_short_names, vcfs_dir, with_checkpoint):
+    is_mac = mac_maf == 'mac'
+    min_range = mac_min_range if is_mac else maf_min_range
+    max_range = mac_max_range if is_mac else maf_max_range
+    if min_range > 0:
+        # Go over mac/maf values
+        print(f'go over {mac_maf} values: [{min_range},{max_range}]')
+        for val in range(min_range, max_range + 1):
+            # go over vcfs
+            for (vcf_file, vcf_file_short_name) in zip(vcf_files, vcf_files_short_names):
+                print(f'submit for {vcf_file_short_name} ({vcf_file})')
+                vcf_full_path = vcfs_dir + vcf_file
+                job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
+                job_name = f'2{val}_{vcf_file_short_name}'
+                python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
+                submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                  python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
+
 
 def _test_me():
     submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)

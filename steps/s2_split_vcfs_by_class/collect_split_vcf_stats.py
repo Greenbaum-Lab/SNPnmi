@@ -128,7 +128,9 @@ def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
 
 # hgdp_text, 2, 8, 1, 49
 # TODO renmae? collect_and_validate_vcf_classes_stats
-def call_collect_split_vcf_stats(dataset_name, min_mac_range, max_mac_range, min_maf_range, max_maf_range):
+def call_collect_split_vcf_stats(options):
+    dataset_name = options.dataset_name
+    min_mac_range, max_mac_range, min_maf_range, max_maf_range = options.args
     paths_helper = get_paths_helper(dataset_name)
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
     vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
@@ -159,10 +161,9 @@ def _test_me():
     call_collect_split_vcf_stats(DataSetNames.hdgp_test, 20, 18, 1, 2)
 #_test_me()
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, dataset_name, args)
+    is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, options)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 

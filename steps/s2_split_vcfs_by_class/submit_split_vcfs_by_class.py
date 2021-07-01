@@ -55,10 +55,11 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
                 job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
                 job_name = f'2{val}_{vcf_file_short_name}'
                 python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                with Loader("class split is running "):
-                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
-                                      python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
-
+                submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                  python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
+    with Loader("Wait for all splitting jobs to be done "):
+        while are_running_submitions():
+            time.sleep(5)
 
 def _test_me():
     submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)

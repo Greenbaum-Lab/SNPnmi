@@ -82,7 +82,7 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
     vcftools_cmd = vcftools_cmd_parts_base + [
                             min_val_param_name, str(class_min_val), 
                             max_val_param_name, str(class_max_val), 
-                            '--out', output_path, 
+                            '--out', output_path,
                             '--temp', output_temp_dir,
                             '--012']
 

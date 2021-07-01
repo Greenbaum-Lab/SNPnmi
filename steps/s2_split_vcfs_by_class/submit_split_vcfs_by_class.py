@@ -51,9 +51,11 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
         # Go over mac/maf values
         print(f'go over {mac_maf} values: [{min_range},{max_range}]')
         for val in range(min_range, max_range + 1):
+            if is_output_exits(None, val, mac_maf, output_dir):
+                continue
             # go over vcfs
             for (vcf_file, vcf_file_short_name) in zip(vcf_files, vcf_files_short_names):
-                if is_output_exits(None, val, mac_maf, output_dir + '/' + vcf_file_short_name + '/'):
+                if is_output_exits(None, val, mac_maf, output_dir + vcf_file_short_name + '/'):
                     continue
                 print(f'submit for {vcf_file_short_name} ({vcf_file})')
                 vcf_full_path = vcfs_dir + vcf_file

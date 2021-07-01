@@ -20,7 +20,6 @@ from utils.checkpoint_helper import *
 
 SCRIPT_NAME = os.path.basename(__file__)
 
-# TODO - remove from here - Shahar, which is taking over step 2, should refactor this to the right module
 def validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr):
     df = pd.read_csv(split_vcf_output_stats_file)
     df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)

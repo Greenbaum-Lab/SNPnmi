@@ -11,6 +11,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 from utils.common import *
+from utils.config import *
 from utils.checkpoint_helper import *
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class
 
@@ -149,11 +150,96 @@ def call_collect_split_vcf_stats(options):
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
             log_files.append(job_stderr_file)
             chr_names_for_logs.append(vcf_file_short_name)
-    # TODO - Shahar? Add here validate_split_vcf_classes_stat()
+
 
     print(f'will process {len(log_files)} files')
 
-    collect_split_vcf_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
+    # collect_split_vcf_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
+    return validate_split_vcf_output_stats_file(options=options,
+                                                split_vcf_output_stats_file=split_vcf_stats_csv_path)
+
+
+def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
+    num_ind = get_num_individuals(options.dataset_name)
+    min_mac, max_mac, min_maf, max_maf = options.args
+    min_chr = get_min_chr(options.dataset_name)
+    max_chr = get_max_chr(options.dataset_name)
+    df = pd.read_csv(split_vcf_output_stats_file)
+    df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)
+
+    # first validate all data is here
+    assert validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf)
+    print(f'PASSED - all chrs has all relevant macs and mafs once')
+
+    # next validate all have the correct num_ind
+    assert validate_correct_individual_num(df, num_ind)
+    print(f'PASSED - all entries has the correct num of individuals ({num_ind})')
+
+    # next validate same num_of_possible_sites per chr
+    assert validate_num_of_possible_sites(df)
+    print('PASSED - all chrs has the same number of possilbe sites')
+
+    # validate the number of sites after filtering is indeed the number of sites in the 012 file
+    assert validate_num_of_sites_comp_to_012(df)
+    print('PASSED - number of sites in 012 files matches that of vcftools output')
+
+    # validate per chr and class we have a single line
+    # todo - I think we check it previously in validate_all_data_exists()
+    chr_class_df = df.groupby(['chr_name', 'mac_or_maf'])['mac'].count().reset_index()
+    assert (len(chr_class_df[chr_class_df['mac'] != 1]) == 0)
+    print('PASSED - single line per chr and name')
+    return True
+
+
+def validate_num_of_possible_sites(df):
+    passed = True
+    grouped = df.groupby('chr_name')['num_of_possible_sites'].agg('nunique').reset_index()
+    cond = len(grouped[grouped['num_of_possible_sites'] != 1]) == 0
+    if not cond:
+        print(f'a chr with different number of num_of_possible_sites is found')
+        print(grouped[grouped['num_of_possible_sites'] != 1])
+        passed = False
+    return passed
+
+
+def validate_num_of_sites_comp_to_012(df):
+    passed = True
+    df['validate012sites'] = (df['num_of_sites_after_filter'] == df['pos_num_of_lines']) & \
+                             (df['num_of_sites_after_filter'] == df['012_min_num_of_sites']) & \
+                             (df['num_of_sites_after_filter'] == df['012_max_num_of_sites'])
+    cond = len(df[~df['validate012sites']]) == 0
+    if not cond:
+        print(f'number of sites after filtering doesnt match 012 file')
+        print(df[~df['validate012sites']])
+        passed = False
+    return passed
+
+
+def validate_correct_individual_num(df, num_ind):
+    passed = True
+    for c in ['num_of_indv_after_filter', 'indv_num_of_lines', '012_num_of_lines', 'num_of_possible_indv']:
+        if len(df[df[c] != num_ind]) != 0:
+            passed = False
+            print(f'wrong number of ind for column {c}')
+            print(df[df[c] != num_ind][['chr_name', c]])
+    return passed
+
+
+def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf):
+    passed = True
+    for chr_i in range(min_chr, max_chr + 1):
+        for mac in range(min_mac, max_mac + 1):
+            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == f'{mac}')])
+            if count != 1:
+                passed = False
+                print(f'chr{chr_i}, mac {mac} appears {count} times')
+        for maf in range(min_maf, max_maf + 1):
+            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['maf'] == f'{maf * 1.0 / 100}')])
+            if count != 1:
+                passed = False
+                print(f'chr{chr_i}, maf {maf} appears {count} times')
+    return passed
+
 
 def _test_me():
     call_collect_split_vcf_stats(DataSetNames.hdgp_test, 20, 18, 1, 2)

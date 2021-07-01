@@ -39,7 +39,7 @@ def submit_split_vcfs_by_class(options):
     with Loader("Wait for all splitting jobs to be done "):
         while are_running_submitions(string_to_find="chr"):
             time.sleep(5)
-
+    # TODO - Shahar? Add here validate_split_vcf_classes_stat()
 
 
 def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,

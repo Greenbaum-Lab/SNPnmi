@@ -3,6 +3,8 @@ import logging.config
 from pathlib import Path
 from enum import Enum
 
+import numpy as np
+
 CONFIG_DIR_PATTERN = str(Path(__file__).parents[1]) + '/config/config.{config_file}.json'
 CONFIG_NAME_DATA = 'data'
 CONFIG_NAME_PATHS = 'paths'
@@ -25,6 +27,18 @@ def get_num_individuals(dataset_name):
 def get_num_chrs(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['num_chrs']
+
+def get_min_chr(dataset_name):
+    #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
+    data_config = get_config(CONFIG_NAME_DATA)
+    chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
+    return np.min(chr_numbers)
+
+def get_max_chr(dataset_name):
+    #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
+    data_config = get_config(CONFIG_NAME_DATA)
+    chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
+    return np.max(chr_numbers)
 
 def get_sample_sites_file_name(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)

@@ -146,8 +146,6 @@ def are_running_submitions(username="shahar.m", string_to_find=""):
         return False
 
 
-
-
 # Deprecated?
 def get_class2sites(dataset_name):
     path_helper = get_paths_helper(dataset_name)

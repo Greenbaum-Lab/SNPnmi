@@ -29,7 +29,7 @@ class Loader:
         for c in cycle(self.steps):
             if self.done:
                 break
-            print(f"\r{self.desc} {c}", flush=True, end="")
+            print(f"\r{self.desc} {c}  ", flush=True, end="")
             sleep(self.timeout)
 
     def __enter__(self):

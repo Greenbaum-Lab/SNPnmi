@@ -61,9 +61,7 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
         while are_running_submitions(string_to_find="chr"):
             time.sleep(5)
 
-def _test_me():
-    submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)
-#_test_me()
+
 
 def main(options):
     s = time.time()
@@ -71,6 +69,10 @@ def main(options):
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 
-# dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint
-if __name__ == '__main__':
+def _test_me():
+    submit_split_vcfs_by_class(DataSetNames.hdgp_test, 2, 18, 1, 49, with_checkpoint=True)
+
+if DEBUG:
+    _test_me()
+elif __name__ == '__main__':
     main(sys.argv[1:])

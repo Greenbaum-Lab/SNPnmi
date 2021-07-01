@@ -17,8 +17,7 @@ def write_checkpoint_file(checkpoint_file_path, args):
     os.makedirs(dirname(checkpoint_file_path), exist_ok=True)
     with open(checkpoint_file_path, 'w') as checkpoint_file:
         checkpoint_file.write(str(datetime.utcnow()) +'\n')
-        args = [str(arg) for arg in args]
-        checkpoint_file.write(f'args:{",".join(args)}')
+        checkpoint_file.write(f'args:{args}')
     print(f'checkpoint created: {checkpoint_file_path}')
 
 def get_checkpoint_time(checkpoint_file_path):

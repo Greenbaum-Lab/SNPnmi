@@ -59,9 +59,9 @@ def runner(options):
 
 # runner(['hgdp_test','1.2','hgdp_test','freq'])
 
-#runner(['2.1','hgdp_test', 2, 18, 1, 49, True])
+#runner(['2.1','hgdp_test', 3, 5, 45, 48, True])
 
-# runner(['hgdp_test','2.2','hgdp_test', 20, 18, 1, 2])
+# runner(['hgdp_test','2.2','hgdp_test', 3,5,45,48])
 
 
 #runner(['3.1','hgdp_test', 20, 18, 1, 1, 100])

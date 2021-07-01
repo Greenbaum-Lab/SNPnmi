@@ -136,6 +136,8 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
 
 
 def are_running_submitions(username="shahar.m", string_to_find=""):
+    if not is_cluster():
+        return False
     ps = subprocess.Popen('squeue', stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
         output = subprocess.check_output(('grep', username), stdin=ps.stdout)
@@ -144,8 +146,6 @@ def are_running_submitions(username="shahar.m", string_to_find=""):
         return True
     except subprocess.CalledProcessError:
         return False
-
-
 
 
 # Deprecated?

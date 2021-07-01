@@ -40,6 +40,7 @@ def submit_split_vcfs_by_class(options):
         while are_running_submitions(string_to_find="chr"):
             time.sleep(5)
 
+    # TODO - Shahar? Add here validate_split_vcf_classes_stat()
 
 
 def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
@@ -57,7 +58,7 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
             for (vcf_file, vcf_file_short_name) in zip(vcf_files, vcf_files_short_names):
                 if is_output_exits(None, val, mac_maf, output_dir + vcf_file_short_name + '/'):
                     continue
-                print(f'submit for {vcf_file_short_name} ({vcf_file})')
+                print(f'submit for {vcf_file_short_name} ({vcf_file})', flush=True)
                 vcf_full_path = vcfs_dir + vcf_file
                 job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
                 job_name = f'2{val}_{vcf_file_short_name}'

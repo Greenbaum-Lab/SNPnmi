@@ -1,3 +1,5 @@
+import pandas as pd
+
 DEBUG = False
 # Given a specific vcf file and class, will extract the relevant sites
 import subprocess
@@ -94,7 +96,6 @@ def compute_max_min_val(class_max_val, class_min_val, mac_maf):
         class_min_val = (class_min_val * 1.0 / 100.0)
         class_max_val = (class_max_val * 1.0 / 100.0)
     return class_max_val, class_min_val, is_mac
-
 
 def _test_me():
     split_vcf_by_class('maf', 48, 'C:/Data/HUJI/vcf/hgdp_wgs.20190516.full.chr21.vcf.gz', 'chr21', r'C:/Data/HUJI/vcf/hgdp_test/classes/')

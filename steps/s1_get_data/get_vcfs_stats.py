@@ -8,6 +8,9 @@ import os
 from os.path import dirname, abspath
 import ftplib
 from pathlib import Path
+
+from utils.loader import Loader
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
@@ -37,7 +40,8 @@ def generate_vcfs_stats(options, stat_types):
         for stat_type in stat_types:
             options.stat_type = stat_type
             options.output_path_prefix = output_folder + gzvcf_file
-            is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', options)
+            with Loader(f"Running {stat_type} "):
+                is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', options)
             if is_executed:
                 print(f'done - {gzvcf_file} - {stat_type}')
     return all_stats_done
@@ -48,11 +52,6 @@ def get_vcfs_stats(options):
     assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
     all_stats_done = generate_vcfs_stats(options, stat_types)
-    if all_stats_done:
-        # return validate_stats()
-        for i in range(300):
-            time.sleep(1)
-            print(f"We are ready to validate stats! {i}")
     return all_stats_done
 
 def main(options):

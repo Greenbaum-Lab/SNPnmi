@@ -103,10 +103,12 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
             return len(l.split(sep))
 
 
-def are_running_submitions(username="shahar.m"):
+def are_running_submitions(username="shahar.m", string_to_find=""):
     ps = subprocess.Popen('squeue', stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
         subprocess.check_output(('grep', username), stdin=ps.stdout)
+        if string_to_find:
+            subprocess.check_output(('grep', string_to_find), stdin=ps.stdout)
         return True
     except subprocess.CalledProcessError:
         return False

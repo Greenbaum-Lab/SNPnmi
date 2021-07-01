@@ -58,7 +58,7 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
                 submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
                                   python_script_params, with_checkpoint, num_hours_to_run=24, debug=DEBUG)
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions():
+        while are_running_submitions(string_to_find="chr"):
             time.sleep(5)
 
 def _test_me():

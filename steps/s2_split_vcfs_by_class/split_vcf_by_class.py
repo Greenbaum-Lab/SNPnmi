@@ -10,33 +10,18 @@ sys.path.append(root_path)
 from utils.common import get_paths_helper
 from utils.config import *
 
+
+
 def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_name, output_dir, class_max_val=None):
     # check input
     assert isinstance(class_min_val, int), f'The class_min_val must be an int, even if its maf - we convert it.'
 
     # check early break if output file already exists
-    # if class_max_val is not given, we increse the class_min_val by 1
-    is_mac = 'mac' in mac_maf
-    if not class_max_val:
-        # for mac, we want max_val == min_val [2,2]
-        if is_mac:
-            class_max_val = class_min_val
-        # for maf, we want max_val to be min_val+1 [2, 3) (/100)
-        # below we will make sure to exclude maf==0.3 from the interval
-        else:
-            class_max_val = class_min_val + 1
-    # in maf we convert to 0.x
-    if not is_mac:
-        class_min_val = (class_min_val*1.0/100.0)
-        class_max_val = (class_max_val*1.0/100.0)
-    
+
+    class_max_val, class_min_val, is_mac = compute_max_min_val(class_max_val, class_min_val, mac_maf)
+
     output_path = f'{output_dir}{mac_maf}_{class_min_val}'
 
-    # early break if the output file already exists
-    output_file = f'{output_path}.012'
-    if path.exists(output_file):
-        print(f'output file already exist. Break. {output_file}')
-        return False
 
     #prepare output and params
     os.makedirs(output_dir, exist_ok=True)
@@ -91,6 +76,25 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
     if not DEBUG:
         subprocess.run(vcftools_cmd)
     return True
+
+
+def compute_max_min_val(class_max_val, class_min_val, mac_maf):
+    # if class_max_val is not given, we increse the class_min_val by 1
+    is_mac = 'mac' in mac_maf
+    if not class_max_val:
+        # for mac, we want max_val == min_val [2,2]
+        if is_mac:
+            class_max_val = class_min_val
+        # for maf, we want max_val to be min_val+1 [2, 3) (/100)
+        # below we will make sure to exclude maf==0.3 from the interval
+        else:
+            class_max_val = class_min_val + 1
+    # in maf we convert to 0.x
+    if not is_mac:
+        class_min_val = (class_min_val * 1.0 / 100.0)
+        class_max_val = (class_max_val * 1.0 / 100.0)
+    return class_max_val, class_min_val, is_mac
+
 
 def _test_me():
     split_vcf_by_class('maf', 48, 'C:/Data/HUJI/vcf/hgdp_wgs.20190516.full.chr21.vcf.gz', 'chr21', r'C:/Data/HUJI/vcf/hgdp_test/classes/')

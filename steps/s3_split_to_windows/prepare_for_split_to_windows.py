@@ -140,6 +140,7 @@ def build_windows_indexes_files(options):
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
 
     # log number of windows to file for future use
+    print(path_helper.number_of_windows_per_class_template.format(class_name=allele_class.class_name))
     with open(path_helper.number_of_windows_per_class_template.format(class_name = allele_class.class_name), 'w') as number_of_windows_per_class_file:
         number_of_windows_per_class_file.write(str(total_num_of_windows))
 

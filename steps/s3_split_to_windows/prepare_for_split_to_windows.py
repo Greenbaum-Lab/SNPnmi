@@ -10,6 +10,7 @@ import json
 import pandas as pd
 import random
 import time
+import argparse
 random.seed(a='42', version=2)
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
@@ -19,63 +20,6 @@ from utils.config import *
 from utils.checkpoint_helper import *
 
 SCRIPT_NAME = os.path.basename(__file__)
-
-def validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr):
-    df = pd.read_csv(split_vcf_output_stats_file)
-    df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)
-
-    # first validate all data is here
-    passed = True
-    for chr_i in range(min_chr, max_chr+1):
-        for mac in range(min_mac, max_mac+1):
-            count = len(df[(df['chr_name_name'] == f'chr{chr_i}') & (df['mac'] == f'{mac}')])
-            if count != 1:
-                passed = False
-                print(f'chr{chr_i}, mac {mac} appears {count} times')
-        for maf in range(min_maf, max_maf+1):
-            count = len(df[(df['chr_name_name'] == f'chr{chr_i}') & (df['maf'] == f'{maf*1.0/100}')])
-            if count!=1:
-                passed = False
-                print(f'chr{chr_i}, mac {mac} appears {count} times')
-    assert passed
-    print(f'PASSED - all chrs has all relevant macs and mafs once')
-
-    # next validate all have the correct num_ind
-    passed = True
-    for c  in ['num_of_indv_after_filter','indv_num_of_lines','012_num_of_lines','num_of_possible_indv']:
-        if len(df[df[c]!=num_ind])!=0:
-            passed =False
-            print(f'wrong number of ind for column {c}')
-            print(df[df[c]!=num_ind][['chr_name_name',c]])
-    assert passed
-    print(f'PASSED - all entries has the correct num of individuals ({num_ind})')
-
-    # next validate same num_of_possible_sites per chr
-    grouped = df.groupby('chr_name_name')['num_of_possible_sites'].agg('nunique').reset_index()
-    cond = len(grouped[grouped['num_of_possible_sites']!=1])==0
-    if not cond:
-        print(f'a chr with different number of num_of_possible_sites is found')
-        print(grouped[grouped['num_of_possible_sites']!=1])
-        assert cond
-    else:
-        print('PASSED - all chrs has the same number of possilbe sites')
-
-    # validate the number of sites after filtring is indeed the number of sites in the 012 file
-    df['validate012sites'] = (df['num_of_sites_after_filter'] == df['pos_num_of_lines']) & \
-                             (df['num_of_sites_after_filter'] == df['012_min_num_of_sites']) & \
-                             (df['num_of_sites_after_filter'] == df['012_max_num_of_sites'])
-    cond =len(df[~df['validate012sites']])==0
-    if not cond:
-        print(f'number of sites after filtring doesnt match 012 file')
-        print(df[~df['validate012sites']])
-        assert cond
-    else:
-        print('PASSED - number of sites in 012 files matches that of vcftools output')
-
-    # validate per chr and class we have a single line
-    chr_class_df = df.groupby(['chr_name_name','mac_or_maf'])['mac'].count().reset_index()
-    assert(len(chr_class_df[chr_class_df['mac']!=1])==0)
-    print('PASSED - single line per chr and name')
 
 # TODO - I think this can be refactored and moved to a util file (vcf_helper?)
 def get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value):
@@ -178,7 +122,9 @@ def validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size):
         sum_window_sizes += specific_window_size
     assert sum_window_sizes == num_of_sites
 
-def build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size):
+def build_windows_indexes_files(options):
+    dataset_name = options.dataset_name
+    mac_maf, class_value, window_size = options.args
     class_value = int(class_value)
     # Removed - this should be done in the previous step! validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr)
     allele_class = AlleleClass(mac_maf, class_value)
@@ -186,7 +132,7 @@ def build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
 
     chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
     print(f'class {mac_maf}_{class_value}')
-    for chr_name in chr_2_num_of_sites.keys():
+    for chr_name in chr_2_num_of_sites.keys():  #
         print(f'chr {chr_name} has {chr_2_num_of_sites[chr_name]} sites')
 
     chr_2_index_2_window_id, total_num_of_windows = split_to_windows(chr_2_num_of_sites, window_size)
@@ -204,12 +150,12 @@ def build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
     return True
 
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, dataset_name, args)
+    is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, options)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
+
 
 def _test_me():
     dataset_name = 'hgdp_test'
@@ -218,8 +164,22 @@ def _test_me():
     window_size = 100
     build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
 
+
+def args_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
+    parser.add_argument("--args", dest="args", help="Any additional args")
+
+    options = parser.parse_args()
+    options.args = options.args.split(',') if options.args else []
+    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
+    return options
+
+
 if DEBUG:
     _test_me()
 elif __name__ == '__main__':
-    main(sys.argv[1:])
+    options = args_parser()
+    print(f"Running prepare_for_split_windows with\ndataset_name: {options.dataset_name}\nargs: {options.args}")
+    main(options)
 

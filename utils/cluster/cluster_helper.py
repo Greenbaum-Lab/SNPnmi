@@ -8,7 +8,7 @@ import subprocess
 from utils.common import get_paths_helper
 from utils.checkpoint_helper import execute_with_checkpoint
 
-MAX_PARAMS_SUPPORTED=30
+MAX_PARAMS_SUPPORTED = 30
 
 def submit_wrapper(options):
     submit_helper_path, cmd_to_run = options.submit_to_cluster_args

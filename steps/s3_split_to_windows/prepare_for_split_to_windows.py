@@ -130,10 +130,7 @@ def build_windows_indexes_files(options):
     # Removed - this should be done in the previous step! validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
-    try:
-        os.mkdir(path_helper.windows_folder)
-    except FileExistsError:
-        pass
+
     chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
     print(f'class {mac_maf}_{class_value}')
     for chr_name in chr_2_num_of_sites.keys():
@@ -143,7 +140,7 @@ def build_windows_indexes_files(options):
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
 
     # log number of windows to file for future use
-    print(path_helper.number_of_windows_per_class_template.format(class_name=allele_class.class_name))
+    os.makedirs(path_helper.number_of_windows_per_class_folder.format(class_name=allele_class.class_name), exist_ok=True)
     with open(path_helper.number_of_windows_per_class_template.format(class_name = allele_class.class_name), 'w') as number_of_windows_per_class_file:
         number_of_windows_per_class_file.write(str(total_num_of_windows))
 

@@ -27,6 +27,8 @@ def submit_prepare_for_split_to_windows(options):
     dataset_name = options.dataset_name
     mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size = options.args
     paths_helper = get_paths_helper(dataset_name)
+    os.makedirs(paths_helper.windows_folder, exist_ok=True)
+
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range

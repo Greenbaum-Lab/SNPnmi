@@ -16,10 +16,14 @@ SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'prepare_for_split_to_windows'
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_split_to_windows/prepare_for_split_to_windows.py'
 
+
 def generate_job_long_name(mac_maf, class_val):
     return f'class_{mac_maf}{class_val}'
 
-def submit_prepare_for_split_to_windows(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size):
+
+def submit_prepare_for_split_to_windows(options):
+    dataset_name = options.dataset_name
+    mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size = options.args
     paths_helper = get_paths_helper(dataset_name)
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
@@ -32,15 +36,15 @@ def submit_prepare_for_split_to_windows(dataset_name, mac_min_range, mac_max_ran
                 print(f'submit for {mac_maf} {class_int_val}')
                 job_long_name = generate_job_long_name(mac_maf, class_int_val)
                 job_name=f'3p{mac_maf}{class_int_val}'
-                python_script_params = f'{dataset_name} {mac_maf} {class_int_val} {window_size}'
-                submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
+                python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
+                submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                  python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
 
 
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    submit_prepare_for_split_to_windows(*args)
+    submit_prepare_for_split_to_windows(options)
     print(f'{(time.time()-s)/60} minutes total run time')
     return True
 
@@ -50,4 +54,5 @@ def _test_me():
 if DEBUG:
     _test_me()
 elif __name__ == '__main__':
+
     main(sys.argv[1:])

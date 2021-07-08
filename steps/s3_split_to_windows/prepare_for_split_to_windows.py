@@ -133,7 +133,7 @@ def build_windows_indexes_files(options):
 
     chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
     print(f'class {mac_maf}_{class_value}')
-    for chr_name in chr_2_num_of_sites.keys():  #
+    for chr_name in chr_2_num_of_sites.keys():
         print(f'chr {chr_name} has {chr_2_num_of_sites[chr_name]} sites')
 
     chr_2_index_2_window_id, total_num_of_windows = split_to_windows(chr_2_num_of_sites, window_size)

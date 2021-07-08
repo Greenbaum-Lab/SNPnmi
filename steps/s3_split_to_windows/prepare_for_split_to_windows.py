@@ -25,6 +25,7 @@ SCRIPT_NAME = os.path.basename(__file__)
 def get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value):
     path_helper = get_paths_helper(dataset_name)
     df = pd.read_csv(path_helper.split_vcf_stats_csv_path)
+    print(path_helper.split_vcf_stats_csv_path)
     if 'maf' in mac_maf:
         class_value = class_value/100.0
     return df[(df['chr_name'] == chr_short_name) & (df[mac_maf] == class_value)]['num_of_sites_after_filter'].values[0]

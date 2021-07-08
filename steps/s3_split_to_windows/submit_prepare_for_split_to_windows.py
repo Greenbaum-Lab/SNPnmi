@@ -1,3 +1,4 @@
+
 DEBUG = False
 # Per class will submit a job which will generate a file per chr, holding a mapping of sites indexes to windows ids
 # such that the windows sizes are window_size or window_size + 1 (across all chrs)
@@ -7,7 +8,8 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper
+from utils.loader import Loader
+from utils.common import get_paths_helper, are_running_submitions
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -39,7 +41,9 @@ def submit_prepare_for_split_to_windows(options):
                 python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
                 submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
                                   python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
-
+    with Loader("Wait for all splitting jobs to be done "):
+        while are_running_submitions(string_to_find="3pm"):
+            time.sleep(5)
 
 
 def main(options):

@@ -85,3 +85,5 @@ def args_parser():
 if __name__ == "__main__":
     options = args_parser()
     runner(options)
+
+print("In")

@@ -130,7 +130,10 @@ def build_windows_indexes_files(options):
     # Removed - this should be done in the previous step! validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
-
+    try:
+        os.mkdir(path_helper.windows_folder)
+    except FileExistsError:
+        pass
     chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
     print(f'class {mac_maf}_{class_value}')
     for chr_name in chr_2_num_of_sites.keys():

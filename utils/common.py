@@ -70,13 +70,17 @@ def is_cluster():
    return 'cs/icore/' in os.path.abspath(__file__)
 
 
-# the output is in couples of <count>;<distance>
-# the count is the number of valid sites on which the distances is calculated
-def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
-    with gzip.open(output_count_dist_file,'wb') as f:
-        for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
-            s = ' '.join(f'{c};{round(d, 7)}' for c,d in zip(counts, dists)) + '\n'
-            f.write(s.encode())
+# the output is in couples of <count>;<similarity>
+# the count is the number of valid sites on which the similarity is calculated
+def write_pairwise_similarity(output_count_similarity_file, window_pairwise_counts, window_pairwise_similarity):
+    # with open(output_count_similarity_file,'w') as f:
+    #     for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
+    #         txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
+    #         f.write(txt)
+    with gzip.open(output_count_similarity_file,'wb') as f:
+        for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
+            txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
+            f.write(txt.encode())
 
 
 def DEPRECATED_get_number_of_windows_by_class(number_of_windows_per_class_path=None):

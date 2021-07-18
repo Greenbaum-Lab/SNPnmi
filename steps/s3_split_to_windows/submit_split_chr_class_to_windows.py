@@ -36,7 +36,7 @@ def submit_split_chr_class_to_windows(options):
                     print(f'submit for {chr_name}, {mac_maf} {class_int_val}')
                     job_long_name = generate_job_long_name(mac_maf, class_int_val)
                     job_name=f'3s{chr_name[3:]}{mac_maf}{class_int_val}'
-                    python_script_params = f'{dataset_name} {chr_name} {mac_maf} {class_int_val}'
+                    python_script_params = f'-d {dataset_name} --args {chr_name},{mac_maf},{class_int_val}'
                     submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
                                       python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
     with Loader("Wait for all splitting jobs to be done "):

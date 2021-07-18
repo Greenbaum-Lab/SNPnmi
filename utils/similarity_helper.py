@@ -48,7 +48,8 @@ def calc_distances_based_on_files(files):
             assert i == num_ind - 1 - 1
     return dists, counts
 
-def generate_similarity_matrix(windows_files, output_folder, output_files_name, override=False):
+# TODO - change to similarity
+def generate_similarity_matrix_TODO(windows_files, output_folder, output_files_name, override=False):
     # validate output paths - check that we dont override if we should not
     all_count_distances_file = f'{output_folder}{output_files_name}_count_dist.tsv.gz'
     all_norm_distances_file = f'{output_folder}{output_files_name}_norm_dist.tsv.gz'

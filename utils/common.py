@@ -1,3 +1,4 @@
+import argparse
 import itertools
 import random
 import subprocess
@@ -171,3 +172,15 @@ def get_class2sites(dataset_name):
         class2sites[c] = all_class_indexes
         print('Done with class',c)
     return class2sites
+
+
+def args_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
+    parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
+    parser.add_argument("--args", dest="args", help="Any additional args")
+
+    options = parser.parse_args()
+    options.args = options.args.split(',') if options.args else []
+    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
+    return options

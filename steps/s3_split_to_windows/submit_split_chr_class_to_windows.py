@@ -18,7 +18,9 @@ path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_spli
 def generate_job_long_name(mac_maf, class_val):
     return f'class_{mac_maf}{class_val}'
 
-def submit_split_chr_class_to_windows(dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range):
+def submit_split_chr_class_to_windows(options):
+    dataset_name = options.dataset_name
+    mac_min_range, mac_max_range, maf_min_range, maf_max_range = options.args
     paths_helper = get_paths_helper(dataset_name)
     for chr_name in get_dataset_vcf_files_short_names(dataset_name):
         for mac_maf in ['mac', 'maf']:
@@ -33,12 +35,12 @@ def submit_split_chr_class_to_windows(dataset_name, mac_min_range, mac_max_range
                     job_long_name = generate_job_long_name(mac_maf, class_int_val)
                     job_name=f'3s{chr_name[3:]}{mac_maf}{class_int_val}'
                     python_script_params = f'{dataset_name} {chr_name} {mac_maf} {class_int_val}'
-                    submit_to_cluster(dataset_name, job_type, job_long_name, job_name, path_to_python_script_to_run, python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
+                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
+                                      python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    submit_split_chr_class_to_windows(*args)
+    submit_split_chr_class_to_windows(options)
     print(f'{(time.time()-s)/60} minutes total run time')
     return True
 

@@ -33,7 +33,7 @@ def submit_prepare_for_split_to_windows(options):
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range
-        if min_range>0:
+        if min_range > 0:
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range+1):

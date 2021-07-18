@@ -145,7 +145,7 @@ def build_windows_indexes_files(options):
         number_of_windows_per_class_file.write(str(total_num_of_windows))
 
     for chr_short_name, index_2_window_id in chr_2_index_2_window_id.items():
-        output_file = path_helper.windows_indexes_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
+        output_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
         os.makedirs(dirname(output_file), exist_ok=True)
         with open(output_file, "w") as f:
             json.dump(index_2_window_id, f)

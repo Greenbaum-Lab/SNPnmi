@@ -24,7 +24,13 @@ def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
 
 def submit_split_vcfs_by_class(options):
     dataset_name = options.dataset_name
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint = options.args
+    if len(options.args) == 5:
+        mac_min_range, mac_max_range, maf_min_range, maf_max_range, with_checkpoint = options.args
+    elif len(options.args) == 4:
+        mac_min_range, mac_max_range, maf_min_range, maf_max_range = options.args
+        with_checkpoint = True
+    else:
+        raise TypeError
     # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
     output_dir = paths_helper.classes_folder

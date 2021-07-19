@@ -34,7 +34,8 @@ def split_chr_class_to_windows(options):
     class_value = int(class_value)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
-    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
+    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
+                                                                           chr_name=chr_short_name)
     site_index_2_window_id = json.load(open(chr_windows_indexes_file,'r'))
 
     min_site_index = min(site_index_2_window_id.keys())
@@ -50,13 +51,13 @@ def split_chr_class_to_windows(options):
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
 
     # Generate the folder
-    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name = allele_class.class_name, chr_name=chr_short_name, window_id=0)
+    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=0)
     os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
 
     # Open the files
-    windows_files = [gzip.open(window_per_class_and_chr_template.format(class_name = allele_class.class_name, chr_name=chr_short_name, window_id=i), 'wb') 
+    windows_files = [gzip.open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=i), 'wb')
                      for i in range(max_window_id + 1)]
-    input_file = path_helper.class_by_chr_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
+    input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
 
     # We go over the input file, line by line. Each line is the genetic data of an individual.
     # We skip the first entry, as it is the individual id.
@@ -66,15 +67,15 @@ def split_chr_class_to_windows(options):
 
     # Estimation for mac 2 chr 1, where we have ~73M sites: it takes about 70 seconds per individual, which means about 18 hours.
     with open(input_file, 'r') as f:
-        line =  f.readline()
+        line = f.readline()
         line_index = 0
         while line:
             per_window_values = [[] for i in range(max_window_id + 1)]
-            if line_index%100 == 0:
+            if line_index % 100 == 0:
                 print(f'{time.strftime("%X %x")} line_index {line_index} in file {input_file}')
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
-            for site_index, value in  enumerate(sites_only):
+            for site_index, value in enumerate(sites_only):
                 window_id = site_index_2_window_id[str(site_index)]
                 per_window_values[window_id].extend([value])
             assert site_index == max_site_index

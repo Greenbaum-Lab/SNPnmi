@@ -69,10 +69,10 @@ def split_chr_class_to_windows(options):
     with open(input_file, 'r') as f:
         line = f.readline()
         line_index = 0
+        per_window_values = [[] for i in range(max_window_id + 1)]
         while line:
             if line_index % 100 == 0:
                 print(f'{time.strftime("%X %x")} line_index {line_index} in file {input_file}')
-                per_window_values = [[] for i in range(max_window_id + 1)]
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
             for site_index, value in enumerate(sites_only):

@@ -132,7 +132,7 @@ def build_windows_indexes_files(options):
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
 
-    chr_2_num_of_sites = {"chr20": 12435, "chr21": 23456}  # get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
+    chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
     print(f'class {mac_maf}_{class_value}')
     for chr_name in chr_2_num_of_sites.keys():
         print(f'chr {chr_name} has {chr_2_num_of_sites[chr_name]} sites')

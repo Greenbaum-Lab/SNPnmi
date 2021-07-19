@@ -22,11 +22,14 @@ from itertools import islice
 SCRIPT_NAME = os.path.basename(__file__)
 
 
-def _write_values_to_windows(per_window_values, windows_files):
-    for window_index, window_file in enumerate(windows_files):
-        values = per_window_values[window_index]
-        to_write = '\t'.join(values) + '\n'
-        window_file.write(to_write.encode())
+def _write_values_to_windows(per_window_values, window_per_class_and_chr_template, chr_short_name, class_name, max_wid):
+
+    for window_id in range(max_wid + 1):
+        with open(window_per_class_and_chr_template.format(class_name=class_name, chr_name=chr_short_name,
+                                                           window_id=window_id), 'wb') as window_file:
+            values = per_window_values[window_id]
+            to_write = '\t'.join(values) + '\n'
+            window_file.write(to_write.encode())
 
 def split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
@@ -54,9 +57,6 @@ def split_chr_class_to_windows(options):
     window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=0)
     os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
 
-    # Open the files
-    windows_files = [gzip.open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=i), 'wb')
-                     for i in range(max_window_id + 1)]
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
 
     # We go over the input file, line by line. Each line is the genetic data of an individual.
@@ -70,9 +70,9 @@ def split_chr_class_to_windows(options):
         line = f.readline()
         line_index = 0
         while line:
-            per_window_values = [[] for i in range(max_window_id + 1)]
             if line_index % 100 == 0:
                 print(f'{time.strftime("%X %x")} line_index {line_index} in file {input_file}')
+                per_window_values = [[] for i in range(max_window_id + 1)]
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
             for site_index, value in enumerate(sites_only):
@@ -81,7 +81,8 @@ def split_chr_class_to_windows(options):
             assert site_index == max_site_index
             line_index += 1
             line = f.readline()
-            _write_values_to_windows(per_window_values, windows_files)
+            _write_values_to_windows(per_window_values, window_per_class_and_chr_template, chr_short_name,
+                                     allele_class.class_name, max_window_id)
 
     return True
 

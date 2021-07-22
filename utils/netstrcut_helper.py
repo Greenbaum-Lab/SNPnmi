@@ -14,7 +14,7 @@ import subprocess
 
 def submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss='0.001'):
     # create output folders
-    paths_helper = get_paths_helper()
+    paths_helper = get_paths_helper('hgdp')
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
     # job data
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
@@ -26,7 +26,7 @@ def submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, o
     if netstruct_cmd:
         cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
         print(cmd_to_run)
-        subprocess.run([paths_helper.submit_helper, cmd_to_run])
+        #subprocess.run([paths_helper.submit_helper, cmd_to_run])
         return True
 
 
@@ -35,9 +35,9 @@ def build_netstruct_cmd(similarity_matrix_path, output_folder, ss='0.001'):
     # validate the input
     if not _validate_count_dist_file(similarity_matrix_path):
         print(f'{similarity_matrix_path} not valid, wont run netstruct')
-        return None
+        #return None
 
-    paths_helper = get_paths_helper()
+    paths_helper = get_paths_helper('hgdp')
     jar_path = paths_helper.netstruct_jar
     os.makedirs(output_folder, exist_ok=True)
 

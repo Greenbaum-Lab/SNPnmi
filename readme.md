@@ -81,31 +81,6 @@ TODO - validate this in the cluster
 
 3. Per class and max number of window_ids to process in each run, we run a job which collects the files from the previous step to create {class}_{window_id} files (in a 012 gz format)
 
-```
-old 
-
-Splits each class's indexes randomly to windows.
-Because in the next step we read the classes many times (as the number of windows), if we have a big class (for example mac 2 with 73K windows), it is more efficient to generate files with the windows data (and not just the indexes) which we will read in the next step.
-So, we have two options: 
-1.  big classes(next steps will be more time efficient, but requires a lot of storage):
-        There are a few steps to take:
- - generate_windows_and_indexes_files.py
-        (takes 35 sec to prepare 2000 sites. We have 7300000/2000 = 3650 * 35 = 127750 / (60*60) = 35 hours)
-        OPTION: do this per chr, and merge in the end, this will require a chr param, and a seperate output
-        (will take 3.5 minutes to process each window of 100 slices. So about 6 hours for 100 windows. Submitting 400 jobs of 100 each, as we have ~73K windows, we will need to submit twice)
- - split_transposed_windows.py - the previous step generates big windows of 1000. In this step we further split them. 
-            TODO - get rid of this step.
-            TODO - we should improve so that the output will contain the desired number of sites per window (and not on average).
- - validate_split_transposed_windows
- - submit_transpose_windows.py - the output of the previous step is transposed, so we need to take care of it. TODO - get rid of this step, should be done with the previous.
-
-2. regular size classes: 
- - generate_windows_indexes_files.py
- - validate_windows_indexes.py
-
-end of old
-```
-
 ---
 
 ### 4. 4_calc_similarity
@@ -125,6 +100,37 @@ end of old
  ---
  ---
 
+**CLOSING THE LOOP**
+
+1. Run NetstrcutH
+- Code - https://github.com/amirubin87/NetStruct_Hierarchy
+- old wrapper: submit_netstruct_per_class.py
+
+Cluster:
+sbatch --time=72:00:00 --mem=5G --error="C:/Data/HUJI/logs/cluster/hgdp/netstruct_per_class/maf0.49_weighted_true.stderr" --output="C:/Data/HUJI/logs/cluster/hgdp/netstruct_per_class/maf0.49_weighted_true.stdout" --job-name="ns_0.49" C:/Repos/snpnmi/utils/cluster/wrapper_max_30_params.sh 
+Job:
+java -jar C:/Repos/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -minb 5 -mino 5 -pro C:/Data/HUJI/vcf/hgdp/classes/netstruct/maf_0.49_all/ -pm C:/Data/HUJI/vcf/hgdp/classes/distances/all_mac_-1--1_maf_1-49_norm_dist.tsv.gz -pmn C:/Data/HUJI/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss C:/Data/HUJI/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -w false
+
+2. Visualize NetStructH output
+- Run Mathematica (when outside HUJI need to use VPN)
+- open the notebook:
+- in the second cell, change the DataFolder to point to the output of the previous step:
+  DataFolder = 
+  "C:\\Data\\HUJI\\vcf\\hgdp\\classes\\netstruct\\all_mac_2-18_maf_1-\
+49\\W_1_D_0_Min_5_SS_1.0E-4_B_1.0\\";
+- Run the cells up to  "tree1". Right click to save the figure to a pdf.
+
+3. Run ONMI to compare resutls
+ Get ONMI - https://github.com/aaronmcdaid/Overlapping-NMI and make
+ Run it to compare files (leafs only, leafs with all individuals, all nodes)
+ Note that the "AllNodes" file needs to be created.. See _collect_all_nodes_if_needed in run_nmi.py.
+ example run:
+ onmi /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/netstruct/all_mac_-1--1_maf_1-49/W_1_D_0_Min_5_SS_1.0E-4_B_1.0/2_Leafs_NoOverlap.txt /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/netstruct/maf_0.1_all/W_1_D_0_Min_5_SS_0.001_B_1.0/2_Leafs_NoOverlap.txt
+ Analyze results like done in: collect NMI.ipynb
+
+
+## OLD
+Need to reveiew the below steps
 
 ### 5. 5_build_baseline_pst
 TODO - refactor - many of the code here should also be used in the next step.
@@ -136,5 +142,5 @@ Prior to the run of next step you need to manully creare sample_sites_file and i
 
 ---
 
-### 6. TODO - 6_compare_to_random_pst
+### 6. OLD - 6_compare_to_random_pst
 We will need to build random PST, run onmi and collect results.

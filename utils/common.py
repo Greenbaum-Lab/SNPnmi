@@ -49,17 +49,17 @@ class AlleleClass:
         self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 def hash_args(args):
-    hash_val  = 0
-    for i in args:
-        hash_val += hash_str(str(i))
+    hash_val = 0
+    for idx, value in enumerate(args):
+        hash_val += hash_str(str(value)) * (256 ** idx)
     return hash_val
 
 def hash_str(s):
-    hash_val  = 0
+    hash_val = 0
     for c in s:
         val = ord(c)*17
         hash_val += val
-    return hash_val
+    return hash_val % 256
 
 def get_paths_helper(dataset_name):
     paths_config = get_config(CONFIG_NAME_PATHS)

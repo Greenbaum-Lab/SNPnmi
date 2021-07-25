@@ -7,7 +7,7 @@ import time
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper, AlleleClass
+from utils.common import get_paths_helper, AlleleClass, args_parser
 from utils.config import *
 from utils.checkpoint_helper import *
 import gzip
@@ -57,10 +57,9 @@ def merge_class_windows_across_chrs(dataset_name, mac_maf, class_value, min_wind
 
     return True
 
-def main(args):
+def main(options):
     s = time.time()
-    dataset_name = args[0]
-    is_executed, msg = execute_with_checkpoint(merge_class_windows_across_chrs, SCRIPT_NAME, dataset_name, args)
+    is_executed, msg = execute_with_checkpoint(merge_class_windows_across_chrs, SCRIPT_NAME, options)
     print(f'{msg}. {(time.time()-s)/60} minutes total run time')
     return is_executed
 
@@ -75,5 +74,6 @@ def _test_me():
 if DEBUG:
     _test_me()
 elif __name__ == '__main__':
-    main(sys.argv[1:])
+    options = args_parser()
+    main(options)
 

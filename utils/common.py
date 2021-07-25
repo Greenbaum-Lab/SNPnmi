@@ -48,7 +48,7 @@ class AlleleClass:
         self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 def hash_args(args):
-    hash_val  = 0
+    hash_val = 0
     for i in args:
         hash_val += hash_str(str(i))
     return hash_val

@@ -1,3 +1,4 @@
+import argparse
 import itertools
 import random
 import subprocess
@@ -49,16 +50,16 @@ class AlleleClass:
 
 def hash_args(args):
     hash_val = 0
-    for i in args:
-        hash_val += hash_str(str(i))
+    for idx, value in enumerate(args):
+        hash_val += hash_str(str(value)) * (256 ** idx)
     return hash_val
 
 def hash_str(s):
-    hash_val  = 0
+    hash_val = 0
     for c in s:
         val = ord(c)*17
         hash_val += val
-    return hash_val
+    return hash_val % 256
 
 def get_paths_helper(dataset_name):
     paths_config = get_config(CONFIG_NAME_PATHS)
@@ -73,13 +74,17 @@ def is_cluster():
     return '/vol/sci/' in os.path.abspath(__file__)
 
 
-# the output is in couples of <count>;<distance>
-# the count is the number of valid sites on which the distances is calculated
-def write_pairwise_distances(output_count_dist_file, window_pairwise_counts, window_pairwise_dist):
-    with gzip.open(output_count_dist_file,'wb') as f:
-        for counts,dists in zip(window_pairwise_counts, window_pairwise_dist):
-            s = ' '.join(f'{c};{round(d, 7)}' for c,d in zip(counts, dists)) + '\n'
-            f.write(s.encode())
+# the output is in couples of <count>;<similarity>
+# the count is the number of valid sites on which the similarity is calculated
+def write_pairwise_similarity(output_count_similarity_file, window_pairwise_counts, window_pairwise_similarity):
+    # with open(output_count_similarity_file,'w') as f:
+    #     for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
+    #         txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
+    #         f.write(txt)
+    with gzip.open(output_count_similarity_file,'wb') as f:
+        for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
+            txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
+            f.write(txt.encode())
 
 
 def DEPRECATED_get_number_of_windows_by_class(number_of_windows_per_class_path=None):
@@ -167,3 +172,15 @@ def get_class2sites(dataset_name):
         class2sites[c] = all_class_indexes
         print('Done with class',c)
     return class2sites
+
+
+def args_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
+    parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
+    parser.add_argument("--args", dest="args", help="Any additional args")
+
+    options = parser.parse_args()
+    options.args = options.args.split(',') if options.args else []
+    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
+    return options

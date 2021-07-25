@@ -15,7 +15,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from utils.vcf_stats_helper import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, args_parser
 from utils.config import *
 
 SCRIPT_NAME = os.path.basename(__file__)
@@ -65,4 +65,5 @@ def main(options):
 #main([DataSetNames.hdgp_test.value, 'freq'])
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    options = args_parser()
+    main(options)

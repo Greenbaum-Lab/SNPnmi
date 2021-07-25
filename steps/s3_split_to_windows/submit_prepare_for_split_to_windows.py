@@ -13,6 +13,7 @@ from utils.common import get_paths_helper, are_running_submitions
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
+from utils.common import args_parser
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'prepare_for_split_to_windows'
@@ -33,7 +34,7 @@ def submit_prepare_for_split_to_windows(options):
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range
-        if min_range>0:
+        if min_range > 0:
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range+1):
@@ -54,11 +55,13 @@ def main(options):
     print(f'{(time.time()-s)/60} minutes total run time')
     return True
 
+
 def _test_me():
     submit_prepare_for_split_to_windows(DataSetNames.hdgp_test, 20, 18, 1, 1, window_size=100)
+
 
 if DEBUG:
     _test_me()
 elif __name__ == '__main__':
-
-    main(sys.argv[1:])
+    options = args_parser()
+    main(options)

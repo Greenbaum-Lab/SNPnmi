@@ -18,6 +18,8 @@ sys.path.append(root_path)
 from utils.common import get_paths_helper, AlleleClass
 from utils.config import *
 from utils.checkpoint_helper import *
+from utils.common import args_parser
+
 
 SCRIPT_NAME = os.path.basename(__file__)
 
@@ -44,12 +46,12 @@ def get_num_of_sites_per_chr(dataset_name, mac_maf, class_value):
 # 3. (as we know the minimum class has 93920 elements, we know that num_windows > modulu)
 # so, in the last <module> windows, add 1
 def get_windows_sizes(list_size, window_size):
-    num_large_windows = list_size%window_size
+    num_large_windows = list_size % window_size
     num_wid = int(list_size/window_size)
-    assert num_wid>num_large_windows
-    num_win_exact_win_size = num_wid-num_large_windows
+    assert num_wid > num_large_windows
+    num_win_exact_win_size = num_wid - num_large_windows
     assert num_win_exact_win_size >= 0
-    assert (num_win_exact_win_size*window_size)+(num_large_windows*(window_size+1)) == list_size
+    assert (num_win_exact_win_size * window_size) + (num_large_windows * (window_size + 1)) == list_size
     return num_win_exact_win_size, num_large_windows
 
 # given the number of sites and the disered window_size, create random windows of the given size or the size +1.
@@ -109,7 +111,7 @@ def validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size):
     for chr_name, chr_num_sites in chr_2_num_of_sites.items():
         assert chr_num_sites == len(chr_2_index_2_window_id[chr_name].keys())
     
-    # Finally, to validate windows sizes, we build a mapping of windows_id 2 number of sites.
+    # Finally, to validate windows sizes, we build a mapping of windows_id to number of sites.
     window_id_2_window_size = dict()
     for index_2_window_id in chr_2_index_2_window_id.values():
         for k,v in index_2_window_id.items():
@@ -127,7 +129,6 @@ def build_windows_indexes_files(options):
     dataset_name = options.dataset_name
     mac_maf, class_value, window_size = options.args
     class_value = int(class_value)
-    # Removed - this should be done in the previous step! validate_split_vcf_output_stats_file(split_vcf_output_stats_file, num_ind, min_mac, max_mac, min_maf, max_maf, min_chr, max_chr)
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
 
@@ -140,12 +141,14 @@ def build_windows_indexes_files(options):
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
 
     # log number of windows to file for future use
-    os.makedirs(path_helper.number_of_windows_per_class_folder.format(class_name=allele_class.class_name), exist_ok=True)
-    with open(path_helper.number_of_windows_per_class_template.format(class_name = allele_class.class_name), 'w') as number_of_windows_per_class_file:
+    os.makedirs(path_helper.number_of_windows_per_class_folder.format(class_name=allele_class.class_name),
+                exist_ok=True)
+    with open(path_helper.number_of_windows_per_class_template.format(class_name=allele_class.class_name), 'w')\
+            as number_of_windows_per_class_file:
         number_of_windows_per_class_file.write(str(total_num_of_windows))
 
     for chr_short_name, index_2_window_id in chr_2_index_2_window_id.items():
-        output_file = path_helper.windows_indexes_template.format(class_name = allele_class.class_name, chr_name=chr_short_name)
+        output_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
         os.makedirs(dirname(output_file), exist_ok=True)
         with open(output_file, "w") as f:
             json.dump(index_2_window_id, f)
@@ -165,17 +168,6 @@ def _test_me():
     class_value = 1
     window_size = 100
     build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
-
-
-def args_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
-    parser.add_argument("--args", dest="args", help="Any additional args")
-
-    options = parser.parse_args()
-    options.args = options.args.split(',') if options.args else []
-    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
-    return options
 
 
 if DEBUG:

@@ -19,8 +19,6 @@ class PathsHelper:
         self.slices_folder = f'{self.classes_folder}slices/'
         self.random_slices_folder = f'{self.classes_folder}random_slices/'
 
-        # TODO - similarity?
-        self.dist_folder = f'{self.classes_folder}distances/'
         self.netstruct_folder = f'{self.classes_folder}netstruct/'
         self.nmi_folder = f'{self.classes_folder}nmi/'
         self.class_by_chr_template = self.classes_folder + '{chr_name}/{class_name}.012'
@@ -29,7 +27,12 @@ class PathsHelper:
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
 
-        self.count_dist_window_template = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
+        # similarity paths
+        self.similarity_folder = f'{self.classes_folder}similarity/'
+        self.similarity_by_class_folder_template = self.similarity_folder + '{class_name}/'
+        self.similarity_by_class_and_window_template = self.similarity_by_class_folder_template + 'count_similarity_by_window_{window_id}.tsv.gz'
+
+        self.count_dist_window_template_deprecated = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
 
         # deprecated
         # self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'

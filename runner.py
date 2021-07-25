@@ -18,6 +18,7 @@ from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
+from utils.common import args_parser
 
 step_to_func_and_name = {
     "1.1" : (get_data.main, 'get_data'),
@@ -69,17 +70,6 @@ def runner(options):
 #runner(['3.2','hgdp_test', 20, 18, 1, 1])
 
 #runner(['3.3','hgdp_test', 20, 18, 1, 1, 100])
-
-def args_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
-    parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
-    parser.add_argument("--args", dest="args", help="Any additional args")
-
-    options = parser.parse_args()
-    options.args = options.args.split(',') if options.args else []
-    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
-    return options
 
 
 if __name__ == "__main__":

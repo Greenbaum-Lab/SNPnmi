@@ -15,7 +15,9 @@ import pandas as pd
 
 SCRIPT_NAME = os.path.basename(__file__)
 
-def merge_class_window_across_chrs(dataset_name, mac_maf, class_value, window_id):
+def merge_class_window_across_chrs(options):
+    dataset_name = options.dataset_name
+    mac_maf, class_value, window_id = options.args
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
 

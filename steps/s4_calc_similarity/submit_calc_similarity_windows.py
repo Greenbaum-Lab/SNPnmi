@@ -7,13 +7,16 @@
 import subprocess
 import sys
 import os
+import time
 from os.path import dirname, abspath
 import json
+
+from utils.loader import Loader
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 # from utils.common import get_number_of_windows_by_class, get_paths_helper
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, are_running_submitions
 from utils.config import *
 
 DEFAULT_DELTA_MAC = 1
@@ -39,6 +42,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 exist_ok=True)
 
     number_of_submitted_jobs = 0
+    errors = []
     if use_specific_012_file:
         print('use_specific_012_file - currently only mac is supported!')
         if mac_min_range > 0:
@@ -83,6 +87,9 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
             if number_of_submitted_jobs == max_number_of_jobs:
                 break
+            if f"mac_{mac}" not in class2num_windows.keys():
+                errors.append(f"mac_{mac}")
+                continue
             num_windows = int(class2num_windows[f"mac_{mac}"])
             print(f'mac {mac}, num_windows {num_windows}')
             max_window_id = initial_window_index
@@ -104,6 +111,15 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
+
+    if len(errors) == 0:
+        print("Dont submitions with no errors!")
+    else:
+        print(f"Errors in:\n{errors}")
+    with Loader("Wait for all similarities comupations jobs to be done "):
+        while are_running_submitions(string_to_find="_w"):
+            time.sleep(5)
+
     if maf_min_range > 0:
         print('go over maf values')
         for maf_int in range(maf_min_range, maf_max_range + 1, maf_delta):
@@ -111,7 +127,10 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 break
             maf = f'{maf_int * 1.0 / 100}'
             max_maf = f'{(maf_int + maf_delta) * 1.0 / 100}'
-            num_windows = class2num_windows[f"maf_{maf}"]
+            if f"maf_{maf}" not in class2num_windows.keys():
+                errors.append(f"maf_{maf}")
+                continue
+            num_windows = float(class2num_windows[f"maf_{maf}"])
             print(f'maf {maf}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:

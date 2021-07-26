@@ -13,7 +13,8 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from steps.s4_calc_similarity.calc_similarity_helper import check_guardrails, site_calc_pairwise_similarity, get_012_df
-from utils.common import build_empty_upper_left_matrix, get_paths_helper, write_pairwise_similarity, AlleleClass
+from utils.common import build_empty_upper_left_matrix, get_paths_helper, write_pairwise_similarity, AlleleClass, \
+    args_parser
 
 # TODO move to paths_helper
 OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
@@ -147,3 +148,7 @@ def main(options):
 # min_window_index = 0
 # max_window_index = 1
 # main([dataset_name, mac_maf, class_value, min_window_index, max_window_index])
+
+if __name__ == '__main__':
+    options = args_parser()
+    main(options)

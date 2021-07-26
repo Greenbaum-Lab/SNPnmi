@@ -95,41 +95,42 @@ def calc_similarity_in_windows(
         write_pairwise_similarity(output_count_similarity_file, window_pairwise_counts, window_pairwise_similarity)
         print(f'{(time.time()-start_time)/60} minutes for class: {mac_maf}_{class_name}, window_id: {window_id}')
 
-def main(args):
+def main(options):
+
     s = time.time()
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
-    dataset_name = args[0]
-    mac_maf = args[1]
-    assert mac_maf == 'mac' or mac_maf == 'maf'
-    class_value = args[2]
-    min_window_index = int(args[3])
-    max_window_index = int(args[4])
-    assert min_window_index>=0
-    assert max_window_index>=0
-    assert min_window_index<max_window_index
-
-    print('dataset_name',dataset_name)
-    print('mac_maf',mac_maf)
-    print('class_value',class_value)
-    print('min_window_index',min_window_index)
-    print('max_window_index',max_window_index)
-
-    calc_similarity_in_windows(
-        dataset_name,
-        mac_maf,
-        class_value,
-        min_window_index,
-        max_window_index)
+    # print ('Number of arguments:', len(args), 'arguments.')
+    # print ('Argument List:', str(args))
+    # dataset_name = options.dataset_name
+    # mac_maf = args[1]
+    # assert mac_maf == 'mac' or mac_maf == 'maf'
+    # class_value = args[2]
+    # min_window_index = int(args[3])
+    # max_window_index = int(args[4])
+    # assert min_window_index>=0
+    # assert max_window_index>=0
+    # assert min_window_index<max_window_index
+    #
+    # print('dataset_name',dataset_name)
+    # print('mac_maf',mac_maf)
+    # print('class_value',class_value)
+    # print('min_window_index',min_window_index)
+    # print('max_window_index',max_window_index)
+    #
+    # calc_similarity_in_windows(
+    #     dataset_name,
+    #     mac_maf,
+    #     class_value,
+    #     min_window_index,
+    #     max_window_index)
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-dataset_name = 'hgdp_test'
-mac_maf = 'maf'
-class_value = 1
-min_window_index = 0
-max_window_index = 1
-main([dataset_name, mac_maf, class_value, min_window_index, max_window_index])
+# dataset_name = 'hgdp_test'
+# mac_maf = 'maf'
+# class_value = 1
+# min_window_index = 0
+# max_window_index = 1
+# main([dataset_name, mac_maf, class_value, min_window_index, max_window_index])
 
 if __name__ == "X__main__":
    main(sys.argv[1:])

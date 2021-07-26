@@ -138,38 +138,40 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     break
 
 
-def main():
-    options = args_parser()
+def main(options):
     submit_calc_similarity_windows(options)
 
 
 if __name__ == '__main__':
-    main()
+    options = args_parser()
+    main(options)
 
 
 def get_args(options):
+    options.mac = options.mac.split(',')
     assert 2 <= len(options.mac) <= 3, f"mac argument length is not correct. options.mac = {options.mac}"
-    mac_min_range = options.mac[0]
-    mac_max_range = options.mac[1]
-    mac_delta = DEFAULT_DELTA_MAC if len(options.mac) == 2 else options.mac[2]
+    mac_min_range = int(options.mac[0])
+    mac_max_range = int(options.mac[1])
+    mac_delta = DEFAULT_DELTA_MAC if len(options.mac) == 2 else int(options.mac[2])
 
     # by maf
+    options.maf = options.maf.split(',')
     assert 2 <= len(options.maf) <= 3, f"maf argument length is not correct. options.maf = {options.maf}"
-    maf_min_range = options.maf[0]
-    maf_max_range = options.maf[1]
-    maf_delta = DEFAULT_DELTA_MAF if len(options.maf) == 2 else options.maf[2]
+    maf_min_range = int(options.maf[0])
+    maf_max_range = int(options.maf[1])
+    maf_delta = DEFAULT_DELTA_MAF if len(options.maf) == 2 else int(options.maf[2])
 
     # submission details
-    number_of_windows_to_process_per_job = options.args[0]
-    max_number_of_jobs = options.args[1]
-    initial_window_index = options.args[2]
+    number_of_windows_to_process_per_job = int(options.args[0])
+    max_number_of_jobs = int(options.args[1])
+    initial_window_index = int(options.args[2])
 
     # use specific 012 input files
     # when true, for each mac/maf in range, we will process 012 files with index in range [min_input_012_file_index, max_input_012_file_index]
     if hasattr(options, "spec_012"):
         use_specific_012_file = True
-        min_input_012_file_index = options.spec_012[0]
-        max_input_012_file_index = options.spec_012[1]
+        min_input_012_file_index = int(options.spec_012[0])
+        max_input_012_file_index = int(options.spec_012[1])
     else:
         use_specific_012_file = False
         min_input_012_file_index = -1

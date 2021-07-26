@@ -138,9 +138,13 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     break
 
 
-if __name__ == '__main__':
+def main():
     options = args_parser()
     submit_calc_similarity_windows(options)
+
+
+if __name__ == '__main__':
+    main()
 
 
 def get_args(options):

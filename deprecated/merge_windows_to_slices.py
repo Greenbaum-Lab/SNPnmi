@@ -12,7 +12,8 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, str2bool, get_paths_helper
+from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, \
+    str2bool, get_paths_helper, args_parser
 from utils.similarity_helper import calc_distances_based_on_files
 from utils.similarity_helper import normalize_distances
 
@@ -92,24 +93,24 @@ def merge_windows_to_slices(mac_maf, class_name, num_windows_per_slice, given_nu
         write_upper_left_matrix_to_file(slice_counts_file, counts)
         print(f'slice_counts_file : {slice_counts_file}')
 
-def main(args):
+def main(options):
     s = time.time()
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
-    mac_maf = args[0]
-    assert mac_maf=='mac' or mac_maf=='maf'
-    class_name = args[1]
-    num_windows_per_slice = int(args[2])
-    assert num_windows_per_slice>=0
-    num_slices = int(args[3])
-    assert num_slices>0
-    is_random = str2bool(args[4])
+    print('Number of arguments:', len(options.args), 'arguments.')
+    print('Argument List:', str(options.args))
+    mac_maf = options.args[0]
+    assert mac_maf == 'mac' or mac_maf == 'maf'
+    class_name = options.args[1]
+    num_windows_per_slice = int(options.args[2])
+    assert num_windows_per_slice >= 0
+    num_slices = int(options.args[3])
+    assert num_slices > 0
+    is_random = str2bool(options.args[4])
 
-    print('mac_maf',mac_maf)
-    print('class_name',class_name)
-    print('num_windows_per_slice',num_windows_per_slice)
-    print('num_slices',num_slices)
-    print('is_random',is_random)
+    print('mac_maf', mac_maf)
+    print('class_name', class_name)
+    print('num_windows_per_slice', num_windows_per_slice)
+    print('num_slices', num_slices)
+    print('is_random', is_random)
 
     merge_windows_to_slices(mac_maf, class_name, num_windows_per_slice, num_slices, is_random)
 
@@ -125,4 +126,5 @@ def main(args):
 # main([mac_maf, class_name, num_windows_per_slice, num_slices, is_random])
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    options = args_parser()
+    main(options)

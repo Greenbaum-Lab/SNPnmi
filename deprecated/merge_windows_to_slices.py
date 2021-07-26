@@ -22,14 +22,15 @@ def write_metadata_to_file(windows_to_use, file):
         windows_s = ','.join([str(i) for i in windows_to_use])
         f.write(f'windows used:{windows_s}\n')
 
-def merge_windows_to_slices(mac_maf, class_name, num_windows_per_slice, given_num_slices, is_random):
+def merge_windows_to_slices(options):
+    mac_maf, class_name, num_windows_per_slice, given_num_slices, is_random = get_args(options)
     if is_random:
         print('merge to random slices')
     else:
         print('merge to sequential slices')
     #  we dont want to use the same seed here, as we will have the same values for all clasees
     # random.seed(10)
-    paths_helper = get_paths_helper()
+    paths_helper = get_paths_helper(options.dataset_name)
 
     windows_class_folder = f'{paths_helper.windows_folder}{mac_maf}_{class_name}/'
     slices_class_folder = f'{paths_helper.random_slices_folder if is_random else paths_helper.slices_folder}{mac_maf}_{class_name}/' 
@@ -95,6 +96,25 @@ def merge_windows_to_slices(mac_maf, class_name, num_windows_per_slice, given_nu
 
 def main(options):
     s = time.time()
+
+    merge_windows_to_slices(options)
+
+    print(f'{(time.time()-s)/60} minutes total run time')
+
+# params
+# mac_maf = 'maf'
+# class_name = '0.49'
+# num_windows_per_slice = '10'
+# num_slices = '5'
+# is_random = 'True'
+
+# main([mac_maf, class_name, num_windows_per_slice, num_slices, is_random])
+
+if __name__ == "__main__":
+    options = args_parser()
+    main(options)
+
+def get_args(options):
     print('Number of arguments:', len(options.args), 'arguments.')
     print('Argument List:', str(options.args))
     mac_maf = options.args[0]
@@ -111,20 +131,4 @@ def main(options):
     print('num_windows_per_slice', num_windows_per_slice)
     print('num_slices', num_slices)
     print('is_random', is_random)
-
-    merge_windows_to_slices(mac_maf, class_name, num_windows_per_slice, num_slices, is_random)
-
-    print(f'{(time.time()-s)/60} minutes total run time')
-
-# params
-# mac_maf = 'maf'
-# class_name = '0.49'
-# num_windows_per_slice = '10'
-# num_slices = '5'
-# is_random = 'True'
-
-# main([mac_maf, class_name, num_windows_per_slice, num_slices, is_random])
-
-if __name__ == "__main__":
-    options = args_parser()
-    main(options)
+    return mac_maf, class_name, num_windows_per_slice, num_slices, is_random

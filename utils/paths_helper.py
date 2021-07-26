@@ -35,7 +35,7 @@ class PathsHelper:
         self.count_dist_window_template_deprecated = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
 
         # deprecated
-        # self.number_of_windows_per_class_path = f'{self.windows_indexes_folder}number_of_windows_per_class.txt'
+        self.number_of_windows_per_class_path = f'{self.windows_folder}number_of_windows_per_class.txt'
         self.number_of_windows_per_class_folder = f'{self.windows_folder}' + '{class_name}/'
         self.number_of_windows_per_class_template = f'{self.windows_folder}' + '{class_name}/number_of_windows.txt'
 

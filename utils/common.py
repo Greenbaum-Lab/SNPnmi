@@ -87,10 +87,8 @@ def write_pairwise_similarity(output_count_similarity_file, window_pairwise_coun
             f.write(txt.encode())
 
 
-def DEPRECATED_get_number_of_windows_by_class(number_of_windows_per_class_path=None):
-    if not number_of_windows_per_class_path:
-        paths_helper = get_paths_helper()
-        number_of_windows_per_class_path = paths_helper.number_of_windows_per_class_path
+def get_number_of_windows_by_class(paths_helper):
+    number_of_windows_per_class_path = paths_helper.number_of_windows_per_class_path
     class2num_windows = dict()
     with open(number_of_windows_per_class_path) as f:
         for l in f.readlines():
@@ -178,6 +176,11 @@ def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
     parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
+    parser.add_argument("--mac", dest="mac", help="min value, max value, delta")
+    parser.add_argument("--maf", dest="maf", help="min value, max value, delta")
+    parser.add_argument("--spec_012", dest="use_specific_012_file",
+                        help="if not used, default is to use all 012 files. If used should come with 2 args,"
+                             " min 012 file and max 012 file")
     parser.add_argument("--args", dest="args", help="Any additional args")
 
     options = parser.parse_args()

@@ -29,9 +29,9 @@ The order of scripts to run:
         - validate the above (validate_split_transposed_windows) running in screen 19915.fillmac2
         - transpose_files - done 73512 ( +2 dirs old_count_dist, transposed)
         - validae - in mac 2 we have 7303147 sites (which is what we should have according to the split_vcf_output_stats file), in 73512 012 files.
-        - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_dist_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
+        - Done (cluster) 1000/73031: calc_distances_in_window using "python3 submit_calc_similarity_windows.py 2 2 1 100 50 1 -1 -1 -1 True 0 73031"
     2. regular size classes: generate_windows_indexes_files.py 
-- submit_calc_dist_windows.py
+- submit_calc_similarity_windows.py
 - fill_calc_distances_in_windows - run this twice before the validation as it generates flags consumed by the validation script
 -  validate_calc_distances_in_windows.py
 --------------------
@@ -46,7 +46,7 @@ Build baseline
 nmi - from https://github.com/aaronmcdaid/Overlapping-NMI
 
 --------------------------------------
-Discussion on submit_calc_dist_windows
+Discussion on submit_calc_similarity_windows
 --------------------------------------
 Processing a window of 100 sites takes 5-8 minutes.
 Processing 25 windows will take 3:20 hours at 8 minute per minute

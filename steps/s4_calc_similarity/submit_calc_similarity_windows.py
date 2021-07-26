@@ -75,14 +75,15 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
         # if a specific input file is used, we wont go over macs and mafs
         return
 
-    with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
-        class2num_windows = json.load(f)
+    # with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
+    #     class2num_windows = json.load(f)
+    class2num_windows = {"mac_5": 400}
     if mac_min_range > 0:
         print('go over mac values')
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
             if number_of_submitted_jobs == max_number_of_jobs:
                 break
-            num_windows = class2num_windows[f"mac_{mac}"]
+            num_windows = int(class2num_windows[f"mac_{mac}"])
             print(f'mac {mac}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:
@@ -110,7 +111,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 break
             maf = f'{maf_int * 1.0 / 100}'
             max_maf = f'{(maf_int + maf_delta) * 1.0 / 100}'
-            num_windows = class2num_windows[maf]
+            num_windows = class2num_windows[f"maf_{maf}"]
             print(f'maf {maf}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:

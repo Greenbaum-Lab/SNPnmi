@@ -14,6 +14,7 @@ from utils.common import get_paths_helper, AlleleClass, args_parser, are_running
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
+import json
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'merge_all_chrs_to_class_windows'
@@ -29,6 +30,21 @@ def get_num_windows_per_class(dataset_name, mac_maf, class_value):
         total_num_of_windows = int(number_of_windows_per_class_file.readline().strip())
         print(f'Class {allele_class.class_name} has {total_num_of_windows} windows')
         return total_num_of_windows
+
+def write_class_to_number_of_windows_file(options, classes):
+    paths_helper = get_paths_helper(options.dataset_name)
+    output_file = paths_helper.number_of_windows_per_class_path
+    windows_per_class = {}
+    for cls in classes:
+        window_file = paths_helper.number_of_windows_per_class_template.format(class_name=cls)
+        if os.path.exists(window_file):
+            with open(window_file, 'r') as file:
+                windows_per_class[cls] = file.read()
+
+    with open(output_file, 'w') as output:
+        json.dump(windows_per_class, output)
+
+
 
 def submit_merge_all_chrs_to_class_windows(options):
     dataset_name = options.dataset_name

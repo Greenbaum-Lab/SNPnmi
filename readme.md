@@ -84,7 +84,7 @@ TODO - validate this in the cluster
 ---
 
 ### 4. 4_calc_similarity
-- submit_calc_dist_windows.py
+- submit_calc_similarity_windows.py
 - fill_calc_distances_in_windows - TODO - currently we need to run this twice before the validation as it generates flags consumed by the validation script, but only if the input exists (otherwise it submits a job to generate it)
 -  validate_calc_distances_in_windows.py
 

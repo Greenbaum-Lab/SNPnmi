@@ -124,7 +124,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
             if f"maf_{maf}" not in class2num_windows.keys():
                 errors.append(f"maf_{maf}")
                 continue
-            num_windows = float(class2num_windows[f"maf_{maf}"])
+            num_windows = int(class2num_windows[f"maf_{maf}"])
             print(f'maf {maf}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:

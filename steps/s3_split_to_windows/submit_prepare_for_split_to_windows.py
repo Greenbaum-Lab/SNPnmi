@@ -30,6 +30,7 @@ def write_class_to_number_of_windows_file(options, classes):
     windows_per_class = {}
     for cls in classes:
         window_file = paths_helper.number_of_windows_per_class_template.format(class_name=cls)
+        print(window_file)
         if os.path.exists(window_file):
             with open(window_file, 'r') as file:
                 windows_per_class[cls] = file.read()

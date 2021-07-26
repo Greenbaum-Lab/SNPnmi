@@ -111,7 +111,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 break
             maf = f'{maf_int * 1.0 / 100}'
             max_maf = f'{(maf_int + maf_delta) * 1.0 / 100}'
-            num_windows = class2num_windows[f"maf_{maf}"]
+            num_windows = float(class2num_windows[f"maf_{maf}"])
             print(f'maf {maf}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:

@@ -79,9 +79,8 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
         # if a specific input file is used, we wont go over macs and mafs
         return
 
-    # with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
-    #     class2num_windows = json.load(f)
-    class2num_windows = {"mac_5": 400}
+    with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
+        class2num_windows = json.load(f)
     if mac_min_range > 0:
         print('go over mac values')
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
@@ -111,14 +110,6 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 if number_of_submitted_jobs == max_number_of_jobs:
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
-
-    if len(errors) == 0:
-        print("Dont submitions with no errors!")
-    else:
-        print(f"Errors in:\n{errors}")
-    with Loader("Wait for all similarities comupations jobs to be done "):
-        while are_running_submitions(string_to_find="_w"):
-            time.sleep(5)
 
     if maf_min_range > 0:
         print('go over maf values')
@@ -157,9 +148,19 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     print(f'No more jobs will be submitted. Next window index to process is {max_window_id}')
                     break
 
+    if len(errors) == 0:
+        print("Dont submitions with no errors!")
+    else:
+        print(f"Errors in:\n{errors}")
+    with Loader("Wait for all similarities comupations jobs to be done "):
+        while are_running_submitions(string_to_find="_w"):
+            time.sleep(5)
 
 def main(options):
+    s = time.time()
     submit_calc_similarity_windows(options)
+    print(f'{(time.time()-s)/60} minutes total run time')
+    return True
 
 
 if __name__ == '__main__':

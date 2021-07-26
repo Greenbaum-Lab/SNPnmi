@@ -68,7 +68,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     # it takes about 10 minutes to process each window. We have a max of 210 windows. This transalte to 35 hours. using 72 as a buffer.
 
                     cluster_setting = f'sbatch --time=72:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                    cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} mac {mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
+                    cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} mac,{mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
                     print(cmd_to_run)
                     subprocess.run([paths_helper.submit_helper, cmd_to_run])
                     number_of_submitted_jobs += 1
@@ -105,8 +105,8 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 cluster_setting = f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}' \
                                   f'" --job-name="{job_name}"'
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
-                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args mac {mac}' \
-                             f' {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
+                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args mac,{mac},' \
+                             f'{min_window_id},{max_window_id},-1,-1,{mac},{mac}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -142,8 +142,8 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                                   f' --job-name="{job_name}"'
                 # maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
-                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args maf {maf}' \
-                             f' {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
+                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args maf,{maf},' \
+                             f'{min_window_id},{max_window_id},{maf},{max_maf},-1,-1'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1

@@ -63,7 +63,7 @@ def submit_prepare_for_split_to_windows(options):
     with Loader("Wait for all splitting jobs to be done "):
         while are_running_submitions(string_to_find="3pm"):
             time.sleep(5)
-
+    print(f"classes to write: {classes}")
     write_class_to_number_of_windows_file(options, classes)
 
 def main(options):

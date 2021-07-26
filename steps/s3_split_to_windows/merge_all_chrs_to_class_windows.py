@@ -15,9 +15,7 @@ import pandas as pd
 
 SCRIPT_NAME = os.path.basename(__file__)
 
-def merge_class_window_across_chrs(options):
-    dataset_name = options.dataset_name
-    mac_maf, class_value, window_id = options.args
+def merge_class_window_across_chrs(dataset_name, mac_maf, class_value, window_id):
     allele_class = AlleleClass(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
 
@@ -51,7 +49,9 @@ def merge_class_window_across_chrs(options):
     # output to file
     window_df.to_csv(output_class_window_file_path, sep='\t', header=False, index=False, compression='gzip')
 
-def merge_class_windows_across_chrs(dataset_name, mac_maf, class_value, min_window_id, max_window_id):
+def merge_class_windows_across_chrs(options):
+    dataset_name = options.dataset_name
+    mac_maf, class_value, min_window_id, max_window_id = options.args
     for window_id in range(int(min_window_id), int(max_window_id) + 1):
         if window_id%100 == 0:
             print(f'class: {mac_maf}_{class_value}, window_id: {window_id} (from range: [{min_window_id}, {max_window_id}])')
@@ -75,6 +75,7 @@ def _test_me():
 
 if DEBUG:
     _test_me()
+
 elif __name__ == '__main__':
     options = args_parser()
     main(options)

@@ -8,20 +8,23 @@ import subprocess
 import sys
 import os
 from os.path import dirname, abspath
+import json
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 # from utils.common import get_number_of_windows_by_class, get_paths_helper
 from utils.common import get_paths_helper, args_parser
+from utils.config import *
 
 DEFAULT_DELTA_MAC = 1
 DEFAULT_DELTA_MAF = 1
 
-calc_distances_in_window_cmd = 'python3 /cs/icore/amir.rubin2/code/snpnmi/utils/calc_distances_in_window.py'
-job_type = 'calc_dist_windows_mac_2'
+SCRIPT_NAME = os.path.basename(__file__)
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s4_calc_similarity/calc_similarity_in_window.py'
+job_type = 'calc_dist_windows'
 
 
-# will submit calc_distances_in_window of given classes and windows
+# will submit calc_similarity_in_window of given classes and windows
 # python3 submit_calc_similarity_windows.py 3 3 1 80 10 1 1 1 2148
 def submit_calc_similarity_windows(options, max_windows_per_job=210):
     number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range,\
@@ -61,7 +64,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     # it takes about 10 minutes to process each window. We have a max of 210 windows. This transalte to 35 hours. using 72 as a buffer.
 
                     cluster_setting = f'sbatch --time=72:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                    cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
+                    cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} mac {mac} -1 -1 -1 -1 {mac} {mac} True {job_min_input_012_file_index} {job_max_input_012_file_index}'
                     print(cmd_to_run)
                     subprocess.run([paths_helper.submit_helper, cmd_to_run])
                     number_of_submitted_jobs += 1
@@ -72,13 +75,14 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
         # if a specific input file is used, we wont go over macs and mafs
         return
 
-    class2num_windows = get_number_of_windows_by_class(paths_helper)
+    with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
+        class2num_windows = json.load(f)
     if mac_min_range > 0:
         print('go over mac values')
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
             if number_of_submitted_jobs == max_number_of_jobs:
                 break
-            num_windows = class2num_windows[str(mac)]
+            num_windows = class2num_windows[f"mac_{mac}"]
             print(f'mac {mac}, num_windows {num_windows}')
             max_window_id = initial_window_index
             while max_window_id < num_windows:
@@ -92,7 +96,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                                                                                         job_name=job_long_name)
                 job_name = f'c{mac}_w{min_window_id}'
                 cluster_setting = f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
+                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} mac {mac} {min_window_id} {max_window_id} -1 -1 {mac} {mac}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -120,9 +124,12 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                                                                                         job_name=job_long_name)
                 # to make the jobs name short we only take the last two digits of maf
                 job_name = f'f{str(maf)[-2:]}_w{min_window_id}'
-                cluster_setting = f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                cluster_setting = f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}"' \
+                                  f' --job-name="{job_name}"'
                 # maf 0.49 0 0.49 0.5 -1 -1
-                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {calc_distances_in_window_cmd} maf {maf} {min_window_id} {max_window_id} {maf} {max_maf} -1 -1'
+                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
+                             f' {path_to_python_script_to_run} maf {maf} {min_window_id} {max_window_id}' \
+                             f' {maf} {max_maf} -1 -1'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -133,10 +140,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
 
 if __name__ == '__main__':
     options = args_parser()
-    # by mac
-
-    # TODO support max_windows_per_job
-    submit_calc_similarity_windows()
+    submit_calc_similarity_windows(options)
 
 
 def get_args(options):

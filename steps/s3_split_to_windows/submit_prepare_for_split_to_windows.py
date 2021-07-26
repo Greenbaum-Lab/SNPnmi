@@ -30,7 +30,6 @@ def write_class_to_number_of_windows_file(options, classes):
     windows_per_class = {}
     for cls in classes:
         window_file = paths_helper.number_of_windows_per_class_template.format(class_name=cls)
-        print(window_file)
         if os.path.exists(window_file):
             with open(window_file, 'r') as file:
                 windows_per_class[cls] = file.read()
@@ -64,7 +63,7 @@ def submit_prepare_for_split_to_windows(options):
     with Loader("Wait for all splitting jobs to be done "):
         while are_running_submitions(string_to_find="3pm"):
             time.sleep(5)
-    print(f"classes to write: {classes}")
+
     write_class_to_number_of_windows_file(options, classes)
 
 def main(options):

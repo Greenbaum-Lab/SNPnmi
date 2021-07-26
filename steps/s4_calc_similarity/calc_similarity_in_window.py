@@ -8,7 +8,7 @@ import sys
 import time
 import sys
 from os.path import dirname, abspath
-from calc_similarity_helper import check_guardrails, site_calc_pairwise_similarity, get_012_df
+from steps.s4_calc_similarity.calc_similarity_helper import check_guardrails, site_calc_pairwise_similarity, get_012_df
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -101,7 +101,7 @@ def main(args):
     print ('Argument List:', str(args))
     dataset_name = args[0]
     mac_maf = args[1]
-    assert mac_maf=='mac' or mac_maf=='maf'
+    assert mac_maf == 'mac' or mac_maf == 'maf'
     class_value = args[2]
     min_window_index = int(args[3])
     max_window_index = int(args[4])

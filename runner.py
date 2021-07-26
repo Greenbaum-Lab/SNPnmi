@@ -56,21 +56,21 @@ def runner(options):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# runner(['hgdp_test','1.1','hgdp_test'])
+# runner([-d hgdp_test -s 1.1 --args hgdp_test]))
 
-# runner(['hgdp_test','1.2','hgdp_test','freq'])
+# runner([-d hgdp_test -s 1.2 --args hgdp_test,freq])
 
-#runner(['2.1','hgdp_test', 3, 5, 45, 48, True])
+# runner([-s 2.1 -d hgdp_test --args 5,8,46,49,True])
 
-# runner(['hgdp_test','2.2','hgdp_test', 3,5,45,48])
+# runner([-d hgdp_test -s 2.2 --args hgdp_test,5,8,46,49])
 
+# runner([-s 3.1 -d hgdp_test --args 5,8,46,49,100])
 
-#runner(['3.1','hgdp_test', 20, 18, 1, 1, 100])
+# runner([-s 3.2 -d hgdp_test --args 5,8,46,49])
 
-#runner(['3.2','hgdp_test', 20, 18, 1, 1])
+# runner([-s 3.3 -d hgdp_test --args 5,8,46,49,100])
 
-#runner(['3.3','hgdp_test', 20, 18, 1, 1, 100])
-
+# runner([-s 4.1 -d hgdp_test --mac 5,8,1 --maf 46,49,1 --args 100,100,0])
 
 if __name__ == "__main__":
     options = args_parser()

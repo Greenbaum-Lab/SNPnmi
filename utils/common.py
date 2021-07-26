@@ -92,7 +92,7 @@ def get_number_of_windows_by_class(paths_helper):
     class2num_windows = dict()
     with open(number_of_windows_per_class_path) as f:
         for l in f.readlines():
-            classname, num_windows = l.split(' ',1)
+            classname, num_windows = l.split(' ', 1)
             class2num_windows[classname] = int(num_windows)
     return class2num_windows
 

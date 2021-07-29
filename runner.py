@@ -15,19 +15,21 @@ from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_spl
 from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
 from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
+from steps.s4_calc_similarity import submit_calc_similarity_windows
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser
 
 step_to_func_and_name = {
-    "1.1" : (get_data.main, 'get_data'),
-    "1.2" : (get_vcfs_stats.main, 'get_vcfs_stats'),
-    "2.1" : (submit_split_vcfs_by_class.main, 'submit_split_vcfs_by_class'),
-    "2.2" : (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
-    "3.1" : (submit_prepare_for_split_to_windows.main, 'submit_prepare_for_split_to_windows'),
-    "3.2" : (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
-    "3.3" : (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
+    "1.1": (get_data.main, 'get_data'),
+    "1.2": (get_vcfs_stats.main, 'get_vcfs_stats'),
+    "2.1": (submit_split_vcfs_by_class.main, 'submit_split_vcfs_by_class'),
+    "2.2": (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
+    "3.1": (submit_prepare_for_split_to_windows.main, 'submit_prepare_for_split_to_windows'),
+    "3.2": (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
+    "3.3": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
+    "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows')
 }
 
 def run_step(options, use_checkpoint=True):
@@ -56,21 +58,21 @@ def runner(options):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# runner(['hgdp_test','1.1','hgdp_test'])
+# runner([-d hgdp_test -s 1.1 --args hgdp_test]))
 
-# runner(['hgdp_test','1.2','hgdp_test','freq'])
+# runner([-d hgdp_test -s 1.2 --args hgdp_test,freq])
 
-#runner(['2.1','hgdp_test', 3, 5, 45, 48, True])
+# runner([-s 2.1 -d hgdp_test --args 5,8,46,49,True])
 
-# runner(['hgdp_test','2.2','hgdp_test', 3,5,45,48])
+# runner([-d hgdp_test -s 2.2 --args hgdp_test,5,8,46,49])
 
+# runner([-s 3.1 -d hgdp_test --args 5,8,46,49,100])
 
-#runner(['3.1','hgdp_test', 20, 18, 1, 1, 100])
+# runner([-s 3.2 -d hgdp_test --args 5,8,46,49])
 
-#runner(['3.2','hgdp_test', 20, 18, 1, 1])
+# runner([-s 3.3 -d hgdp_test --args 5,8,46,49,100])
 
-#runner(['3.3','hgdp_test', 20, 18, 1, 1, 100])
-
+# runner([-s 4.1 -d hgdp_test --mac 5,8,1 --maf 46,49,1 --args 100,100,0])
 
 if __name__ == "__main__":
     options = args_parser()

@@ -5,7 +5,7 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_number_of_windows_by_class, get_paths_helper
+from utils.common import get_paths_helper
 from utils.validate import _validate_count_dist_file
 from utils.netstrcut_helper import submit_netstcut
 
@@ -24,7 +24,7 @@ def submit_netstruct_for_all(mac_min_range, mac_max_range, maf_min_range, maf_ma
     submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
 
 def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs):
-    paths_helper = get_paths_helper()
+    paths_helper = get_paths_helper('hgdp')
     number_of_submitted_jobs = 0
 
     # now submit netstruct class by class
@@ -43,7 +43,7 @@ def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_
                     val = f'{val * 1.0/100}'
                 job_long_name = f'{mac_maf}{val}_weighted_true'
                 job_name=f'ns_{val}'
-                similarity_matrix_path = paths_helper.dist_folder + f'{mac_maf}_{val}_all_norm_dist.tsv.gz'
+                similarity_matrix_path = paths_helper.similarity_folder + f'{mac_maf}_{val}_all_norm_dist.tsv.gz'
                 output_folder = paths_helper.netstruct_folder + f'{mac_maf}_{val}_all/'
                 submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
 
@@ -53,9 +53,9 @@ def submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_
                         print(f'No more jobs will be submitted.')
                         break
 
-#submit_netstruct_per_class(2, 18, 1, 49, 70)
+submit_netstruct_per_class(1,0,49,49,1)
 
-if __name__ == '__main__':
+if __name__ == '__Xmain__':
     # by mac
     mac_min_range = int(sys.argv[1])
     mac_max_range = int(sys.argv[2])
@@ -78,4 +78,4 @@ if __name__ == '__main__':
     print('max_number_of_jobs', max_number_of_jobs)
 
     submit_netstruct_for_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range)
-    submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs)
+    #submit_netstruct_per_class(mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_number_of_jobs)

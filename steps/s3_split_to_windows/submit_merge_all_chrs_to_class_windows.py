@@ -14,6 +14,7 @@ from utils.common import get_paths_helper, AlleleClass, args_parser, are_running
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
+import json
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'merge_all_chrs_to_class_windows'
@@ -30,10 +31,10 @@ def get_num_windows_per_class(dataset_name, mac_maf, class_value):
         print(f'Class {allele_class.class_name} has {total_num_of_windows} windows')
         return total_num_of_windows
 
+
 def submit_merge_all_chrs_to_class_windows(options):
     dataset_name = options.dataset_name
     mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_num_of_windows_per_job = options.args
-
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -52,9 +53,10 @@ def submit_merge_all_chrs_to_class_windows(options):
                     submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
                                       python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
 
-        with Loader("Wait for all merging jobs to be done "):
-            while are_running_submitions(string_to_find="3sma"):
-                time.sleep(5)
+    with Loader("Wait for all merging jobs to be done "):
+        while are_running_submitions(string_to_find="3sma"):
+            time.sleep(5)
+
 
 def main(options):
     s = time.time()

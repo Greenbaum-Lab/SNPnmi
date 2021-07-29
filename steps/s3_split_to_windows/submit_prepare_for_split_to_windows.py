@@ -24,11 +24,26 @@ def generate_job_long_name(mac_maf, class_val):
     return f'class_{mac_maf}{class_val}'
 
 
+def write_class_to_number_of_windows_file(options, classes):
+    paths_helper = get_paths_helper(options.dataset_name)
+    output_file = paths_helper.number_of_windows_per_class_path
+    windows_per_class = {}
+    for cls in classes:
+        window_file = paths_helper.number_of_windows_per_class_template.format(class_name=cls)
+        if os.path.exists(window_file):
+            with open(window_file, 'r') as file:
+                windows_per_class[cls] = file.read()
+
+    with open(output_file, 'w') as output:
+        json.dump(windows_per_class, output)
+
+
 def submit_prepare_for_split_to_windows(options):
     dataset_name = options.dataset_name
     mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size = options.args
     paths_helper = get_paths_helper(dataset_name)
     os.makedirs(paths_helper.windows_folder, exist_ok=True)
+    classes = []
 
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
@@ -38,7 +53,8 @@ def submit_prepare_for_split_to_windows(options):
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range+1):
-                print(f'submit for {mac_maf} {class_int_val}')
+                classes.append(f'{mac_maf}_{class_int_val if mac_maf == "mac" else class_int_val / 100}')
+                print(f'submit for {classes[-1]}')
                 job_long_name = generate_job_long_name(mac_maf, class_int_val)
                 job_name=f'3p{mac_maf}{class_int_val}'
                 python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
@@ -48,6 +64,7 @@ def submit_prepare_for_split_to_windows(options):
         while are_running_submitions(string_to_find="3pm"):
             time.sleep(5)
 
+    write_class_to_number_of_windows_file(options, classes)
 
 def main(options):
     s = time.time()

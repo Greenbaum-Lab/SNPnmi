@@ -46,14 +46,15 @@ def merge_class_window_across_chrs(options):
     # assert no missing data
     assert window_df.isnull().values.any() == False
     # assert num of sites in window
-    assert(abs(100 - len(window_df.columns)) <=1), f'num of columns ({len(window_df.columns)}) should be 100+-1'
+    assert(abs(100 - len(window_df.columns)) <= 1), f'num of columns ({len(window_df.columns)}) should be 100+-1'
 
     # output to file
     window_df.to_csv(output_class_window_file_path, sep='\t', header=False, index=False, compression='gzip')
 
+
 def merge_class_windows_across_chrs(dataset_name, mac_maf, class_value, min_window_id, max_window_id):
     for window_id in range(int(min_window_id), int(max_window_id) + 1):
-        if window_id%100 == 0:
+        if window_id % 100 == 0:
             print(f'class: {mac_maf}_{class_value}, window_id: {window_id} (from range: [{min_window_id}, {max_window_id}])')
         merge_class_window_across_chrs(dataset_name, mac_maf, int(class_value), window_id)
 

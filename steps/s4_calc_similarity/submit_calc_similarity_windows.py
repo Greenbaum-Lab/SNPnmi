@@ -24,7 +24,7 @@ DEFAULT_DELTA_MAF = 1
 
 SCRIPT_NAME = os.path.basename(__file__)
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s4_calc_similarity/calc_similarity_in_window.py'
-job_type = 'calc_dist_windows'
+job_type = 'calc_similarity_windows'
 
 
 # will submit calc_similarity_in_window of given classes and windows

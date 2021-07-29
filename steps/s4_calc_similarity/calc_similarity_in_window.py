@@ -16,16 +16,12 @@ from steps.s4_calc_similarity.calc_similarity_helper import check_guardrails, si
 from utils.common import build_empty_upper_left_matrix, get_paths_helper, write_pairwise_similarity, AlleleClass, \
     args_parser
 
-# TODO move to paths_helper
-OUTPUT_PATTERN_DIST_FILE = 'count_dist_window_{window_index}.tsv.gz'
-
-
 # removed min_valid_sites_precentage = 0.1
 
 
-def window_calc_pairwise_distances_with_guardrails(window_df, min_valid_sites_precentage, min_minor_freq_expected,
-                                                   max_minor_freq_expected, min_minor_count_expected,
-                                                   max_minor_count_expected):
+def window_calc_pairwise_similarities_with_guardrails(window_df, min_valid_sites_precentage, min_minor_freq_expected,
+                                                      max_minor_freq_expected, min_minor_count_expected,
+                                                      max_minor_count_expected):
     # for each column, we calc the pairwise distances and add it to the grand total
     # for performance, we use 2 lists of lists, one for distances and one for counts
     window_pairwise_counts = build_empty_upper_left_matrix(len(window_df), 0)
@@ -100,7 +96,7 @@ def calc_similarity_in_windows(
             print(f'output_count_similarity_file exist, do not calc! {output_count_similarity_file}')
             continue
 
-        window_pairwise_counts, window_pairwise_similarity = window_calc_pairwise_distances_with_guardrails(
+        window_pairwise_counts, window_pairwise_similarity = window_calc_pairwise_similarities_with_guardrails(
             window_df,
             min_valid_sites_precentage,
             min_minor_freq_expected,
@@ -120,7 +116,7 @@ def main(options):
     dataset_name = options.dataset_name
     mac_maf = options.args[0]
     assert mac_maf == 'mac' or mac_maf == 'maf'
-    class_value = options.args[1]
+    class_value = int(options.args[1])
     min_window_index = int(options.args[2])
     max_window_index = int(options.args[3])
     assert min_window_index >= 0

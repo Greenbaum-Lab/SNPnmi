@@ -43,7 +43,7 @@ def submit_merge_all_chrs_to_class_windows(options):
             # Go over mac/maf values
             print(f'Go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range+1):
-                total_num_windows = 700 # get_num_windows_per_class(dataset_name, mac_maf, class_int_val)
+                total_num_windows = get_num_windows_per_class(dataset_name, mac_maf, class_int_val)
                 for min_windows_index in range(0, total_num_windows, max_num_of_windows_per_job):
                     max_windows_index = min(total_num_windows, min_windows_index + max_num_of_windows_per_job) - 1
                     print(f'submit for {mac_maf} {class_int_val} windows [{min_windows_index}, {max_windows_index}]')

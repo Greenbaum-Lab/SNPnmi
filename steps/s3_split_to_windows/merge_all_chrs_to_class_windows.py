@@ -1,3 +1,5 @@
+from utils.loader import Timer
+
 DEBUG = False
 # given class and window id(s), merge the files from all chrs, generating a single file per class-window.
 import os
@@ -68,9 +70,8 @@ def merge_class_windows_across_chrs(options):
 
 
 def main(options):
-    s = time.time()
-    is_executed, msg = execute_with_checkpoint(merge_class_windows_across_chrs, SCRIPT_NAME, options)
-    print(f'{msg}. {(time.time() - s) / 60} minutes total run time')
+    with Timer(f"merge_all_chrs_to_calss_windows on {options.args}"):
+        is_executed, msg = execute_with_checkpoint(merge_class_windows_across_chrs, SCRIPT_NAME, options)
     return is_executed
 
 

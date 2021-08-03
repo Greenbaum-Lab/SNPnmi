@@ -5,7 +5,7 @@ import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
-from utils.common import  build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_distances
+from utils.common import build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_similarity
 from utils.validate import _validate_count_dist_file, _validate_count_dist_files
 
 # TODO rename - similiarty
@@ -68,7 +68,7 @@ def generate_similarity_matrix(windows_files, output_folder, output_files_name, 
     dists, counts = calc_distances_based_on_files(windows_files)
 
     # write (and validate) output
-    write_pairwise_distances(all_count_distances_file, counts, dists)
+    write_pairwise_similarity(all_count_distances_file, counts, dists)
     print(f'all_count_distances_file : {all_count_distances_file}')
     _validate_count_dist_file(all_count_distances_file)
 

@@ -1,4 +1,4 @@
-from utils.loader import Loader
+from utils.loader import Loader, Timer
 
 DEBUG = False
 # Per class and a number N, will submit jobs which will each merge N windows.
@@ -59,9 +59,8 @@ def submit_merge_all_chrs_to_class_windows(options):
 
 
 def main(options):
-    s = time.time()
-    submit_merge_all_chrs_to_class_windows(options)
-    print(f'{(time.time()-s)/60} minutes total run time')
+    with Timer(f"merge_all_chrs_to_class_windows on {options.args}"):
+        submit_merge_all_chrs_to_class_windows(options)
     return True
 
 def _test_me():

@@ -29,7 +29,7 @@ job_type = 'calc_similarity_windows'
 
 # will submit calc_similarity_in_window of given classes and windows
 # python3 submit_calc_similarity_windows.py 3 3 1 80 10 1 1 1 2148
-def submit_calc_similarity_windows(options, max_windows_per_job=210):
+def submit_calc_similarity_windows(options, max_windows_per_job=10000):
     number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range,\
     mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file, min_input_012_file_index,\
     max_input_012_file_index = get_args(options)
@@ -152,10 +152,10 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                     break
 
     if len(errors) == 0:
-        print("Done submitions with no errors!")
+        print("Done submissions with no errors!")
     else:
         print(f"Errors in:\n{errors}")
-    with Loader("Wait for all similarities comupations jobs to be done "):
+    with Loader("Wait for all similarities computations jobs to be done "):
         while are_running_submitions(string_to_find="_w"):
             time.sleep(5)
     #  TODO: call validate_calc_distances_in_windows

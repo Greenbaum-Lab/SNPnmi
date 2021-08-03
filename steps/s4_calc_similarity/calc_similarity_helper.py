@@ -24,8 +24,7 @@ def get_012_df(input_012_path):
 
 
 def check_guardrails(num_individuals, num_valid_genotypes, ref_count, non_ref_count, min_valid_sites_precentage,
-                     min_minor_freq_expected, max_minor_freq_expected, min_minor_count_expected,
-                     max_minor_count_expected):
+                     min_minor_expected, max_minor_expected, mac_maf):
     # print(f'Check guardrails')
     # guardrail #1 - min_valid_sites_precentage
     percentage_valid_sites = float(num_valid_genotypes) / num_individuals
@@ -34,35 +33,30 @@ def check_guardrails(num_individuals, num_valid_genotypes, ref_count, non_ref_co
         # print(f'ERROR: % of valid sites is {percentage_valid_sites}, lower than allowd: {min_valid_sites_precentage}.')
         assert percentage_valid_sites < min_valid_sites_precentage
 
-    # guardrail #2 mac/maf validation
-    if (min_minor_freq_expected == -1 or max_minor_freq_expected == -1) and (
-            min_minor_count_expected == -1 or max_minor_count_expected == -1):
-        # print(f'ERROR: min_minor_freq_expected, max_minor_freq_expected or min_minor_count_expected, max_minor_count_expected must be >-1')
-        assert (min_minor_freq_expected == -1 or max_minor_freq_expected == -1) and (
-                    min_minor_count_expected == -1 or max_minor_count_expected == -1)
-
     # if maf: validate min_minor_freq_expected and max_minor_freq_expected
-    if min_minor_freq_expected > -1 and max_minor_freq_expected > -1:
+    if mac_maf == 'maf':
         minor_count = min(ref_count, non_ref_count)
         minor_freq = float(minor_count) / (2 * num_valid_genotypes)
         # print(f'Minor allele frequency: {minor_freq}')
-        if minor_freq < min_minor_freq_expected:
+        if minor_freq < min_minor_expected:
             # print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
-            assert minor_freq < min_minor_freq_expected
-        if minor_freq > max_minor_freq_expected:
+            assert minor_freq < min_minor_expected
+        if minor_freq > max_minor_expected:
             # print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
-            assert minor_freq > max_minor_freq_expected
+            assert minor_freq > max_minor_expected
 
     # if mac: validate min_minor_count_expected and max_minor_count_expected
-    if min_minor_count_expected > -1 and max_minor_count_expected > -1:
+    elif mac_maf == 'mac':
         minor_count = min(ref_count, non_ref_count)
         # print(f'Minor allele count: {minor_count}')
-        if minor_count < min_minor_count_expected:
+        if minor_count < min_minor_expected:
             # print(f'ERROR: minor frequency is too low - {minor_freq}, allowd: {min_minor_freq_expected}.')
-            assert minor_count < min_minor_count_expected
-        if minor_count > max_minor_count_expected:
+            assert minor_count < min_minor_expected
+        if minor_count > max_minor_expected:
             # print(f'ERROR: minor frequency is too high - {minor_freq}, allowd: {max_minor_freq_expected}.')
-            assert minor_count > max_minor_count_expected
+            assert minor_count > max_minor_expected
+    else:
+        assert False, f"invalid mac_maf value: got {mac_maf}"
     # print(f'Passed guardrails')
 
 

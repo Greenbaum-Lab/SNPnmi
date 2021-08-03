@@ -11,11 +11,11 @@ import time
 from os.path import dirname, abspath
 import json
 
-from utils.loader import Loader
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
-# from utils.common import get_number_of_windows_by_class, get_paths_helper
+
+from utils.loader import Loader, Timer
 from utils.common import get_paths_helper, args_parser, are_running_submitions
 from utils.config import *
 
@@ -160,16 +160,16 @@ def submit_calc_similarity_windows(options, max_windows_per_job=10000):
             time.sleep(5)
     #  TODO: call validate_calc_distances_in_windows
 
+
 def main(options):
-    s = time.time()
-    submit_calc_similarity_windows(options)
-    print(f'{(time.time()-s)/60} minutes total run time')
+    with Timer(f"submit_calc_similarity_windows on {options.args}"):
+        submit_calc_similarity_windows(options)
     return True
 
 
 if __name__ == '__main__':
-    options = args_parser()
-    main(options)
+    run_arguments = args_parser()
+    main(run_arguments)
 
 
 def get_args(options):

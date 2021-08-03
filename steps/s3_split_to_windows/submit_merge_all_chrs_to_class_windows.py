@@ -1,4 +1,3 @@
-from utils.loader import Loader, Timer
 
 DEBUG = False
 # Per class and a number N, will submit jobs which will each merge N windows.
@@ -6,15 +5,15 @@ DEBUG = False
 # 0-9, 10-19, .. , 90-99 and one run with a single window (100).
 import sys
 import time
-import os
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+
+from utils.loader import Loader, Timer
 from utils.common import get_paths_helper, AlleleClass, args_parser, are_running_submitions
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
-import json
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'merge_all_chrs_to_class_windows'

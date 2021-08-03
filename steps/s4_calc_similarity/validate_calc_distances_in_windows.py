@@ -3,11 +3,12 @@
 import sys
 import os
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)
 
 import gzip
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, args_parser
 from utils.common import get_number_of_windows_by_class
 from utils.config import get_num_individuals
 
@@ -22,7 +23,7 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
         num_windows = class2num_windows[str(class_name)]
         missing = []
         for i in range(num_windows):
-            if i%500 == 0:
+            if i % 500 == 0:
                 print(f'class {class_name}: done {i}/{num_windows}')
             validated_flag = validated_flag_template.format(i=i)
             if not os.path.isfile(validated_flag):
@@ -36,32 +37,33 @@ def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
     return class2missing
 
 
-def main(args):
-    print ('Number of arguments:', len(args), 'arguments.')
-    print ('Argument List:', str(args))
-    min_mac = int(args[0])
+def main(options):
+    print('Number of arguments:', len(options.args), 'arguments.')
+    print('Argument List:', str(options.args))
+    min_mac = int(options.args[0])
     assert min_mac >= 0
-    max_mac = int(args[1])
+    max_mac = int(options.args[1])
     assert max_mac >= 0
-    min_maf = int(args[2])
+    min_maf = int(options.args[2])
     assert min_maf >= 0
-    max_maf = int(args[3])
+    max_maf = int(options.args[3])
     assert max_maf >= 0
 
-    print('min_mac',min_mac)
-    print('max_mac',max_mac)
-    print('min_maf',min_maf)
-    print('max_maf',max_maf)
+    print('min_mac', min_mac)
+    print('max_mac', max_mac)
+    print('min_maf', min_maf)
+    print('max_maf', max_maf)
 
-    paths_helper = get_paths_helper()
+    paths_helper = get_paths_helper(options.dataset_name)
     class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
-    mac_class2missing = go_over_classes('mac', range(min_mac, max_mac+1), paths_helper, class2num_windows)
+    mac_class2missing = go_over_classes('mac', range(min_mac, max_mac + 1), paths_helper, class2num_windows)
 
-    maf_classes_names = [str(maf/100) for maf in range(min_maf, max_maf+1)]
+    maf_classes_names = [str(maf / 100) for maf in range(min_maf, max_maf + 1)]
     maf_class2missing = go_over_classes('maf', maf_classes_names, paths_helper, class2num_windows)
     print(mac_class2missing)
     print(maf_class2missing)
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    run_arguments = args_parser()
+    main(run_arguments)

@@ -4,10 +4,11 @@ import numpy as np
 import os
 import sys
 from os.path import dirname, abspath
-from utils.loader import Timer
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+
+from utils.loader import Timer
 from steps.s4_calc_similarity.calc_similarity_helper import check_guardrails, get_012_df
 from utils.common import get_paths_helper, write_pairwise_similarity, AlleleClass, args_parser
 

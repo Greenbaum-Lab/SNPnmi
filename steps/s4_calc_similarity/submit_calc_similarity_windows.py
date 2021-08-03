@@ -106,7 +106,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                                   f'" --job-name="{job_name}"'
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
                              f' {path_to_python_script_to_run} -d {options.dataset_name} --args mac,{mac},' \
-                             f'{min_window_id},{max_window_id},-1,-1,{mac},{mac}'
+                             f'{min_window_id},{max_window_id}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -143,7 +143,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
                 # maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
                              f' {path_to_python_script_to_run} -d {options.dataset_name} --args maf,{maf},' \
-                             f'{min_window_id},{max_window_id},{maf},{max_maf},-1,-1'
+                             f'{min_window_id},{max_window_id}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
                 number_of_submitted_jobs += 1
@@ -158,6 +158,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=210):
     with Loader("Wait for all similarities comupations jobs to be done "):
         while are_running_submitions(string_to_find="_w"):
             time.sleep(5)
+    #  TODO: call validate_calc_distances_in_windows
 
 def main(options):
     s = time.time()

@@ -11,11 +11,11 @@ import time
 from os.path import dirname, abspath
 import json
 
-from utils.loader import Loader
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
-# from utils.common import get_number_of_windows_by_class, get_paths_helper
+
+from utils.loader import Loader, Timer
 from utils.common import get_paths_helper, args_parser, are_running_submitions
 from utils.config import *
 
@@ -137,12 +137,12 @@ def submit_calc_similarity_windows(options, max_windows_per_job=10000):
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
                 # to make the jobs name short we only take the last two digits of maf
-                job_name = f'f{str(maf)[-2:]}_w{min_window_id}'
+                job_name = f'f{maf_int}_w{min_window_id}'
                 cluster_setting = f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}"' \
                                   f' --job-name="{job_name}"'
                 # maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
-                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args maf,{maf},' \
+                             f' {path_to_python_script_to_run} -d {options.dataset_name} --args maf,{maf_int},' \
                              f'{min_window_id},{max_window_id}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
@@ -160,16 +160,16 @@ def submit_calc_similarity_windows(options, max_windows_per_job=10000):
             time.sleep(5)
     #  TODO: call validate_calc_distances_in_windows
 
+
 def main(options):
-    s = time.time()
-    submit_calc_similarity_windows(options)
-    print(f'{(time.time()-s)/60} minutes total run time')
+    with Timer(f"submit_calc_similarity_windows on {options.args}"):
+        submit_calc_similarity_windows(options)
     return True
 
 
 if __name__ == '__main__':
-    options = args_parser()
-    main(options)
+    run_arguments = args_parser()
+    main(run_arguments)
 
 
 def get_args(options):

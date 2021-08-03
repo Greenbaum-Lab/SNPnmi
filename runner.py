@@ -44,12 +44,11 @@ def run_step(options, use_checkpoint=True):
 
 def runner(options):
     s = time.time()
-    print(f'Number of arguments:{2 + len(options.args)} arguments.')
-    print(f'Argument List: {options.step}, {options.dataset_name}, {options.args}')
     step = options.step
     step_args = options.args
-    # the first arg of the step must be dataset_name
     dataset_name = options.dataset_name
+    print(f'Number of arguments:{2 + len(step_args)} arguments.')
+    print(f'Argument List: {step}, {dataset_name}, {step_args}')
     assert validate_dataset_name(dataset_name), f'First arg of step should be the datasetname, got: {dataset_name}'
 
     print(f'Executing step {step} with step args {step_args}.')

@@ -1,19 +1,17 @@
-from utils.loader import Timer
 
 DEBUG = False
 # given class and window id(s), merge the files from all chrs, generating a single file per class-window.
-import os
+
 import sys
-import json
-import time
 from os.path import dirname, abspath
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+
+from utils.loader import Timer
 from utils.common import get_paths_helper, AlleleClass, args_parser
 from utils.config import *
 from utils.checkpoint_helper import *
-import gzip
 import pandas as pd
 
 SCRIPT_NAME = os.path.basename(__file__)

@@ -40,7 +40,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
                 exist_ok=True)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name='dummy')),
                 exist_ok=True)
-    os.makedirs(paths_helper.per_window_similarity, exist_ok=True)
+
 
     number_of_submitted_jobs = 0
     errors = []
@@ -85,6 +85,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
     if mac_min_range > 0:
         print('go over mac values')
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
+            os.makedirs(paths_helper.per_window_similarity.format(class_name='mac_'+str(mac)), exist_ok=True)
             if f"mac_{mac}" not in class2num_windows.keys():
                 errors.append(f"mac_{mac}")
                 continue
@@ -120,6 +121,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
                 break
             maf = f'{maf_int * 1.0 / 100}'
             max_maf = f'{(maf_int + maf_delta) * 1.0 / 100}'
+            os.makedirs(paths_helper.per_window_similarity.format(class_name='maf_'+str(maf)), exist_ok=True)
             if f"maf_{maf}" not in class2num_windows.keys():
                 errors.append(f"maf_{maf}")
                 continue

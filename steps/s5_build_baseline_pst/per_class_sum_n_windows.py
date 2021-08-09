@@ -12,6 +12,8 @@ from os.path import dirname, abspath
 
 import numpy as np
 
+from utils.loader import Timer
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -85,14 +87,10 @@ def get_args(options):
 
 def main(options):
     mac_maf, min_window_index, max_window_index, output_dir, class_str, paths_helper = get_args(options)
-
-    sum_windows(
-        class_str,
-        [i for i in range(min_window_index, max_window_index + 1, 1)],
-        paths_helper.similarity_by_class_and_window_template,
-        paths_helper.count_by_class_and_window_template,
-        output_dir,
-        paths_helper)
+    with Timer(f"per_class_sum_n_windows with {class_str} {min_window_index}-{max_window_index}"):
+        windows_list = [i for i in range(min_window_index, max_window_index + 1, 1)]
+        sum_windows(class_str, windows_list, paths_helper.similarity_by_class_and_window_template,
+                    paths_helper.count_by_class_and_window_template, output_dir, paths_helper)
 
 
 if __name__ == "__main__":

@@ -58,15 +58,10 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
     #     raise Exception(f'promlematic_file: {promlematic_file}')
 
     # calc distances and counts
-    with Timer("Actual job"):
-        similarity, counts = calc_similarity_based_on_files(similarity_files, count_files)
+    similarity, counts = calc_similarity_based_on_files(similarity_files, count_files)
 
     # write (and validate) output
     write_pairwise_similarity(all_similarity_file, similarity, all_count_file, counts)
     print(f'all_similarity_file : {all_similarity_file}')
     # _validate_count_dist_file(all_count_file)
 
-    # norm_distances = normalize_distances(similarity, counts)
-    # write_upper_left_matrix_to_file(all_norm_similarities_file, norm_distances)
-    # print(f'all_norm_similarities_file : {all_norm_similarities_file}')
-    # _validate_count_dist_file(all_norm_similarities_file)

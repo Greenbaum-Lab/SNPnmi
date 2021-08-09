@@ -82,10 +82,6 @@ def is_cluster():
 
 
 def write_pairwise_similarity(output_similarity_file, similarity_matrix, output_count_file, count_matrix):
-    # with open(output_count_similarity_file,'w') as f:
-    #     for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
-    #         txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
-    #         f.write(txt)
     with open(output_similarity_file, 'wb') as f:
         np.save(f, similarity_matrix)
     with open(output_count_file, 'wb') as f:

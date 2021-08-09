@@ -40,6 +40,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
                 exist_ok=True)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name='dummy')),
                 exist_ok=True)
+    os.makedirs(paths_helper.per_window_similarity, exist_ok=True)
 
     number_of_submitted_jobs = 0
     errors = []

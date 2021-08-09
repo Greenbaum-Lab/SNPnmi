@@ -29,7 +29,7 @@ job_type = 'calc_similarity_windows'
 
 # will submit calc_similarity_in_window of given classes and windows
 # python3 submit_calc_similarity_windows.py 3 3 1 80 10 1 1 1 2148
-def submit_calc_similarity_windows(options, max_windows_per_job=10000):
+def submit_calc_similarity_windows(options, max_windows_per_job=1000):
     number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range,\
     mac_delta, maf_min_range, maf_max_range, maf_delta, use_specific_012_file, min_input_012_file_index,\
     max_input_012_file_index = get_args(options)
@@ -84,8 +84,6 @@ def submit_calc_similarity_windows(options, max_windows_per_job=10000):
     if mac_min_range > 0:
         print('go over mac values')
         for mac in range(mac_min_range, mac_max_range + 1, mac_delta):
-            if number_of_submitted_jobs == max_number_of_jobs:
-                break
             if f"mac_{mac}" not in class2num_windows.keys():
                 errors.append(f"mac_{mac}")
                 continue

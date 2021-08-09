@@ -37,6 +37,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
     if not os.path.exists(hash_file):
         with open(hash_file, "w") as jsonFile:
             json.dump({}, jsonFile)
+            print("I opened the hash file")
         time.sleep(0.1)
     with FileLock(hash_file):
         with open(hash_file, "r") as jsonFile:

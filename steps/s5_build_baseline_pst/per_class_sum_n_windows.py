@@ -77,8 +77,11 @@ def get_args(options):
     print('count_similarity_window_template', paths_helper.similarity_by_class_and_window_template)
     print('output_dir', output_dir)
 
-def main(options):
+    return mac_maf, min_window_index, max_window_index, output_dir, class_str, paths_helper
 
+
+def main(options):
+    mac_maf, min_window_index, max_window_index, output_dir, class_str, paths_helper = get_args(options)
 
     sum_windows(
         class_str,

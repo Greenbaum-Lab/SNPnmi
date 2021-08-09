@@ -1,5 +1,5 @@
 # python3 submit_per_class_sum_n_windows.py -1 -1 49 49 1000
-
+import json
 import subprocess
 import sys
 import os
@@ -35,6 +35,11 @@ def submit_1_per_class_sum_n_windows(options):
                 if not is_mac:
                     class_name = f'{class_name * 1.0 / 100}'
                 class_str = mac_maf + '_' + str(class_name)
+                hash_file = paths_helper.hash_windows_list_template.format(class_name=class_str)
+                if not os.path.exists(hash_file):
+                    with open(hash_file, "w+") as f:
+                        json.dump({}, f)
+
                 # we log what min and max windows indexes are used so we can consume the files in the next step
                 class_dist_files_names_log = f'{output_dir}log_{class_str}_windows_per_job_{num_windows_per_job}.log'
                 num_windows = int(get_number_of_windows_by_class(paths_helper)[class_str])

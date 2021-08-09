@@ -76,7 +76,6 @@ def main(options):
         output_dir,
         paths_helper)
 
-
 # mac_maf = 'maf'
 # class_name = '0.49'
 # min_window_index = 0

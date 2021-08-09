@@ -96,7 +96,7 @@ def write_pairwise_similarity(output_count_similarity_file, window_pairwise_coun
 def get_number_of_windows_by_class(paths_helper):
     with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
         class2num_windows = json.load(f)
-    return  class2num_windows
+    return class2num_windows
 
 
 def build_empty_upper_left_matrix(n, default_value):
@@ -187,5 +187,9 @@ def args_parser():
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []
-    options.args = [int(arg) if arg.isdecimal() else arg for arg in options.args]
+    options.args = [int(i) if i.isdecimal() else i for i in options.args]
+    options.mac = options.mac.split(',') if options.mac else []
+    options.mac = [int(i) if i.isdecimal() else i for i in options.mac]
+    options.maf = options.maf.split(',') if options.maf else []
+    options.maf = [int(i) if i.isdecimal() else i for i in options.maf]
     return options

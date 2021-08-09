@@ -31,7 +31,7 @@ step_to_func_and_name = {
     "3.2": (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
     "3.3": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
     "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows'),
-    "5.1": (submit_per_class_sum_n_windows, 'submit_per_class_sum_n_windows')
+    "5.1": (submit_per_class_sum_n_windows.main, 'submit_per_class_sum_n_windows')
 }
 
 def run_step(options, use_checkpoint=True):

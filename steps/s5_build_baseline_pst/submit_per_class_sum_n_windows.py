@@ -37,7 +37,7 @@ def submit_1_per_class_sum_n_windows(options):
                 class_str = mac_maf + '_' + str(class_name)
                 hash_file = paths_helper.hash_windows_list_template.format(class_name=class_str)
                 if not os.path.exists(hash_file):
-                    with open(hash_file, "w+") as f:
+                    with open(hash_file, "w") as f:
                         json.dump({}, f)
 
                 # we log what min and max windows indexes are used so we can consume the files in the next step

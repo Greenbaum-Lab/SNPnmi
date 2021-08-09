@@ -37,12 +37,12 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
     with FileLock(hash_file):
         with open(hash_file, "r+") as jsonFile:
             data = json.load(jsonFile)
-            hash_codes = [int(i) for i in data.keys()]
-            new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
-            if windows_id_list not in data.values():
-                data[new_hash] = windows_id_list
-                with open(hash_file, "w+") as f:
-                    json.dump(data, f)
+        hash_codes = [int(i) for i in data.keys()]
+        new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
+        if windows_id_list not in data.values():
+            data[new_hash] = windows_id_list
+        with open(hash_file, "w+") as f:
+            json.dump(data, f)
     return new_hash
 
 def get_args(options):

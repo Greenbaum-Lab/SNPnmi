@@ -94,13 +94,9 @@ def write_pairwise_similarity(output_count_similarity_file, window_pairwise_coun
 
 
 def get_number_of_windows_by_class(paths_helper):
-    number_of_windows_per_class_path = paths_helper.number_of_windows_per_class_path
-    class2num_windows = dict()
-    with open(number_of_windows_per_class_path) as f:
-        for l in f.readlines():
-            classname, num_windows = l.split(' ', 1)
-            class2num_windows[classname] = int(num_windows)
-    return class2num_windows
+    with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
+        class2num_windows = json.load(f)
+    return  class2num_windows
 
 
 def build_empty_upper_left_matrix(n, default_value):

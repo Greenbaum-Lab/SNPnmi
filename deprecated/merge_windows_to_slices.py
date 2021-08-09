@@ -14,7 +14,7 @@ sys.path.append(root_path)
 
 from utils.common import get_number_of_windows_by_class, build_empty_upper_left_matrix, write_upper_left_matrix_to_file, \
     str2bool, get_paths_helper, args_parser
-from utils.similarity_helper import calc_distances_based_on_files
+from utils.similarity_helper import calc_similarity_based_on_files
 from utils.similarity_helper import normalize_distances
 
 def write_metadata_to_file(windows_to_use, file):
@@ -79,7 +79,7 @@ def merge_windows_to_slices(options):
         write_metadata_to_file(windows_to_use, slice_metadata_file)
         print(f'slice_metadata_file : {slice_metadata_file}')
 
-        distances, counts = calc_distances_based_on_files([window_file_template.format(index=i) for i in windows_to_use])
+        distances, counts = calc_similarity_based_on_files([window_file_template.format(index=i) for i in windows_to_use])
         if is_random:
             print(f'random windows used - will (also) output normalized distances')
             slice_norm_distances_file = slice_norm_distances_file_template.format(index=slice_id)

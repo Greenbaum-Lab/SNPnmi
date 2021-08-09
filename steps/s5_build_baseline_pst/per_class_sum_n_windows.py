@@ -9,7 +9,7 @@ import os
 import time
 import sys
 from os.path import dirname, abspath
-from filelock import FileLock
+from utils.filelock import FileLock
 
 import numpy as np
 

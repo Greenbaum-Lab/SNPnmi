@@ -1,4 +1,4 @@
-# python3 submit_1_per_class_sum_n_windows.py -1 -1 49 49 1000
+# python3 submit_per_class_sum_n_windows.py -1 -1 49 49 1000
 
 import subprocess
 import sys

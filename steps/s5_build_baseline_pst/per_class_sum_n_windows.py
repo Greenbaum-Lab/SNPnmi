@@ -9,6 +9,7 @@ import os
 import time
 import sys
 from os.path import dirname, abspath
+from filelock import FileLock
 
 import numpy as np
 
@@ -36,14 +37,16 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
     if not os.path.exists(hash_file):
         with open(hash_file, "w") as jsonFile:
             json.dump({}, jsonFile)
-    with open(hash_file, "r") as jsonFile:
-        data = json.load(jsonFile)
-        hash_codes = [int(i) for i in data.keys()]
-        new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
-        if windows_id_list not in data.values():
-            data[new_hash] = windows_id_list
-            with open(hash_file, "w") as jsonFile:
-                json.dump(data, jsonFile)
+        time.sleep(0.1)
+    with FileLock(hash_file):
+        with open(hash_file, "r") as jsonFile:
+            data = json.load(jsonFile)
+            hash_codes = [int(i) for i in data.keys()]
+            new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
+            if windows_id_list not in data.values():
+                data[new_hash] = windows_id_list
+                with open(hash_file, "w") as jsonFile:
+                    json.dump(data, jsonFile)
     return new_hash
 
 def get_args(options):
@@ -89,7 +92,7 @@ def main(options):
 
     sum_windows(
         class_str,
-        [i for i in range(min_window_index, max_window_index, 1)],
+        [i for i in range(min_window_index, max_window_index + 1, 1)],
         paths_helper.similarity_by_class_and_window_template,
         paths_helper.count_by_class_and_window_template,
         output_dir,

@@ -94,7 +94,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
             max_window_id = initial_window_index
             while max_window_id < num_windows:
                 min_window_id = max_window_id
-                max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
+                max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows - 1)
                 # go over all windows
                 job_long_name = f'fill_mac{mac}_windows{min_window_id}-{max_window_id}'
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
@@ -102,7 +102,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
                 job_name = f'c{mac}_w{min_window_id}'
-                cluster_setting = f'sbatch --time=48:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}' \
+                cluster_setting = f'sbatch --time=2:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}' \
                                   f'" --job-name="{job_name}"'
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
                              f' {path_to_python_script_to_run} -d {options.dataset_name} --args mac,{mac},' \

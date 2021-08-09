@@ -171,14 +171,12 @@ if __name__ == '__main__':
 
 
 def get_args(options):
-    options.mac = options.mac.split(',')
     assert 2 <= len(options.mac) <= 3, f"mac argument length is not correct. options.mac = {options.mac}"
     mac_min_range = int(options.mac[0])
     mac_max_range = int(options.mac[1])
     mac_delta = DEFAULT_DELTA_MAC if len(options.mac) == 2 else int(options.mac[2])
 
     # by maf
-    options.maf = options.maf.split(',')
     assert 2 <= len(options.maf) <= 3, f"maf argument length is not correct. options.maf = {options.maf}"
     maf_min_range = int(options.maf[0])
     maf_max_range = int(options.maf[1])

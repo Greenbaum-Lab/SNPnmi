@@ -36,9 +36,9 @@ def calc_similarity_based_on_files(similarity_files, count_files):
         similarity_result += simi_mat
         count_all_counts += count_mat
 
-    similarity_result = np.divide(similarity_result, count_mat)
+    similarity_result = np.divide(similarity_result, count_all_counts)
     assert 0 <= np.min(similarity_result) <= np.max(similarity_result) <= 1
-    return similarity_result, count_mat
+    return similarity_result, count_all_counts
 
 
 

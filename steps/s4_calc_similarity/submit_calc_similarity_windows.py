@@ -94,7 +94,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
             max_window_id = initial_window_index
             while max_window_id < num_windows:
                 min_window_id = max_window_id
-                max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows - 1)
+                max_window_id = min(min_window_id + number_of_windows_to_process_per_job, num_windows)
                 # go over all windows
                 job_long_name = f'fill_mac{mac}_windows{min_window_id}-{max_window_id}'
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,

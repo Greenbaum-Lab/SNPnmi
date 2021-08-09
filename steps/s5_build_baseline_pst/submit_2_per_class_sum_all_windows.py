@@ -10,7 +10,7 @@ from utils.common import get_number_of_windows_by_class, get_paths_helper
 
 # will submit calc_distances_in_window of given classes and windows
 job_type = 'per_class_sum_all_windows'
-path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/sanity_check/2_per_class_sum_all_windows.py'
+path_to_python_script_to_run = '/cs/icore/amir.rubin2/code/snpnmi/sanity_check/per_class_sum_all_windows.py'
 
 
 def submit_2_per_class_sum_all_windows(mac_min_range, mac_max_range, maf_min_range, maf_max_range, num_windows_per_job):

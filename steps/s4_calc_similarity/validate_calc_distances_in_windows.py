@@ -16,16 +16,14 @@ from utils.config import get_num_individuals
 def go_over_classes(mac_maf, classes_names, paths_helper, class2num_windows):
     class2missing = dict()
     for class_name in classes_names:
-        win_dir = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
-        validated_dir = f'{win_dir}/validated_count_dist/'
-        validated_flag_template = validated_dir + '/validated_count_dist_window_{i}.txt'
 
-        num_windows = class2num_windows[str(class_name)]
+        num_windows = int(class2num_windows[mac_maf + '_' + str(class_name)])
         missing = []
         for i in range(num_windows):
             if i % 500 == 0:
                 print(f'class {class_name}: done {i}/{num_windows}')
-            validated_flag = validated_flag_template.format(i=i)
+            validated_flag = paths_helper.validate_similarity_flag_template.format(mac_maf=mac_maf,
+                                                                                   class_name=class_name, i=i)
             if not os.path.isfile(validated_flag):
                 missing.append(i)
                 print(f'File is missing: {validated_flag}')
@@ -55,7 +53,8 @@ def main(options):
     print('max_maf', max_maf)
 
     paths_helper = get_paths_helper(options.dataset_name)
-    class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
+    # class2num_windows = get_number_of_windows_by_class(paths_helper.number_of_windows_per_class_path)
+    class2num_windows = {"mac_5": "1255", "mac_6": "919", "mac_7": "735", "mac_8": "594", "maf_0.46": "77", "maf_0.47": "80", "maf_0.48": "82", "maf_0.49": "97"}
     mac_class2missing = go_over_classes('mac', range(min_mac, max_mac + 1), paths_helper, class2num_windows)
 
     maf_classes_names = [str(maf / 100) for maf in range(min_maf, max_maf + 1)]

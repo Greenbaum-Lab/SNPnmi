@@ -12,11 +12,11 @@ from os.path import dirname, abspath
 
 import numpy as np
 
-from utils.loader import Timer
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.loader import Timer
 from utils.filelock import FileLock
 from utils.common import get_paths_helper, args_parser
 from utils.similarity_helper import generate_similarity_matrix

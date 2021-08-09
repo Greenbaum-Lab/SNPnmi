@@ -54,7 +54,7 @@ def window_calc_pairwise_similarities(window_df, min_valid_sites_percentage, min
     second_element = (non_ref_freq * (2 - window2)) @ (2 - window2).T
     similarity = (first_element + second_element) / 4
     np.fill_diagonal(similarity, 0)
-    return matrix2upper_tri_list(window_pairwise_counts), matrix2upper_tri_list(similarity)
+    return window_pairwise_counts, similarity
 
 
 def matrix2upper_tri_list(matrix):
@@ -79,21 +79,24 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
     similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=class_name)
     os.makedirs(similarity_output_dir, exist_ok=True)
 
-    for window_id in range(min_window_index, max_window_index):
+    for window_id in range(min_window_index, max_window_index + 1):
 
         input_012_file = path_helper.window_by_class_template.format(class_name=class_name, window_id=window_id)
-        output_count_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=class_name,
+        output_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=class_name,
                                                                                                   window_id=window_id)
-        if os.path.isfile(output_count_similarity_file):
-            print(f'output_count_similarity_file exist, do not calc! {output_count_similarity_file}')
-            continue
+        output_count_file = path_helper.count_by_class_and_window_template.format(class_name=class_name,
+                                                                                                  window_id=window_id)
+        # if os.path.isfile(output_count_similarity_file):
+        #     print(f'output_count_similarity_file exist, do not calc! {output_count_similarity_file}')
+        #     continue
         window_df = get_012_df(input_012_file)
 
         window_pairwise_counts, window_pairwise_similarity = window_calc_pairwise_similarities(
             window_df, min_valid_sites_percentage, min_minor_expected, max_minor_expected, mac_maf)
-        print(f'output similarity file to {output_count_similarity_file}')
+        print(f'output similarity file to {output_similarity_file}\noutput count file to {output_count_file}')
 
-        write_pairwise_similarity(output_count_similarity_file, window_pairwise_counts, window_pairwise_similarity)
+        write_pairwise_similarity(output_similarity_file, window_pairwise_similarity, output_count_file,
+                                  window_pairwise_counts)
 
 
 def main(options):

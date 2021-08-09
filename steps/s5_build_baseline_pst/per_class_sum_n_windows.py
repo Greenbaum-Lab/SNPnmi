@@ -19,12 +19,16 @@ from utils.common import get_paths_helper, args_parser
 from utils.similarity_helper import generate_similarity_matrix
 
 
-def sum_windows(class_name, windows_id_list, count_dist_window_template, output_dir, paths_helper):
-    windows_files = [count_dist_window_template.format(window_id=index, class_name=class_name) for index in
-                     windows_id_list]
+def sum_windows(class_name, windows_id_list, similarity_window_template, count_window_template, output_dir,
+                paths_helper):
+    similarity_files = [similarity_window_template.format(window_id=index, class_name=class_name) for index in
+                        windows_id_list]
+    count_files = [count_window_template.format(window_id=index, class_name=class_name) for index in windows_id_list]
+
     new_hash = handle_hash_file(class_name, paths_helper, windows_id_list)
 
-    generate_similarity_matrix(windows_files, output_dir, f'{class_name}_hash{new_hash}', override=False)
+    generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_hash{new_hash}',
+                               override=False)
 
 
 def handle_hash_file(class_name, paths_helper, windows_id_list):
@@ -87,6 +91,7 @@ def main(options):
         class_str,
         [i for i in range(min_window_index, max_window_index, 1)],
         paths_helper.similarity_by_class_and_window_template,
+        paths_helper.count_by_class_and_window_template,
         output_dir,
         paths_helper)
 

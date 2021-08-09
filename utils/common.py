@@ -80,17 +80,16 @@ def is_cluster():
     return '/vol/sci/' in os.path.abspath(__file__)
 
 
-# the output is in couples of <count>;<similarity>
-# the count is the number of valid sites on which the similarity is calculated
-def write_pairwise_similarity(output_count_similarity_file, window_pairwise_counts, window_pairwise_similarity):
+
+def write_pairwise_similarity(output_similarity_file, similarity_matrix, output_count_file, count_matrix):
     # with open(output_count_similarity_file,'w') as f:
     #     for counts,similarities in zip(window_pairwise_counts, window_pairwise_similarity):
     #         txt = ' '.join(f'{c};{round(s, 7)}' for c,s in zip(counts, similarities)) + '\n'
     #         f.write(txt)
-    with gzip.open(output_count_similarity_file, 'wb') as f:
-        for counts, similarities in zip(window_pairwise_counts, window_pairwise_similarity):
-            txt = ' '.join(f'{c};{round(s, 7)}' for c, s in zip(counts, similarities)) + '\n'
-            f.write(txt.encode())
+    with open(output_similarity_file, 'wb') as f:
+        np.save(f, similarity_matrix)
+    with open(output_count_file, 'wb') as f:
+        np.save(f, count_matrix)
 
 
 def get_number_of_windows_by_class(paths_helper):

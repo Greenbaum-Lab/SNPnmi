@@ -31,7 +31,8 @@ class PathsHelper:
         # similarity paths
         self.similarity_folder = f'{self.classes_folder}similarity/'
         self.similarity_by_class_folder_template = self.similarity_folder + '{class_name}/'
-        self.similarity_by_class_and_window_template = self.similarity_by_class_folder_template + 'per_window_similarity/count_similarity_by_window_{window_id}.tsv.gz'
+        self.similarity_by_class_and_window_template = self.similarity_by_class_folder_template + 'per_window_similarity/similarity_by_window_{window_id}.tsv.gz'
+        self.count_by_class_and_window_template = self.similarity_by_class_folder_template + 'per_window_similarity/count_by_window_{window_id}.tsv.gz'
         self.hash_windows_list_template = self.similarity_by_class_folder_template + 'hash_windows_list.json'
         # self.count_dist_window_template_deprecated = self.windows_folder + '{mac_maf}_{class_name}/count_dist_window_{window_index}.tsv.gz'
 

@@ -1,451 +1,223 @@
-# This is free and unencumbered software released into the public domain.
+###############################################################################
+#   lazyflow: data flow based lazy parallel computation framework
 #
-# Anyone is free to copy, modify, publish, use, compile, sell, or
-# distribute this software, either in source code form or as a compiled
-# binary, for any purpose, commercial or non-commercial, and by any
-# means.
+#       Copyright (C) 2011-2014, the ilastik developers
+#                                <team@ilastik.org>
 #
-# In jurisdictions that recognize copyright laws, the author or authors
-# of this software dedicate any and all copyright interest in the
-# software to the public domain. We make this dedication for the benefit
-# of the public at large and to the detriment of our heirs and
-# successors. We intend this dedication to be an overt act of
-# relinquishment in perpetuity of all present and future rights to this
-# software under copyright law.
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the Lesser GNU General Public License
+# as published by the Free Software Foundation; either version 2.1
+# of the License, or (at your option) any later version.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
 #
-# For more information, please refer to <http://unlicense.org>
-
+# See the files LICENSE.lgpl2 and LICENSE.lgpl3 for full text of the
+# GNU Lesser General Public License version 2.1 and 3 respectively.
+# This information is also available on the ilastik web site at:
+# 		   http://ilastik.org/license/
+###############################################################################
 """
-A platform independent file lock that supports the with-statement.
+Implementation of a simple cross-platform file locking mechanism.
+This is a modified version of code retrieved on 2013-01-01 from
+http://www.evanfosmark.com/2009/01/cross-platform-file-locking-support-in-python.
+(The original code was released under the BSD License.  See below for details.)
+Modifications in this version:
+ - Tweak docstrings for sphinx.
+ - Accept an absolute path for the protected file (instead of a file name relative to cwd).
+ - Allow timeout to be None.
+ - Fixed a bug that caused the original code to be NON-threadsafe when the same FileLock instance was shared by multiple threads in one process.
+   (The original was safe for multiple processes, but not multiple threads in a single process.  This version is safe for both cases.)
+ - Added ``purge()`` function.
+ - Added ``available()`` function.
+ - Expanded API to mimic ``threading.Lock interface``:
+   - ``__enter__`` always calls ``acquire()``, and therefore blocks if ``acquire()`` was called previously.
+   - ``__exit__`` always calls ``release()``.  It is therefore a bug to call ``release()`` from within a context manager.
+   - Added ``locked()`` function.
+   - Added blocking parameter to ``acquire()`` method
+WARNINGS:
+ - The locking mechanism used here may need to be changed to support old NFS filesystems:
+   http://lwn.net/Articles/251004
+   (Newer versions of NFS should be okay, e.g. NFSv3 with Linux kernel 2.6. Check the open(2) man page for details about O_EXCL.)
+ - This code has not been thoroughly tested on Windows, and there has been one report of incorrect results on Windows XP and Windows 7.
+   The locking mechanism used in this class should (in theory) be cross-platform, but use at your own risk.
+ORIGINAL LICENSE:
+The original code did not properly include license text.
+(It merely said "License: BSD".)
+Therefore, we'll attach the following generic BSD License terms to this file.
+Those who extract this file from the lazyflow code base (LGPL) for their own use
+are therefore bound by the terms of both the Simplified BSD License below AND the LGPL.
+Copyright (c) 2013, Evan Fosmark and others.
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.
 """
+from __future__ import print_function
+from builtins import range
+from builtins import object
 
-
-# Modules
-# ------------------------------------------------
-import logging
 import os
-import threading
+import sys
 import time
-try:
-    import warnings
-except ImportError:
-    warnings = None
-
-try:
-    import msvcrt
-except ImportError:
-    msvcrt = None
-
-try:
-    import fcntl
-except ImportError:
-    fcntl = None
+import errno
 
 
-# Backward compatibility
-# ------------------------------------------------
-try:
-    TimeoutError
-except NameError:
-    TimeoutError = OSError
-
-
-# Data
-# ------------------------------------------------
-__all__ = [
-    "Timeout",
-    "BaseFileLock",
-    "WindowsFileLock",
-    "UnixFileLock",
-    "SoftFileLock",
-    "FileLock"
-]
-
-__version__ = "3.0.12"
-
-
-_logger = None
-def logger():
-    """Returns the logger instance used in this module."""
-    global _logger
-    _logger = _logger or logging.getLogger(__name__)
-    return _logger
-
-
-# Exceptions
-# ------------------------------------------------
-class Timeout(TimeoutError):
-    """
-    Raised when the lock could not be acquired in *timeout*
-    seconds.
+class FileLock(object):
+    """ A file locking mechanism that has context-manager support so
+        you can use it in a ``with`` statement. This should be relatively cross
+        compatible as it doesn't rely on ``msvcrt`` or ``fcntl`` for the locking.
     """
 
-    def __init__(self, lock_file):
+    class FileLockException(Exception):
+        pass
+
+    def __init__(self, protected_file_path, timeout=None, delay=1, lock_file_contents=None):
+        """ Prepare the file locker. Specify the file to lock and optionally
+            the maximum timeout and the delay between each attempt to lock.
         """
-        """
-        #: The path of the file lock.
-        self.lock_file = lock_file
-        return None
-
-    def __str__(self):
-        temp = "The file lock '{}' could not be acquired."\
-               .format(self.lock_file)
-        return temp
-
-
-# Classes
-# ------------------------------------------------
-
-# This is a helper class which is returned by :meth:`BaseFileLock.acquire`
-# and wraps the lock to make sure __enter__ is not called twice when entering
-# the with statement.
-# If we would simply return *self*, the lock would be acquired again
-# in the *__enter__* method of the BaseFileLock, but not released again
-# automatically.
-#
-# :seealso: issue #37 (memory leak)
-class _Acquire_ReturnProxy(object):
-
-    def __init__(self, lock):
-        self.lock = lock
-        return None
-
-    def __enter__(self):
-        return self.lock
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.lock.release()
-        return None
-
-
-class BaseFileLock(object):
-    """
-    Implements the base class of a file lock.
-    """
-
-    def __init__(self, lock_file, timeout = -1):
-        """
-        """
-        # The path to the lock file.
-        self._lock_file = lock_file
-
-        # The file descriptor for the *_lock_file* as it is returned by the
-        # os.open() function.
-        # This file lock is only NOT None, if the object currently holds the
-        # lock.
-        self._lock_file_fd = None
-
-        # The default timeout value.
+        self.is_locked = False
+        self.lockfile = protected_file_path + ".lock"
         self.timeout = timeout
+        self.delay = delay
+        self._lock_file_contents = lock_file_contents
+        if self._lock_file_contents is None:
+            self._lock_file_contents = "Owning process args:\n"
+            for arg in sys.argv:
+                self._lock_file_contents += arg + "\n"
 
-        # We use this lock primarily for the lock counter.
-        self._thread_lock = threading.Lock()
-
-        # The lock counter is used for implementing the nested locking
-        # mechanism. Whenever the lock is acquired, the counter is increased and
-        # the lock is only released, when this value is 0 again.
-        self._lock_counter = 0
-        return None
-
-    @property
-    def lock_file(self):
+    def locked(self):
         """
-        The path to the lock file.
+        Returns True iff the file is owned by THIS FileLock instance.
+        (Even if this returns false, the file could be owned by another FileLock instance, possibly in a different thread or process).
         """
-        return self._lock_file
+        return self.is_locked
 
-    @property
-    def timeout(self):
+    def available(self):
         """
-        You can set a default timeout for the filelock. It will be used as
-        fallback value in the acquire method, if no timeout value (*None*) is
-        given.
-
-        If you want to disable the timeout, set it to a negative value.
-
-        A timeout of 0 means, that there is exactly one attempt to acquire the
-        file lock.
-
-        .. versionadded:: 2.0.0
+        Returns True iff the file is currently available to be locked.
         """
-        return self._timeout
+        return not os.path.exists(self.lockfile)
 
-    @timeout.setter
-    def timeout(self, value):
+    def acquire(self, blocking=True):
+        """ Acquire the lock, if possible. If the lock is in use, and `blocking` is False, return False.
+            Otherwise, check again every `self.delay` seconds until it either gets the lock or
+            exceeds `timeout` number of seconds, in which case it raises an exception.
         """
-        """
-        self._timeout = float(value)
-        return None
-
-    # Platform dependent locking
-    # --------------------------------------------
-
-    def _acquire(self):
-        """
-        Platform dependent. If the file lock could be
-        acquired, self._lock_file_fd holds the file descriptor
-        of the lock file.
-        """
-        raise NotImplementedError()
-
-    def _release(self):
-        """
-        Releases the lock and sets self._lock_file_fd to None.
-        """
-        raise NotImplementedError()
-
-    # Platform independent methods
-    # --------------------------------------------
-
-    @property
-    def is_locked(self):
-        """
-        True, if the object holds the file lock.
-
-        .. versionchanged:: 2.0.0
-
-            This was previously a method and is now a property.
-        """
-        return self._lock_file_fd is not None
-
-    def acquire(self, timeout=None, poll_intervall=0.05):
-        """
-        Acquires the file lock or fails with a :exc:`Timeout` error.
-
-        .. code-block:: python
-
-            # You can use this method in the context manager (recommended)
-            with lock.acquire():
-                pass
-
-            # Or use an equivalent try-finally construct:
-            lock.acquire()
-            try:
-                pass
-            finally:
-                lock.release()
-
-        :arg float timeout:
-            The maximum time waited for the file lock.
-            If ``timeout < 0``, there is no timeout and this method will
-            block until the lock could be acquired.
-            If ``timeout`` is None, the default :attr:`~timeout` is used.
-
-        :arg float poll_intervall:
-            We check once in *poll_intervall* seconds if we can acquire the
-            file lock.
-
-        :raises Timeout:
-            if the lock could not be acquired in *timeout* seconds.
-
-        .. versionchanged:: 2.0.0
-
-            This method returns now a *proxy* object instead of *self*,
-            so that it can be used in a with statement without side effects.
-        """
-        # Use the default timeout, if no timeout is provided.
-        if timeout is None:
-            timeout = self.timeout
-
-        # Increment the number right at the beginning.
-        # We can still undo it, if something fails.
-        with self._thread_lock:
-            self._lock_counter += 1
-
-        lock_id = id(self)
-        lock_filename = self._lock_file
         start_time = time.time()
-        try:
-            while True:
-                with self._thread_lock:
-                    if not self.is_locked:
-                        logger().debug('Attempting to acquire lock %s on %s', lock_id, lock_filename)
-                        self._acquire()
+        while True:
+            try:
+                # Attempt to create the lockfile.
+                # These flags cause os.open to raise an OSError if the file already exists.
+                fd = os.open(self.lockfile, os.O_CREAT | os.O_EXCL | os.O_RDWR)
+                with os.fdopen(fd, "a") as f:
+                    # Print some info about the current process as debug info for anyone who bothers to look.
+                    f.write(self._lock_file_contents)
+                break
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+                if self.timeout is not None and (time.time() - start_time) >= self.timeout:
+                    raise FileLock.FileLockException("Timeout occurred.")
+                if not blocking:
+                    return False
+                time.sleep(self.delay)
+        self.is_locked = True
+        return True
 
-                if self.is_locked:
-                    logger().info('Lock %s acquired on %s', lock_id, lock_filename)
-                    break
-                elif timeout >= 0 and time.time() - start_time > timeout:
-                    logger().debug('Timeout on acquiring lock %s on %s', lock_id, lock_filename)
-                    raise Timeout(self._lock_file)
-                else:
-                    logger().debug(
-                        'Lock %s not acquired on %s, waiting %s seconds ...',
-                        lock_id, lock_filename, poll_intervall
-                    )
-                    time.sleep(poll_intervall)
-        except:
-            # Something did go wrong, so decrement the counter.
-            with self._thread_lock:
-                self._lock_counter = max(0, self._lock_counter - 1)
-
-            raise
-        return _Acquire_ReturnProxy(lock = self)
-
-    def release(self, force = False):
+    def release(self):
+        """ Get rid of the lock by deleting the lockfile.
+            When working in a `with` statement, this gets automatically
+            called at the end.
         """
-        Releases the file lock.
-
-        Please note, that the lock is only completly released, if the lock
-        counter is 0.
-
-        Also note, that the lock file itself is not automatically deleted.
-
-        :arg bool force:
-            If true, the lock counter is ignored and the lock is released in
-            every case.
-        """
-        with self._thread_lock:
-
-            if self.is_locked:
-                self._lock_counter -= 1
-
-                if self._lock_counter == 0 or force:
-                    lock_id = id(self)
-                    lock_filename = self._lock_file
-
-                    logger().debug('Attempting to release lock %s on %s', lock_id, lock_filename)
-                    self._release()
-                    self._lock_counter = 0
-                    logger().info('Lock %s released on %s', lock_id, lock_filename)
-
-        return None
+        self.is_locked = False
+        os.unlink(self.lockfile)
 
     def __enter__(self):
+        """ Activated when used in the with statement.
+            Should automatically acquire a lock to be used in the with block.
+        """
         self.acquire()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, type, value, traceback):
+        """ Activated at the end of the with statement.
+            It automatically releases the lock if it isn't locked.
+        """
         self.release()
-        return None
 
     def __del__(self):
-        self.release(force = True)
-        return None
+        """ Make sure this ``FileLock`` instance doesn't leave a .lock file
+            lying around.
+        """
+        if self.is_locked:
+            self.release()
+
+    def purge(self):
+        """
+        For debug purposes only.  Removes the lock file from the hard disk.
+        """
+        if os.path.exists(self.lockfile):
+            self.release()
+            return True
+        return False
 
 
-# Windows locking mechanism
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
+if __name__ == "__main__":
+    import sys
+    import functools
+    import threading
+    import tempfile
 
-class WindowsFileLock(BaseFileLock):
-    """
-    Uses the :func:`msvcrt.locking` function to hard lock the lock file on
-    windows systems.
-    """
+    temp_dir = tempfile.mkdtemp()
+    protected_filepath = os.path.join(temp_dir, "somefile.txt")
+    print("Protecting file: {}".format(protected_filepath))
+    fl = FileLock(protected_filepath)
 
-    def _acquire(self):
-        open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
+    def writeLines(line, repeat=10):
+        with fl:
+            for _ in range(repeat):
+                with open(protected_filepath, "a") as f:
+                    f.write(line + "\n")
+                    f.flush()
 
-        try:
-            fd = os.open(self._lock_file, open_mode)
-        except OSError:
-            pass
-        else:
-            try:
-                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
-            except (IOError, OSError):
-                os.close(fd)
-            else:
-                self._lock_file_fd = fd
-        return None
+    th1 = threading.Thread(target=functools.partial(writeLines, "1111111111111111111111111111111"))
+    th2 = threading.Thread(target=functools.partial(writeLines, "2222222222222222222222222222222"))
+    th3 = threading.Thread(target=functools.partial(writeLines, "3333333333333333333333333333333"))
+    th4 = threading.Thread(target=functools.partial(writeLines, "4444444444444444444444444444444"))
 
-    def _release(self):
-        fd = self._lock_file_fd
-        self._lock_file_fd = None
-        msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
-        os.close(fd)
+    th1.start()
+    th2.start()
+    th3.start()
+    th4.start()
 
-        try:
-            os.remove(self._lock_file)
-        # Probably another instance of the application
-        # that acquired the file lock.
-        except OSError:
-            pass
-        return None
+    th1.join()
+    th2.join()
+    th3.join()
+    th4.join()
 
-# Unix locking mechanism
-# ~~~~~~~~~~~~~~~~~~~~~~
+    assert not os.path.exists(fl.lockfile), "The lock file wasn't cleaned up!"
 
-class UnixFileLock(BaseFileLock):
-    """
-    Uses the :func:`fcntl.flock` to hard lock the lock file on unix systems.
-    """
-
-    def _acquire(self):
-        open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
-        fd = os.open(self._lock_file, open_mode)
-
-        try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except (IOError, OSError):
-            os.close(fd)
-        else:
-            self._lock_file_fd = fd
-        return None
-
-    def _release(self):
-        # Do not remove the lockfile:
-        #
-        #   https://github.com/benediktschmitt/py-filelock/issues/31
-        #   https://stackoverflow.com/questions/17708885/flock-removing-locked-file-without-race-condition
-        fd = self._lock_file_fd
-        self._lock_file_fd = None
-        fcntl.flock(fd, fcntl.LOCK_UN)
-        os.close(fd)
-        return None
-
-# Soft lock
-# ~~~~~~~~~
-
-class SoftFileLock(BaseFileLock):
-    """
-    Simply watches the existence of the lock file.
-    """
-
-    def _acquire(self):
-        open_mode = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_TRUNC
-        try:
-            fd = os.open(self._lock_file, open_mode)
-        except (IOError, OSError):
-            pass
-        else:
-            self._lock_file_fd = fd
-        return None
-
-    def _release(self):
-        os.close(self._lock_file_fd)
-        self._lock_file_fd = None
-
-        try:
-            os.remove(self._lock_file)
-        # The file is already deleted and that's what we want.
-        except OSError:
-            pass
-        return None
-
-
-# Platform filelock
-# ~~~~~~~~~~~~~~~~~
-
-#: Alias for the lock, which should be used for the current platform. On
-#: Windows, this is an alias for :class:`WindowsFileLock`, on Unix for
-#: :class:`UnixFileLock` and otherwise for :class:`SoftFileLock`.
-FileLock = None
-
-if msvcrt:
-    FileLock = WindowsFileLock
-elif fcntl:
-    FileLock = UnixFileLock
-else:
-    FileLock = SoftFileLock
-
-    if warnings is not None:
-        warnings.warn("only soft file lock is available")
+    # Print the contents of the file.
+    # Please manually inspect the output.  Does it look like the operations were atomic?
+    with open(protected_filepath, "r") as f:
+        sys.stdout.write(f.read())

@@ -36,6 +36,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
     if not os.path.exists(hash_file):
         with open(hash_file, "w") as jsonFile:
             json.dump({}, jsonFile)
+        time.sleep(0.1)
     with open(hash_file, "r") as jsonFile:
         data = json.load(jsonFile)
         hash_codes = [int(i) for i in data.keys()]

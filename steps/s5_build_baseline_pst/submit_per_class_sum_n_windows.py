@@ -49,7 +49,7 @@ def submit_1_per_class_sum_n_windows(options):
                     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                             job_name=job_long_name)
                     job_name = f'{mac_maf[-1]}{class_name}_{min_window_id}'
-                    cluster_setting = f'sbatch --time=24:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+                    cluster_setting = f'sbatch --time=2:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                     python_script_params = f'-d {options.dataset_name} --{mac_maf} {class_name},{min_window_id},{max_window_id}'
                     cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
                     print(cmd_to_run)

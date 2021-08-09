@@ -33,10 +33,11 @@ def calc_similarity_based_on_files(similarity_files, count_files):
             count_all_counts = np.zeros_like(simi_mat)
         with open(count_file, 'rb') as count:
             count_mat = np.load(count)
-        add_result = np.divide(simi_mat, count_mat)
-        assert 0 <= np.min(add_result) <= np.max(add_result) <= 1
-        similarity_result += np.divide(simi_mat, count_mat)
+        similarity_result += simi_mat
         count_all_counts += count_mat
+
+    similarity_result = np.divide(similarity_result, count_mat)
+    assert 0 <= np.min(similarity_result) <= np.max(similarity_result) <= 1
     return similarity_result, count_mat
 
 

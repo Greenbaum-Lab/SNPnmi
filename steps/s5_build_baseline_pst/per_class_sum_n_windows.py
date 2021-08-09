@@ -42,15 +42,23 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
                 json.dump(data, jsonFile)
     return new_hash
 
-
-def main(options):
+def get_args(options):
     print('Number of arguments:', len(options.args), 'arguments.')
     print('Argument List:', str(options.args))
-    mac_maf = options.args[0]
-    assert mac_maf == 'mac' or mac_maf == 'maf'
-    class_name = options.args[1]
-    min_window_index = int(options.args[2])
-    max_window_index = int(options.args[3])
+    if options.mac:
+        mac_maf = 'mac'
+        class_name = options.mac[0]
+        min_window_index = int(options.mac[1])
+        max_window_index = int(options.mac[2])
+    elif options.maf:
+        mac_maf = 'maf'
+        class_name = options.maf[0]
+        min_window_index = int(options.maf[1])
+        max_window_index = int(options.maf[2])
+    else:
+        assert False, "Invalid input was provided"
+    assert options.mac == [] or options.maf == []
+
     assert min_window_index >= 0
     assert max_window_index >= 0
     assert min_window_index <= max_window_index
@@ -69,18 +77,15 @@ def main(options):
     print('count_similarity_window_template', paths_helper.similarity_by_class_and_window_template)
     print('output_dir', output_dir)
 
+def main(options):
+
+
     sum_windows(
         class_str,
         [i for i in range(min_window_index, max_window_index, 1)],
         paths_helper.similarity_by_class_and_window_template,
         output_dir,
         paths_helper)
-
-# mac_maf = 'maf'
-# class_name = '0.49'
-# min_window_index = 0
-# max_window_index = 5
-# main([mac_maf, class_name, min_window_index, max_window_index])
 
 
 if __name__ == "__main__":

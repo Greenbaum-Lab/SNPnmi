@@ -34,12 +34,11 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
 
 def handle_hash_file(class_name, paths_helper, windows_id_list):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    if not os.path.exists(hash_file):
-        with open(hash_file, "w") as jsonFile:
-            json.dump({}, jsonFile)
-            print("I opened the hash file")
-        time.sleep(0.1)
     with FileLock(hash_file):
+        if not os.path.exists(hash_file):
+            with open(hash_file, "w") as jsonFile:
+                json.dump({}, jsonFile)
+                print("I opened the hash file")
         with open(hash_file, "r") as jsonFile:
             data = json.load(jsonFile)
             hash_codes = [int(i) for i in data.keys()]

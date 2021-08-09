@@ -1,6 +1,10 @@
 import json
+import os
+import sys
+from os.path import dirname
 
-import numpy as np
+root_path = dirname(dirname(os.path.abspath(__file__)))
+sys.path.append(root_path)
 
 from utils.common import get_paths_helper
 

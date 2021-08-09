@@ -54,7 +54,6 @@ def window_calc_pairwise_similarities(window_df, min_valid_sites_percentage, min
     second_element = (non_ref_freq * (2 - window2)) @ (2 - window2).T
     similarity = (first_element + second_element) / 4
     np.fill_diagonal(similarity, 0)
-    assert 0 <= np.min(similarity) <= np.max(similarity) <= 1
     return matrix2upper_tri_list(window_pairwise_counts), matrix2upper_tri_list(similarity)
 
 

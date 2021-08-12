@@ -24,6 +24,7 @@ class PathsHelper:
         self.nmi_folder = f'{self.classes_folder}nmi/'
         self.class_by_chr_template = self.classes_folder + '{chr_name}/{class_name}.012'
         self.window_by_class_and_chr_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
+        self.window_by_class_and_chr_np_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.npy'
         self.window_by_class_template = self.windows_folder + '{class_name}/window_{window_id}.012.vcf.gz'
         self.windows_indexes_folder = f'{self.windows_folder}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'

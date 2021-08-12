@@ -9,11 +9,14 @@ import os
 import sys
 import json
 import time
+
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper, AlleleClass, args_parser
 
+from utils.common import get_paths_helper, AlleleClass, args_parser
+from utils.loader import Timer
 from utils.config import *
 from utils.checkpoint_helper import *
 import gzip
@@ -28,34 +31,15 @@ def _write_values_to_windows(per_window_values, windows_files):
         to_write = '\t'.join(values) + '\n'
         window_file.write(to_write.encode())
 
+
 def split_chr_class_to_windows(options):
-    dataset_name = options.dataset_name
-    chr_short_name, mac_maf, class_value = options.args
-    class_value = int(class_value)
-    allele_class = AlleleClass(mac_maf, class_value)
-    path_helper = get_paths_helper(dataset_name)
-    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
-                                                                           chr_name=chr_short_name)
-    site_index_2_window_id = json.load(open(chr_windows_indexes_file,'r'))
-
-    min_site_index = min(site_index_2_window_id.keys())
-    max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
-    assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'
-
-    max_window_id = max(site_index_2_window_id.values())
-    min_window_id = min(site_index_2_window_id.values())
-    # we assume zero based windows ids
-    assert min_window_id == 0, f'windows ids must be zero based, but the min index found is {min_window_id}'
-
-    # TODO - we are potentialy opening a lot of files here. Need to try this for mac 2 chr 1.
-    window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
-
-    # Generate the folder
-    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=0)
-    os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
+    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, \
+    window_per_class_and_chr_template = pre_split_chr_class_to_windows(options)
 
     # Open the files
-    windows_files = [gzip.open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name, window_id=i), 'wb')
+    windows_files = [gzip.open(
+        window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
+                                                 window_id=i), 'wb')
                      for i in range(max_window_id + 1)]
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
 
@@ -75,7 +59,7 @@ def split_chr_class_to_windows(options):
                 print(f'{time.strftime("%X %x")} line_index {line_index} in file {input_file}')
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
-            for site_index, value in  enumerate(sites_only):
+            for site_index, value in enumerate(sites_only):
                 window_id = site_index_2_window_id[str(site_index)]
                 per_window_values[window_id].extend([value])
             assert site_index == max_site_index
@@ -85,11 +69,67 @@ def split_chr_class_to_windows(options):
 
     return True
 
+
+def pre_split_chr_class_to_windows(options):
+    dataset_name = options.dataset_name
+    chr_short_name, mac_maf, class_value = options.args
+    class_value = int(class_value)
+    allele_class = AlleleClass(mac_maf, class_value)
+    path_helper = get_paths_helper(dataset_name)
+    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
+                                                                           chr_name=chr_short_name)
+    site_index_2_window_id = json.load(open(chr_windows_indexes_file, 'r'))
+    min_site_index = min(site_index_2_window_id.keys())
+    max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
+    assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'
+    max_window_id = max(site_index_2_window_id.values())
+    min_window_id = min(site_index_2_window_id.values())
+    # we assume zero based windows ids
+    assert min_window_id == 0, f'windows ids must be zero based, but the min index found is {min_window_id}'
+    window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
+    # Generate the folder
+    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name,
+                                                                               chr_name=chr_short_name, window_id=0)
+    os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
+    return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, window_per_class_and_chr_template
+
+
+def file012_to_numpy(input_file_path):
+    with open(input_file_path, 'r') as f:
+        raw_file = f.read()
+    split_individuals = raw_file.split('\n')  # we throw empty string at the end
+    if split_individuals[-1] == '':
+        split_individuals = split_individuals[:-1]
+    split_sites = [individual.split('\t') for individual in split_individuals]
+    return np.array(split_sites, dtype=np.int8)[:, 1:]
+
+
+def alternative_split_to_windows(options):
+    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, \
+    window_per_class_and_chr_template = pre_split_chr_class_to_windows(options)
+    input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
+    assert np.all(np.sort(np.array([int(i) for i in site_index_2_window_id.keys()])) == np.arange(max_site_index + 1))
+    mat012 = file012_to_numpy(input_file)
+    windows_matrix = {}
+    for site_id, site in enumerate(mat012.T):
+        window_id = site_index_2_window_id[str(site_id)]
+        if window_id in windows_matrix:
+            windows_matrix[window_id] = np.concatenate([windows_matrix[window_id], site.reshape(1, -1)])
+        else:
+            windows_matrix[window_id] = site.reshape(1, -1)
+    print()
+    for wind_id, window in windows_matrix.values():
+        with open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
+                                                           window_id=wind_id), 'wb') as window_file:
+            np.save(window_file, window)
+
+
 def main(options):
-    s = time.time()
-    is_executed, msg = execute_with_checkpoint(split_chr_class_to_windows, SCRIPT_NAME, options)
-    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    with Timer(f"split with {options.args}"):
+        is_executed, msg = execute_with_checkpoint(split_chr_class_to_windows, SCRIPT_NAME, options)
+        print(msg)
     return is_executed
+
 
 def _test_me():
     dataset_name = 'hgdp_test'
@@ -98,9 +138,14 @@ def _test_me():
     class_value = 1
     split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_value)
 
+
 if DEBUG:
     _test_me()
+
 elif __name__ == '__main__':
     options = args_parser()
-    main(options)
-
+    with Timer("My way"):
+        alternative_split_to_windows(options)
+    with Timer("The other way"):
+        split_chr_class_to_windows(options)
+    # main(options)

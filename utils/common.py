@@ -179,6 +179,7 @@ def args_parser():
                         help="if not used, default is to use all 012 files. If used should come with 2 args,"
                              " min 012 file and max 012 file")
     parser.add_argument("--args", dest="args", help="Any additional args")
+    parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []

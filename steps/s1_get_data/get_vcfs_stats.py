@@ -44,6 +44,7 @@ def generate_vcfs_stats(options, stat_types):
                 is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', options)
             if is_executed:
                 print(f'done - {gzvcf_file} - {stat_type}')
+
     return all_stats_done
 
 # wrappers for execution

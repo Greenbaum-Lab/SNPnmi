@@ -27,7 +27,7 @@
     "amur": {
         "ftp_source_host": "171.64.60.175",
         "ftp_source_path": "/simba/tiger-download-temp/",
-        "num_individulas": 3,
+        "num_individulas": 32,
         "num_chrs": 1,
         "sample_sites_file_name":"xxxxxxxxxxxxx",
         "indlist_file_name": "xxxxxxxxxxxxxx",

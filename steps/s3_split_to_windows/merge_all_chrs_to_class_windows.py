@@ -13,6 +13,7 @@ from utils.common import get_paths_helper, AlleleClass, args_parser
 from utils.config import *
 from utils.checkpoint_helper import *
 import pandas as pd
+import numpy as np
 
 SCRIPT_NAME = os.path.basename(__file__)
 
@@ -30,13 +31,16 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_value, window_id
     # Go over chrs, merge the windows from them to our file
     window_df = pd.DataFrame()
     for chr_name in get_dataset_vcf_files_short_names(dataset_name):
-        chr_window_path = path_helper.window_by_class_and_chr_template.format(class_name=allele_class.class_name,
+        chr_window_path = path_helper.window_by_class_and_chr_np_template.format(class_name=allele_class.class_name,
                                                                               chr_name=chr_name, window_id=window_id)
         if not os.path.isfile(chr_window_path):
             # it is theorticlly possible that a given window wont have sites in all chrs. In such case, the 012 window file of this chr wont exist.
             continue
-        chr_window_df = pd.read_csv(chr_window_path, sep='\t', compression='gzip', header=None)
-        chr_window_df.columns = [str(c) + chr_name for c in chr_window_df.columns]
+        with open(chr_window_path, 'rb') as f:
+            chr_window_matrix = np.load(f)
+        chr_window_df = pd.DataFrame(data=chr_window_matrix, index=np.arange(chr_window_matrix.shape[0]),
+                                     columns=[str(c) + chr_name for c in np.arange(chr_window_matrix.shape[1])])
+
         if window_df.empty:
             window_df = chr_window_df
         else:

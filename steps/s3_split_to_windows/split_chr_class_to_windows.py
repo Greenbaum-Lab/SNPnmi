@@ -100,13 +100,13 @@ def pre_split_chr_class_to_windows(options):
 def file012_to_numpy(input_file_path, raw_file=None):
     if raw_file is None:
         with open(input_file_path, 'rb') as f:
-            raw_file = f.read()
+            raw_file = f.read().decode()
     split_individuals = raw_file.split('\n')
     if split_individuals[-1] == '':   # we throw empty line at the end of the file
         split_individuals = split_individuals[:-1]
     split_sites = [individual.split('\t') for individual in split_individuals]
     arr = np.array(split_sites, dtype=np.int8)
-    if np.all(arr[:, 1].reshape(1, -1) == np.arange(arr.shape[0]).reshape(1, -1)):
+    if not np.any(arr[:, 1] > 2):
         arr = arr[:, 1:]  # First column is individual number.
     return arr
 

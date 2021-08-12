@@ -16,7 +16,7 @@ from utils.config import get_cluster_code_folder
 
 # will submit calc_distances_in_window of given classes and windows
 job_type = 'per_class_sum_all_windows'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/sanity_check/per_class_sum_all_windows.py'
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows.py'
 
 
 def submit_per_class_sum_all_windows(options):

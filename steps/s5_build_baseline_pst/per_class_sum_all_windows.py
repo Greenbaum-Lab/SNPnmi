@@ -13,7 +13,7 @@ import sys
 from os.path import dirname, abspath
 
 
-root_path = dirname(dirname(abspath(__file__)))
+root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer

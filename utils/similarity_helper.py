@@ -21,7 +21,7 @@ def normalize_distances(distances, counts):
             norm_dists[r_i][c_i] = float(c_dist)/float(c_count)
     return norm_dists
 
-# TODO rename - similiarty
+
 def calc_similarity_based_on_files(similarity_files, count_files):
     similarity_result = None   # We can't tell similarity_result shape yet.
     count_all_counts = None

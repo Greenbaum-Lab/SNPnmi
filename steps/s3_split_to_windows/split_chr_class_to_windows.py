@@ -121,7 +121,7 @@ def alternative_split_to_windows(options):
     for wind_id, window in windows_matrix.values():
         with open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
                                                            window_id=wind_id), 'wb') as window_file:
-            np.save(window_file, window)
+            np.save(window_file, window.T)
 
 
 def main(options):

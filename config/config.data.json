@@ -25,9 +25,15 @@
         "metadata_files_names": ["README.data-access.hgdp_wgs.20190516.txt"]
     },
     "amur": {
+        "ftp_source_host": "171.64.60.175",
+        "ftp_source_path": "/simba/tiger-download-temp/",
         "num_individulas": 3,
         "num_chrs": 1,
+        "sample_sites_file_name":"xxxxxxxxxxxxx",
+        "indlist_file_name": "xxxxxxxxxxxxxx",
+        "indlist_coords_file_name": "xxxxxxxxx",
         "vcf_files_names": ["amur-highcov-filtered.recode.vcf"],
-        "vcf_files_short_names": ["all"]
+        "vcf_files_short_names": ["all"],
+        "metadata_files_names": ["amur.txt"]
     }
 }

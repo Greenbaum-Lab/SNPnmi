@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 DEBUG = False
 # given chr name and class split the sites of the class in the chr to files correspanding to windows.
 # (in the next step we will merge per class and window the files from all chrs, generating a single file per window.)
@@ -16,7 +18,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.common import get_paths_helper, AlleleClass, args_parser
-from utils.loader import Timer
+from utils.loader import Timer, Loader
 from utils.config import *
 from utils.checkpoint_helper import *
 import gzip
@@ -33,14 +35,15 @@ def _write_values_to_windows(per_window_values, windows_files):
 
 
 def split_chr_class_to_windows(options):
-    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, \
-    window_per_class_and_chr_template = pre_split_chr_class_to_windows(options)
+    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id = \
+        pre_split_chr_class_to_windows(options)
 
     # Open the files
+    window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
     windows_files = [gzip.open(
         window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
                                                  window_id=i), 'wb')
-                     for i in range(max_window_id + 1)]
+        for i in range(max_window_id + 1)]
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
 
     # We go over the input file, line by line. Each line is the genetic data of an individual.
@@ -91,34 +94,53 @@ def pre_split_chr_class_to_windows(options):
     window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name,
                                                                                chr_name=chr_short_name, window_id=0)
     os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
-    return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, window_per_class_and_chr_template
+    return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id
 
 
-def file012_to_numpy(input_file_path):
-    with open(input_file_path, 'r') as f:
-        raw_file = f.read()
-    split_individuals = raw_file.split('\n')  # we throw empty string at the end
-    if split_individuals[-1] == '':
+def file012_to_numpy(input_file_path, raw_file=None):
+    if raw_file is None:
+        with open(input_file_path, 'rb') as f:
+            raw_file = f.read()
+    split_individuals = raw_file.split('\n')
+    if split_individuals[-1] == '':   # we throw empty line at the end of the file
         split_individuals = split_individuals[:-1]
     split_sites = [individual.split('\t') for individual in split_individuals]
-    return np.array(split_sites, dtype=np.int8)[:, 1:]
+    arr = np.array(split_sites, dtype=np.int8)
+    if np.all(arr[:, 1].reshape(1, -1) == np.arange(arr.shape[0]).reshape(1, -1)):
+        arr = arr[:, 1:]  # First column is individual number.
+    return arr
+
+
+def numpy_to_file012(input_numpy_path, matrix=None):
+    if matrix is None:
+        with open(input_numpy_path, 'r') as f:
+            matrix = np.load(f)
+    result = []
+    for line in matrix:
+        result.append('\t'.join([str(i) for i in line]))
+    result = '\n'.join(result)
+    result += '\n'
+    return result
 
 
 def alternative_split_to_windows(options):
-    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id, \
-    window_per_class_and_chr_template = pre_split_chr_class_to_windows(options)
+    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id = \
+        pre_split_chr_class_to_windows(options)
+    window_per_class_and_chr_template = path_helper.window_by_class_and_chr_np_template
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
     assert np.all(np.sort(np.array([int(i) for i in site_index_2_window_id.keys()])) == np.arange(max_site_index + 1))
-    mat012 = file012_to_numpy(input_file)
+    with Loader("Reformatting 012 file to numpy array"):
+        mat012_transpose = file012_to_numpy(input_file).T
     windows_matrix = {}
-    for site_id, site in enumerate(mat012.T):
+    for site_id in tqdm(range(mat012_transpose.shape[0])):
+        site = mat012_transpose[site_id]
         window_id = site_index_2_window_id[str(site_id)]
         if window_id in windows_matrix:
             windows_matrix[window_id] = np.concatenate([windows_matrix[window_id], site.reshape(1, -1)])
         else:
             windows_matrix[window_id] = site.reshape(1, -1)
     print()
-    for wind_id, window in windows_matrix.values():
+    for wind_id, window in windows_matrix.items():
         with open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
                                                            window_id=wind_id), 'wb') as window_file:
             np.save(window_file, window.T)
@@ -126,7 +148,7 @@ def alternative_split_to_windows(options):
 
 def main(options):
     with Timer(f"split with {options.args}"):
-        is_executed, msg = execute_with_checkpoint(split_chr_class_to_windows, SCRIPT_NAME, options)
+        is_executed, msg = execute_with_checkpoint(alternative_split_to_windows, SCRIPT_NAME, options)
         print(msg)
     return is_executed
 
@@ -144,8 +166,4 @@ if DEBUG:
 
 elif __name__ == '__main__':
     options = args_parser()
-    with Timer("My way"):
-        alternative_split_to_windows(options)
-    with Timer("The other way"):
-        split_chr_class_to_windows(options)
-    # main(options)
+    main(options)

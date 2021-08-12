@@ -1,15 +1,23 @@
+import gzip
 import json
 import os
-
+import numpy as np
+from steps.s3_split_to_windows import split_chr_class_to_windows
 from utils.filelock import FileLock
 
-with FileLock("mat.json"):
-    with open("mat.json", 'w') as f:
-        json.dump({}, f)
+directory_to_compare = "/home/lab2/Shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 
-    with open("mat.json", 'r') as f:
-        data = json.load(f)
-    print(data)
-
-
-print("done")
+all_files = os.listdir(directory_to_compare)
+np_files = [file[:-3] for file in all_files if 'npy' in file]
+vcf_files = [file[:-6] for file in all_files if 'vcf.gz' in file]
+assert set(np_files) == set(vcf_files)
+for file in np_files:
+    with open(directory_to_compare + file + 'npy', 'rb') as np_f:
+        matrix = np.load(np_f)
+    with gzip.open(directory_to_compare + file + 'vcf.gz', 'r') as gz_f:
+        vcf012 = gz_f.read().decode()
+    new_mat = split_chr_class_to_windows.file012_to_numpy(None, vcf012)
+    new_file = split_chr_class_to_windows.numpy_to_file012(None, matrix)
+    assert new_file == vcf012
+    assert np.all(new_mat == matrix)
+    print(f"Done with file {file}")

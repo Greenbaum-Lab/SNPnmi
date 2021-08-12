@@ -83,6 +83,7 @@ def get_args(options):
 
 def main(options):
     submit_per_class_sum_all_windows(options)
+    return True  # Todo add validation with stderr files
 
 
 if __name__ == '__main__':

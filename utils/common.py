@@ -52,7 +52,8 @@ class AlleleClass:
         self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 
-def hash_args(args):
+def hash_args(options):
+    args = options.args + options.mac + options.maf
     hash_val = 0
     for idx, value in enumerate(args):
         hash_val += hash_str(str(value)) * (256 ** idx)
@@ -62,7 +63,7 @@ def hash_args(args):
 def hash_str(s):
     hash_val = 0
     for c in s:
-        val = ord(c) * 17
+        val = ord(c)
         hash_val += val
     return hash_val % 256
 

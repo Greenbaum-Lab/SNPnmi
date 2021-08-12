@@ -7,10 +7,10 @@ from utils.common import get_paths_helper, hash_args
 from utils.config import validate_dataset_name
 from datetime import datetime
 
-def get_checkpoint_file_path(dataset_name, checkpoint_name, args):
+def get_checkpoint_file_path(dataset_name, checkpoint_name, options):
     paths_helper = get_paths_helper(dataset_name)
     checkpoint_folder = paths_helper.checkpoints_folder
-    args_hash = str(hash_args(args))
+    args_hash = str(hash_args(options))
     return f'{checkpoint_folder}{checkpoint_name}.{args_hash}.checkpoint'
 
 def write_checkpoint_file(checkpoint_file_path, args):
@@ -26,8 +26,8 @@ def get_checkpoint_time(checkpoint_file_path):
             return checkpoint_file.readline()
     return None
 
-def checkpoint_file_check(dataset_name, checkpoint_name, args):
-    checkpoint_file = get_checkpoint_file_path(dataset_name, checkpoint_name, args)
+def checkpoint_file_check(dataset_name, checkpoint_name, options):
+    checkpoint_file = get_checkpoint_file_path(dataset_name, checkpoint_name, options)
     checkpoint_file_exist = os.path.exists(checkpoint_file)
     if checkpoint_file_exist:
         checkpoint_time = get_checkpoint_time(checkpoint_file)
@@ -43,7 +43,7 @@ def execute_with_checkpoint(func, checkpoint_name, options):
     print('Number of arguments:', len(options.args))
     print('Argument List:', str(options.args))
     assert validate_dataset_name(options.dataset_name), f'{options.dataset_name} is not a known dataset name'
-    is_checkpoint_exists, checkpoint_file = checkpoint_file_check(options.dataset_name, checkpoint_name, options.args)
+    is_checkpoint_exists, checkpoint_file = checkpoint_file_check(options.dataset_name, checkpoint_name, options)
     if is_checkpoint_exists:
         return False, 'checkpoint found'
 

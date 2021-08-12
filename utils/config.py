@@ -12,9 +12,10 @@ CONFIG_NAME_PATHS = 'paths'
 class DataSetNames():
     hdgp = 'hgdp'
     hdgp_test = 'hgdp_test'
+    amur = 'amur'
 
 def validate_dataset_name(dataset_name):
-    return dataset_name in [DataSetNames.hdgp, DataSetNames.hdgp_test]
+    return dataset_name in [DataSetNames.hdgp, DataSetNames.hdgp_test, DataSetNames.amur]
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:

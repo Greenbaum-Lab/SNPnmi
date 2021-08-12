@@ -44,7 +44,7 @@ def submit_per_class_sum_all_windows(options):
                                                                                         job_name=job_long_name)
                 job_name = f's5_{val}'
                 cluster_setting = f'sbatch --time=24:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                python_script_params = f'--args {mac_maf},{val}'
+                python_script_params = f'-d {options.dataset_name} --args {mac_maf},{val}'
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])

@@ -23,5 +23,11 @@
         "vcf_files_names": ["hgdp_wgs.20190516.full.chr21.vcf.gz", "hgdp_wgs.20190516.full.chr20.vcf.gz"],
         "vcf_files_short_names": ["chr21", "chr20"],
         "metadata_files_names": ["README.data-access.hgdp_wgs.20190516.txt"]
+    },
+    "amur": {
+        "num_individulas": 3,
+        "num_chrs": 1,
+        "vcf_files_names": ["amur-highcov-filtered.recode.vcf"],
+        "vcf_files_short_names": ["all"]
     }
 }

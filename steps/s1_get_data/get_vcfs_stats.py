@@ -9,7 +9,7 @@ from os.path import dirname, abspath
 import ftplib
 from pathlib import Path
 
-from utils.loader import Loader
+from utils.loader import Loader, Timer
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -32,7 +32,7 @@ def generate_vcfs_stats(options, stat_types):
     for gzvcf_file in files_names:
         # check vcf file exist
         if not path.exists(options.vcfs_folder + gzvcf_file):
-            print (f'vcf file is missing {options.vcfs_folder + gzvcf_file}')
+            print(f'vcf file is missing {options.vcfs_folder + gzvcf_file}')
             all_stats_done = False
             continue
         options.gzvcf_file = gzvcf_file
@@ -55,11 +55,9 @@ def get_vcfs_stats(options):
     return all_stats_done
 
 def main(options):
-    # args should be: [dataset_name, stat_types (comma seperated)]
-    s = time.time()
-    dataset_name = options.dataset_name
-    is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, options)
-    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    with Timer(f"Stats computing with {options.args}"):
+        is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, options)
+        print(msg)
     return is_executed
 
 #main([DataSetNames.hdgp_test.value, 'freq'])

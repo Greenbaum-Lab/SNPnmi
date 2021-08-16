@@ -177,16 +177,24 @@ if __name__ == '__main__':
 
 
 def get_args(options):
-    assert 2 <= len(options.mac) <= 3, f"mac argument length is not correct. options.mac = {options.mac}"
-    mac_min_range = int(options.mac[0])
-    mac_max_range = int(options.mac[1])
-    mac_delta = DEFAULT_DELTA_MAC if len(options.mac) == 2 else int(options.mac[2])
+    if options.mac:
+        assert 2 <= len(options.mac) <= 3, f"mac argument length is not correct. options.mac = {options.mac}"
+        mac_min_range = int(options.mac[0])
+        mac_max_range = int(options.mac[1])
+        mac_delta = DEFAULT_DELTA_MAC if len(options.mac) == 2 else int(options.mac[2])
+    else:
+        mac_min_range = mac_max_range = 0
+        mac_delta = 1
 
     # by maf
-    assert 2 <= len(options.maf) <= 3, f"maf argument length is not correct. options.maf = {options.maf}"
-    maf_min_range = int(options.maf[0])
-    maf_max_range = int(options.maf[1])
-    maf_delta = DEFAULT_DELTA_MAF if len(options.maf) == 2 else int(options.maf[2])
+    if options.maf:
+        assert 2 <= len(options.maf) <= 3, f"maf argument length is not correct. options.maf = {options.maf}"
+        maf_min_range = int(options.maf[0])
+        maf_max_range = int(options.maf[1])
+        maf_delta = DEFAULT_DELTA_MAF if len(options.maf) == 2 else int(options.maf[2])
+    else:
+        maf_min_range = maf_max_range = 0
+        maf_delta = 1
 
     # submission details
     number_of_windows_to_process_per_job = int(options.args[0]) if len(options.args) > 0 else 10 ** 8

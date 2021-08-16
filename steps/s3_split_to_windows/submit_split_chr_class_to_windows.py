@@ -9,7 +9,7 @@ from os.path import dirname, abspath
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper, are_running_submitions, args_parser
+from utils.common import get_paths_helper, are_running_submitions, args_parser, validate_stderr_empty
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -25,6 +25,8 @@ def generate_job_long_name(mac_maf, class_val):
 
 def submit_split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
+    paths_helper = get_paths_helper(options.dataset_name)
+    stderr_files = []
     mac_min_range, mac_max_range, maf_min_range, maf_max_range = options.args
     for chr_name in get_dataset_vcf_files_short_names(dataset_name):
         for mac_maf in ['mac', 'maf']:
@@ -37,42 +39,20 @@ def submit_split_chr_class_to_windows(options):
                 for class_int_val in range(min_range, max_range + 1):
                     print(f'submit for {chr_name}, {mac_maf} {class_int_val}')
                     job_long_name = generate_job_long_name(mac_maf, class_int_val)
-                    job_name = f'3s{chr_name[3:]}{mac_maf}{class_int_val}'
+                    job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                            job_name=job_long_name)
+                    job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                            job_name=job_long_name)
+                    stderr_files.append(job_stderr_file)
+                    job_name = f's3{chr_name[3:]}{mac_maf}{class_int_val}'
                     python_script_params = f'-d {dataset_name} --args {chr_name},{mac_maf},{class_int_val}'
-                    submit_to_cluster(options, job_type, job_long_name, job_name, path_to_python_script_to_run,
-                                      python_script_params, with_checkpoint=False, num_hours_to_run=24, debug=DEBUG)
+                    submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
+                                      python_script_params,job_stdout_file, job_stderr_file, num_hours_to_run=24)
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions(string_to_find="3s"):
+        while are_running_submitions(string_to_find="s3"):
             time.sleep(5)
 
-    validate_step(options)
-
-
-def validate_step(options):
-    passed = True
-    dataset_name = options.dataset_name
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range = options.args
-    paths_helper = get_paths_helper(dataset_name)
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            for class_int_val in range(min_range, max_range + 1):
-                job_long_name = generate_job_long_name(mac_maf, class_int_val)
-                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                if not os.path.exists(job_stderr_file) or not os.path.exists(job_stdout_file):
-                    passed = False
-                    print(f"ERROR: stdout or stderr file is missing for class {mac_maf}{class_int_val}")
-                elif os.stat(job_stderr_file).st_size > 0:
-                    passed = False
-                    print(f"ERROR: some error accrued in {mac_maf}{class_int_val}")
-    if passed:
-        print("PASS - all classes are done with no errors")
-    print("DONE!")
+    assert validate_stderr_empty(stderr_files)
 
 
 def main(options):

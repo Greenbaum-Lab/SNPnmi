@@ -60,9 +60,9 @@ def runner(options):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# runner([-d hgdp_test -s 1.1 --args hgdp_test]))
+# runner([-d hgdp_test -s 1.1 ]))
 
-# runner([-d hgdp_test -s 1.2 --args hgdp_test,freq])
+# runner([-d hgdp_test -s 1.2 --args freq])
 
 # runner([-s 2.1 -d hgdp_test --args 5,8,46,49,True])
 

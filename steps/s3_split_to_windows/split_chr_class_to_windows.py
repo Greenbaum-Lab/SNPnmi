@@ -1,5 +1,3 @@
-from tqdm import tqdm
-
 DEBUG = False
 # given chr name and class split the sites of the class in the chr to files correspanding to windows.
 # (in the next step we will merge per class and window the files from all chrs, generating a single file per window.)
@@ -132,7 +130,7 @@ def alternative_split_to_windows(options):
     with Loader("Reformatting 012 file to numpy array"):
         mat012_transpose = file012_to_numpy(input_file).T
     windows_matrix = {}
-    for site_id in tqdm(range(mat012_transpose.shape[0])):
+    for site_id in range(mat012_transpose.shape[0]):
         site = mat012_transpose[site_id]
         window_id = site_index_2_window_id[str(site_id)]
         if window_id in windows_matrix:

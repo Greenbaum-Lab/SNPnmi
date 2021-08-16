@@ -29,7 +29,7 @@ def get_files_by_dataset_name(dataset_name):
     print('Files are ' + ','.join(files_names))
 
     paths_helper = get_paths_helper(dataset_name)
-    local_data_folder = paths_helper.data_folder
+    local_data_folder = paths_helper.data_dir
 
     print('output folder is ' + local_data_folder)
     os.makedirs(local_data_folder, exist_ok=True)

@@ -11,10 +11,10 @@ class PathsHelper:
     def __init__(self, root_data_folder: str, root_code_folder: str, dataset_name: str):
         # data main paths
         self.vcf_dir = f'{root_data_folder}vcf/'
-        self.data_folder = f'{self.vcf_dir}{dataset_name}/'
-        self.checkpoints_folder = f'{self.data_folder}checkpoints/'
-        self.vcf_stats_folder = f'{self.data_folder}stats/'
-        self.classes_dir = f'{self.data_folder}classes/'
+        self.data_dir = f'{self.vcf_dir}{dataset_name}/'
+        self.checkpoints_folder = f'{self.data_dir}checkpoints/'
+        self.vcf_stats_folder = f'{self.data_dir}stats/'
+        self.classes_dir = f'{self.data_dir}classes/'
         self.windows_dir = f'{self.classes_dir}windows/'
         self.windows_folder_template = self.windows_dir + '{mac_maf}_{class_name}'
         self.slices_folder = f'{self.classes_dir}slices/'
@@ -55,8 +55,8 @@ class PathsHelper:
         self.split_vcf_stats_csv_path = f'{self.logs_dataset_folder}split_vcf_by_class/split_vcf_output_stats.csv'
 
         # Netstuct inputs paths
-        self.netstructh_indlist_path = f'{self.data_folder}{get_indlist_file_name(dataset_name)}'
-        self.netstructh_sample_sites_path = f'{self.data_folder}{get_sample_sites_file_name(dataset_name)}'
+        self.netstructh_indlist_path = f'{self.data_dir}{get_indlist_file_name(dataset_name)}'
+        self.netstructh_sample_sites_path = f'{self.data_dir}{get_sample_sites_file_name(dataset_name)}'
 
         # paths to entry points
         self.submit_helper = f'{root_code_folder}{repo_dir_name}/utils/cluster/submit_helper.sh'

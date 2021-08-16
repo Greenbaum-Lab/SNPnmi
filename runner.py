@@ -65,7 +65,7 @@ def runner(options):
 
 # runner([-d hgdp_test -s 1.2 --args freq])
 
-# runner([-s 2.1 -d hgdp_test --args 5,8,46,49,True])
+# runner([-s 2.1 -d hgdp_test --args 5,8,46,49])
 
 # runner([-d hgdp_test -s 2.2 --args hgdp_test,5,8,46,49])
 

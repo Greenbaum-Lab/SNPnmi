@@ -1,6 +1,5 @@
 import pandas as pd
 
-DEBUG = False
 # Given a specific vcf file and class, will extract the relevant sites
 import subprocess
 import sys
@@ -9,6 +8,7 @@ from os import path
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+
 from utils.common import get_paths_helper
 from utils.config import *
 
@@ -63,8 +63,7 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
 
         print('vcftools_cmd_exactly_max_maf', ' '.join(vcftools_cmd_exactly_max_maf))
 
-        if not DEBUG:
-            subprocess.run(vcftools_cmd_exactly_max_maf)
+        subprocess.run(vcftools_cmd_exactly_max_maf)
 
     vcftools_cmd = vcftools_cmd_parts_base + [
                             min_val_param_name, str(class_min_val), 
@@ -75,8 +74,7 @@ def split_vcf_by_class(mac_maf, class_min_val, vcf_full_path, vcf_file_short_nam
 
 
     print('vcftools_cmd', ' '.join(vcftools_cmd))
-    if not DEBUG:
-        subprocess.run(vcftools_cmd)
+    subprocess.run(vcftools_cmd)
     return True
 
 
@@ -97,12 +95,7 @@ def compute_max_min_val(class_max_val, class_min_val, mac_maf):
         class_max_val = (class_max_val * 1.0 / 100.0)
     return class_max_val, class_min_val, is_mac
 
-def _test_me():
-    split_vcf_by_class('maf', 48, 'C:/Data/HUJI/vcf/hgdp_wgs.20190516.full.chr21.vcf.gz', 'chr21', r'C:/Data/HUJI/vcf/hgdp_test/classes/')
-
-if DEBUG:
-    _test_me()
-elif __name__ == '__main__':
+if __name__ == '__main__':
     mac_maf = sys.argv[1]
     class_val = int(sys.argv[2])
     vcf_full_path = sys.argv[3]

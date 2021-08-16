@@ -47,7 +47,6 @@ def download_files(ftp_source, files_names, local_data_folder, override=False):
         if not override and os.path.exists(dest):
             print('File exists in ' + dest)
         else:
-            print('downloading:\t' + f)
             with Loader('Downloading ' + f):
                 urllib.request.urlretrieve(ftp_source + f, dest)
 

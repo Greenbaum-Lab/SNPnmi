@@ -23,7 +23,8 @@ def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
 
 def submit_split_vcfs_by_class(options):
     dataset_name = options.dataset_name
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range = options.args
+    mac_min_range, mac_max_range = options.mac
+    maf_min_range, maf_max_range = options.maf
     # prepare output folders
     paths_helper = get_paths_helper(dataset_name)
     output_dir = paths_helper.classes_dir
@@ -93,7 +94,7 @@ def is_output_exits(class_max_val, class_min_val, mac_maf, output_dir):
 
 
 def main(options):
-    with Timer(f"split vcf by class with {options.args}"):
+    with Timer(f"split vcf by class with mac--{options.mac}\tmaf--{options.maf}"):
         is_executed, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, options)
     return is_executed
 

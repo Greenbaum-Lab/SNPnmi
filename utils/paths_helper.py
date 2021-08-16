@@ -14,24 +14,24 @@ class PathsHelper:
         self.data_folder = f'{self.vcf_folder}{dataset_name}/'
         self.checkpoints_folder = f'{self.data_folder}checkpoints/'
         self.vcf_stats_folder = f'{self.data_folder}stats/'
-        self.classes_folder = f'{self.data_folder}classes/'
-        self.windows_folder = f'{self.classes_folder}windows/'
-        self.windows_folder_template = self.windows_folder + '{mac_maf}_{class_name}'
-        self.slices_folder = f'{self.classes_folder}slices/'
-        self.random_slices_folder = f'{self.classes_folder}random_slices/'
+        self.classes_dir = f'{self.data_folder}classes/'
+        self.windows_dir = f'{self.classes_dir}windows/'
+        self.windows_folder_template = self.windows_dir + '{mac_maf}_{class_name}'
+        self.slices_folder = f'{self.classes_dir}slices/'
+        self.random_slices_folder = f'{self.classes_dir}random_slices/'
 
-        self.netstruct_folder = f'{self.classes_folder}netstruct/'
-        self.nmi_folder = f'{self.classes_folder}nmi/'
-        self.class_by_chr_template = self.classes_folder + '{chr_name}/{class_name}.012'
-        self.window_by_class_and_chr_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
-        self.window_by_class_and_chr_np_template = self.windows_folder + '{class_name}/{chr_name}/window_{window_id}.012.npy'
-        self.window_by_class_template = self.windows_folder + '{class_name}/window_{window_id}.012.vcf.gz'
-        self.windows_indexes_folder = f'{self.windows_folder}indexes/'
+        self.net_struct_dir = f'{self.classes_dir}netstruct/'
+        self.nmi_folder = f'{self.classes_dir}nmi/'
+        self.class_by_chr_template = self.classes_dir + '{chr_name}/{class_name}.012'
+        self.window_by_class_and_chr_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
+        self.window_by_class_and_chr_np_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.npy'
+        self.window_by_class_template = self.windows_dir + '{class_name}/window_{window_id}.012.vcf.gz'
+        self.windows_indexes_folder = f'{self.windows_dir}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
 
         # similarity paths
-        self.similarity_folder = f'{self.classes_folder}similarity/'
-        self.similarity_by_class_folder_template = self.similarity_folder + '{class_name}/'
+        self.similarity_dir = f'{self.classes_dir}similarity/'
+        self.similarity_by_class_folder_template = self.similarity_dir + '{class_name}/'
         self.per_window_similarity = self.similarity_by_class_folder_template + 'per_window_similarity/'
         self.similarity_by_class_and_window_template = self.per_window_similarity + 'similarity_by_window_{window_id}.npy'
         self.count_by_class_and_window_template = self.per_window_similarity + 'count_by_window_{window_id}.npy'
@@ -41,9 +41,9 @@ class PathsHelper:
         self.validate_similarity_flag_template = self.validate_similarity_dir + '/validated_count_similarity_window_{i}.txt'
 
         # deprecated
-        self.windows_per_class_folder = f'{self.windows_folder}' + '{class_name}/'
-        self.number_of_windows_per_class_path = f'{self.windows_folder}number_of_windows_per_class.txt'
-        self.number_of_windows_per_class_template = f'{self.windows_folder}' + '{class_name}/number_of_windows.txt'
+        self.windows_per_class_folder = f'{self.windows_dir}' + '{class_name}/'
+        self.number_of_windows_per_class_path = f'{self.windows_dir}number_of_windows_per_class.txt'
+        self.number_of_windows_per_class_template = f'{self.windows_dir}' + '{class_name}/number_of_windows.txt'
 
         # cluster runs logs paths
         self.logs_folder = f'{root_data_folder}logs/'
@@ -66,7 +66,7 @@ class PathsHelper:
 
         # sanity check folders:
         # TODO -remove?
-        self.sanity_check_folder = f'{self.classes_folder}sanity_check/'
+        self.sanity_check_folder = f'{self.classes_dir}sanity_check/'
         self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'
         self.sanity_check_netstruct_folder = f'{self.sanity_check_folder}netstruct/'
         self.sanity_check_nmi_folder = f'{self.sanity_check_folder}nmi/'

@@ -29,7 +29,7 @@ def validate_split_transposed_windows(mac_maf, class_name, min_window_id, max_wi
     paths_helper = get_paths_helper()
 
     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/transposed/
-    window_transposed_folder = paths_helper.windows_folder + f'{mac_maf}_{class_name}/transposed/'
+    window_transposed_folder = paths_helper.windows_dir + f'{mac_maf}_{class_name}/transposed/'
 
     total_number_of_sites = 0
     for window_id in range(min_window_id, max_window_id+1):
@@ -57,7 +57,7 @@ def validate_012_files(mac_maf, class_name, expected_number_of_sites):
     paths_helper = get_paths_helper()
 
     # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/transposed/
-    folder_012_files = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'
+    folder_012_files = paths_helper.windows_dir + f'{mac_maf}_{class_name}/'
 
     c = 0
     num_012_files = 0
@@ -112,7 +112,7 @@ def _validate_count_dist_files(count_dist_files):
 
 def max_index_with_n_lines(mac_maf, class_name, n, min_index, max_index):
     paths_helper = get_paths_helper()
-    template_012_files = paths_helper.windows_folder + f'{mac_maf}_{class_name}/'+'window_{i}.012.tsv.gz'
+    template_012_files = paths_helper.windows_dir + f'{mac_maf}_{class_name}/' + 'window_{i}.012.tsv.gz'
     max_i_found = 0
     valid_is = []
     for i in range(min_index, max_index+1):

@@ -22,7 +22,7 @@ def submit_1_per_class_sum_n_windows(options):
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
                 exist_ok=True)
-    output_dir = paths_helper.similarity_folder
+    output_dir = paths_helper.similarity_dir
 
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'

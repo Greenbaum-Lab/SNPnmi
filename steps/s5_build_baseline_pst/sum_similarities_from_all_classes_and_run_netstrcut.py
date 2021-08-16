@@ -15,7 +15,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from utils.common import get_paths_helper, str2bool, args_parser
+from utils.common import get_paths_helper, args_parser
 from utils.similarity_helper import generate_similarity_matrix
 from utils.netstrcut_helper import submit_netstcut
 
@@ -45,8 +45,8 @@ def sum_all_classes(options):
                 similarity_files.append(similarity_file)
                 count_files.append(count_file)
 
-    output_files_name = paths_helper.similarity_folder + f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
-    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_folder, output_files_name)
+    output_files_name = paths_helper.similarity_dir + f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_files_name)
     return output_files_name
 
 
@@ -56,15 +56,15 @@ def main(options):
 
     output_files_name = sum_all_classes(options)
     print(output_files_name)
-    if False:
-        paths_helper = get_paths_helper(options.dataset_name)
-        job_type = 'netstruct_on_classes'
-        job_long_name = f'netstruct_on_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
-        job_name = 'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
-        similarity_matrix_path = paths_helper.dist_folder + output_files_name + '_norm_dist.tsv.gz'
-        output_folder = paths_helper.netstruct_folder + output_files_name + '/'
-        print(output_folder)
-        submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss=0.0005)
+
+    paths_helper = get_paths_helper(options.dataset_name)
+    job_type = 'netstruct_on_classes'
+    job_long_name = f'netstruct_on_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
+    similarity_matrix_path = paths_helper.similarity_dir + output_files_name + '_similarity.npy'
+    output_folder = paths_helper.net_struct_dir + output_files_name + '/'
+    print(output_folder)
+    submit_netstcut(job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss=0.005)
 
 
 if __name__ == "__main__":

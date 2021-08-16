@@ -8,24 +8,27 @@ import os
 from os.path import dirname, abspath
 import ftplib
 from pathlib import Path
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
+
 from utils.common import get_paths_helper
 from utils.config import *
 from utils.checkpoint_helper import *
-
-from utils.loader import Loader
+from utils.loader import Loader, Timer
 
 
 def get_ftp_source(ftp_source_host, ftp_source_path):
     return f'ftp://{ftp_source_host}{ftp_source_path}'
+
 
 def get_files_by_dataset_name(dataset_name):
     ftp_source_host = get_dataset_ftp_source_host(dataset_name)
     ftp_source_path = get_dataset_ftp_source_path(dataset_name)
     ftp_source = get_ftp_source(ftp_source_host, ftp_source_path)
     print('Ftp source is ' + ftp_source)
-    files_names = get_dataset_vcf_files_names(dataset_name) + get_dataset_metadata_files_names(dataset_name)
+    files_names = get_dataset_vcf_files_names(dataset_name) + get_dataset_metadata_files_names(
+        dataset_name) + [get_sample_sites_file_name(dataset_name)] + [get_indlist_file_name(dataset_name)]
     print('Files are ' + ','.join(files_names))
 
     paths_helper = get_paths_helper(dataset_name)
@@ -71,29 +74,32 @@ def validate_downloaded_files_sizes(ftp_source_host, ftp_source_path, requested_
 
 
 def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folder, requested_files_names, retry=False):
-    downloaded_files, non_valid_files = validate_downloaded_files_sizes(ftp_source_host, ftp_source_path, requested_files_names, local_data_folder)
+    downloaded_files, non_valid_files = validate_downloaded_files_sizes(ftp_source_host, ftp_source_path,
+                                                                        requested_files_names, local_data_folder)
     missing_files = [f for f in requested_files_names if not f in downloaded_files]
     no_missing_files = True
     if len(missing_files) > 0:
         print('Some files were not found:' + ','.join(missing_files))
         no_missing_files = False
-    else: 
+    else:
         print('All required files found on local machine')
 
     all_files_sizes_validated = True
     if len(non_valid_files) > 0:
         print('Some files sizes did not match:' + ','.join(non_valid_files))
         all_files_sizes_validated = False
-        #retry
+        # retry
         if retry:
             print('Retry to download files')
             ftp_source = get_ftp_source(ftp_source_host, ftp_source_path)
             download_files(ftp_source, non_valid_files, local_data_folder, override=True)
             # we only retry once!
-            all_files_sizes_validated = validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folder, non_valid_files, retry=False)
+            all_files_sizes_validated = validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folder,
+                                                                  non_valid_files, retry=False)
     else:
         print('All required files have same size on local machine as in the FTP server')
     return all_files_sizes_validated & no_missing_files
+
 
 # wrappers for execution
 def get_data(options):
@@ -102,10 +108,8 @@ def get_data(options):
 
 
 def main(options):
-    # args should be: dataset_name
-    s = time.time()
-    is_executed, msg = execute_with_checkpoint(get_data, os.path.basename(__file__), options)
-    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    with Timer("Download all files"):
+        is_executed, msg = execute_with_checkpoint(get_data, os.path.basename(__file__), options)
     return is_executed
 
 

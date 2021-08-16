@@ -40,42 +40,42 @@ def get_vcf_stats(options):
 
     os.makedirs(output_folder, exist_ok=True)
 
-    cmd_parts_base = ['vcftools', '--gzvcf', paths_helper.data_dir + options.gzvcf_file, '--max-alleles', '2',
+    cmd_parts_base = ['vcftools', '--gzvcf', paths_helper.data_dir + gzvcf_file, '--max-alleles', '2',
                       '--min-alleles', '2', '--remove-indels', '--max-missing', '0.9']
 
 
     # Calculate loci freq
-    if options.stat_type == 'freq':
+    if stat_type == 'freq':
         freq_cmd = cmd_parts_base + ['--freq', '--out', output_path_prefix + '.freq']
         print('freq_cmd', freq_cmd)
         subprocess.run(freq_cmd)
 
     # Calculate mean depth per individual
-    elif options.stat_type == 'idepth':
+    elif stat_type == 'idepth':
         depth_i_cmd = cmd_parts_base + ['--depth', '--out', output_path_prefix + '.idepth']
         print('depth_i_cmd')
         subprocess.run(depth_i_cmd)
 
     # Calculate mean depth per site
-    elif options.stat_type == 'ldepth':
+    elif stat_type == 'ldepth':
         depth_s_cmd = cmd_parts_base + ['--site-mean-depth', '--out', output_path_prefix + '.ldepth']
         print('depth_s_cmd', depth_s_cmd)
         subprocess.run(depth_s_cmd)
 
     # Calculate site quality
-    elif options.stat_type == 'lqual':
+    elif stat_type == 'lqual':
         quality_s_cmd = cmd_parts_base + ['--site-quality', '--out', output_path_prefix + '.lqual']
         print('quality_s_cmd')
         subprocess.run(quality_s_cmd)
 
     # Calculate proportion of missing data per individual
-    elif options.stat_type == 'imiss':
+    elif stat_type == 'imiss':
         missing_i_cmd = cmd_parts_base + ['--missing-indv', '--out', output_path_prefix + '.imiss']
         print('missing_i_cmd')
         subprocess.run(missing_i_cmd)
 
     # Calculate proportion of missing data per site
-    elif options.stat_type == 'lmiss':
+    elif stat_type == 'lmiss':
         missing_s_cmd = cmd_parts_base + ['--missing-site', '--out', output_path_prefix + '.lmiss']
         print('missing_s_cmd', missing_s_cmd)
         subprocess.run(missing_s_cmd)

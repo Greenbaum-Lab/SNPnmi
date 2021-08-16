@@ -44,9 +44,10 @@ def sum_all_classes(options):
                 similarity_files.append(similarity_file)
                 count_files.append(count_file)
 
-    output_files_name = paths_helper.similarity_dir + f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
-    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_files_name)
-    return output_files_name
+    class_range_str = f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    output_file_name = paths_helper.similarity_dir + class_range_str
+    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_file_name)
+    return output_file_name, class_range_str
 
 
 def convert_numpy_array_to_lists(similarity_matrix_path):
@@ -61,7 +62,7 @@ def main(options):
     mac_min_range, mac_max_range = options.mac if options.mac else (0, 0)
     maf_min_range, maf_max_range = options.maf if options.maf else (0, 0)
 
-    output_files_name = sum_all_classes(options)
+    output_files_name, all_class_range_str = sum_all_classes(options)
     print(output_files_name)
 
     paths_helper = get_paths_helper(options.dataset_name)
@@ -70,7 +71,7 @@ def main(options):
     job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
     similarity_matrix_path = output_files_name + '_similarity.npy'
     similarity_in_lists = convert_numpy_array_to_lists(similarity_matrix_path)
-    output_folder = paths_helper.net_struct_dir + output_files_name + '/'
+    output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
     submit_netstcut(options, job_type, job_long_name, job_name, similarity_in_lists, output_folder, netstrcut_ss=0.005)
 

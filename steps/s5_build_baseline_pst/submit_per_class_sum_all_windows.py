@@ -39,9 +39,9 @@ def submit_per_class_sum_all_windows(options):
                 job_long_name = f'sum_all_{mac_maf}{val}'
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
-                err_files.append(job_stderr_file)
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
+                err_files.append(job_stderr_file)
                 job_name = f's5_{val}'
                 cluster_setting = f'sbatch --time=24:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 python_script_params = f'-d {options.dataset_name} --args {mac_maf},{val}'

@@ -10,8 +10,8 @@ class PathsHelper:
     # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", dataset_name='hgdp'
     def __init__(self, root_data_folder: str, root_code_folder: str, dataset_name: str):
         # data main paths
-        self.vcf_folder = f'{root_data_folder}vcf/'
-        self.data_folder = f'{self.vcf_folder}{dataset_name}/'
+        self.vcf_dir = f'{root_data_folder}vcf/'
+        self.data_folder = f'{self.vcf_dir}{dataset_name}/'
         self.checkpoints_folder = f'{self.data_folder}checkpoints/'
         self.vcf_stats_folder = f'{self.data_folder}stats/'
         self.classes_dir = f'{self.data_folder}classes/'

@@ -15,6 +15,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.similarity_helper import file012_to_numpy, numpy_to_file012
 from utils.common import get_paths_helper, AlleleClass, args_parser
 from utils.loader import Timer, Loader
 from utils.config import *
@@ -93,32 +94,6 @@ def pre_split_chr_class_to_windows(options):
                                                                                chr_name=chr_short_name, window_id=0)
     os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
     return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id
-
-
-def file012_to_numpy(input_file_path, raw_file=None):
-    if raw_file is None:
-        with open(input_file_path, 'rb') as f:
-            raw_file = f.read().decode()
-    split_individuals = raw_file.split('\n')
-    if split_individuals[-1] == '':   # we throw empty line at the end of the file
-        split_individuals = split_individuals[:-1]
-    split_sites = [individual.split('\t') for individual in split_individuals]
-    arr = np.array(split_sites, dtype=np.int8)
-    if not np.any(arr[:, 1] > 2):
-        arr = arr[:, 1:]  # First column is individual number.
-    return arr
-
-
-def numpy_to_file012(input_numpy_path, matrix=None):
-    if matrix is None:
-        with open(input_numpy_path, 'r') as f:
-            matrix = np.load(f)
-    result = []
-    for line in matrix:
-        result.append('\t'.join([str(i) for i in line]))
-    result = '\n'.join(result)
-    result += '\n'
-    return result
 
 
 def alternative_split_to_windows(options):

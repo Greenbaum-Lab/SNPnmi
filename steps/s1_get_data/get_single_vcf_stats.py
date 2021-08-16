@@ -3,18 +3,18 @@ import sys
 import os
 from os.path import dirname, abspath
 
-# params are: input gzvcf_file, output folder, prefix(chr name is good, like chr9)
-# example:
-# python3 vcf_stats_helper.py /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.full.chr9.vcf.gz /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/stats/ chr9 freq
+from utils.checkpoint_helper import execute_with_checkpoint
 
+root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
+sys.path.append(root_path)
+
+from utils.common import args_parser
+
+SCRIPT_NAME = os.path.basename(__file__)
 StatTypes = ['freq', 'idepth', 'ldepth', 'lqual', 'imiss', 'lmiss']
 type_flag = {'freq': '--freq', 'idepth': '--depth', 'ldepth': '--site-mean-depth', 'lqual': '--site-mean-depth',
              'imiss': '--missing-indv', 'lmiss': '--missing-site'}
-print_names = {'freq': 'freq', 'idepth': 'depth_i', 'ldepth': 'depth_s', 'lqual': 'quality_s', 'imiss': 'missing_i',
-               'lmiss': 'missing_s'}
 
-# Make sure we didn't forget any stat
-assert all([stat in type_flag.keys() and stat in print_names.keys() for stat in StatTypes])
 
 def validate_stat_types(stat_types):
     for t in stat_types:
@@ -22,9 +22,10 @@ def validate_stat_types(stat_types):
             return False
         return True
 
-# TODO - consider submiting to cluster
+
 # TODO 2 - consider support in 'all_stats'
 # TODO - possibly can be refactored
+
 def get_vcf_stats(options):
     assert options.stat_type in StatTypes, f'{options.stat_type} not one of {",".join(StatTypes)}'
 
@@ -38,10 +39,6 @@ def get_vcf_stats(options):
     cmd_parts_base = ['vcftools', '--gzvcf', options.vcfs_folder+options.gzvcf_file, '--max-alleles', '2',
                       '--min-alleles', '2', '--remove-indels', '--max-missing', '0.9']
 
-    # Todo: consider the next comment code instead of the following (refactoring):
-    # cmd = cmd_parts_base + [type_flag[stat_type], '--out', output_path_prefix + f'.{stat_type}']
-    # print(f"{print_names[stat_type]}_cmd")
-    # subprocess.run(cmd)
 
     # Calculate loci freq
     if options.stat_type == 'freq':
@@ -81,3 +78,12 @@ def get_vcf_stats(options):
 
     # wrap with try catch?
     return True
+
+
+if __name__ == '__main__':
+    arguments = args_parser()
+    gzvcf_file = arguments.args[0]
+    stat_type = arguments.args[1]
+    is_executed, msg = execute_with_checkpoint(get_vcf_stats, f'{SCRIPT_NAME}_{gzvcf_file}_{stat_type}', arguments)
+    if is_executed:
+        print(f'done - {gzvcf_file} - {stat_type}')

@@ -34,6 +34,8 @@ def generate_vcfs_stats(options, stat_types):
     stderr_files = []
     errors = []
     all_stats_done = True
+    os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
+                exist_ok=True)
     for short_name, gzvcf_file in zip(short_names, files_names):
         # check vcf file exist
         if not path.exists(options.vcfs_folder + gzvcf_file):

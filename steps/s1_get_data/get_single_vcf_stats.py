@@ -3,11 +3,11 @@ import sys
 import os
 from os.path import dirname, abspath
 
-from utils.checkpoint_helper import execute_with_checkpoint
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser
 
 SCRIPT_NAME = os.path.basename(__file__)

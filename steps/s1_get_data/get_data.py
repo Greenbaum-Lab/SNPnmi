@@ -32,13 +32,13 @@ def get_files_by_dataset_name(dataset_name):
     print('Files are ' + ','.join(files_names))
 
     paths_helper = get_paths_helper(dataset_name)
-    local_data_folder = paths_helper.data_dir
+    data_dir = paths_helper.data_dir
 
-    print('output folder is ' + local_data_folder)
-    os.makedirs(local_data_folder, exist_ok=True)
+    print('output folder is ' + data_dir)
+    os.makedirs(data_dir, exist_ok=True)
 
-    download_files(ftp_source, files_names, local_data_folder)
-    return validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folder, files_names, retry=True)
+    download_files(ftp_source, files_names, data_dir)
+    return validate_downloaded_files(ftp_source_host, ftp_source_path, data_dir, files_names, retry=True)
 
 
 def download_files(ftp_source, files_names, local_data_folder, override=False):
@@ -47,6 +47,7 @@ def download_files(ftp_source, files_names, local_data_folder, override=False):
         if not override and os.path.exists(dest):
             print('File exists in ' + dest)
         else:
+            print('downloading:\t' + f)
             with Loader('Downloading ' + f):
                 urllib.request.urlretrieve(ftp_source + f, dest)
 

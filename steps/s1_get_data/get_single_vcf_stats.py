@@ -27,7 +27,7 @@ def validate_stat_types(stat_types):
 # TODO - possibly can be refactored
 
 def get_vcf_stats(options):
-    assert options.stat_type in StatTypes, f'{options.stat_type} not one of {",".join(StatTypes)}'
+    assert options.args[1] in StatTypes, f'{options.stat_type} not one of {",".join(StatTypes)}'
 
     output_folder = dirname(options.output_path_prefix)
 

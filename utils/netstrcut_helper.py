@@ -14,7 +14,7 @@ import subprocess
 
 def submit_netstcut(options, job_type, job_long_name, job_name, similarity_matrix_path, output_folder, netstrcut_ss='0.001'):
     # create output folders
-    paths_helper = get_paths_helper('hgdp')
+    paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')), exist_ok=True)
     # job data
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)

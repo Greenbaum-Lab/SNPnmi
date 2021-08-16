@@ -65,8 +65,8 @@ def main(options):
     print(output_files_name)
 
     paths_helper = get_paths_helper(options.dataset_name)
-    job_type = 'netstruct_on_classes'
-    job_long_name = f'netstruct_on_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    job_type = 'netstruct'
+    job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
     job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
     similarity_matrix_path = output_files_name + '_similarity.npy'
     similarity_in_lists = convert_numpy_array_to_lists(similarity_matrix_path)

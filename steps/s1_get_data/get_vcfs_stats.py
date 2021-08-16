@@ -69,7 +69,7 @@ def generate_vcfs_stats(options, stat_types):
         while are_running_submitions(string_to_find="s1"):
             time.sleep(5)
 
-    assert validate_stderr_empty(stderr_files)
+    # assert validate_stderr_empty(stderr_files)
 
 
     return all_stats_done

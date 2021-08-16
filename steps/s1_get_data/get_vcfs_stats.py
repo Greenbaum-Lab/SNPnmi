@@ -34,7 +34,7 @@ def generate_vcfs_stats(options, stat_types):
     stderr_files = []
     errors = []
     all_stats_done = True
-    for short_name, gzvcf_file in zip([short_names, files_names]):
+    for short_name, gzvcf_file in zip(short_names, files_names):
         # check vcf file exist
         if not path.exists(options.vcfs_folder + gzvcf_file):
             print(f'vcf file is missing {options.vcfs_folder + gzvcf_file}')

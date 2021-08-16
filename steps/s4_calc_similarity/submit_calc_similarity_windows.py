@@ -189,9 +189,9 @@ def get_args(options):
     maf_delta = DEFAULT_DELTA_MAF if len(options.maf) == 2 else int(options.maf[2])
 
     # submission details
-    number_of_windows_to_process_per_job = int(options.args[0])
-    max_number_of_jobs = int(options.args[1])
-    initial_window_index = int(options.args[2])
+    number_of_windows_to_process_per_job = int(options.args[0]) if len(options.args) > 0 else 10 ** 8
+    max_number_of_jobs = int(options.args[1]) if len(options.args) > 1 else 100
+    initial_window_index = int(options.args[2]) if len(options.args) > 2 else 0
 
     # use specific 012 input files
     # when true, for each mac/maf in range, we will process 012 files with index in range [min_input_012_file_index, max_input_012_file_index]

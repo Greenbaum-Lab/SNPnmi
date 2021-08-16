@@ -1,4 +1,4 @@
-DEBUG = False
+
 # given chr name and class split the sites of the class in the chr to files correspanding to windows.
 # (in the next step we will merge per class and window the files from all chrs, generating a single file per window.)
 # the way this is done is using the output of the previous stpe (prepare_for_split_to_windows):
@@ -127,7 +127,7 @@ def alternative_split_to_windows(options):
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_np_template
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
     assert np.all(np.sort(np.array([int(i) for i in site_index_2_window_id.keys()])) == np.arange(max_site_index + 1))
-    with Loader("Reformatting 012 file to numpy array"):
+    with Timer("Reformatting 012 file to numpy array"):
         mat012_transpose = file012_to_numpy(input_file).T
     windows_matrix = {}
     for site_id in range(mat012_transpose.shape[0]):
@@ -151,17 +151,6 @@ def main(options):
     return is_executed
 
 
-def _test_me():
-    dataset_name = 'hgdp_test'
-    chr_short_name = 'chr21'
-    mac_maf = 'maf'
-    class_value = 1
-    split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_value)
-
-
-if DEBUG:
-    _test_me()
-
-elif __name__ == '__main__':
+if __name__ == '__main__':
     options = args_parser()
     main(options)

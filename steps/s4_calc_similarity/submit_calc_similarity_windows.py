@@ -142,7 +142,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
                 stderr_files.append(job_stderr_file)
                 # to make the jobs name short we only take the last two digits of maf
                 job_name = f'f{maf_int}_w{min_window_id}'
-                cluster_setting = f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}"' \
+                cluster_setting = f'sbatch --time=2:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}"' \
                                   f' --job-name="{job_name}"'
                 # maf 0.49 0 0.49 0.5 -1 -1
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \

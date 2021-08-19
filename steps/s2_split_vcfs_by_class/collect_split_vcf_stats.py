@@ -238,7 +238,7 @@ def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, mi
                 passed = False
                 print(f'chr{chr_i}, mac {mac} appears {count} times')
         for maf in range(min_maf, max_maf + 1):
-            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['maf'] == f'{maf * 1.0 / 100}')])
+            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['maf'] == maf * 1.0 / 100)])
             if count != 1:
                 passed = False
                 print(f'chr{chr_i}, maf {maf} appears {count} times')
@@ -252,5 +252,8 @@ def main(options):
 
 
 if __name__ == '__main__':
-    arguments = args_parser()
-    main(arguments)
+    # arguments = args_parser()
+    # main(arguments)
+    df_path = "C:\\Users\\lab4\\OneDrive\\Desktop\\df.xlsx"
+    df = pd.read_excel(df_path)
+    validate_all_data_exists(df, 22, 0, 1, 1, 1, 1)

@@ -8,6 +8,9 @@ from os.path import dirname, abspath
 import argparse
 import ftplib
 from pathlib import Path
+
+from utils.loader import Timer
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 from steps.s1_get_data import get_data, get_vcfs_stats
@@ -20,7 +23,7 @@ from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows, sum_si
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
-from utils.common import args_parser
+from utils.common import args_parser, str_for_timer
 
 step_to_func_and_name = {
     "1.1": (get_data.main, 'get_data'),
@@ -47,19 +50,16 @@ def run_step(options, use_checkpoint=True):
 
 
 def runner(options):
-    s = time.time()
-    step = options.step
-    step_args = options.args
-    dataset_name = options.dataset_name
-    print(f'Number of arguments:{2 + len(step_args)} arguments.')
-    print(f'Argument List: {step}, {dataset_name}, {step_args}')
-    assert validate_dataset_name(dataset_name), f'First arg of step should be the datasetname, got: {dataset_name}'
+    with Timer(f"Runner time with {str_for_timer(options)}"):
+        step = options.step
+        dataset_name = options.dataset_name
+        print(f'Argument List: {step}, {dataset_name}, {str_for_timer(options)}')
+        assert validate_dataset_name(dataset_name), f'Invalid dataset name, got: {dataset_name}'
 
-    print(f'Executing step {step} with step args {step_args}.')
-    is_executed = run_step(options)
-    print(f'is executed: {is_executed}')
+        is_executed = run_step(options)
+        print(f'is executed: {is_executed}')
 
-    print(f'{(time.time()-s)/60} minutes total run time')
+
 
 # runner([-d hgdp_test -s 1.1 ]))
 

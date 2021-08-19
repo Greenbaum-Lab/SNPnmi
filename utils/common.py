@@ -190,3 +190,15 @@ def args_parser():
     options.maf = options.maf.split(',') if options.maf else []
     options.maf = [int(i) if i.isdecimal() else i for i in options.maf]
     return options
+
+
+def str_for_timer(options):
+    str = ""
+    if options.mac:
+        str += f"mac--{options.mac}"
+    if options.maf:
+        str += f"maf--{options.maf}"
+    if options.args:
+        str += f"args--{options.args}"
+    return str
+

@@ -47,7 +47,7 @@ class Loader:
         self.stop()
 
 class Timer:
-    def __init__(self, text):
+    def __init__(self, text=""):
         self.text = text
 
     def __enter__(self):

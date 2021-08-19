@@ -45,7 +45,7 @@ def submit_prepare_for_split_to_windows(options):
     maf_min_range, maf_max_range = options.maf
     window_size = options.args[0]
     paths_helper = get_paths_helper(dataset_name)
-    os.makedirs(paths_helper.windows_folder, exist_ok=True)
+    os.makedirs(paths_helper.windows_dir, exist_ok=True)
     classes = []
     stderr_files = []
 

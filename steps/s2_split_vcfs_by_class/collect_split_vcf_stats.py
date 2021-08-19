@@ -105,11 +105,14 @@ def min_max_number_of_columns(file_path):
     return min_c, max_c
 
 def write_values_to_csv(values, output_path):
-
+    # first, assert we have all values
     expected_keys = ['chr_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines',
                      '012_num_of_lines', 'num_of_possible_indv', 'num_of_sites_after_filter', 'pos_num_of_lines',
                      '012_min_num_of_sites', '012_max_num_of_sites', 'num_of_possible_sites', 'run_time_in_seconds',
                      'input_file', 'out_path']
+    values_keys = values.keys()
+    for exp_key in expected_keys:
+        assert exp_key in values_keys
     write_header = not os.path.isfile(output_path)
     with open(output_path, "a+") as f:
         if write_header:

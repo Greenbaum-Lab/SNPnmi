@@ -85,9 +85,6 @@ def pre_split_chr_class_to_windows(options):
     max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
     assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'
     max_window_id = max(site_index_2_window_id.values())
-    min_window_id = min(site_index_2_window_id.values())
-    # we assume zero based windows ids
-    assert min_window_id == 0, f'windows ids must be zero based, but the min index found is {min_window_id}'
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
     # Generate the folder
     window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name,

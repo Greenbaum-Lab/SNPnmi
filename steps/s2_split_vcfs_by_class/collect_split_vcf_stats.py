@@ -133,7 +133,8 @@ def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
 # TODO renmae? collect_and_validate_vcf_classes_stats
 def call_collect_split_vcf_stats(options):
     dataset_name = options.dataset_name
-    min_mac_range, max_mac_range, min_maf_range, max_maf_range = options.args
+    min_mac_range, max_mac_range = options.mac
+    min_maf_range, max_maf_range = options.maf
     paths_helper = get_paths_helper(dataset_name)
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
     vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
@@ -154,7 +155,6 @@ def call_collect_split_vcf_stats(options):
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
             log_files.append(job_stderr_file)
             chr_names_for_logs.append(vcf_file_short_name)
-
 
     print(f'will process {len(log_files)} files')
 

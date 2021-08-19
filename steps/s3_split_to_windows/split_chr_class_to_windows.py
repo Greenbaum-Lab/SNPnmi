@@ -1,6 +1,4 @@
-from tqdm import tqdm
 
-DEBUG = False
 # given chr name and class split the sites of the class in the chr to files correspanding to windows.
 # (in the next step we will merge per class and window the files from all chrs, generating a single file per window.)
 # the way this is done is using the output of the previous stpe (prepare_for_split_to_windows):
@@ -17,6 +15,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.similarity_helper import file012_to_numpy, numpy_to_file012
 from utils.common import get_paths_helper, AlleleClass, args_parser
 from utils.loader import Timer, Loader
 from utils.config import *
@@ -97,42 +96,16 @@ def pre_split_chr_class_to_windows(options):
     return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id
 
 
-def file012_to_numpy(input_file_path, raw_file=None):
-    if raw_file is None:
-        with open(input_file_path, 'rb') as f:
-            raw_file = f.read().decode()
-    split_individuals = raw_file.split('\n')
-    if split_individuals[-1] == '':   # we throw empty line at the end of the file
-        split_individuals = split_individuals[:-1]
-    split_sites = [individual.split('\t') for individual in split_individuals]
-    arr = np.array(split_sites, dtype=np.int8)
-    if not np.any(arr[:, 1] > 2):
-        arr = arr[:, 1:]  # First column is individual number.
-    return arr
-
-
-def numpy_to_file012(input_numpy_path, matrix=None):
-    if matrix is None:
-        with open(input_numpy_path, 'r') as f:
-            matrix = np.load(f)
-    result = []
-    for line in matrix:
-        result.append('\t'.join([str(i) for i in line]))
-    result = '\n'.join(result)
-    result += '\n'
-    return result
-
-
 def alternative_split_to_windows(options):
     allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id = \
         pre_split_chr_class_to_windows(options)
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_np_template
     input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
     assert np.all(np.sort(np.array([int(i) for i in site_index_2_window_id.keys()])) == np.arange(max_site_index + 1))
-    with Loader("Reformatting 012 file to numpy array"):
+    with Timer("Reformatting 012 file to numpy array"):
         mat012_transpose = file012_to_numpy(input_file).T
     windows_matrix = {}
-    for site_id in tqdm(range(mat012_transpose.shape[0])):
+    for site_id in range(mat012_transpose.shape[0]):
         site = mat012_transpose[site_id]
         window_id = site_index_2_window_id[str(site_id)]
         if window_id in windows_matrix:
@@ -153,17 +126,6 @@ def main(options):
     return is_executed
 
 
-def _test_me():
-    dataset_name = 'hgdp_test'
-    chr_short_name = 'chr21'
-    mac_maf = 'maf'
-    class_value = 1
-    split_chr_class_to_windows(dataset_name, chr_short_name, mac_maf, class_value)
-
-
-if DEBUG:
-    _test_me()
-
-elif __name__ == '__main__':
+if __name__ == '__main__':
     options = args_parser()
     main(options)

@@ -32,12 +32,12 @@ def merge_windows_to_slices(options):
     # random.seed(10)
     paths_helper = get_paths_helper(options.dataset_name)
 
-    windows_class_folder = f'{paths_helper.windows_folder}{mac_maf}_{class_name}/'
+    windows_class_folder = f'{paths_helper.windows_dir}{mac_maf}_{class_name}/'
     slices_class_folder = f'{paths_helper.random_slices_folder if is_random else paths_helper.slices_folder}{mac_maf}_{class_name}/' 
 
     # used to assert number of windows
-    window_file_regex = f'{paths_helper.windows_folder}{mac_maf}_{class_name}/' + 'count_dist_window_*.tsv.gz'
-    window_file_template = f'{paths_helper.windows_folder}{mac_maf}_{class_name}/' + 'count_dist_window_{index}.tsv.gz'
+    window_file_regex = f'{paths_helper.windows_dir}{mac_maf}_{class_name}/' + 'count_dist_window_*.tsv.gz'
+    window_file_template = f'{paths_helper.windows_dir}{mac_maf}_{class_name}/' + 'count_dist_window_{index}.tsv.gz'
 
     slice_norm_distances_file_template = slices_class_folder + 'slice_{index}_norm_dist.tsv.gz'
     slice_distances_file_template = slices_class_folder + 'slice_{index}_dist.tsv.gz'

@@ -71,7 +71,7 @@ def runner(options):
 
 # runner([-s 3.1 -d hgdp_test --mac 5,8 --maf 46,49 --args 100])
 
-# runner([-s 3.2 -d hgdp_test --args 5,8,46,49])
+# runner([-s 3.2 -d hgdp_test --mac 5,8 --maf 46,49])
 
 # runner([-s 3.3 -d hgdp_test --args 5,8,46,49,100])
 

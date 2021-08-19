@@ -53,7 +53,7 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_value, window_id
     assert window_df.isnull().values.any() == False
     # Assert num of sites in window
     # TODO : Write window size in prepare_for_split_to_windows and use it in this assert
-    # assert (abs(100 - len(window_df.columns)) <= 1), f'num of columns ({len(window_df.columns)}) should be 100+-1'
+    assert (abs(100 - len(window_df.columns)) <= 1), f'num of columns ({len(window_df.columns)}) should be 100+-1'
 
     # output to file
     window_df.to_csv(output_class_window_file_path, sep='\t', header=False, index=False, compression='gzip')
@@ -72,23 +72,11 @@ def merge_class_windows_across_chrs(options):
 
 
 def main(options):
-    with Timer(f"merge_all_chrs_to_calss_windows on {options.args}"):
+    with Timer(f"merge_all_chrs_to_calss_windows on {str_for_timer(options)}"):
         is_executed, msg = execute_with_checkpoint(merge_class_windows_across_chrs, SCRIPT_NAME, options)
     return is_executed
 
 
-def _test_me():
-    dataset_name = 'hgdp_test'
-    mac_maf = 'maf'
-    class_value = 1
-    min_window_id = 0
-    max_window_id = 101
-    merge_class_windows_across_chrs(dataset_name, mac_maf, class_value, min_window_id, max_window_id)
-
-
-if DEBUG:
-    _test_me()
-
-elif __name__ == '__main__':
-    options = args_parser()
-    main(options)
+if __name__ == '__main__':
+    arguments = args_parser()
+    main(arguments)

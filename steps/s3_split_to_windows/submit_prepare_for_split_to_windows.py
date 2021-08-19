@@ -65,13 +65,13 @@ def submit_prepare_for_split_to_windows(options):
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
                 stderr_files.append(job_stderr_file)
-                job_name = f'3p{mac_maf}{class_int_val}'
+                job_name = f'p3_{mac_maf[-1]}{class_int_val}'
                 python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
                 submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
                                   python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4)
 
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions(string_to_find="3pm"):
+        while are_running_submitions(string_to_find="p3_"):
             time.sleep(5)
 
     write_class_to_number_of_windows_file(options, classes)

@@ -1,24 +1,22 @@
-DEBUG = False
 # given chr(vcf name), class and window_size, build a mapping of chr+index to window_index, so that each window size is ~window_size.
 # the output is a file per chr with a dict of index (not site name) to window_index
 # per class, we generate a shuffled list of sites (chr and index(!) not site name)
 # given a window size we split the shuffled list to windows of approximatly this size
 # running on mac 2, where we have about 7.3M sites, it takes around 5 minutes.
-import os
+
+
 import sys
-import json
 import pandas as pd
 import random
-import time
-import argparse
 random.seed(a='42', version=2)
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.common import get_paths_helper, AlleleClass
+
+from utils.loader import Timer
+from utils.common import get_paths_helper, AlleleClass, str_for_timer, args_parser
 from utils.config import *
 from utils.checkpoint_helper import *
-from utils.common import args_parser
 
 
 SCRIPT_NAME = os.path.basename(__file__)
@@ -125,6 +123,7 @@ def validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size):
         sum_window_sizes += specific_window_size
     assert sum_window_sizes == num_of_sites
 
+
 def build_windows_indexes_files(options):
     dataset_name = options.dataset_name
     mac_maf, class_value, window_size = options.args
@@ -156,24 +155,12 @@ def build_windows_indexes_files(options):
 
 
 def main(options):
-    s = time.time()
-    is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, options)
-    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):
+        is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, options)
     return is_executed
 
 
-def _test_me():
-    dataset_name = 'hgdp_test'
-    mac_maf = 'maf'
-    class_value = 1
-    window_size = 100
-    build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
-
-
-if DEBUG:
-    _test_me()
-elif __name__ == '__main__':
-    options = args_parser()
-    print(f"Running prepare_for_split_windows with\ndataset_name: {options.dataset_name}\nargs: {options.args}")
-    main(options)
+if __name__ == '__main__':
+    arguments = args_parser()
+    main(arguments)
 

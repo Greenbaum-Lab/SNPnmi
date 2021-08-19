@@ -69,7 +69,7 @@ def merge_all_slices_to_normalized_dist_matrix(min_mac, max_mac, min_maf, max_ma
     output_files_suffix=f'_mac_{min_mac}_{max_mac}_maf_{min_maf}_{max_maf}.gz.tsv'
     paths_helper = get_paths_helper()
 
-    merged_path = paths_helper.data_folder + 'merged/'
+    merged_path = paths_helper.data_dir + 'merged/'
     os.makedirs(merged_path, exist_ok=True)
 
     merged_norm_distances_file = merged_path + 'merged_norm_dist' + output_files_suffix

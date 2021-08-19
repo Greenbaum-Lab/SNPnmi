@@ -136,9 +136,19 @@ def get_num_columns_in_file(p, sep='\t', gzip=False):
             return len(l.split(sep))
 
 
-def are_running_submitions(username="shahar.m", string_to_find=""):
+def validate_stderr_empty(err_files):
+    for err_file in err_files:
+        if not os.path.exists(err_file) or os.stat(err_file).st_size > 0:
+            print(f"error in file {err_file}\n\n{err_file}")
+            return False
+    print("Submitting validation - PASS. All stderr files exists and empty.")
+    return True
+
+
+def are_running_submitions(string_to_find=""):
     if not is_cluster():
         return False
+    username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
     ps = subprocess.Popen('squeue', stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
         output = subprocess.check_output(('grep', username), stdin=ps.stdout)

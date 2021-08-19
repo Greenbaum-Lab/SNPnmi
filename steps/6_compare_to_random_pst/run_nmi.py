@@ -54,7 +54,7 @@ def _collect_all_nodes_if_needed(folder):
 def run_nmi_on_all(mac_min_range, mac_max_range, maf_min_range, maf_max_range, min_window_index, max_window_index, ground_truth, netstruct_folder_name):
     # prepare paths
     paths_helper = get_paths_helper()
-    netstruct_base_folder = paths_helper.netstruct_folder
+    netstruct_base_folder = paths_helper.net_struct_dir
     nmi_output_folder = paths_helper.nmi_folder
 
     os.makedirs(nmi_output_folder, exist_ok=True)

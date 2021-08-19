@@ -65,3 +65,28 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
     print(f'all_similarity_file : {all_similarity_file}')
     # _validate_count_dist_file(all_count_file)
 
+
+def file012_to_numpy(input_file_path, raw_file=None):
+    if raw_file is None:
+        with open(input_file_path, 'rb') as f:
+            raw_file = f.read().decode()
+    split_individuals = raw_file.split('\n')
+    if split_individuals[-1] == '':   # we throw empty line at the end of the file
+        split_individuals = split_individuals[:-1]
+    split_sites = [individual.split('\t') for individual in split_individuals]
+    arr = np.array(split_sites, dtype=np.int8)
+    if not np.any(arr[:, 1] > 2):
+        arr = arr[:, 1:]  # First column is individual number.
+    return arr
+
+
+def numpy_to_file012(input_numpy_path, matrix=None):
+    if matrix is None:
+        with open(input_numpy_path, 'rb') as f:
+            matrix = np.load(f)
+    result = []
+    for line in matrix:
+        result.append('\t'.join([str(i) for i in line]))
+    result = '\n'.join(result)
+    result += '\n'
+    return result

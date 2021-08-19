@@ -16,7 +16,7 @@ from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
 from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
 from steps.s4_calc_similarity import submit_calc_similarity_windows
-from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows
+from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows, sum_similarities_from_all_classes_and_run_netstrcut
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -31,7 +31,8 @@ step_to_func_and_name = {
     "3.2": (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
     "3.3": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
     "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows'),
-    "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows')
+    "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows'),
+    "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'submit_per_class_sum_all_windows')
 
 }
 
@@ -60,11 +61,11 @@ def runner(options):
 
     print(f'{(time.time()-s)/60} minutes total run time')
 
-# runner([-d hgdp_test -s 1.1 --args hgdp_test]))
+# runner([-d hgdp_test -s 1.1 ]))
 
-# runner([-d hgdp_test -s 1.2 --args hgdp_test,freq])
+# runner([-d hgdp_test -s 1.2 --args freq])
 
-# runner([-s 2.1 -d hgdp_test --args 5,8,46,49,True])
+# runner([-s 2.1 -d hgdp_test --args 5,8,46,49])
 
 # runner([-d hgdp_test -s 2.2 --args hgdp_test,5,8,46,49])
 
@@ -74,9 +75,11 @@ def runner(options):
 
 # runner([-s 3.3 -d hgdp_test --args 5,8,46,49,100])
 
-# runner([-s 4.1 -d hgdp_test --mac 5,8 --maf 46,49 --args 500,100,0])
+# runner([-s 4.1 -d hgdp_test --mac 5,8 --maf 46,49])
 
 # runner([-s 5.1 -d hgdp_test --mac 5,8 --maf 46,49])
+
+# runner([-s 5.2 -d hgdp_test --mac 5,8 --maf 46,49])
 
 
 if __name__ == "__main__":

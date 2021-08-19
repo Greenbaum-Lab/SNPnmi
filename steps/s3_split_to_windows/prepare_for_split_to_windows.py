@@ -140,7 +140,7 @@ def build_windows_indexes_files(options):
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
 
     # log number of windows to file for future use
-    os.makedirs(path_helper.number_of_windows_per_class_folder.format(class_name=allele_class.class_name),
+    os.makedirs(path_helper.windows_per_class_folder.format(class_name=allele_class.class_name),
                 exist_ok=True)
     with open(path_helper.number_of_windows_per_class_template.format(class_name=allele_class.class_name), 'w')\
             as number_of_windows_per_class_file:

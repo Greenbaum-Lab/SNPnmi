@@ -1,5 +1,4 @@
 # collects stats from the split vcfs by class
-# TODO - add validation, see notebook Validate split_vcf output.ipynb
 # TOD rename? - collect_vcf_classes_stats?
 import re
 import sys
@@ -165,7 +164,8 @@ def call_collect_split_vcf_stats(options):
 
 def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
     num_ind = get_num_individuals(options.dataset_name)
-    min_mac, max_mac, min_maf, max_maf = options.args
+    min_mac, max_mac = options.mac
+    min_maf, max_maf = options.maf
     min_chr = get_min_chr(options.dataset_name)
     max_chr = get_max_chr(options.dataset_name)
     df = pd.read_csv(split_vcf_output_stats_file)

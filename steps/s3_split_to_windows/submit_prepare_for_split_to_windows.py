@@ -68,7 +68,7 @@ def submit_prepare_for_split_to_windows(options):
                 job_name = f'3p{mac_maf}{class_int_val}'
                 python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
                 submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
-                                  python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=24)
+                                  python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4)
 
     with Loader("Wait for all splitting jobs to be done "):
         while are_running_submitions(string_to_find="3pm"):

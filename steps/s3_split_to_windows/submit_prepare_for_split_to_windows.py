@@ -46,6 +46,11 @@ def submit_prepare_for_split_to_windows(options):
     window_size = options.args[0]
     paths_helper = get_paths_helper(dataset_name)
     os.makedirs(paths_helper.windows_dir, exist_ok=True)
+    window_size_file = paths_helper.windows_dir + 'window_size.txt'
+    if not os.path.exists(window_size_file):
+        with open(window_size_file, 'w') as f:
+            f.write(str(window_size))
+
     classes = []
     stderr_files = []
 

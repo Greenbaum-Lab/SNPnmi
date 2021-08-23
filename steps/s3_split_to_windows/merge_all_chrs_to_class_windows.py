@@ -53,7 +53,7 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_value, window_id
     assert window_df.isnull().values.any() == False
     # Assert num of sites in window
     # TODO : Write window size in prepare_for_split_to_windows and use it in this assert
-    assert (abs(100 - len(window_df.columns)) <= 1), f'num of columns ({len(window_df.columns)}) should be 100+-1'
+    assert (abs(100 - len(window_df.columns)) <= 1), f'num of columns ({len(window_df.columns)}) should be 100+-1, window_id={window_id}'
 
     # output to file
     window_df.to_csv(output_class_window_file_path, sep='\t', header=False, index=False, compression='gzip')

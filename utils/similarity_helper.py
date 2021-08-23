@@ -75,7 +75,7 @@ def file012_to_numpy(input_file_path, raw_file=None):
         split_individuals = split_individuals[:-1]
     split_sites = [individual.split('\t') for individual in split_individuals]
     arr = np.array(split_sites, dtype=np.int8)
-    if not np.any(arr[:, 1] > 2):
+    if np.any(arr[:, 0] > 2):
         arr = arr[:, 1:]  # First column is individual number.
     return arr
 

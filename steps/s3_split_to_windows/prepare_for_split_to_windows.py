@@ -10,7 +10,6 @@ import json
 import pandas as pd
 import random
 import time
-import argparse
 random.seed(a='42', version=2)
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
@@ -162,17 +161,7 @@ def main(options):
     return is_executed
 
 
-def _test_me():
-    dataset_name = 'hgdp_test'
-    mac_maf = 'maf'
-    class_value = 1
-    window_size = 100
-    build_windows_indexes_files(dataset_name, mac_maf, class_value, window_size)
-
-
-if DEBUG:
-    _test_me()
-elif __name__ == '__main__':
+if __name__ == '__main__':
     options = args_parser()
     print(f"Running prepare_for_split_windows with\ndataset_name: {options.dataset_name}\nargs: {options.args}")
     main(options)

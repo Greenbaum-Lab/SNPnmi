@@ -73,7 +73,7 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
                 job_name = f's2{val}_{vcf_file_short_name}'
                 python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
                 submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
-                                  job_stdout_file, job_stderr_file, num_hours_to_run=24)
+                                  job_stdout_file, job_stderr_file)
     return stderr_files
 
 

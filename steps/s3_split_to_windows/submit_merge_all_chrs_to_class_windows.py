@@ -38,7 +38,9 @@ def submit_merge_all_chrs_to_class_windows(options):
     dataset_name = options.dataset_name
     paths_helper = get_paths_helper(dataset_name)
     stderr_files = []
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range, max_num_of_windows_per_job = options.args
+    mac_min_range, mac_max_range = options.mac
+    maf_min_range, maf_max_range = options.maf
+    max_num_of_windows_per_job = options.args[0]
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -61,7 +63,7 @@ def submit_merge_all_chrs_to_class_windows(options):
                     python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{min_windows_index},' \
                                            f'{max_windows_index}'
                     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
-                                      job_stdout_file, job_stderr_file, num_hours_to_run=24)
+                                      job_stdout_file, job_stderr_file, num_hours_to_run=2)
 
     with Loader("Wait for all merging jobs to be done "):
         while are_running_submitions(string_to_find="3sma"):
@@ -71,17 +73,11 @@ def submit_merge_all_chrs_to_class_windows(options):
 
 
 def main(options):
-    with Timer(f"merge_all_chrs_to_class_windows on {options.args}"):
+    with Timer(f"merge_all_chrs_to_class_windows on {str_for_timer(options)}"):
         submit_merge_all_chrs_to_class_windows(options)
     return True
 
 
-def _test_me():
-    submit_merge_all_chrs_to_class_windows(DataSetNames.hdgp_test, 20, 18, 1, 1, 100)
-
-
-if DEBUG:
-    _test_me()
-elif __name__ == '__main__':
-    options = args_parser()
-    main(options)
+if __name__ == '__main__':
+    arguments = args_parser()
+    main(arguments)

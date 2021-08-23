@@ -1,4 +1,5 @@
 
+
 # Per vcf file, per class, will submit a job (if checkpoint does not exist)
 import sys
 import time
@@ -8,7 +9,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, args_parser
+from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, args_parser, str_for_timer
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -77,8 +78,6 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
     return stderr_files
 
 
-
-
 def is_output_exits(class_max_val, class_min_val, mac_maf, output_dir):
     class_max_val, class_min_val, is_mac = compute_max_min_val(class_max_val, class_min_val, mac_maf)
 
@@ -92,9 +91,8 @@ def is_output_exits(class_max_val, class_min_val, mac_maf, output_dir):
     return False
 
 
-
 def main(options):
-    with Timer(f"split vcf by class with mac--{options.mac}\tmaf--{options.maf}"):
+    with Timer(f"Submitting split vcf by class with {str_for_timer(options)}"):
         is_executed, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, options)
     return is_executed
 

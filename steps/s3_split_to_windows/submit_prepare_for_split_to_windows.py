@@ -8,8 +8,9 @@ from os.path import dirname, abspath
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils.loader import Loader
-from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty
+
+from utils.loader import Loader, Timer
+from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, str_for_timer
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -40,9 +41,11 @@ def write_class_to_number_of_windows_file(options, classes):
 
 def submit_prepare_for_split_to_windows(options):
     dataset_name = options.dataset_name
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range, window_size = options.args
+    mac_min_range, mac_max_range = options.mac
+    maf_min_range, maf_max_range = options.maf
+    window_size = options.args[0]
     paths_helper = get_paths_helper(dataset_name)
-    os.makedirs(paths_helper.windows_folder, exist_ok=True)
+    os.makedirs(paths_helper.windows_dir, exist_ok=True)
     classes = []
     stderr_files = []
 
@@ -62,32 +65,26 @@ def submit_prepare_for_split_to_windows(options):
                 job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)
                 stderr_files.append(job_stderr_file)
-                job_name = f'3p{mac_maf}{class_int_val}'
+                job_name = f'p3_{mac_maf[-1]}{class_int_val}'
                 python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
                 submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
-                                  python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=24)
+                                  python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4)
 
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions(string_to_find="3pm"):
+        while are_running_submitions(string_to_find="p3_"):
             time.sleep(5)
 
     write_class_to_number_of_windows_file(options, classes)
 
     assert validate_stderr_empty(stderr_files)
 
+
 def main(options):
-    s = time.time()
-    submit_prepare_for_split_to_windows(options)
-    print(f'{(time.time() - s) / 60} minutes total run time')
+    with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):
+        submit_prepare_for_split_to_windows(options)
     return True
 
 
-def _test_me():
-    submit_prepare_for_split_to_windows(DataSetNames.hdgp_test, 20, 18, 1, 1, window_size=100)
-
-
-if DEBUG:
-    _test_me()
-elif __name__ == '__main__':
-    options = args_parser()
-    main(options)
+if __name__ == '__main__':
+    arguments = args_parser()
+    main(arguments)

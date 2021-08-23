@@ -54,18 +54,7 @@ class AlleleClass:
 
 def hash_args(options):
     args = options.args + options.mac + options.maf
-    hash_val = 0
-    for idx, value in enumerate(args):
-        hash_val += hash_str(str(value)) * (256 ** idx)
-    return hash_val
-
-
-def hash_str(s):
-    hash_val = 0
-    for c in s:
-        val = ord(c)
-        hash_val += val
-    return hash_val % 256
+    return hash(tuple(args))
 
 
 def get_paths_helper(dataset_name):
@@ -200,3 +189,15 @@ def args_parser():
     options.maf = options.maf.split(',') if options.maf else []
     options.maf = [int(i) if i.isdecimal() else i for i in options.maf]
     return options
+
+
+def str_for_timer(options):
+    str = ""
+    if options.mac:
+        str += f"mac--{options.mac}"
+    if options.maf:
+        str += f"maf--{options.maf}"
+    if options.args:
+        str += f"args--{options.args}"
+    return str
+

@@ -1,5 +1,4 @@
 # collects stats from the split vcfs by class
-# TODO - add validation, see notebook Validate split_vcf output.ipynb
 # TOD rename? - collect_vcf_classes_stats?
 import re
 import sys
@@ -8,8 +7,12 @@ import sys
 import os
 from os import path
 from os.path import dirname, abspath
+
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+
+from utils.loader import Timer
 from utils.common import *
 from utils.config import *
 from utils.checkpoint_helper import *
@@ -103,7 +106,10 @@ def min_max_number_of_columns(file_path):
 
 def write_values_to_csv(values, output_path):
     # first, assert we have all values
-    expected_keys = ['chr_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines', '012_num_of_lines', 'num_of_possible_indv', 'num_of_sites_after_filter', 'pos_num_of_lines', '012_min_num_of_sites', '012_max_num_of_sites', 'num_of_possible_sites', 'run_time_in_seconds', 'input_file', 'out_path']
+    expected_keys = ['chr_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines',
+                     '012_num_of_lines', 'num_of_possible_indv', 'num_of_sites_after_filter', 'pos_num_of_lines',
+                     '012_min_num_of_sites', '012_max_num_of_sites', 'num_of_possible_sites', 'run_time_in_seconds',
+                     'input_file', 'out_path']
     values_keys = values.keys()
     for exp_key in expected_keys:
         assert exp_key in values_keys
@@ -129,7 +135,8 @@ def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
 # TODO renmae? collect_and_validate_vcf_classes_stats
 def call_collect_split_vcf_stats(options):
     dataset_name = options.dataset_name
-    min_mac_range, max_mac_range, min_maf_range, max_maf_range = options.args
+    min_mac_range, max_mac_range = options.mac
+    min_maf_range, max_maf_range = options.maf
     paths_helper = get_paths_helper(dataset_name)
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
     vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
@@ -151,7 +158,6 @@ def call_collect_split_vcf_stats(options):
             log_files.append(job_stderr_file)
             chr_names_for_logs.append(vcf_file_short_name)
 
-
     print(f'will process {len(log_files)} files')
 
     collect_split_vcf_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
@@ -161,7 +167,8 @@ def call_collect_split_vcf_stats(options):
 
 def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
     num_ind = get_num_individuals(options.dataset_name)
-    min_mac, max_mac, min_maf, max_maf = options.args
+    min_mac, max_mac = options.mac
+    min_maf, max_maf = options.maf
     min_chr = get_min_chr(options.dataset_name)
     max_chr = get_max_chr(options.dataset_name)
     df = pd.read_csv(split_vcf_output_stats_file)
@@ -234,23 +241,23 @@ def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, mi
                 passed = False
                 print(f'chr{chr_i}, mac {mac} appears {count} times')
         for maf in range(min_maf, max_maf + 1):
-            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['maf'] == f'{maf * 1.0 / 100}')])
+            chr_df = df[(df['chr_name'] == 'chr' + str(chr_i))]
+            count = len(chr_df[chr_df['maf'] == str(maf / 100.0)])
             if count != 1:
                 passed = False
                 print(f'chr{chr_i}, maf {maf} appears {count} times')
     return passed
 
 
-def _test_me():
-    call_collect_split_vcf_stats(DataSetNames.hdgp_test, 20, 18, 1, 2)
-#_test_me()
-
 def main(options):
-    s = time.time()
-    is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, options)
-    print(f'{msg}. {(time.time()-s)/60} minutes total run time')
+    with Timer(f"Collect split vcf stats with {str_for_timer(options)}"):
+        is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, options)
     return is_executed
 
-# dataset_name, mac_min_range, mac_max_range, maf_min_range, maf_max_range
+
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    # arguments = args_parser()
+    # main(arguments)
+    df_path = "C:\\Users\\lab4\\OneDrive\\Desktop\\df.xlsx"
+    df = pd.read_excel(df_path)
+    validate_all_data_exists(df, 22, 0, 1, 1, 1, 1)

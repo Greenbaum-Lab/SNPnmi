@@ -95,11 +95,6 @@ def split_to_windows(chr_2_num_of_sites, window_size):
         covered += window_size+1
     print(f'{covered} covered')
     assert covered == num_of_sites
-    for i in range(total_num_of_windows):
-        num_of_sites = 0
-        for chr_dict in chr_2_index_2_window_id.values():
-            num_of_sites += sum([1 for it in chr_dict.values() if it == i])
-        assert window_size <= num_of_sites <= window_size + 1, num_of_sites
 
     assert sum([len(index_2_window_id.keys()) for index_2_window_id in chr_2_index_2_window_id.values()]) == covered
     return chr_2_index_2_window_id, total_num_of_windows

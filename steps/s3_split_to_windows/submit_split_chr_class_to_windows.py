@@ -28,9 +28,13 @@ def submit_split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
     paths_helper = get_paths_helper(options.dataset_name)
     stderr_files = []
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
+    mac_min_range, mac_max_range = options.mac if options.mac else (1, 0)
+    maf_min_range, maf_max_range = options.maf if options.maf else (1, 0)
+    chrs_to_run = options.args
     for chr_name in get_dataset_vcf_files_short_names(dataset_name):
+        if chrs_to_run:
+            if chr_name not in chrs_to_run:
+                continue
         for mac_maf in ['mac', 'maf']:
             is_mac = mac_maf == 'mac'
             min_range = mac_min_range if is_mac else maf_min_range

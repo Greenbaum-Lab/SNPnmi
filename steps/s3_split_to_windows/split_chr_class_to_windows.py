@@ -109,7 +109,7 @@ def alternative_split_to_windows(options):
             windows_matrix[window_id] = np.concatenate([windows_matrix[window_id], site.reshape(1, -1)])
         else:
             windows_matrix[window_id] = site.reshape(1, -1)
-    print()
+
     for wind_id, window in windows_matrix.items():
         with open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
                                                            window_id=wind_id), 'wb') as window_file:

@@ -24,7 +24,7 @@ def submit_per_class(mac_maf, classes_names, paths_helper, num_windows_per_slice
         cluster_setting=f'sbatch --time=12:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
         cmd_to_run=f'{cluster_setting} {paths_helper.wrapper_max_30_params} {python_to_run} {mac_maf} {class_name} {num_windows_per_slice} {num_slices} {is_random}'
         print(cmd_to_run)
-        #subprocess.run([paths_helper.submit_helper, cmd_to_run])
+        subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
 if __name__ == '__main__':
     # by mac

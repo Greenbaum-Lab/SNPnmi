@@ -84,12 +84,14 @@
       "hgdp_wgs.20190516.full.chr5.vcf.gz.tbi"
     ]
   },
+
+
   "hgdp_test": {
     "ftp_source_host": "ngs.sanger.ac.uk",
     "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
     "num_individulas": 929,
     "num_chrs": 2,
-    "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt",
+    "sample_sites_file_name": "demo_sample_sites.txt",
     "indlist_file_name": "hgdp_wgs.20190516.indlist.csv",
     "indlist_coords_file_name": "hgdp_wgs.20190516.indlist_coords.csv",
     "vcf_files_names": [
@@ -101,9 +103,13 @@
       "chr20"
     ],
     "metadata_files_names": [
-      "README.data-access.hgdp_wgs.20190516.txt"
+      "README.data-access.hgdp_wgs.20190516.txt",
+      "hgdp_wgs.20190516.full.chr20.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi"
     ]
   },
+
+
   "amur": {
     "ftp_source_host": "171.64.60.175",
     "ftp_source_path": "/simba/tiger-download-temp/",

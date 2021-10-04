@@ -15,7 +15,7 @@ sys.path.append(root_path)
 
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser
-from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012
+from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstcut
 
 
@@ -70,10 +70,11 @@ def main(options):
     job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
     job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
     similarity_matrix_path = output_files_name + '_similarity.npy'
-    similarity_in_lists = convert_numpy_array_to_lists(similarity_matrix_path)
+    similarity_edges_file = output_files_name + '_edges.txt'
+    matrix_to_edges_file(similarity_matrix_path, similarity_edges_file)
     output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
-    submit_netstcut(options, job_type, job_long_name, job_name, similarity_in_lists, output_folder, netstrcut_ss=0.005)
+    submit_netstcut(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder, netstrcut_ss=0.005)
 
 
 if __name__ == "__main__":

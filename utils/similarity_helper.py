@@ -12,18 +12,19 @@ from utils.loader import Timer
 from utils.common import build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_similarity
 from utils.validate import _validate_count_dist_file, _validate_count_dist_files
 
+
 # TODO rename - similiarty
 def normalize_distances(distances, counts):
     num_ind = len(distances) + 1
     norm_dists = build_empty_upper_left_matrix(num_ind, 0.0)
     for r_i, (r_dist, r_count) in enumerate(zip(distances, counts)):
         for c_i, (c_dist, c_count) in enumerate(zip(r_dist, r_count)):
-            norm_dists[r_i][c_i] = float(c_dist)/float(c_count)
+            norm_dists[r_i][c_i] = float(c_dist) / float(c_count)
     return norm_dists
 
 
 def calc_similarity_based_on_files(similarity_files, count_files):
-    similarity_result = None   # We can't tell similarity_result shape yet.
+    similarity_result = None  # We can't tell similarity_result shape yet.
     count_all_counts = None
     for similarity_file, count_file in zip(similarity_files, count_files):
         with open(similarity_file, 'rb') as sim:
@@ -41,7 +42,6 @@ def calc_similarity_based_on_files(similarity_files, count_files):
     return similarity_result, count_all_counts
 
 
-
 def generate_similarity_matrix(similarity_files, count_files, output_folder, output_files_name, override=False):
     # validate output paths - check that we dont override if we should not
     all_count_file = f'{output_files_name}_count.npy'
@@ -50,7 +50,6 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
         print(f'all_count_distances_file exist, do not calc! {all_count_file}')
         return
     os.makedirs(output_folder, exist_ok=True)
-    
 
     # validate input - break if not valid
     # all_valid, promlematic_file = _validate_count_dist_files(windows_files)
@@ -71,7 +70,7 @@ def file012_to_numpy(input_file_path, raw_file=None):
         with open(input_file_path, 'rb') as f:
             raw_file = f.read().decode()
     split_individuals = raw_file.split('\n')
-    if split_individuals[-1] == '':   # we throw empty line at the end of the file
+    if split_individuals[-1] == '':  # we throw empty line at the end of the file
         split_individuals = split_individuals[:-1]
     split_sites = [individual.split('\t') for individual in split_individuals]
     arr = np.array(split_sites, dtype=np.int8)
@@ -90,3 +89,15 @@ def numpy_to_file012(input_numpy_path, matrix=None):
     result = '\n'.join(result)
     result += '\n'
     return result
+
+
+def matrix_to_edges_file(input_numpy_path, edges_file_path):
+    with open(input_numpy_path, 'rb') as f:
+        matrix = np.load(f)
+    num_of_indv = matrix.shape[0]
+    result_file = ""
+    for i in range(num_of_indv):
+        for j in range(i, num_of_indv, 1):
+            result_file += f"{i} {j} {matrix[i, j]}\n"
+    with open(edges_file_path, 'w') as f:
+        f.write(result_file[:-1])

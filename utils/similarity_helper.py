@@ -43,18 +43,13 @@ def calc_similarity_based_on_files(similarity_files, count_files):
 
 
 def generate_similarity_matrix(similarity_files, count_files, output_folder, output_files_name, override=False):
-    # validate output paths - check that we dont override if we should not
+    # validate output paths - check that we don't override if we should not
     all_count_file = f'{output_files_name}_count.npy'
     all_similarity_file = f'{output_files_name}_similarity.npy'
-    if (not override) and os.path.isfile(all_count_file):
-        print(f'all_count_distances_file exist, do not calc! {all_count_file}')
+    if (not override) and os.path.isfile(all_count_file) and os.path.isfile(all_similarity_file):
+        print(f'count and similarity files exist, do not calc! {all_count_file}')
         return
     os.makedirs(output_folder, exist_ok=True)
-
-    # validate input - break if not valid
-    # all_valid, promlematic_file = _validate_count_dist_files(windows_files)
-    # if not all_valid:
-    #     raise Exception(f'promlematic_file: {promlematic_file}')
 
     # calc distances and counts
     similarity, counts = calc_similarity_based_on_files(similarity_files, count_files)

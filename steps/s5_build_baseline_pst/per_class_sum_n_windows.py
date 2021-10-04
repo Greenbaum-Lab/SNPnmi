@@ -33,6 +33,8 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_hash{new_hash}',
                                override=False)
 
+    return new_hash
+
 
 def handle_hash_file(class_name, paths_helper, windows_id_list):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
@@ -46,6 +48,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
         with open(hash_file, "w+") as f:
             json.dump(data, f)
     return new_hash
+
 
 def get_args(options):
     print('Number of arguments:', len(options.args), 'arguments.')
@@ -63,20 +66,9 @@ def get_args(options):
     else:
         assert False, "Invalid input was provided"
     assert options.mac == [] or options.maf == []
+    assert 0 <= min_window_index <= max_window_index
 
-    assert min_window_index >= 0
-    assert max_window_index >= 0
-    assert min_window_index <= max_window_index
-
-    print('mac_maf', mac_maf)
-    print('class_name', class_name)
-    print('min_window_index', min_window_index)
-    print('max_window_index', max_window_index)
-
-    # Prepare paths
     paths_helper = get_paths_helper(options.dataset_name)
-
-    # /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/count_dist_window_724.tsv.gz
     class_str = mac_maf + '_' + str(class_name)
     output_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_str)
     print('count_similarity_window_template', paths_helper.similarity_by_class_and_window_template)

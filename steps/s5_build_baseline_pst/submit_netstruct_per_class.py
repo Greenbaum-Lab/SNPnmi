@@ -16,21 +16,6 @@ from utils.netstrcut_helper import submit_netstruct
 job_type = 'netstruct_per_class'
 
 
-def submit_netstruct_for_all(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
-    paths_helper = get_paths_helper(options.dataset_name)
-    number_of_submitted_jobs = 0
-
-    # submit one with all data
-    job_long_name = f'all_weighted_true'
-    job_name = f'ns_all'
-    input_name = f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
-    similarity_matrix_path = paths_helper.dist_folder + input_name + '_norm_dist.tsv.gz'
-    output_folder = paths_helper.net_struct_dir + input_name + '/'
-    submit_netstruct(job_type, job_long_name, job_name, similarity_matrix_path, output_folder)
-
-
 def submit_netstruct_per_class(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf

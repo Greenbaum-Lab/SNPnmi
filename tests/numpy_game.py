@@ -1,11 +1,13 @@
 import gzip
 import json
 import os
+from random import sample
+
 import numpy as np
 from steps.s3_split_to_windows import split_chr_class_to_windows
 from utils.filelock import FileLock
 
-directory_to_compare = "/home/lab2/Shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
+directory_to_compare = "/home/lab2/shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 
 def what():
     all_files = os.listdir(directory_to_compare)
@@ -23,6 +25,8 @@ def what():
         assert np.all(new_mat == matrix)
         print(f"Done with file {file}")
 
-with open("/vol/sci/bio/data/gil.greenbaum/shahar.mazie/vcf/hgdp/demo_sample_sites", "w+") as f:
-    s = ['A\n' for _ in range(929)][:-1]
-    f.write(s)
+def game():
+    a = [1,2,3]
+    for _ in range(10):
+        print(np.sort(sample(a,2)))
+game()

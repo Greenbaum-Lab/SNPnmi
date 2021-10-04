@@ -74,8 +74,7 @@ def main(options):
     matrix_to_edges_file(similarity_matrix_path, similarity_edges_file)
     output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
-    submit_netstcut(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder, netstrcut_ss=0.005)
-
+    return submit_netstcut(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder, netstrcut_ss=0.005)
 
 if __name__ == "__main__":
     arguments = args_parser()

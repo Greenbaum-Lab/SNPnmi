@@ -29,6 +29,8 @@ def submit_netstcut(options, job_type, job_long_name, job_name, similarity_matri
         print(cmd_to_run)
         subprocess.run([paths_helper.submit_helper, cmd_to_run])
         return True
+    else:
+        return False
 
 
 def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.001'):

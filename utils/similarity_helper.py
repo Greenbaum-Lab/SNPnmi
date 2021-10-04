@@ -97,7 +97,7 @@ def matrix_to_edges_file(input_numpy_path, edges_file_path):
     num_of_indv = matrix.shape[0]
     result_file = ""
     for i in range(num_of_indv):
-        for j in range(i, num_of_indv, 1):
+        for j in range(i + 1, num_of_indv, 1):
             result_file += f"{i} {j} {matrix[i, j]}\n"
     with open(edges_file_path, 'w') as f:
         f.write(result_file[:-1])

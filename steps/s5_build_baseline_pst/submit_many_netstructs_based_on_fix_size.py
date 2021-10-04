@@ -1,9 +1,11 @@
 import time
-from os.path import dirname, abspath
+from os.path import dirname, abspath, basename
 import sys
 from random import sample
 
 import numpy as np
+
+from utils.checkpoint_helper import execute_with_checkpoint
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -15,6 +17,7 @@ from utils.netstrcut_helper import submit_netstruct
 from utils.similarity_helper import matrix_to_edges_file
 
 job_type = "mini_net-struct"
+SCRIPT_NAME = basename(__file__)
 
 
 def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
@@ -80,10 +83,12 @@ def submit_mini_net_struct_for_all_classes(options):
 
 
 def main(options):
-    submit_mini_net_struct_for_all_classes(options)
+    with Timer(f"run net-struct multiple times with {arguments}"):
+        is_executed, msg = execute_with_checkpoint(submit_mini_net_struct_for_all_classes, SCRIPT_NAME, options)
+        print(msg)
+    return is_executed
 
 
 if __name__ == "__main__":
     arguments = args_parser()
-    with Timer(f"run net-struct multiple times with {arguments}"):
-        main(arguments)
+    main(arguments)

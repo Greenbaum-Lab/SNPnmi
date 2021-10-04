@@ -12,7 +12,7 @@ import subprocess
 
 
 def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matrix_path, output_folder,
-                     netstrcut_ss='0.01'):
+                     netstrcut_ss='0.001'):
     # create output folders
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
@@ -21,7 +21,7 @@ def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matr
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
     # cluster setting
-    cluster_setting = f'sbatch --time=72:00:00 --mem=5G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+    cluster_setting = f'sbatch --time=12:00:00 --mem=4G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     # build netstrcut cmd
     netstruct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_folder, netstrcut_ss)
     if netstruct_cmd:

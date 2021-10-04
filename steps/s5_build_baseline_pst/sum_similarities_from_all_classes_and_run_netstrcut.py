@@ -13,8 +13,8 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.loader import Timer
-from utils.common import get_paths_helper, args_parser
+from utils.loader import Timer, Loader
+from utils.common import get_paths_helper, args_parser, are_running_submitions, validate_stderr_empty
 from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstcut
 
@@ -74,7 +74,18 @@ def main(options):
     matrix_to_edges_file(similarity_matrix_path, similarity_edges_file)
     output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
-    return submit_netstcut(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder, netstrcut_ss=0.005)
+    err_file = submit_netstcut(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder, netstrcut_ss=0.005)
+
+    while are_running_submitions(string_to_find="ns"):
+        with Loader("Running NetStruct_Hierarchy"):
+            time.sleep(5)
+
+    if not err_file:
+        return False
+
+    assert validate_stderr_empty([err_file])
+    return True
+
 
 if __name__ == "__main__":
     arguments = args_parser()

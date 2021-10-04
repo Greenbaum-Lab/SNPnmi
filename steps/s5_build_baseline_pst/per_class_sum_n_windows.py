@@ -42,7 +42,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
         if not os.path.exists(hash_file):
             with open(hash_file, "w+") as f:
                 f.write("{}")
-        with open(hash_file, "a+") as f:
+        with open(hash_file, "r") as f:
             data = json.load(f)
         hash_codes = [int(i) for i in data.keys()]
         new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)

@@ -19,7 +19,8 @@ from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
 from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
 from steps.s4_calc_similarity import submit_calc_similarity_windows
-from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows, sum_similarities_from_all_classes_and_run_netstrcut
+from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
+    sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -36,6 +37,7 @@ step_to_func_and_name = {
     "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows'),
     "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows'),
     "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'submit_per_class_sum_all_windows')
+    "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class')
 
 }
 
@@ -80,6 +82,8 @@ def runner(options):
 # runner([-s 5.1 -d hgdp_test --mac 5,8 --maf 46,49])
 
 # runner([-s 5.2 -d hgdp_test --mac 5,8 --maf 46,49])
+
+# runner([-s 5.3 -d hgdp_test --mac 5,8 --maf 46,49])
 
 
 if __name__ == "__main__":

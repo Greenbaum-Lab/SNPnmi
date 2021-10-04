@@ -94,10 +94,11 @@ def numpy_to_file012(input_numpy_path, matrix=None):
 def matrix_to_edges_file(input_numpy_path, edges_file_path):
     with open(input_numpy_path, 'rb') as f:
         matrix = np.load(f)
+    max_e = np.max(matrix)
     num_of_indv = matrix.shape[0]
     result_file = ""
     for i in range(num_of_indv):
         for j in range(i + 1, num_of_indv, 1):
-            result_file += f"{i} {j} {matrix[i, j]}\n"
+            result_file += f"{i} {j} {matrix[i, j] * max_e}\n"
     with open(edges_file_path, 'w') as f:
         f.write(result_file[:-1])

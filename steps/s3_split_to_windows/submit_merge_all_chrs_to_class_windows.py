@@ -2,6 +2,7 @@ DEBUG = False
 # Per class and a number N, will submit jobs which will each merge N windows.
 # For example, for class mac 18, and max_num_of_windows_per_job=10, assuming in total the class has 101 (0-100) windows, we will submit 11 jobs:
 # 0-9, 10-19, .. , 90-99 and one run with a single window (100).
+# it takes about 0.5 seconds per window. A good max_num_of_windows_per_job can be 1000
 import sys
 import time
 from os.path import dirname, abspath
@@ -40,7 +41,7 @@ def submit_merge_all_chrs_to_class_windows(options):
     stderr_files = []
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
-    max_num_of_windows_per_job = options.args[0]
+    max_num_of_windows_per_job = options.args[0] if options.args else 1000
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -59,14 +60,14 @@ def submit_merge_all_chrs_to_class_windows(options):
                     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                             job_name=job_long_name)
                     stderr_files.append(job_stderr_file)
-                    job_name = f'3s{mac_maf}{class_int_val}{min_windows_index}'
+                    job_name = f'3m{mac_maf[-1]}{class_int_val}{min_windows_index}'
                     python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{min_windows_index},' \
                                            f'{max_windows_index}'
                     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
                                       job_stdout_file, job_stderr_file, num_hours_to_run=2)
 
     with Loader("Wait for all merging jobs to be done "):
-        while are_running_submitions(string_to_find="3sma"):
+        while are_running_submitions(string_to_find="3m"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

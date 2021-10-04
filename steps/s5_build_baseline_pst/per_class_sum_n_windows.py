@@ -28,7 +28,7 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
                         windows_id_list]
     count_files = [count_window_template.format(window_id=index, class_name=class_name) for index in windows_id_list]
 
-    new_hash = handle_hash_file(class_name, paths_helper, list(windows_id_list.astype(int)))
+    new_hash = handle_hash_file(class_name, paths_helper, [int(wind) for wind in windows_id_list])
 
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_hash{new_hash}',
                                override=False)

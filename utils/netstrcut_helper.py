@@ -26,7 +26,6 @@ def submit_netstcut(options, job_type, job_long_name, job_name, similarity_matri
     netstruct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_folder, netstrcut_ss)
     if netstruct_cmd:
         cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
-        print(cmd_to_run)
         subprocess.run([paths_helper.submit_helper, cmd_to_run])
         return job_stderr_file
     else:

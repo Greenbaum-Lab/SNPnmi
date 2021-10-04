@@ -49,7 +49,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper):
         num_of_windows = int(f.read())
         stderr_files = []
     for tree_idx in range(num_of_trees):
-        winds = np.sort(sample(range(num_of_windows), num_of_windows_per_tree))
+        winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
         stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
     return stderr_files
 

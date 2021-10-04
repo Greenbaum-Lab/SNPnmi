@@ -11,8 +11,8 @@ from utils.validate import _validate_count_dist_file
 import subprocess
 
 
-def submit_netstcut(options, job_type, job_long_name, job_name, similarity_matrix_path, output_folder,
-                    netstrcut_ss='0.001'):
+def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matrix_path, output_folder,
+                     netstrcut_ss='0.01'):
     # create output folders
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
@@ -27,9 +27,7 @@ def submit_netstcut(options, job_type, job_long_name, job_name, similarity_matri
     if netstruct_cmd:
         cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
         subprocess.run([paths_helper.submit_helper, cmd_to_run])
-        return job_stderr_file
-    else:
-        return False
+    return job_stderr_file
 
 
 def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.001'):

@@ -162,7 +162,7 @@ def get_args(options):
 
     # submission details
     number_of_windows_to_process_per_job = int(options.args[0]) if len(options.args) > 0 else 10 ** 8
-    max_number_of_jobs = int(options.args[1]) if len(options.args) > 1 else 100
+    max_number_of_jobs = int(options.args[1]) if len(options.args) > 1 else 1000
     initial_window_index = int(options.args[2]) if len(options.args) > 2 else 0
 
     # print the inputs

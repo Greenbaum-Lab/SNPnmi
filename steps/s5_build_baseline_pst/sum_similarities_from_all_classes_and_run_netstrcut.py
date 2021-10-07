@@ -76,8 +76,8 @@ def main(options):
     print(output_folder)
     err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder)
 
-    while are_running_submitions(string_to_find="ns"):
-        with Loader("Running NetStruct_Hierarchy"):
+    with Loader("Running NetStruct_Hierarchy"):
+        while are_running_submitions(string_to_find="ns"):
             time.sleep(5)
 
     if not err_file:

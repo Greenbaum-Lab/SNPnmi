@@ -38,13 +38,10 @@ def _get_similarity_per_window_files_names(paths_helper, class_str):
 
 
 def main(options):
-    print('Number of arguments:', len(options.args), 'arguments.')
     print('Argument List:', str(options.args))
     mac_maf = options.args[0]
     assert mac_maf == 'mac' or mac_maf == 'maf'
     class_name = options.args[1]
-    print('mac_maf', mac_maf)
-    print('class_name', class_name)
     class_str = f"{mac_maf}_{class_name}"
 
     # Prepare paths
@@ -56,10 +53,6 @@ def main(options):
 
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_str}_all')
 
-
-# mac_maf = 'maf'
-# class_name = '0.49'
-# main([mac_maf])
 
 if __name__ == "__main__":
     arguments = args_parser()

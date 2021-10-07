@@ -26,8 +26,10 @@ def normalize_distances(distances, counts):
 def calc_similarity_based_on_files(similarity_files, count_files):
     similarity_result = None  # We can't tell similarity_result shape yet.
     count_all_counts = None
-    for similarity_file, count_file in zip(similarity_files, count_files):
+    for i, (similarity_file, count_file) in enumerate(zip(similarity_files, count_files)):
         assert similarity_file[-12:] == count_file[-12:], "Using different windows!!"
+        if i % 200 == 0:
+            print(f'Starting the {i} window')
         with open(similarity_file, 'rb') as sim:
             simi_mat = np.load(sim)
         if similarity_result is None:

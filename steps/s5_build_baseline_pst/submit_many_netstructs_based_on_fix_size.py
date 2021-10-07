@@ -43,22 +43,17 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
 
 def is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:
-        print(f'len(v)={len(v)},\tnum_of_winds={num_of_winds}')
         return False
     job_long_name = f'{class_name}_hash{k}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):
-        print("EXCEPTION 2")
         return False
     if os.stat(stderr_file_name).st_size > 0:
-        print("EXCEPTION 3")
         return False
     net_struct_dir = paths_helper.net_struct_dir
     if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
-        print("EXCEPTION 4")
         return False
-    print("PASS")
     return True
 
 
@@ -81,7 +76,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     with open(paths_helper.number_of_windows_per_class_template.format(class_name=class_name), 'r') as f:
         num_of_windows = int(f.read())
         stderr_files = []
-    num_of_trees -= how_many_tree_computed_before(paths_helper, class_name, num_of_windows)
+    num_of_trees -= how_many_tree_computed_before(paths_helper, class_name, num_of_windows_per_tree)
     print(f"For class {class_name} running {num_of_trees} trees")
     for tree_idx in range(num_of_trees):
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))

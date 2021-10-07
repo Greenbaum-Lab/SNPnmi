@@ -20,8 +20,10 @@ job_type = 'get_vcf_stats'
 python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s1_get_data/get_single_vcf_stats.py'
 SCRIPT_NAME = os.path.basename(__file__)
 
+
 def job_long_name(stats, vcf_short_name):
     return f"get_{stats}_for_{vcf_short_name}"
+
 
 def generate_vcfs_stats(options, stat_types):
     dataset_name = options.dataset_name
@@ -52,7 +54,6 @@ def generate_vcfs_stats(options, stat_types):
                                                                                     job_name=job_long_name)
             stderr_files.append(job_stderr_file)
 
-
             job_name = f's1{stat_type}_{short_name}'
             cluster_setting = f'sbatch --time=2:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
             python_script_params = f'-d {options.dataset_name} --args {gzvcf_file},{stat_type},{output_folder + gzvcf_file}'
@@ -71,8 +72,8 @@ def generate_vcfs_stats(options, stat_types):
 
     # assert validate_stderr_empty(stderr_files)
 
-
     return all_stats_done
+
 
 # wrappers for execution
 def get_vcfs_stats(options):
@@ -82,13 +83,13 @@ def get_vcfs_stats(options):
     all_stats_done = generate_vcfs_stats(options, stat_types)
     return all_stats_done
 
+
 def main(options):
     with Timer(f"Stats computing with {options.args}"):
         is_executed, msg = execute_with_checkpoint(get_vcfs_stats, SCRIPT_NAME, options)
         print(msg)
     return is_executed
 
-#main([DataSetNames.hdgp_test.value, 'freq'])
 
 if __name__ == "__main__":
     options = args_parser()

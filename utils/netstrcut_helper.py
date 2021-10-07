@@ -11,8 +11,14 @@ from utils.validate import _validate_count_dist_file
 import subprocess
 
 
+def get_cluster_time(ns_ss):
+    step_size = float(ns_ss)
+    hours = (1/step_size) // 25
+    return f'{hours}:00:00'
+
+
 def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matrix_path, output_folder,
-                     netstrcut_ss='0.001'):
+                     netstrcut_ss='0.01'):  # fnetstruct_ss = 0.01 for quick runs, 0.001 for real runs
     # create output folders
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
@@ -21,7 +27,8 @@ def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matr
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
     # cluster setting
-    cluster_setting = f'sbatch --time=12:00:00 --mem=4G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+    cluster_time = get_cluster_time(netstrcut_ss)
+    cluster_setting = f'sbatch --time={cluster_time} --mem=4G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     # build netstrcut cmd
     netstruct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_folder, netstrcut_ss)
     if netstruct_cmd:

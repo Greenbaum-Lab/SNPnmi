@@ -80,6 +80,9 @@ def main(options):
         with Loader("Running NetStruct_Hierarchy"):
             time.sleep(5)
 
+    if not err_file:
+        return False
+
     assert validate_stderr_empty([err_file])
     return True
 

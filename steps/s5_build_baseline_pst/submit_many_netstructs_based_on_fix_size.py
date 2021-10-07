@@ -43,17 +43,22 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
 
 def is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:
+        print("EXCEPTION 1")
         return False
     job_long_name = f'{class_name}_hash{k}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):
+        print("EXCEPTION 2")
         return False
     if os.stat(stderr_file_name).st_size > 0:
+        print("EXCEPTION 3")
         return False
     net_struct_dir = paths_helper.net_struct_dir
     if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
+        print("EXCEPTION 4")
         return False
+    print("PASS")
     return True
 
 

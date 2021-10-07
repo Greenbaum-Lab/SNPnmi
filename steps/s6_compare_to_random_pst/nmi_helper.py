@@ -14,9 +14,6 @@ def get_tree_path(tree_base_dir, options):
     tree_dirs = os.listdir(tree_base_dir)
     assert len(tree_dirs) > 0, f"No trees were found in {tree_base_dir}, empty dir"
     gt_right_configured_dirs = [path for path in tree_dirs if f'SS_{options.ns_ss}' in path]
-    print(tree_dirs)
-    print(f'SS_{options.ns_ss}')
-    print(gt_right_configured_dirs)
     assert len(gt_right_configured_dirs) > 0, f"No trees were found with step size {options.ns_ss}"
     assert len(gt_right_configured_dirs) < 2, f"More than 1 tree were found with step size {options.ns_ss}"
     return tree_base_dir + gt_right_configured_dirs[0] + '/'

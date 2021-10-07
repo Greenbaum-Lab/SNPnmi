@@ -104,8 +104,8 @@ def submit_mini_net_struct_for_all_classes(options):
                     val = f'{val * 1.0 / 100}'
                 stderr_files += submit_mini_net_struct_for_class(options, mac_maf, val, paths_helper, window_size)
 
-    while are_running_submitions(string_to_find="ns"):
-        with Loader("Running NetStruct_Hierarchy per many classes"):
+    with Loader("Running NetStruct_Hierarchy per many classes"):
+        while are_running_submitions(string_to_find="ns"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

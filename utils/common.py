@@ -175,11 +175,10 @@ def args_parser():
     parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
     parser.add_argument("--mac", dest="mac", help="min value, max value, delta")
     parser.add_argument("--maf", dest="maf", help="min value, max value, delta")
-    parser.add_argument("--spec_012", dest="use_specific_012_file",
-                        help="if not used, default is to use all 012 files. If used should come with 2 args,"
-                             " min 012 file and max 012 file")
     parser.add_argument("--args", dest="args", help="Any additional args")
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
+    parser.add_argument("--ns_ss", dest="ns_ss", default=0.01, type=float,
+                        help="Net-struct step size (relevant for step 5 only)")
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []

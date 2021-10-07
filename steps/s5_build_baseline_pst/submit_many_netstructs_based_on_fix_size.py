@@ -30,7 +30,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
                                 class_name=class_name),
                             paths_helper=paths_helper)
     job_long_name = f'{class_name}_hash{tree_hash}_weighted_true'
-    job_name = f'{class_val}_{tree_hash}'
+    job_name = f'ns{class_val}_{tree_hash}'
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npy'
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'

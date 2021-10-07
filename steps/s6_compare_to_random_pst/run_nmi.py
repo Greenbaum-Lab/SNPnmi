@@ -50,6 +50,8 @@ def run_nmi_on_all(options):
                 class_all_nodes = collect_all_nodes_if_needed(class_ns_dir)
 
                 class_nmi_output = f'{nmi_output_dir}{mac_maf}_{val}_all/'
+                os.makedirs(class_nmi_output, exist_ok=True)
+
 
                 # calc nmi
                 run_nmi(options, gt_leafs_overlap, class_leafs_overlap, class_nmi_output + 'Leaves_WithOverlap.txt')

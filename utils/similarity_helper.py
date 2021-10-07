@@ -56,8 +56,6 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
 
     # write (and validate) output
     write_pairwise_similarity(all_similarity_file, similarity, all_count_file, counts)
-    print(f'all_similarity_file : {all_similarity_file}')
-    # _validate_count_dist_file(all_count_file)
 
 
 def file012_to_numpy(input_file_path, raw_file=None):

@@ -16,7 +16,7 @@ def get_tree_path(tree_base_dir, options):
     gt_right_configured_dirs = [path for path in tree_dirs if f'SS_{options.ns_ss}' in path]
     assert len(gt_right_configured_dirs) > 0, f"No trees were found with step size {options.ns_ss}"
     assert len(gt_right_configured_dirs) < 2, f"More than 1 tree were found with step size {options.ns_ss}"
-    return tree_base_dir + gt_right_configured_dirs[0]
+    return tree_base_dir + gt_right_configured_dirs[0] + '/'
 
 
 def run_nmi(options, input1, input2, output_path):

@@ -28,7 +28,9 @@ def _get_similarity_per_window_files_names(paths_helper, class_str):
     count_similarity_files = os.listdir(windows_similarity_dir)
     assert int(num_of_wind_per_class[class_str]) == len(count_similarity_files) / 2  # count and similarity are diff files
     count_files = [windows_similarity_dir + file for file in count_similarity_files if "count" in file]
+    count_files.sort()
     similarity_files = [windows_similarity_dir + file for file in count_similarity_files if "similarity" in file]
+    similarity_files.sort()
     assert len(similarity_files) == len(count_files)
     assert len([file for file in count_similarity_files if "similarity" in file and "count" in file]) == 0
     assert len(similarity_files) + len(count_files) == len(count_similarity_files)

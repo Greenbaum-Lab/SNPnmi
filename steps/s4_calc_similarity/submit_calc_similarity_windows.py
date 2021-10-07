@@ -128,11 +128,13 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
+    return True
 
 
 def main(options):
     with Timer(f"submit_calc_similarity_windows on {options.args}"):
         submit_calc_similarity_windows(options)
+    return True
 
 
 if __name__ == '__main__':

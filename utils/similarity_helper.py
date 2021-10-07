@@ -27,6 +27,7 @@ def calc_similarity_based_on_files(similarity_files, count_files):
     similarity_result = None  # We can't tell similarity_result shape yet.
     count_all_counts = None
     for similarity_file, count_file in zip(similarity_files, count_files):
+        assert similarity_file[-12:] == count_file[-12:], "Using different windows!!"
         with open(similarity_file, 'rb') as sim:
             simi_mat = np.load(sim)
         if similarity_result is None:

@@ -177,7 +177,7 @@ def args_parser():
     parser.add_argument("--maf", dest="maf", help="min value, max value, delta")
     parser.add_argument("--args", dest="args", help="Any additional args")
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
-    parser.add_argument("--ns_ss", dest="ns_ss", default=0.01, type=float,
+    parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
                         help="Net-struct step size (relevant for step 5 only)")
 
     options = parser.parse_args()

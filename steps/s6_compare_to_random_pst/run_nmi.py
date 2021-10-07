@@ -51,14 +51,16 @@ def run_nmi_on_all(options):
 
                 class_nmi_output = f'{nmi_output_dir}{mac_maf}_{val}_all/'
                 os.makedirs(class_nmi_output, exist_ok=True)
+                class_step_size_nmi_output = f'{class_nmi_output}step_{options.ns_ss}/'
+                os.makedirs(class_step_size_nmi_output, exist_ok=True)
 
 
                 # calc nmi
-                run_nmi(options, gt_leafs_overlap, class_leafs_overlap, class_nmi_output + 'Leaves_WithOverlap.txt')
+                run_nmi(options, gt_leafs_overlap, class_leafs_overlap, class_step_size_nmi_output + 'Leaves_WithOverlap.txt')
 
-                run_nmi(options, gt_leafs_no_overlap, class_leafs_no_overlap, class_nmi_output + 'Leaves_NoOverlap.txt')
+                run_nmi(options, gt_leafs_no_overlap, class_leafs_no_overlap, class_step_size_nmi_output + 'Leaves_NoOverlap.txt')
 
-                run_nmi(options, gt_all_nodes, class_all_nodes, class_nmi_output + 'AllNodes.txt')
+                run_nmi(options, gt_all_nodes, class_all_nodes, class_step_size_nmi_output + 'AllNodes.txt')
 
 
 def main(options):

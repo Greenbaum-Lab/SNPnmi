@@ -86,9 +86,10 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
                                                                                                   window_id=window_id)
         output_count_file = path_helper.count_by_class_and_window_template.format(class_name=class_name,
                                                                                                   window_id=window_id)
-        # if os.path.isfile(output_count_similarity_file):
-        #     print(f'output_count_similarity_file exist, do not calc! {output_count_similarity_file}')
-        #     continue
+        if os.path.isfile(output_similarity_file) and os.path.isfile(output_count_file):
+            print(f'output_count_similarity_file exist, do not calc! {output_similarity_file}')
+            continue
+
         window_df = get_012_df(input_012_file)
 
         window_pairwise_counts, window_pairwise_similarity = window_calc_pairwise_similarities(

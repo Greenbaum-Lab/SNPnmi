@@ -102,7 +102,7 @@ def str2bool(v) -> bool:
         return True
     if v.lower() in ('no', 'false', 'f', 'n', '0'):
         return False
-    raise 'Boolean value expected.'
+    raise Exception('Boolean value expected.')
 
 
 def get_num_lines_in_file(p, gzip=False):

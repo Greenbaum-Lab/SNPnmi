@@ -88,7 +88,7 @@ def runner(options):
 
 #  python3 runner.py -s 5.4 -d hgdp_test --mac 5,8 --maf 46,49 --args 500,7
 
-#  python3 runner.py -s 6.1 -d hgdp_test --mac 5,6 --maf 46,49
+#  python3 runner.py -s 6.1 -d hgdp_test --mac 5,8 --maf 46,49
 
 
 if __name__ == "__main__":

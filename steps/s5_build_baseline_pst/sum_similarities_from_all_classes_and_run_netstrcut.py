@@ -67,7 +67,7 @@ def main(options):
 
     paths_helper = get_paths_helper(options.dataset_name)
     job_type = 'netstruct'
-    job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_ss_{options.ns_ss}'
     job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
     similarity_matrix_path = output_files_name + '_similarity.npy'
     similarity_edges_file = output_files_name + '_edges.txt'

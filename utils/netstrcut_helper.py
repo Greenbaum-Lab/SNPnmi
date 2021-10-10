@@ -13,7 +13,7 @@ import subprocess
 
 def get_cluster_time(ns_ss):
     step_size = float(ns_ss)
-    hours = max(int((1/step_size) // 25), 1)
+    hours = max(int((1/step_size) // 100), 1)
     return f'{hours}:00:00'
 
 

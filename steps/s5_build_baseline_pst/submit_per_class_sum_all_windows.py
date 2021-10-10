@@ -49,7 +49,7 @@ def submit_per_class_sum_all_windows(options):
                 print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
-    with Loader(f"Summing all similarity windows per class"):
+    with Loader(f"Summing all similarity windows per class", string_to_find="s5_"):
         while how_many_jobs_run(string_to_find="s5_"):
             time.sleep(5)
 

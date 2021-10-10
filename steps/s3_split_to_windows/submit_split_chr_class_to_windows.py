@@ -55,7 +55,7 @@ def submit_split_chr_class_to_windows(options):
                     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
                                       python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=2,
                                       memory=8)
-    with Loader("Wait for all splitting jobs to be done "):
+    with Loader("Splitting jobs are running", string_to_find="s3_"):
         while how_many_jobs_run(string_to_find="s3_"):
             time.sleep(5)
 

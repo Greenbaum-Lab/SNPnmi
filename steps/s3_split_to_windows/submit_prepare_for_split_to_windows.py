@@ -75,7 +75,7 @@ def submit_prepare_for_split_to_windows(options):
                 submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
                                   python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4)
 
-    with Loader("Wait for all splitting jobs to be done "):
+    with Loader("Splitting jobs are running", string_to_find="p3_"):
         while how_many_jobs_run(string_to_find="p3_"):
             time.sleep(5)
 

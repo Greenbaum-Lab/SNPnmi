@@ -39,7 +39,7 @@ def submit_split_vcfs_by_class(options):
         stderr_files += submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range,
                                                options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
-    with Loader("Wait for all splitting jobs to be done "):
+    with Loader("Splitting jobs are running", string_to_find="s2"):
         while how_many_jobs_run(string_to_find="s2"):
             time.sleep(5)
 

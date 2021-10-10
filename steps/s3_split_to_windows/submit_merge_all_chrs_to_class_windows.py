@@ -66,7 +66,7 @@ def submit_merge_all_chrs_to_class_windows(options):
                     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
                                       job_stdout_file, job_stderr_file, num_hours_to_run=2)
 
-    with Loader("Wait for all merging jobs to be done "):
+    with Loader("Merging jobs are running", string_to_find="3m"):
         while how_many_jobs_run(string_to_find="3m"):
             time.sleep(5)
 

@@ -123,7 +123,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
         print("Done submissions with no errors!")
     else:
         print(f"Errors in:\n{errors}")
-    with Loader("Wait for all similarities computations jobs to be done "):
+    with Loader("Similarities computations are running", string_to_find="_w"):
         while how_many_jobs_run(string_to_find="_w"):
             time.sleep(5)
 

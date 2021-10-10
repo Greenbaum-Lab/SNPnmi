@@ -66,7 +66,7 @@ def generate_vcfs_stats(options, stat_types):
     else:
         print(f"Errors in:\n{errors}")
 
-    with Loader("Computing stats"):
+    with Loader("Computing stats", string_to_find="s1"):
         while how_many_jobs_run(string_to_find="s1"):
             time.sleep(5)
 

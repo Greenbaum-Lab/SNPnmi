@@ -30,9 +30,9 @@ class Loader:
         return self
 
     def _animate(self):
+        running_jobs = ""
         for c in cycle(self.steps):
-            running_jobs = ""
-            if self.string_to_find:
+            if self.string_to_find and c == "⣾":
                 num_of_jobs = how_many_jobs_run(string_to_find=self.string_to_find)
                 running_jobs = f"({num_of_jobs} running jobs)"
             if self.done:

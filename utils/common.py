@@ -137,9 +137,9 @@ def validate_stderr_empty(err_files):
 def how_many_jobs_run(string_to_find=""):
     assert is_cluster(), "Cannot check for jobs when run locally"
     username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
-    ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE)
+    ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE, encoding='utf8')
     try:  # if grep is empty, it raise subprocess.CalledProcessError
-        output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout)
+        output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout, encoding='utf8')
         print(type(output))
         print(output[:100])
         return output.count('\n')

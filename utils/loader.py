@@ -31,10 +31,13 @@ class Loader:
 
     def _animate(self):
         for c in cycle(self.steps):
-            num_of_jobs = how_many_jobs_run(string_to_find=self.string_to_find)
+            running_jobs = ""
+            if self.string_to_find:
+                num_of_jobs = how_many_jobs_run(string_to_find=self.string_to_find)
+                running_jobs = f"({num_of_jobs} running jobs)"
             if self.done:
                 break
-            print(f"\r{self.desc} ({num_of_jobs} running jobs) {c}  ", flush=True, end="")
+            print(f"\r{self.desc} {running_jobs} {c}  ", flush=True, end="")
             sleep(self.timeout)
 
     def __enter__(self):

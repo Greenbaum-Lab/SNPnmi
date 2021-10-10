@@ -11,7 +11,7 @@ sys.path.append(root_path)
 
 from utils.loader import Timer
 from utils.common import build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_similarity
-from utils.validate import _validate_count_dist_file, _validate_count_dist_files
+
 
 
 # TODO rename - similiarty

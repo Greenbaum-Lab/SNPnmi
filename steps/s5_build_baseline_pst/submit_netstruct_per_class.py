@@ -46,8 +46,8 @@ def submit_netstruct_per_class(options):
                                             output_folder)
                 stderr_files.append(err_file)
 
-    while are_running_submitions(string_to_find="ns"):
-        with Loader("Running NetStruct_Hierarchy"):
+    with Loader("Running NetStruct_Hierarchy"):
+        while are_running_submitions(string_to_find="ns"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

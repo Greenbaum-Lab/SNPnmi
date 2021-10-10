@@ -13,3 +13,6 @@ def get_similarity_distribution(similarity_matrix):
     plt.hist(vals, bins=100)
     plt.savefig("/vol/sci/bio/data/gil.greenbaum/shahar.mazie/tmp/similarity_distribution.png")
     plt.show()
+
+if __name__ == '__main__':
+    get_similarity_distribution("/vol/sci/bio/data/gil.greenbaum/shahar.mazie/vcf/hgdp_test/classes/similarity/all_mac_5-8_maf_46-49_similarity.npy")

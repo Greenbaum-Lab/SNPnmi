@@ -26,7 +26,9 @@ def what():
         print(f"Done with file {file}")
 
 def game():
-    a = [1,2,3]
-    for _ in range(10):
-        print(np.sort(sample(a,2)))
+    file_type='count'
+    with open(f"/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/mac_2_all_{file_type}.npy", 'rb') as f:
+        old_np = np.load(f)
+    print()
+
 game()

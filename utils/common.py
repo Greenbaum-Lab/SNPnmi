@@ -75,7 +75,7 @@ def write_pairwise_similarity(output_similarity_file, similarity_matrix, output_
     with open(output_similarity_file, 'wb') as f:
         np.save(f, similarity_matrix)
     with open(output_count_file, 'wb') as f:
-        np.save(f, count_matrix)
+        np.save(f, count_matrix.astype(np.uint32))
 
 
 def get_number_of_windows_by_class(paths_helper):

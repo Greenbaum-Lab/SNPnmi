@@ -9,7 +9,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper, args_parser, are_running_submitions, validate_stderr_empty
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
 from utils.similarity_helper import matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
@@ -47,7 +47,7 @@ def submit_netstruct_per_class(options):
                 stderr_files.append(err_file)
 
     with Loader("Running NetStruct_Hierarchy"):
-        while are_running_submitions(string_to_find="ns"):
+        while how_many_jobs_run(string_to_find="ns"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

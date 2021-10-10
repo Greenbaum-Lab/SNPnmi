@@ -10,7 +10,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, str_for_timer
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -76,7 +76,7 @@ def submit_prepare_for_split_to_windows(options):
                                   python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4)
 
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions(string_to_find="p3_"):
+        while how_many_jobs_run(string_to_find="p3_"):
             time.sleep(5)
 
     write_class_to_number_of_windows_file(options, classes)

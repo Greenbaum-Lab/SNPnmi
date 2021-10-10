@@ -4,8 +4,11 @@ from shutil import get_terminal_size
 from threading import Thread
 from time import sleep
 
+from utils.common import how_many_jobs_run
+
+
 class Loader:
-    def __init__(self, desc="Loading...", end="Done!", timeout=0.2):
+    def __init__(self, desc="Loading...", string_to_find=None, end="Done!", timeout=0.2):
         """
         A loader-like context manager
 
@@ -17,7 +20,7 @@ class Loader:
         self.desc = desc
         self.end = end
         self.timeout = timeout
-
+        self.string_to_find = string_to_find
         self._thread = Thread(target=self._animate, daemon=True)
         self.steps = ["⢿", "⣻", "⣽", "⣾", "⣷", "⣯", "⣟", "⡿"]
         self.done = False
@@ -28,9 +31,10 @@ class Loader:
 
     def _animate(self):
         for c in cycle(self.steps):
+            num_of_jobs = how_many_jobs_run(string_to_find=self.string_to_find)
             if self.done:
                 break
-            print(f"\r{self.desc} {c}  ", flush=True, end="")
+            print(f"\r{self.desc} ({num_of_jobs} running jobs) {c}  ", flush=True, end="")
             sleep(self.timeout)
 
     def __enter__(self):

@@ -16,7 +16,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, args_parser, are_running_submitions, validate_stderr_empty
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
 from utils.config import *
 
 DEFAULT_DELTA_MAC = 1
@@ -124,7 +124,7 @@ def submit_calc_similarity_windows(options, max_windows_per_job=1000):
     else:
         print(f"Errors in:\n{errors}")
     with Loader("Wait for all similarities computations jobs to be done "):
-        while are_running_submitions(string_to_find="_w"):
+        while how_many_jobs_run(string_to_find="_w"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

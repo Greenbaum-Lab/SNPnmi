@@ -11,7 +11,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, AlleleClass, args_parser, are_running_submitions, validate_stderr_empty
+from utils.common import get_paths_helper, AlleleClass, args_parser, how_many_jobs_run, validate_stderr_empty
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -67,7 +67,7 @@ def submit_merge_all_chrs_to_class_windows(options):
                                       job_stdout_file, job_stderr_file, num_hours_to_run=2)
 
     with Loader("Wait for all merging jobs to be done "):
-        while are_running_submitions(string_to_find="3m"):
+        while how_many_jobs_run(string_to_find="3m"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

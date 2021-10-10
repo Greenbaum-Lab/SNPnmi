@@ -9,7 +9,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, args_parser, str_for_timer
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, str_for_timer
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -40,7 +40,7 @@ def submit_split_vcfs_by_class(options):
                                                options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
     with Loader("Wait for all splitting jobs to be done "):
-        while are_running_submitions(string_to_find="s2"):
+        while how_many_jobs_run(string_to_find="s2"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

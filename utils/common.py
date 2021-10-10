@@ -134,18 +134,15 @@ def validate_stderr_empty(err_files):
     return True
 
 
-def are_running_submitions(string_to_find=""):
-    if not is_cluster():
-        return False
+def how_many_jobs_run(string_to_find=""):
+    assert is_cluster(), "Cannot check for jobs when run locally"
     username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
-    ps = subprocess.Popen('squeue', stdout=subprocess.PIPE)
+    ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
-        output = subprocess.check_output(('grep', username), stdin=ps.stdout)
-        if string_to_find not in str(output):
-            return False
-        return True
+        output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout)
+        return output.count('\n')
     except subprocess.CalledProcessError:
-        return False
+        return 0
 
 
 # Deprecated?

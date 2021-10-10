@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data
-from utils.common import get_paths_helper, are_running_submitions, validate_stderr_empty, args_parser
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import submit_netstruct
 from utils.similarity_helper import matrix_to_edges_file
@@ -105,7 +105,7 @@ def submit_mini_net_struct_for_all_classes(options):
                 stderr_files += submit_mini_net_struct_for_class(options, mac_maf, val, paths_helper, window_size)
 
     with Loader("Running NetStruct_Hierarchy per many classes"):
-        while are_running_submitions(string_to_find="ns"):
+        while how_many_jobs_run(string_to_find="ns"):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

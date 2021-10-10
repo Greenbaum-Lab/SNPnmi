@@ -48,7 +48,7 @@ def submit_netstruct_per_class(options):
 
     with Loader("Running NetStruct_Hierarchy", string_to_find='ns'):
         while how_many_jobs_run(string_to_find="ns"):
-            time.sleep(1)
+            time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
     return True

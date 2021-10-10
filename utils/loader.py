@@ -8,7 +8,7 @@ from utils.common import how_many_jobs_run
 
 
 class Loader:
-    def __init__(self, desc="Loading...", string_to_find=None, end="Done!", timeout=0.2):
+    def __init__(self, desc="Loading...", string_to_find=None, end="Done!", timeout=0.15):
         """
         A loader-like context manager
 

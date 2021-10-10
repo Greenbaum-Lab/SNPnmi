@@ -106,7 +106,7 @@ def submit_mini_net_struct_for_all_classes(options):
 
     with Loader("Running NetStruct_Hierarchy per many classes", string_to_find='ns'):
         while how_many_jobs_run(string_to_find="ns"):
-            time.sleep(1)
+            time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
     return True

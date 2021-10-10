@@ -4,6 +4,7 @@ import sys
 import os
 from os.path import dirname, abspath
 import numpy as np
+import re
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -23,11 +24,15 @@ def normalize_distances(distances, counts):
     return norm_dists
 
 
+def check_similarity_count_correlate(count, similarity):
+    return count.replace('count', 'similarity') == similarity
+
+
 def calc_similarity_based_on_files(similarity_files, count_files):
     similarity_result = None  # We can't tell similarity_result shape yet.
     count_all_counts = None
     for i, (similarity_file, count_file) in enumerate(zip(similarity_files, count_files)):
-        assert similarity_file[-12:] == count_file[-12:], f"Using different windows!! file names:\n{similarity_file}\n{count_file}"
+        assert check_similarity_count_correlate(count_file, similarity_file), f"Using different windows!! file names:\n{similarity_file}\n{count_file}"
         if i % 200 == 0:
             print(f'Starting the {i} window')
         with open(similarity_file, 'rb') as sim:

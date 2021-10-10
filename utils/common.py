@@ -53,7 +53,7 @@ class AlleleClass:
 
 
 def hash_args(options):
-    args = options.args + options.mac + options.maf
+    args = options.args + options.mac + options.maf + [options.ns_ss]
     return hash(tuple(args))
 
 

@@ -140,6 +140,8 @@ def how_many_jobs_run(string_to_find=""):
     ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE)
     try:  # if grep is empty, it raise subprocess.CalledProcessError
         output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout)
+        print(type(output))
+        print(output[:100])
         return output.count('\n')
     except subprocess.CalledProcessError:
         return 0

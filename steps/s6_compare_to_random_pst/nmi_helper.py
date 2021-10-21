@@ -9,6 +9,39 @@ sys.path.append(root_path)
 from utils.common import get_paths_helper
 
 
+def run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
+                      options, tree_hash):
+    class_ns_dir = get_tree_path(f'{ns_base_dir}{class_name}_{tree_hash}/', options)
+    class_leafs_overlap = f'{class_ns_dir}2_Leafs_WithOverlap.txt'
+    class_leafs_no_overlap = f'{class_ns_dir}2_Leafs_NoOverlap.txt'
+    class_all_nodes = collect_all_nodes_if_needed(class_ns_dir)
+    class_nmi_output = f'{nmi_output_dir}{class_name}_{tree_hash}/'
+    os.makedirs(class_nmi_output, exist_ok=True)
+    class_step_size_nmi_output = f'{class_nmi_output}step_{options.ns_ss}/'
+    os.makedirs(class_step_size_nmi_output, exist_ok=True)
+    # calc nmi
+    run_nmi(options, gt_leafs_overlap, class_leafs_overlap, class_step_size_nmi_output + 'Leaves_WithOverlap.txt')
+    run_nmi(options, gt_leafs_no_overlap, class_leafs_no_overlap, class_step_size_nmi_output + 'Leaves_NoOverlap.txt')
+    run_nmi(options, gt_all_nodes, class_all_nodes, class_step_size_nmi_output + 'AllNodes.txt')
+
+
+def prepare_inputs_and_gt(options):
+    # prepare paths
+    paths_helper = get_paths_helper(options.dataset_name)
+    ns_base_dir = paths_helper.net_struct_dir
+    nmi_output_dir = paths_helper.nmi_dir
+    os.makedirs(nmi_output_dir, exist_ok=True)
+
+    # ground truth (gt) files
+    gt_base_dir = f'{ns_base_dir}all_mac_{options.mac_min_range}-{options.mac_max_range}_maf_{options.maf_min_range}-' \
+                  f'{options.maf_max_range}/'
+    gt_dir = get_tree_path(gt_base_dir, options)
+    gt_leafs_overlap = f'{gt_dir}2_Leafs_WithOverlap.txt'
+    gt_leafs_no_overlap = f'{gt_dir}2_Leafs_NoOverlap.txt'
+    gt_all_nodes = collect_all_nodes_if_needed(gt_dir)
+    return gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir
+
+
 def get_tree_path(tree_base_dir, options):
     assert os.path.isdir(tree_base_dir), f"The tree dir path is not exists: {tree_base_dir}"
     tree_dirs = os.listdir(tree_base_dir)

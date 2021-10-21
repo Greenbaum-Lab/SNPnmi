@@ -57,13 +57,18 @@ def is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper)
     return True
 
 
-def how_many_tree_computed_before(paths_helper, class_name, num_of_winds):
+def get_hashes_for_computed_trees(paths_helper, class_name, num_of_winds):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     data = load_hash_data(hash_file)
     keys_for_hash_in_correct_size = []
     for k, v in data.items():
         if is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper):
             keys_for_hash_in_correct_size.append(k)
+    return keys_for_hash_in_correct_size
+
+
+def how_many_tree_computed_before(paths_helper, class_name, num_of_winds):
+    keys_for_hash_in_correct_size = get_hashes_for_computed_trees(paths_helper, class_name, num_of_winds)
     return len(keys_for_hash_in_correct_size)
 
 

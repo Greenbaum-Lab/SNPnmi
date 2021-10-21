@@ -22,7 +22,7 @@ from steps.s4_calc_similarity import submit_calc_similarity_windows
 from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class, \
     submit_many_netstructs_based_on_fix_size
-from steps.s6_compare_to_random_pst import run_nmi
+from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_mini_trees
 
 from utils.config import *
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -41,7 +41,8 @@ step_to_func_and_name = {
     "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'submit_per_class_sum_all_windows'),
     "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
     "5.4": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
-    "6.1": (run_nmi.main, 'run_nmi')
+    "6.1": (run_nmi_on_full_classes.main, 'run_nmi_on_full_classes'),
+    "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees')
 }
 
 def run_step(options, use_checkpoint=True):
@@ -89,6 +90,9 @@ def runner(options):
 #  python3 runner.py -s 5.4 -d hgdp_test --mac 5,8 --maf 46,49 --args 500,7
 
 #  python3 runner.py -s 6.1 -d hgdp_test --mac 5,8 --maf 46,49
+
+#  python3 runner.py -s 6.2 -d hgdp_test --mac 5,8 --maf 46,49 --args 10,3
+
 
 
 if __name__ == "__main__":

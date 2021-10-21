@@ -9,6 +9,7 @@ from utils.filelock import FileLock
 
 directory_to_compare = "/home/lab2/shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 
+
 def what():
     all_files = os.listdir(directory_to_compare)
     np_files = [file[:-3] for file in all_files if 'npy' in file]
@@ -25,10 +26,12 @@ def what():
         assert np.all(new_mat == matrix)
         print(f"Done with file {file}")
 
+
 def game():
-    file_type='count'
+    file_type = 'count'
     with open(f"/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/mac_2_all_{file_type}.npy", 'rb') as f:
         old_np = np.load(f)
     print()
+
 
 game()

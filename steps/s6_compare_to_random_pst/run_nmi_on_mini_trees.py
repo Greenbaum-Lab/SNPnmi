@@ -21,7 +21,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper):
     assert num_of_trees >= num_of_desired_trees, f"There are only {num_of_trees} trees for class {class_name}"
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
 
-    for hash_tree in hashes_of_fit_trees:
+    for hash_tree in hashes_of_fit_trees[:num_of_desired_trees]:
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
                           options, hash_tree)
 

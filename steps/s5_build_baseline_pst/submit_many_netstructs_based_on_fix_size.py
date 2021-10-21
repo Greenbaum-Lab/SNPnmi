@@ -41,7 +41,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     return err_file
 
 
-def is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper):
+def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:
         return False
     job_long_name = f'{class_name}_hash{k}_weighted_true'
@@ -54,21 +54,25 @@ def is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper)
     net_struct_dir = paths_helper.net_struct_dir
     if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
         return False
+    list_trees = os.listdir(f'{net_struct_dir}{class_name}_{k}')
+    trees_with_correct_ns_ss = [tree for tree in list_trees if f"SS_{options.ns_ss}" in tree]
+    if len(trees_with_correct_ns_ss) == 0:
+        return False
     return True
 
 
-def get_hashes_for_computed_trees(paths_helper, class_name, num_of_winds):
+def get_hashes_for_computed_trees(options, paths_helper, class_name, num_of_winds):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     data = load_hash_data(hash_file)
     keys_for_hash_in_correct_size = []
     for k, v in data.items():
-        if is_tree_valid_and_correct_size(k, v, num_of_winds, class_name, paths_helper):
+        if is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
             keys_for_hash_in_correct_size.append(k)
     return keys_for_hash_in_correct_size
 
 
-def how_many_tree_computed_before(paths_helper, class_name, num_of_winds):
-    keys_for_hash_in_correct_size = get_hashes_for_computed_trees(paths_helper, class_name, num_of_winds)
+def how_many_tree_computed_before(options, paths_helper, class_name, num_of_winds):
+    keys_for_hash_in_correct_size = get_hashes_for_computed_trees(options, paths_helper, class_name, num_of_winds)
     return len(keys_for_hash_in_correct_size)
 
 
@@ -81,7 +85,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     with open(paths_helper.number_of_windows_per_class_template.format(class_name=class_name), 'r') as f:
         num_of_windows = int(f.read())
         stderr_files = []
-    num_computed_trees = how_many_tree_computed_before(paths_helper, class_name, num_of_windows_per_tree)
+    num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
     for tree_idx in range(rest_num_of_trees):

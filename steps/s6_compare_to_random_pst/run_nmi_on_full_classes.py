@@ -2,16 +2,19 @@
 
 
 import sys
-from os.path import dirname, abspath
+from os.path import dirname, abspath, basename
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s6_compare_to_random_pst.nmi_helper import get_tree_path, collect_all_nodes_if_needed, run_nmi, \
     prepare_inputs_and_gt, run_all_types_nmi
 
 
 from utils.common import args_parser
 from utils.loader import Timer
+SCRIPT_NAME = basename(__file__)
 
 
 def run_nmi_on_all(options):
@@ -37,7 +40,9 @@ def run_nmi_on_all(options):
 
 def main(options):
     with Timer(f"run nmi with {options}"):
-        run_nmi_on_all(options)
+        is_executed, msg = execute_with_checkpoint(run_nmi_on_all, SCRIPT_NAME, options)
+        print(msg)
+    return is_executed
 
 
 if __name__ == "__main__":

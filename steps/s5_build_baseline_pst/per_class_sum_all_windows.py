@@ -38,20 +38,19 @@ def _get_similarity_per_window_files_names(paths_helper, class_str):
 
 
 def main(options):
-    print('Argument List:', str(options.args))
     mac_maf = options.args[0]
     assert mac_maf == 'mac' or mac_maf == 'maf'
-    class_name = options.args[1]
-    class_str = f"{mac_maf}_{class_name}"
+    val = options.args[1]
+    class_name = f"{mac_maf}_{val}"
 
     # Prepare paths
     paths_helper = get_paths_helper(options.dataset_name)
-    output_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_str)
-    count_files, similarity_files = _get_similarity_per_window_files_names(paths_helper, class_str)
+    output_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    count_files, similarity_files = _get_similarity_per_window_files_names(paths_helper, class_name)
 
     print('output_dir', output_dir)
 
-    generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_str}_all',
+    generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_all',
                                override=options.override)
 
 

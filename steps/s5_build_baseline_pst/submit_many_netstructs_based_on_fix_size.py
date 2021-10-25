@@ -44,11 +44,13 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
 
 def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:
+        print(1)
         return False
     job_long_name = f'{class_name}_hash{k}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):
+        print(2)
         return False
     if os.stat(stderr_file_name).st_size > 0:
         return False
@@ -58,6 +60,7 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
     list_trees = os.listdir(f'{net_struct_dir}{class_name}_{k}')
     trees_with_correct_ns_ss = [tree for tree in list_trees if f"SS_{options.ns_ss}" in tree]
     if len(trees_with_correct_ns_ss) == 0:
+        print(5)
         return False
     return True
 
@@ -80,6 +83,8 @@ def how_many_tree_computed_before(options, paths_helper, class_name, num_of_wind
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
     data_size = options.args[0]
     num_of_trees = options.args[1]
+    dry_run = len(options.args) == 3
+
     class_name = f'{mac_maf}_{class_val}'
     num_of_windows_per_tree = data_size / window_size
     assert num_of_windows_per_tree == int(num_of_windows_per_tree), "Data size is not dividable in windows size"
@@ -87,6 +92,8 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
         num_of_windows = int(f.read())
         stderr_files = []
     num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
+    if dry_run:
+        exit(12)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
     for tree_idx in range(rest_num_of_trees):

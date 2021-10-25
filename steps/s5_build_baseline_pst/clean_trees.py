@@ -17,11 +17,10 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     hash_dict = load_hash_data(hash_file)
-    log_file_template = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct')
     invalid_hashes = []
     for k in hash_dict.keys():
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
-        log_file = log_file_template.format(job_name=job_name)
+        log_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)
         if not os.path.exists(log_file) or os.stat(log_file).st_size > 0:
             invalid_hashes.append(k)
         elif not os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):

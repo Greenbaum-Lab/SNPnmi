@@ -24,7 +24,7 @@ def compare_amir_similarities():
     amir_dir_path = "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/"
     files = [f for f in os.listdir(amir_dir_path) if "_all_norm_dist.tsv.gz" in f]
     for f in files:
-        nump = file012_to_numpy(f)
+        nump = file012_to_numpy(amir_dir_path + f)
         class_name = f.replace("_all_norm_dist.tsv.gz", "")
         print(f"class_name: {class_name}")
         print(f"type: {type(nump)}")

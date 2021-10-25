@@ -56,6 +56,9 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         ns_path = ns_dir + f"_{k}/"
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
+    if not hash_data:
+        with open(hash_file, "w+") as f:
+            f.write("{}")
     with open(hash_file, "w") as f:
         json.dump(f, hash_data)
 

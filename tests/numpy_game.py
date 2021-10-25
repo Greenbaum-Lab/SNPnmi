@@ -15,8 +15,6 @@ def file012_to_numpy(input_file_path, raw_file=None):
         split_individuals = split_individuals[:-1]
     split_sites = [individual.split('\t') for individual in split_individuals]
     arr = np.array(split_sites)
-    if np.any(arr[:, 0] > 2):
-        arr = arr[:, 1:]  # First column is individual number.
     return arr
 
 
@@ -28,6 +26,7 @@ def compare_amir_similarities():
         class_name = f.replace("_all_norm_dist.tsv.gz", "")
         print(f"class_name: {class_name}")
         print(f"type: {type(nump)}")
+        print(f"shape: {nump.shape}")
         print(f"min,max: {nump.min(), nump.max()}")
         exit(0)
 

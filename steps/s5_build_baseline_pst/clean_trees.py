@@ -40,7 +40,7 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
     for k in invalid_hashes:
         del hash_data[k]
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
-        stdout = paths_helper.logs_cluster_jobs_stsdout_template.format(job_type='mini_net-struct', job_name=job_name)
+        stdout = paths_helper.logs_cluster_jobs_stdout_template.format(job_type='mini_net-struct', job_name=job_name)
         stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)
         if os.path.exists(stdout):
             os.remove(stderr)

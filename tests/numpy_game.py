@@ -8,8 +8,8 @@ import numpy as np
 
 def file012_to_numpy(input_file_path, raw_file=None):
     if raw_file is None:
-        with open(input_file_path, 'rb') as f:
-            raw_file = f.read()#.decode()
+        with gzip.open(input_file_path, 'rb') as f:
+            raw_file = f.read().decode()
     split_individuals = raw_file.split('\n')
     if split_individuals[-1] == '':  # we throw empty line at the end of the file
         split_individuals = split_individuals[:-1]

@@ -13,9 +13,15 @@ def file012_to_numpy(input_file_path, raw_file=None):
     split_individuals = raw_file.split('\n')
     if split_individuals[-1] == '':  # we throw empty line at the end of the file
         split_individuals = split_individuals[:-1]
-    split_sites = [individual.split('\t') for individual in split_individuals]
-    arr = np.array(split_sites)
-    return arr
+    split_sites = [individual.split(' ') for individual in split_individuals]
+    new_mat = np.zeros(shape=(929, 929))
+    for i in range(len(split_sites)):
+        for j in range(len(split_sites[i])):
+            new_mat[i, i + j] = float(split_sites[i][j])
+    for i in range(929):
+        for j in range(i):
+            new_mat[i, j] = new_mat[j, i]
+    return new_mat
 
 
 def compare_amir_similarities():
@@ -29,5 +35,6 @@ def compare_amir_similarities():
         print(f"shape: {nump.shape}")
         print(f"min,max: {nump.min(), nump.max()}")
         exit(0)
+
 
 compare_amir_similarities()

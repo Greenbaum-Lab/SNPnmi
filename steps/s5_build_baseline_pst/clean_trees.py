@@ -29,7 +29,7 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
         elif not os.path.isdir(ns_dir + f'_{k}') or not os.listdir(ns_dir + f'_{k}'):
             invalid_hashes.append(k)
     if invalid_hashes:
-        print(f"Deleting for class {class_name} the next hashes: {invalid_hashes} form {hash_dict.keys()}")
+        print(f"Deleting for class {class_name} the next hashes: {invalid_hashes} form {list(hash_dict.keys())}")
     return invalid_hashes
 
 

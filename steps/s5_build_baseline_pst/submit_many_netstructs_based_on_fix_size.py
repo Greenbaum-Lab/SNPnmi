@@ -43,6 +43,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
 
 
 def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
+    print(0)
     if len(v) != num_of_winds:
         print(1)
         return False

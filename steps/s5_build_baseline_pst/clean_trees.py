@@ -28,9 +28,8 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
             invalid_hashes.append(k)
         elif not os.path.isdir(ns_dir + f'_{k}') or not os.listdir(ns_dir + f'_{k}'):
             invalid_hashes.append(k)
-    print(invalid_hashes)
     if invalid_hashes:
-        print(f"Deleting for class {class_name} the next hashes: {invalid_hashes}")
+        print(f"Deleting for class {class_name} the next hashes: {invalid_hashes} form {hash_dict.keys()}")
     return invalid_hashes
 
 
@@ -57,10 +56,10 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
     if not hash_data:
-        with open(hash_file, "w+") as f:
+        with open(hash_file, "w") as f:
             f.write("{}")
     with open(hash_file, "w") as f:
-        json.dump(f, hash_data)
+        json.dump(hash_data, f)
 
 
 def delete_unfinished_trees_and_hashes(options):

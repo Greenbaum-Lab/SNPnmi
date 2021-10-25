@@ -4,9 +4,8 @@ import os
 from random import sample
 
 import numpy as np
-from steps.s3_split_to_windows import split_chr_class_to_windows
-from utils.filelock import FileLock
-from utils.similarity_helper import file012_to_numpy
+from snpnmi.steps.s3_split_to_windows import split_chr_class_to_windows
+from snpnmi.utils.similarity_helper import file012_to_numpy
 
 directory_to_compare = "/home/lab2/shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 

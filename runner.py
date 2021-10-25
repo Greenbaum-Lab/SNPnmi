@@ -65,33 +65,33 @@ def runner(options):
         is_executed = run_step(options)
         print(f'is executed: {is_executed}')
 
-#  python3 runner.py -d hgdp_test -s 1.1
+#  python3 runner.py -d hgdp -s 1.1
 
-#  python3 runner.py -d hgdp_test -s 1.2 --args freq
+#  python3 runner.py -d hgdp -s 1.2 --args freq
 
-#  python3 runner.py -s 2.1 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 2.1 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py  -s 2.2 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py  -s 2.2 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 3.1 -d hgdp_test --mac 5,8 --maf 46,49 --args 100
+#  python3 runner.py -s 3.1 -d hgdp --mac 2,18 --maf 1,49 --args 100
 
-#  python3 runner.py -s 3.2 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 3.2 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 3.3 -d hgdp_test --mac 5,8 --maf 46,49 --args 2000
+#  python3 runner.py -s 3.3 -d hgdp --mac 2,18 --maf 1,49 --args 2000
 
-#  python3 runner.py -s 4.1 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 4.1 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 5.1 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 5.1 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 5.2 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 5.2 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 5.3 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 5.3 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 5.4 -d hgdp_test --mac 5,8 --maf 46,49 --args 500,7
+#  python3 runner.py -s 5.4 -d hgdp --mac 2,18 --maf 1,49 --args 500,7
 
-#  python3 runner.py -s 6.1 -d hgdp_test --mac 5,8 --maf 46,49
+#  python3 runner.py -s 6.1 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 6.2 -d hgdp_test --mac 5,8 --maf 46,49 --args 500,3
+#  python3 runner.py -s 6.2 -d hgdp --mac 2,18 --maf 1,49 --args 500,3
 
 
 

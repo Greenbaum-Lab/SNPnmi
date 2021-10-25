@@ -1,4 +1,3 @@
-checkpoint - work on get_vcfs_stats.py
 
 # SNP NMI - using Netstrcut to analyze different classes
 (to view in vscode, hit ctrl+k, v)
@@ -46,7 +45,8 @@ A module which holds tests for the different steps
 This is where we store adhoc and dev-test notebooks
 
 ### config
-This is where we store configuration data for both the cluster enviorment (like root folder) and the different VCFs we use (like name, source, number of individuals etc.)
+This is where we store configuration data for both the cluster environment (like root folder),
+and the different VCFs we use (like name, source, number of individuals etc.)
 
 
 # Steps
@@ -55,7 +55,8 @@ This is where we store configuration data for both the cluster enviorment (like 
 
  1.1 get_data - gets the VCFs according to the config.
 
- 1.2 get_vcfs_stats - gets VCFs stats. You should atleast look at 'freq' which is fundemental to this work. Others are super useful for understanding the data we have! See the notebook "Analyze basic vcftools stats.ipynb"
+ 1.2 get_vcfs_stats - gets VCFs stats. You should at least look at 'freq' which is fundamental to this work. 
+ Others are super useful for understanding the data we have! See the notebook "Analyze basic vcftools stats.ipynb"
 
  ---
 
@@ -67,19 +68,16 @@ This is where we store configuration data for both the cluster enviorment (like 
 
 ---
 
-### 3. 3_split_to_windows (single run - need to convert to cluster)
+### 3. 3_split_to_windows
 
-TODO - validate this in the cluster
+1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to
+   site index to window_index, so that each window size is window_size (or window_size + 1).
 
-1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to site index to window_index, so that each window size is window_size (or window_size + 1).
+2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} 
+   file using the mapping from the previous step (TODO - think about the format - currently transposed w.r.t 012)
 
-TODO - validate this in the cluster
-
-2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} file using the mapping from the previous step (TODO - think about the format - currently transposed w.r.t 012)
-
-TODO - validate this in the cluster
-
-3. Per class and max number of window_ids to process in each run, we run a job which collects the files from the previous step to create {class}_{window_id} files (in a 012 gz format)
+3. Per class and max number of window_ids to process in each run, we run a job which collects the files from the
+   previous step to create {class}_{window_id} files (in a 012 gz format)
 
 ---
 

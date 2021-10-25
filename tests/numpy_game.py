@@ -6,6 +6,7 @@ from random import sample
 import numpy as np
 from steps.s3_split_to_windows import split_chr_class_to_windows
 from utils.filelock import FileLock
+from utils.similarity_helper import file012_to_numpy
 
 directory_to_compare = "/home/lab2/shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 
@@ -33,5 +34,15 @@ def game():
         old_np = np.load(f)
     print()
 
+def compare_amir_similarities():
+    amir_dir_path = "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/"
+    files = [f for f in os.listdir(amir_dir_path) if "_all_norm_dist.tsv.gz" in f]
+    for f in files:
+        nump = file012_to_numpy(f)
+        class_name = f.replace("_all_norm_dist.tsv.gz", "")
+        print(f"class_name: {class_name}")
+        print(f"type: {type(nump)}")
+        print(f"min,max: {nump.min(), nump.max()}")
+        exit(0)
 
-game()
+compare_amir_similarities()

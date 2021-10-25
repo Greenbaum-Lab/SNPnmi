@@ -33,8 +33,6 @@ def calc_similarity_based_on_files(similarity_files, count_files):
     count_all_counts = None
     for i, (similarity_file, count_file) in enumerate(zip(similarity_files, count_files)):
         assert check_similarity_count_correlate(count_file, similarity_file), f"Using different windows!! file names:\n{similarity_file}\n{count_file}"
-        if i % 200 == 0:
-            print(f'Starting the {i} window')
         with open(similarity_file, 'rb') as sim:
             simi_mat = np.load(sim)
         if similarity_result is None:

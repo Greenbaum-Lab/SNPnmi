@@ -89,14 +89,17 @@ def numpy_to_file012(input_numpy_path, matrix=None):
     return result
 
 
-def matrix_to_edges_file(input_numpy_path, edges_file_path):
-    with open(input_numpy_path, 'rb') as f:
-        matrix = np.load(f)
-    max_e = np.max(matrix)
-    num_of_indv = matrix.shape[0]
+def matrix_to_edges_file(similarity_matrix_path, count_matrix_path, edges_file_path):
+    with open(similarity_matrix_path, 'rb') as f:
+        similarity_matrix = np.load(f)
+    with open(count_matrix_path, 'rb') as f:
+        count_matrix = np.load(f)
+    similarity_matrix = np.true_divide(similarity_matrix, count_matrix)
+    max_e = np.max(similarity_matrix)
+    num_of_indv = similarity_matrix.shape[0]
     result_file = ""
     for i in range(num_of_indv):
         for j in range(i + 1, num_of_indv, 1):
-            result_file += f"{i} {j} {matrix[i, j] / max_e}\n"
+            result_file += f"{i} {j} {similarity_matrix[i, j] / max_e}\n"
     with open(edges_file_path, 'w') as f:
         f.write(result_file[:-1])

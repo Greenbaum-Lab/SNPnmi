@@ -33,8 +33,9 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     job_name = f'ns{class_val}_{tree_hash}'
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npy'
+    count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npy'
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
-    matrix_to_edges_file(similarity_matrix_path, similarity_edges_file)
+    matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_dir = paths_helper.net_struct_dir + f'{class_name}_{tree_hash}/'
     err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file,
                                 output_dir)

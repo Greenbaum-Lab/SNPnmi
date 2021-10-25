@@ -70,8 +70,9 @@ def main(options):
     job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_ss_{options.ns_ss}'
     job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
     similarity_matrix_path = output_files_name + '_similarity.npy'
+    count_matrix_path = output_files_name + '_count.npy'
     similarity_edges_file = output_files_name + '_edges.txt'
-    matrix_to_edges_file(similarity_matrix_path, similarity_edges_file)
+    matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
     err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder)

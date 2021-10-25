@@ -34,6 +34,7 @@ def run_nmi_on_classes_all_trees(options):
     data_size = options.args[0]
     assert data_size // window_size == data_size/window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
+    print(num_of_windows)
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range

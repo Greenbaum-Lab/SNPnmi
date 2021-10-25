@@ -1,3 +1,5 @@
+import os
+import shutil
 import sys
 from os.path import dirname, abspath, basename
 
@@ -6,20 +8,53 @@ from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.checkpoint_helper import execute_with_checkpoint
-from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees
-from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi
-
 from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
 
-def delete_trees_per_class(options, paths_helper, class_name):
-    ns_dir = paths_helper.net_struct_dir + f'{class_name}/'
+def track_invalid_hashes_per_class(options, paths_helper, class_name):
+    ns_dir = paths_helper.net_struct_dir + f'{class_name}'
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     hash_dict = load_hash_data(hash_file)
-    for k, v in hash_dict.itmes():
+    log_file_template = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct')
+    invalid_hashes = []
+    for k in hash_dict.keys():
+        job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
+        log_file = log_file_template.format(job_name=job_name)
+        if not os.path.exists(log_file) or os.stat(log_file).st_size > 0:
+            invalid_hashes.append(k)
+        elif not os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
+            invalid_hashes.append(k)
+        elif not os.path.isdir(ns_dir + f'_{k}') or not os.listdir(ns_dir + f'_{k}'):
+            invalid_hashes.append(k)
+    return invalid_hashes
+
+
+def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
+    ns_dir = paths_helper.net_struct_dir + f'{class_name}'
+    sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
+    hash_data = load_hash_data(hash_file)
+    for k in invalid_hashes:
+        del hash_data[k]
+        job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
+        stdout = paths_helper.logs_cluster_jobs_stsdout_template.format(job_type='mini_net-struct', job_name=job_name)
+        stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)
+        if os.path.exists(stdout):
+            os.remove(stderr)
+            os.remove(stdout)
+        if os.path.exists(sim_dir + f"{class_name}_hash{k}_count.npy"):
+            os.remove(sim_dir + f"{class_name}_hash{k}_count.npy")
+        if os.path.exists(sim_dir + f"{class_name}_hash{k}_similarity.npy"):
+            os.remove(sim_dir + f"{class_name}_hash{k}_count.npy")
+        if os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
+            os.remove(sim_dir + f"{class_name}_hash{k}_edges.txt")
+        ns_path = ns_dir + f"_{k}/"
+        if os.path.exists(ns_path):
+            shutil.rmtree(ns_path)
+    with open(hash_file, "w") as f:
+        f.write(hash_data)
 
 
 def delete_unfinished_trees_and_hashes(options):
@@ -37,10 +72,14 @@ def delete_unfinished_trees_and_hashes(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                delete_trees_per_class(options, paths_helper, class_name)
+                invalid_hashes = track_invalid_hashes_per_class(options, paths_helper, class_name)
+                if invalid_hashes:
+                    erase_invalid_trees(options, paths_helper, class_name, invalid_hashes)
+
 
 def main(options):
-    pass
+    with Timer(f"Cleaning trees"):
+        delete_unfinished_trees_and_hashes(options)
 
 
 if __name__ == "__main__":

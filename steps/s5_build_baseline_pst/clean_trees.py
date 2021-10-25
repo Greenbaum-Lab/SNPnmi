@@ -3,11 +3,11 @@ import shutil
 import sys
 from os.path import dirname, abspath, basename
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
 from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 

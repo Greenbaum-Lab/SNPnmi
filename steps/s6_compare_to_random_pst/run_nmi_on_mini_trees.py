@@ -13,8 +13,7 @@ from utils.loader import Timer
 SCRIPT_NAME = basename(__file__)
 
 
-def compute_nmi_scores_per_class(options, class_name, paths_helper):
-    num_of_winds = options.args[0]
+def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds):
     num_of_desired_trees = options.args[1]
     hashes_of_fit_trees = get_hashes_for_computed_trees(options, paths_helper, class_name, num_of_winds)
     num_of_trees = len(hashes_of_fit_trees)
@@ -30,6 +29,11 @@ def run_nmi_on_classes_all_trees(options):
     paths_helper = get_paths_helper(options.dataset_name)
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
+    with open(paths_helper.windows_dir + 'window_size.txt', 'r') as f:
+        window_size = int(f.read())
+    data_size = options.args[0]
+    assert data_size // window_size == data_size/window_size, "data size is not dividable in window size"
+    num_of_windows = data_size // window_size
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -41,7 +45,7 @@ def run_nmi_on_classes_all_trees(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f"{mac_maf}_{val}"
-                compute_nmi_scores_per_class(options, class_name, paths_helper)
+                compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_windows)
 
 
 def main(options):

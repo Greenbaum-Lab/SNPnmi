@@ -4,34 +4,21 @@ import os
 from random import sample
 
 import numpy as np
-from snpnmi.steps.s3_split_to_windows import split_chr_class_to_windows
-from snpnmi.utils.similarity_helper import file012_to_numpy
-
-directory_to_compare = "/home/lab2/shahar/cluster_dirs/vcf/hgdp_test/classes/windows/mac_3/chr21/"
 
 
-def what():
-    all_files = os.listdir(directory_to_compare)
-    np_files = [file[:-3] for file in all_files if 'npy' in file]
-    vcf_files = [file[:-6] for file in all_files if 'vcf.gz' in file]
-    assert set(np_files) == set(vcf_files)
-    for file in np_files:
-        with open(directory_to_compare + file + 'npy', 'rb') as np_f:
-            matrix = np.load(np_f)
-        with gzip.open(directory_to_compare + file + 'vcf.gz', 'r') as gz_f:
-            vcf012 = gz_f.read().decode()
-        new_mat = split_chr_class_to_windows.file012_to_numpy(None, vcf012)
-        new_file = split_chr_class_to_windows.numpy_to_file012(None, matrix)
-        assert new_file == vcf012
-        assert np.all(new_mat == matrix)
-        print(f"Done with file {file}")
+def file012_to_numpy(input_file_path, raw_file=None):
+    if raw_file is None:
+        with open(input_file_path, 'rb') as f:
+            raw_file = f.read().decode()
+    split_individuals = raw_file.split('\n')
+    if split_individuals[-1] == '':  # we throw empty line at the end of the file
+        split_individuals = split_individuals[:-1]
+    split_sites = [individual.split('\t') for individual in split_individuals]
+    arr = np.array(split_sites, dtype=np.int8)
+    if np.any(arr[:, 0] > 2):
+        arr = arr[:, 1:]  # First column is individual number.
+    return arr
 
-
-def game():
-    file_type = 'count'
-    with open(f"/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/mac_2_all_{file_type}.npy", 'rb') as f:
-        old_np = np.load(f)
-    print()
 
 def compare_amir_similarities():
     amir_dir_path = "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/"

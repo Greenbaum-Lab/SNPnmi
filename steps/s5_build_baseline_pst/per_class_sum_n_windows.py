@@ -37,7 +37,7 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
 
 
 def load_hash_data(hash_file):
-    if not os.path.exists(hash_file):
+    if not os.path.exists(hash_file) or os.stat(hash_file).st_size == 0:
         with open(hash_file, "w+") as f:
             f.write("{}")
     with open(hash_file, "r") as f:

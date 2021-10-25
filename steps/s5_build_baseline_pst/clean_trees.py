@@ -1,5 +1,6 @@
 import os
 import shutil
+import json
 import sys
 from os.path import dirname, abspath, basename
 
@@ -56,7 +57,7 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
     with open(hash_file, "w") as f:
-        f.write(hash_data)
+        json.dump(f, hash_data)
 
 
 def delete_unfinished_trees_and_hashes(options):

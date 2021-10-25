@@ -49,7 +49,7 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         if os.path.exists(sim_dir + f"{class_name}_hash{k}_count.npy"):
             os.remove(sim_dir + f"{class_name}_hash{k}_count.npy")
         if os.path.exists(sim_dir + f"{class_name}_hash{k}_similarity.npy"):
-            os.remove(sim_dir + f"{class_name}_hash{k}_count.npy")
+            os.remove(sim_dir + f"{class_name}_hash{k}_similarity.npy")
         if os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
             os.remove(sim_dir + f"{class_name}_hash{k}_edges.txt")
         ns_path = ns_dir + f"_{k}/"

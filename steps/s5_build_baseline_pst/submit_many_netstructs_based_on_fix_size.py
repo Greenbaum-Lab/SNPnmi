@@ -46,7 +46,7 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
     if len(v) != num_of_winds:
         print(1)
         return False
-    job_long_name = f'{class_name}_hash{k}_weighted_true'
+    job_long_name = f'{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):

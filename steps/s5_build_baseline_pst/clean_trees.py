@@ -4,6 +4,7 @@ import json
 import sys
 from os.path import dirname, abspath, basename
 
+# python3 steps/s5_build_baseline_pst/clean_trees.py -d hgdp
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -66,6 +67,7 @@ def delete_unfinished_trees_and_hashes(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(dataset_name=options.dataset_name)
+    num_of_deleted_trees = 0
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -79,8 +81,9 @@ def delete_unfinished_trees_and_hashes(options):
                 class_name = f'{mac_maf}_{val}'
                 invalid_hashes = track_invalid_hashes_per_class(options, paths_helper, class_name)
                 if invalid_hashes:
+                    num_of_deleted_trees += len(invalid_hashes)
                     erase_invalid_trees(options, paths_helper, class_name, invalid_hashes)
-
+    print(f"Erased {num_of_deleted_trees} trees")
 
 def main(options):
     with Timer(f"Cleaning trees"):

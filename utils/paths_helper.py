@@ -19,6 +19,7 @@ class PathsHelper:
         self.windows_folder_template = self.windows_dir + '{mac_maf}_{class_name}'
         self.slices_folder = f'{self.classes_dir}slices/'
         self.random_slices_folder = f'{self.classes_dir}random_slices/'
+        self.summary_dir = f'{self.classes_dir}summary/'
 
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
         self.nmi_dir = f'{self.classes_dir}nmi/'

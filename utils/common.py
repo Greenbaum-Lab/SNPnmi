@@ -95,6 +95,11 @@ def write_upper_left_matrix_to_file(output_file, values):
             f.write(s.encode())
 
 
+def get_window_size(paths_helper):
+    with open(paths_helper.windows_dir + 'window_size.txt', 'r') as f:
+        window_size = int(f.read())
+    return window_size
+
 def str2bool(v) -> bool:
     if isinstance(v, bool):
         return v

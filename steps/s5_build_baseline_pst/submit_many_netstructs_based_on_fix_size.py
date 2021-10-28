@@ -3,7 +3,6 @@ import time
 from os.path import dirname, abspath, basename
 import sys
 from random import sample
-
 import numpy as np
 
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -12,7 +11,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import submit_netstruct
 from utils.similarity_helper import matrix_to_edges_file
@@ -89,7 +88,8 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
         stderr_files = []
     num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
-    print(f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
+    print(
+        f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
     for tree_idx in range(rest_num_of_trees):
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
         stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
@@ -100,8 +100,7 @@ def submit_mini_net_struct_for_all_classes(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(options.dataset_name)
-    with open(paths_helper.windows_dir + 'window_size.txt', 'r') as f:
-        window_size = int(f.read())
+    window_size = get_window_size(paths_helper)
     stderr_files = []
 
     for mac_maf in ['mac', 'maf']:

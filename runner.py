@@ -91,7 +91,7 @@ def runner(options):
 
 #  python3 runner.py -s 6.1 -d hgdp --mac 2,18 --maf 1,49
 
-#  python3 runner.py -s 6.2 -d hgdp --mac 2,18 --maf 1,49 --args 500,3
+#  python3 runner.py -s 6.2 -d hgdp --mac 2,18 --maf 1,49 --args 1000,3
 
 
 

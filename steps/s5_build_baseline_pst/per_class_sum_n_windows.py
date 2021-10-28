@@ -40,6 +40,7 @@ def load_hash_data(hash_file):
     if not os.path.exists(hash_file) or os.stat(hash_file).st_size == 0:
         with open(hash_file, "w+") as f:
             f.write("{}")
+        return {}
     with open(hash_file, "r") as f:
         data = json.load(f)
     return data

@@ -22,7 +22,6 @@ def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
     return df
 
 
-
 def collect_tree_sizes_to_csv(options):
     paths_helper = get_paths_helper(options.dataset_name)
     mac_min_range, mac_max_range = options.mac

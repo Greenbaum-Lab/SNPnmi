@@ -20,9 +20,11 @@ class PathsHelper:
         self.slices_folder = f'{self.classes_dir}slices/'
         self.random_slices_folder = f'{self.classes_dir}random_slices/'
         self.summary_dir = f'{self.classes_dir}summary/'
+        self.tree_sizes = self.summary_dir + '/tree_sizes.csv'
 
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
         self.nmi_dir = f'{self.classes_dir}nmi/'
+        self.nmi_file_template = self.nmi_dir + '{class_name}_{tree_hash}/step_{ns_ss}/{nmi_type}.txt'
         self.class_by_chr_template = self.classes_dir + '{chr_name}/{class_name}.012'
         self.window_by_class_and_chr_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
         self.window_by_class_and_chr_np_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.npy'

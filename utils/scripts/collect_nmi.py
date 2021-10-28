@@ -51,7 +51,7 @@ def collect_nmi(options):
 
     window_size = get_window_size(paths_helper)
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
-    csv_path = paths_helper.summary_dir + '/nmi_matrix.csv'
+    csv_path = paths_helper.summary_dir + f'/nmi_matrix_ss_{options.ns_ss}.csv'
     t_size = pd.read_csv(paths_helper.tree_sizes)
 
     df = pd.DataFrame()

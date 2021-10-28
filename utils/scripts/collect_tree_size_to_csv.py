@@ -43,7 +43,7 @@ def collect_tree_sizes_to_csv(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_tree_sizes_per_class(paths_helper, class_name, window_size, df)
-    df.to_csv(csv_path, index=True, index_label='Index_name')
+    df.to_csv(csv_path, index=True, index_label='Index', header=True)
 
 
 def main(options):

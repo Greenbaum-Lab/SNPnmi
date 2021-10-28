@@ -5,12 +5,11 @@ from os.path import dirname, abspath, basename
 import sys
 import pandas as pd
 
-from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
+from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
 from utils.common import get_paths_helper, args_parser, get_window_size
 from utils.loader import Timer
 

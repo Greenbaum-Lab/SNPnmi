@@ -5,6 +5,8 @@ from os.path import dirname, abspath, basename
 import sys
 import pandas as pd
 
+from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -76,6 +78,7 @@ def collect_nmi(options):
 
 def main(options):
     with Timer(f"Collect tree sizes to csv"):
+        collect_tree_sizes_to_csv(options)
         collect_nmi(options)
 
 

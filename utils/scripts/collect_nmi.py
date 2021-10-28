@@ -51,7 +51,7 @@ def collect_nmi(options):
     window_size = get_window_size(paths_helper)
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + '/nmi_matrix.csv'
-    tree_sizes = pd.read_csv(paths_helper.tree_sizes)
+    t_size = pd.read_csv(paths_helper.tree_sizes)
 
     df = pd.DataFrame()
 
@@ -66,7 +66,7 @@ def collect_nmi(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                df = collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes.loc[[class_name]])
+                df = collect_nmi_per_class(options, paths_helper, class_name, df, t_size[t_size['Class'] == class_name])
 
     df.to_csv(csv_path)
 

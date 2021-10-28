@@ -70,7 +70,7 @@ def collect_nmi(options):
                 df = collect_nmi_per_class(options, paths_helper, class_name, df,
                                            t_size[t_size['Class'] == class_name].drop(['Class'], axis=1))
 
-    df.to_csv(csv_path)
+    df.to_csv(csv_path, index_label='Class')
 
 
 

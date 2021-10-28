@@ -29,7 +29,7 @@ def collect_tree_sizes_to_csv(options):
     maf_min_range, maf_max_range = options.maf
 
     window_size = get_window_size(paths_helper)
-    os.makedirs(paths_helper.submit_dir, exist_ok=True)
+    os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + '/tree_sizes.csv'
     df = pd.DataFrame()
 

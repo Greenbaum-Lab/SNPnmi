@@ -3,6 +3,8 @@ import itertools
 import os
 from os.path import dirname, abspath, basename
 import sys
+
+import numpy as np
 import pandas as pd
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -30,6 +32,8 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
     for hash_idx in tree_sizes:
         tree_name = [f'{class_name}_{hash_idx}']
         df_tree = pd.DataFrame(columns=["Size"] + ALL_SCORES_TYPES, index=[f'{tree_name}'])
+        if df_tree['Size'] == np.nan:
+            continue
         df_tree['Size'] = int(tree_sizes[hash_idx])
         for nmi_type in NMI_TYPES:
             nmi_type_file = paths_helper.nmi_file_template.format(class_name=class_name, tree_hash=hash_idx,

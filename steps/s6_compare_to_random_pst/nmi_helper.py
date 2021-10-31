@@ -81,7 +81,6 @@ def collect_all_nodes_if_needed(folder):
     # only if output file does not exist we will create it
     all_nodes_path = f'{folder}AllNodes.txt'
     if os.path.exists(all_nodes_path):
-        print(f'All nodes exists: {all_nodes_path}')
         return all_nodes_path
 
     # look for community files in the folder, append them to the all_nodes_path file

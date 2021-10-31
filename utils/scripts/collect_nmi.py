@@ -4,8 +4,6 @@ import os
 from os.path import dirname, abspath, basename
 import sys
 import pandas as pd
-
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 

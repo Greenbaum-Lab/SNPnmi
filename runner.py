@@ -75,23 +75,23 @@ def runner(options):
 
 #  python3 runner.py -s 3.1 -d hgdp --mac 2,18 --maf 1,49 --args 100
 
-#  python3 runner.py -s 3.2 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 3.2 -d hgdp
 
-#  python3 runner.py -s 3.3 -d hgdp --mac 2,18 --maf 1,49 --args 2000
+#  python3 runner.py -s 3.3 -d hgdp --args 2000
 
-#  python3 runner.py -s 4.1 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 4.1 -d hgdp
 
-#  python3 runner.py -s 5.1 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 5.1 -d hgdp
 
-#  python3 runner.py -s 5.2 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 5.2 -d hgdp
 
-#  python3 runner.py -s 5.3 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 5.3 -d hgdp
 
-#  python3 runner.py -s 5.4 -d hgdp --mac 2,18 --maf 1,49 --args 1000,3
+#  python3 runner.py -s 5.4 -d hgdp --args 1000,3
 
-#  python3 runner.py -s 6.1 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 6.1 -d hgdp
 
-#  python3 runner.py -s 6.2 -d hgdp --mac 2,18 --maf 1,49 --args 1000,3
+#  python3 runner.py -s 6.2 -d hgdp --args 1000,3
 
 
 

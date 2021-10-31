@@ -6,7 +6,8 @@ sys.path.append(root_path)
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees
-from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi
+from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi, \
+    check_if_nmi_was_computed
 
 from utils.common import get_paths_helper, args_parser, get_window_size
 from utils.loader import Timer
@@ -19,8 +20,10 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     num_of_trees = len(hashes_of_fit_trees)
     assert num_of_trees >= num_of_desired_trees, f"There are only {num_of_trees} trees for class {class_name}"
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
+    not_computed_trees = check_if_nmi_was_computed(options, paths_helper, class_name, hashes_of_fit_trees)
+    num_of_trees_to_run = max(num_of_desired_trees - (num_of_trees - len(not_computed_trees)), 0)
 
-    for hash_tree in hashes_of_fit_trees[:num_of_desired_trees]:
+    for hash_tree in not_computed_trees[:tnum_of_rees_to_run]:
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
                           options, hash_tree)
 

@@ -35,15 +35,17 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
         if np.all(np.isnan(tree_sizes[hash_idx])):
             continue
         df_tree['Size'] = int(tree_sizes[hash_idx])
+        tree_vaild = True
         for nmi_type in NMI_TYPES:
             nmi_type_file = paths_helper.nmi_file_template.format(class_name=class_name, tree_hash=hash_idx,
                                                                   ns_ss=options.ns_ss, nmi_type=nmi_type)
             if not os.path.exists(nmi_type_file):
-                continue
+                tree_vaild = False
             scores = get_scores_from_nmi_file(nmi_type_file)
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]
-        df = df.append(df_tree, sort=False)
+        if tree_vaild:
+            df = df.append(df_tree, sort=False)
     return df
 
 

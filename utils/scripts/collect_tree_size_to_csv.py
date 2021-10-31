@@ -18,7 +18,7 @@ def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
     length_dict = {k: len(v) * window_size for (k, v) in raw_dict.items()}
     if length_dict:
         new_df = pd.DataFrame.from_records([length_dict], index=[class_name])
-        df = df.append(new_df)
+        df = df.append(new_df, sort=False)
     return df
 
 

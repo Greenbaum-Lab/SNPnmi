@@ -33,7 +33,7 @@ def get_scores_from_nmi_file(nmi_file):
 def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
     for hash_idx in tree_sizes:
         tree_name = [f'{class_name}_{hash_idx}']
-        df_tree = pd.DataFrame(columns=["Size"] + ALL_SCORES_TYPES, index=[f'{tree_name}'])
+        df_tree = pd.DataFrame(columns=["Size"] + ALL_SCORES_TYPES, index=tree_name)
         if np.all(np.isnan(tree_sizes[hash_idx])):
             continue
         df_tree['Size'] = int(tree_sizes[hash_idx])
@@ -66,7 +66,6 @@ def collect_nmi(options):
 
         # go over classes
     for mac_maf in ['mac', 'maf']:
-        print("fGo ")
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range

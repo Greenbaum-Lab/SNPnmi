@@ -41,6 +41,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
                                                                   ns_ss=options.ns_ss, nmi_type=nmi_type)
             if not os.path.exists(nmi_type_file):
                 tree_vaild = False
+                continue
             scores = get_scores_from_nmi_file(nmi_type_file)
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]

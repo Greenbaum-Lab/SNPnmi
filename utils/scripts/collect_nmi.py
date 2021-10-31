@@ -43,7 +43,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
             scores = get_scores_from_nmi_file(nmi_type_file)
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]
-        df = df.append(df_tree)
+        df = df.append(df_tree, sort=False)
     return df
 
 

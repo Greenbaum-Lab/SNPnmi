@@ -32,7 +32,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
     for hash_idx in tree_sizes:
         tree_name = [f'{class_name}_{hash_idx}']
         df_tree = pd.DataFrame(columns=["Size"] + ALL_SCORES_TYPES, index=[f'{tree_name}'])
-        print(df_tree)
+        print(df_tree['Size'])
         if np.all(np.isnan(df_tree['Size'])):
             continue
         df_tree['Size'] = int(tree_sizes[hash_idx])

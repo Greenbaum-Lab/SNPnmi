@@ -57,14 +57,12 @@ def collect_nmi(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
 
-    window_size = get_window_size(paths_helper)
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/nmi_matrix_ss_{options.ns_ss}.csv'
     t_size = pd.read_csv(paths_helper.tree_sizes)
 
     df = pd.DataFrame()
 
-        # go over classes
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range

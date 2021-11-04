@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
-from utils.common import get_paths_helper, args_parser, get_window_size
+from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
 NMI_TYPES = ['AllNodes', 'Leaves_NoOverlap', 'Leaves_WithOverlap']
@@ -57,7 +57,6 @@ def collect_nmi(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
 
-    os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/nmi_matrix_ss_{options.ns_ss}.csv'
     t_size = pd.read_csv(paths_helper.tree_sizes)
 

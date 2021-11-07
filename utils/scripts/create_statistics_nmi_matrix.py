@@ -61,7 +61,7 @@ def summarize_nmi_mat(options, paths_helper, ns_ss, df):
 
 
 def main(options):
-    with Timer(f"Collect tree sizes to csv"):
+    with Timer(f"Create statistics matrix"):
         paths_helper = get_paths_helper(options.dataset_name)
         ns_ss_args = options.ns_ss.split(',')
         ns_ss_args = [float(i) for i in ns_ss_args]

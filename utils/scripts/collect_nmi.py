@@ -80,7 +80,7 @@ def collect_nmi(options):
 
 
 def main(options):
-    with Timer(f"Collect tree sizes to csv"):
+    with Timer(f"Collect nmi"):
         collect_tree_sizes_to_csv(options)
         collect_nmi(options)
 

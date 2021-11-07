@@ -37,7 +37,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
         print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
         return job_stderr_file
     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, script_args, job_stdout_file,
-                      job_stderr_file, num_hours_to_run=get_cluster_time(options.ns_ss), memory=4, debug=False)
+                      job_stderr_file, num_hours_to_run=2, memory=4, debug=False)
     return job_stderr_file
 
 def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):

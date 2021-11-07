@@ -6,40 +6,39 @@ from random import sample
 import numpy as np
 
 from utils.checkpoint_helper import execute_with_checkpoint
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.config import get_cluster_code_folder
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data, handle_hash_file
 from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size
 from utils.loader import Loader, Timer
-from utils.netstrcut_helper import submit_netstruct
+from utils.netstrcut_helper import submit_netstruct, get_cluster_time, is_tree_exists
 from utils.similarity_helper import matrix_to_edges_file
 
 job_type = "mini_net-struct"
 SCRIPT_NAME = basename(__file__)
-
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/compute_similarity_and_run_netstruct.py'
 
 def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     class_name = f'{mac_maf}_{class_val}'
-    tree_hash = sum_windows(class_name=class_name, windows_id_list=winds,
-                            similarity_window_template=paths_helper.similarity_by_class_and_window_template,
-                            count_window_template=paths_helper.count_by_class_and_window_template,
-                            output_dir=paths_helper.similarity_by_class_folder_template.format(
-                                class_name=class_name),
-                            paths_helper=paths_helper)
+    tree_hash = handle_hash_file(class_name, paths_helper, winds)
     job_long_name = f'{class_name}_hash{tree_hash}_ns_{options.ns_ss}_weighted_true'
     job_name = f'ns{class_val}_{tree_hash}'
-    similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npy'
-    count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npy'
-    similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
-    matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_dir = paths_helper.net_struct_dir + f'{class_name}_{tree_hash}/'
-    err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file,
-                                output_dir)
-    return err_file
-
+    # job data
+    job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
+    job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
+    # cluster setting
+    script_args = f'-d {options.dataset_name} --args {mac_maf},{class_val},{tree_hash} --ns_ss {options.ns_ss} --mac{options.mac} --maf{options.maf}'
+    if is_tree_exists(options, output_dir, job_stderr_file):
+        print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
+        return job_stderr_file
+    submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, script_args, job_stdout_file,
+                      job_stderr_file, num_hours_to_run=get_cluster_time(options.ns_ss), memory=4, debug=False)
+    return job_stderr_file
 
 def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:

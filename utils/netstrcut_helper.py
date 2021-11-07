@@ -41,10 +41,6 @@ def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matr
 
 
 def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.001'):
-    # validate the input
-    if not _validate_count_dist_file(options, similarity_matrix_path):
-        print(f'{similarity_matrix_path} not valid, wont run netstruct')
-        # return None
 
     paths_helper = get_paths_helper(options.dataset_name)
     jar_path = paths_helper.netstruct_jar

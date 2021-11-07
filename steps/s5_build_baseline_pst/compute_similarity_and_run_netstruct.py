@@ -47,7 +47,7 @@ def main(options):
     mac_maf = options.args[0]
     assert mac_maf == 'mac' or mac_maf == 'maf'
     val = options.args[1]
-    tree_hash = options.args[2]
+    tree_hash = str(options.args[2])
     class_name = f"{mac_maf}_{val}"
     paths_helper = get_paths_helper(options.dataset_name)
     hash_json = load_hash_data(paths_helper.hash_windows_list_template.format(class_name=class_name))

@@ -16,7 +16,7 @@ from utils.loader import Timer
 def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
     hash_json = paths_helper.hash_windows_list_template.format(class_name=class_name)
     raw_dict = load_hash_data(hash_json)
-    length_dict = {int(k): int(len(v) * window_size) for (k, v) in raw_dict.items()}
+    length_dict = {k: float(len(v) * window_size) for (k, v) in raw_dict.items()}
     if length_dict:
         new_df = pd.DataFrame.from_records([length_dict], index=[class_name])
         df = df.append(new_df, sort=False)

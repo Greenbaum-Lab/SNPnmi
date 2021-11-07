@@ -59,8 +59,8 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
                 json.dump(data, f)
             return new_hash
         else:
-            reverse_dict = {val: key for (key, val) in data.items()}
-            return reverse_dict[windows_id_list]
+            reverse_dict = {tuple(val): key for (key, val) in data.items()}
+            return reverse_dict[tuple(windows_id_list)]
 
 def get_args(options):
     print('Number of arguments:', len(options.args), 'arguments.')

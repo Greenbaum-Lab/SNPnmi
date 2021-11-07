@@ -53,7 +53,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
         hash_codes = [int(i) for i in data.keys()]
         new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
         if list(windows_id_list) not in data.values():
-            data[new_hash] = list(windows_id_list)
+            data[str(new_hash)] = list(windows_id_list)
             print(data)
             with open(hash_file, "w") as f:
                 json.dump(data, f)

@@ -4,5 +4,4 @@
 cmd2run=$1
 
 echo "$cmd2run"
-module load bio
 eval "$cmd2run"

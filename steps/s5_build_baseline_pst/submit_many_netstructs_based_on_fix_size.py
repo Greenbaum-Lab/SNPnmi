@@ -32,7 +32,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
     # cluster setting
-    script_args = f'-d {options.dataset_name} --args {mac_maf},{class_val},{tree_hash} --ns_ss {options.ns_ss} --mac{options.mac} --maf{options.maf}'
+    script_args = f'-d {options.dataset_name} --args {mac_maf},{class_val},{tree_hash} --ns_ss {options.ns_ss}'
     if is_tree_exists(options, output_dir, job_stderr_file):
         print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
         return job_stderr_file

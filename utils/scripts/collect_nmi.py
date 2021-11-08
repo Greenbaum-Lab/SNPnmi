@@ -31,11 +31,16 @@ def get_scores_from_nmi_file(nmi_file):
 
 
 def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
+    df_class = pd.DataFrame()
+    trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     for hash_idx in tree_sizes:
-        tree_name = [f'{class_name}_{hash_idx}']
-        df_tree = pd.DataFrame(columns=["Size"] + ALL_SCORES_TYPES, index=tree_name)
+        tree_name = f'{class_name}_{hash_idx}'
+        if tree_name in trees_in_df:
+            continue
+        df_tree = pd.DataFrame(columns=["Tree", "Size"] + ALL_SCORES_TYPES)
         if np.all(np.isnan(tree_sizes[hash_idx])):
             continue
+        df_tree['Tree'] = tree_name
         df_tree['Size'] = int(tree_sizes[hash_idx])
         tree_vaild = True
         for nmi_type in NMI_TYPES:
@@ -48,7 +53,8 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]
         if tree_vaild:
-            df = df.append(df_tree, sort=False)
+            df_class = df_class.append(df_tree, sort=False)
+    df = df.append(df_class, sort=False)
     return df
 
 
@@ -60,7 +66,7 @@ def collect_nmi(options):
     csv_path = paths_helper.summary_dir + f'/nmi_matrix_ss_{options.ns_ss}.csv'
     t_size = pd.read_csv(paths_helper.tree_sizes)
 
-    df = pd.DataFrame()
+    df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
@@ -73,9 +79,9 @@ def collect_nmi(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_nmi_per_class(options, paths_helper, class_name, df,
-                                           t_size[t_size['Class'] == class_name].drop(['Class'], axis=1))
+                                           t_size[t_size['Tree'] == class_name])
 
-    df.to_csv(csv_path, index_label='Class')
+    df.to_csv(csv_path, index=False)
 
 
 

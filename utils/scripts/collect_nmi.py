@@ -40,7 +40,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
         df_tree = pd.DataFrame(columns=["Tree", "Size"] + ALL_SCORES_TYPES)
         if np.all(np.isnan(tree_sizes[hash_idx])):
             continue
-        df_tree['Tree'] = tree_name
+        df_tree['Tree'] = [tree_name]
         df_tree['Size'] = int(tree_sizes[hash_idx])
         tree_vaild = True
         for nmi_type in NMI_TYPES:

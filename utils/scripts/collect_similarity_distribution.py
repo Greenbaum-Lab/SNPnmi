@@ -11,18 +11,18 @@ import re
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
 
-def collect_similarity_distributions_per_class(paths_helper, class_name, df):
+def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     try:
         trees_in_df = list(df['Tree'])
     except:
         trees_in_df = []
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
-    bins = 101  # bins = 1 / options.ns_ss + 1
+    bins = 1 / options.ns_ss + 1
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
@@ -57,7 +57,7 @@ def collect_similarity_distributions(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                df = collect_similarity_distributions_per_class(paths_helper, class_name, df)
+                df = collect_similarity_distributions_per_class(options, paths_helper, class_name, df)
     df.to_csv(csv_path, index_label='Tree')
 
 
@@ -67,6 +67,5 @@ def main(options):
 
 
 if __name__ == "__main__":
-    collect_similarity_distributions_per_class()
-    # arguments = args_parser()
-    # main(arguments)
+    arguments = args_parser()
+    main(arguments)

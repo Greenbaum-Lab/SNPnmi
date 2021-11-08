@@ -16,19 +16,18 @@ from utils.loader import Timer
 
 
 def collect_similarity_distributions_per_class(paths_helper, class_name, df):
-    # similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    similarity_dir = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/maf_0.4/"
-    df_path = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/summary/nmi_matrix_ss_0.01.csv"
-    df = pd.read_csv(df_path)
-    trees_in_df = list(df['Class'])
+    similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    try:
+        trees_in_df = list(df['Tree'])
+    except:
+        trees_in_df = []
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
     bins = 101  # bins = 1 / options.ns_ss + 1
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:
-            pass
-            # continue
+            continue
         with open(similarity_dir + file, "r") as f:
             edges = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])

@@ -1,4 +1,5 @@
 # python3 utils/scripts/collect_tree_size_to_csv.py -d hgdp
+import json
 import os
 from os.path import dirname, abspath, basename
 import sys
@@ -7,15 +8,18 @@ import pandas as pd
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_dict_from_json
 from utils.common import get_paths_helper, args_parser, get_window_size
 from utils.loader import Timer
 
 
 def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
     hash_json = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    raw_dict = load_hash_data(hash_json)
+    raw_dict = load_dict_from_json(hash_json)
     length_dict = {k: float(len(v) * window_size) for (k, v) in raw_dict.items()}
+    length_dict_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
+    with open(length_dict_path, "w") as f:
+        json.dump(length_dict, f)
     if length_dict:
         new_df = pd.DataFrame.from_records([length_dict], index=[class_name])
         df = df.append(new_df, sort=False)

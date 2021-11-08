@@ -7,7 +7,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.netstrcut_helper import build_netstruct_cmd
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_dict_from_json
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser
 from utils.similarity_helper import matrix_to_edges_file
@@ -50,7 +50,7 @@ def main(options):
     tree_hash = str(options.args[2])
     class_name = f"{mac_maf}_{val}"
     paths_helper = get_paths_helper(options.dataset_name)
-    hash_json = load_hash_data(paths_helper.hash_windows_list_template.format(class_name=class_name))
+    hash_json = load_dict_from_json(paths_helper.hash_windows_list_template.format(class_name=class_name))
     winds = hash_json[tree_hash]
     compute_similarity_and_run_net_struct(options, mac_maf, val, paths_helper, winds)
 

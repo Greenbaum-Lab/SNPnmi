@@ -9,7 +9,7 @@ from os.path import dirname, abspath, basename
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_hash_data
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_dict_from_json
 from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
@@ -17,10 +17,10 @@ from utils.loader import Timer
 def track_invalid_hashes_per_class(options, paths_helper, class_name):
     ns_dir = paths_helper.net_struct_dir + f'{class_name}'
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    hash_dict = load_hash_data(hash_file)
+    hash_file = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
+    hash_length_dict = load_dict_from_json(hash_file)
     invalid_hashes = []
-    for k in hash_dict.keys():
+    for k in hash_length_dict.keys():
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
         log_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)
         if not os.path.exists(log_file) or os.stat(log_file).st_size > 0:
@@ -38,7 +38,7 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
     ns_dir = paths_helper.net_struct_dir + f'{class_name}'
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    hash_data = load_hash_data(hash_file)
+    hash_data = load_dict_from_json(hash_file)
     for k in invalid_hashes:
         del hash_data[k]
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
@@ -56,9 +56,6 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         ns_path = ns_dir + f"_{k}/"
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
-    if not hash_data:
-        with open(hash_file, "w") as f:
-            f.write("{}")
     with open(hash_file, "w") as f:
         json.dump(hash_data, f)
 

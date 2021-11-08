@@ -12,7 +12,7 @@ from utils.config import get_cluster_code_folder
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_hash_data, handle_hash_file
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_dict_from_json, handle_hash_file
 from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import submit_netstruct, get_cluster_time, is_tree_exists
@@ -62,7 +62,7 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
 
 def get_hashes_for_computed_trees(options, paths_helper, class_name, num_of_winds):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    data = load_hash_data(hash_file)
+    data = load_dict_from_json(hash_file)
     keys_for_hash_in_correct_size = []
     for k, v in data.items():
         if is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):

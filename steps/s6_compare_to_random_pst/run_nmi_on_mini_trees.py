@@ -22,6 +22,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     num_of_trees = len(hashes_of_fit_trees)
     assert num_of_trees >= num_of_desired_trees, f"There are only {num_of_trees} trees for class {class_name}"
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
+    print(ns_base_dir)
     not_computed_trees = check_if_nmi_was_computed(options, paths_helper, class_name, hashes_of_fit_trees)
     num_of_trees_to_run = max(num_of_desired_trees - (num_of_trees - len(not_computed_trees)), 0)
 

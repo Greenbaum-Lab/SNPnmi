@@ -46,7 +46,7 @@ def collect_similarity_distributions(options):
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/distribution_similarity_per_tree_ss_{options.ns_ss}.csv'
-    df = pd.DataFrame()
+    df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'

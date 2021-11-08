@@ -79,7 +79,7 @@ def collect_nmi(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_nmi_per_class(options, paths_helper, class_name, df,
-                                           t_size[t_size['Tree'] == class_name])
+                                           t_size[t_size['Class'] == class_name])
 
     df.to_csv(csv_path, index=False)
 

@@ -18,8 +18,6 @@ from utils.loader import Timer
 
 def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    print(list(df['Tree']))
-    return
     try:
         trees_in_df = list(df['Tree'])
     except:
@@ -35,8 +33,8 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
             edges = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
-        df_tree = pd.DataFrame([[edges.min(), edges.mean(), np.median(edges)] + list(hist)],
-                               columns=["min", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1], index=[tree_name])
+        df_tree = pd.DataFrame([[tree_name, edges.min(), edges.mean(), np.median(edges)] + list(hist)],
+                               columns=["Tree", "min", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1], index=[tree_name])
         df = df.append(df_tree, sort=False)
     return df
 

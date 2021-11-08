@@ -19,6 +19,7 @@ from utils.loader import Timer
 def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
+    df_class = pd.DataFrame()
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
     bins = int(1 / float(options.ns_ss) + 1)
     for file in files:
@@ -32,7 +33,8 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
         df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges)] + list(hist)],
                                columns=["Tree", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1])
-        df = df.append(df_tree, sort=False)
+        df_class = df_class.append(df_tree, sort=False)
+    df = df.append(df_class)
     return df
 
 

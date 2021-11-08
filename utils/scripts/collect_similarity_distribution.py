@@ -28,7 +28,6 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:
-            print(f"skip - {tree_name}")
             continue
         with open(similarity_dir + file, "r") as f:
             edges = f.readlines()

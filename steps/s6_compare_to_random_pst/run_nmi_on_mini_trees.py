@@ -13,6 +13,7 @@ from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run
 
 from utils.common import get_paths_helper, args_parser, get_window_size
 from utils.loader import Timer
+
 SCRIPT_NAME = basename(__file__)
 
 
@@ -22,13 +23,12 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     num_of_trees = len(hashes_of_fit_trees)
     assert num_of_trees >= num_of_desired_trees, f"There are only {num_of_trees} trees for class {class_name}"
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
-    print(ns_base_dir)
     not_computed_trees = check_if_nmi_was_computed(options, paths_helper, class_name, hashes_of_fit_trees)
     num_of_trees_to_run = max(num_of_desired_trees - (num_of_trees - len(not_computed_trees)), 0)
 
     for hash_tree in not_computed_trees[:num_of_trees_to_run]:
-        run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
-                          options, hash_tree)
+        run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,
+                          paths_helper.net_struct_dir_class.format(class_name=class_name), options, hash_tree)
 
 
 def run_nmi_on_classes_all_trees(options):
@@ -37,7 +37,7 @@ def run_nmi_on_classes_all_trees(options):
     maf_min_range, maf_max_range = options.maf
     window_size = get_window_size(paths_helper)
     data_size = options.args[0]
-    assert data_size // window_size == data_size/window_size, "data size is not dividable in window size"
+    assert data_size // window_size == data_size / window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
@@ -57,6 +57,7 @@ def main(options):
         is_executed, msg = execute_with_checkpoint(run_nmi_on_classes_all_trees, SCRIPT_NAME, options)
         print(msg)
     return is_executed
+
 
 if __name__ == "__main__":
     arguments = args_parser()

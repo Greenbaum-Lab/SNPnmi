@@ -19,25 +19,22 @@ from utils.loader import Timer
 def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
-    df_class = {}
+    df_class = pd.DataFrame()
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
     bins = int(1 / float(options.ns_ss) + 1)
-    i = 0
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:
             continue
-        i += 1
         with open(similarity_dir + file, "r") as f:
             edges = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
-        df_class[i] = {"Tree": tree_name, "mean": edges.mean(), "median": np.median(edges)}.update(
-            {k: val for (k, val) in zip(list(hist), [str(e) for e in np.linspace(0, 1, bins)][:-1])}
-        )
-    df_class = pd.DataFrame.from_dict(df_class)
-    df = df.append(df_class, sort=False)
+        df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges)] + list(hist)],
+                               columns=["Tree", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1])
+        df_class = df_class.append(df_tree, sort=False)
+    df = df.append(df_class)
     return df
 
 
@@ -62,7 +59,7 @@ def collect_similarity_distributions(options):
                 class_name = f'{mac_maf}_{val}'
                 df = collect_similarity_distributions_per_class(options, paths_helper, class_name, df)
                 print(f"Done with {class_name}")
-    df.to_csv(paths_helper.summary_dir + f'/distribution_similarity_per_tree_ss_{options.ns_ss}2.csv', index=False)
+    df.to_csv(csv_path, index=False)
 
 
 def main(options):

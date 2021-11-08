@@ -37,20 +37,21 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
 
 
 def load_dict_from_json(json_path):
-    if not os.path.exists(json_path) or os.stat(json_path).st_size == 0:
-        with open(json_path, "w+") as f:
-            f.write("{}")
-        return {}
-    with open(json_path, "r") as f:
-        data = json.load(f)
-    return data
+    with FileLock(json_path):
+        if not os.path.exists(json_path) or os.stat(json_path).st_size == 0:
+            with open(json_path, "w+") as f:
+                f.write("{}")
+            return {}
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        return data
 
 
 def handle_hash_file(class_name, paths_helper, windows_id_list):
     windows_id_list = [int(wind) for wind in windows_id_list]
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
+    data = load_dict_from_json(hash_file)
     with FileLock(hash_file):
-        data = load_dict_from_json(hash_file)
         hash_codes = [int(i) for i in data.keys()]
         new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
         if windows_id_list not in data.values():

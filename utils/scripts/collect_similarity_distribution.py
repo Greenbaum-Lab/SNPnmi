@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import re
 
+from utils.filelock import FileLock
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -15,16 +17,23 @@ from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
 
-def collect_similarity_distributions_per_class(paths_helper, class_name, df):
+def collect_similarity_distributions_per_class(class_name='mac_2'):
     # similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-
-    files = [f for f in os.listdir() if "edges" in f and "all" not in f]
+    similarity_dir = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/maf_0.4/"
+    df_path = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/summary/nmi_matrix_ss_0.01.csv"
+    df = pd.read_csv(df_path)
+    trees_in_df = list(df['Class'])
+    files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
+    bins = 101  # bins = 1 / options.ns_ss + 1
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
-        with open(file, "r") as f:
+        if f'{class_name}_{hash_tree}' in trees_in_df:
+            continue
+        with open(similarity_dir + file, "r") as f:
             edges = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])
-        hist = np.histogram(edges, bins=np.linspace(0, 1, 100))
+        hist = np.histogram(edges, bins=np.linspace(0, 1, bins))
+        print()
 
 
 def collect_similarity_distributions(options):
@@ -56,5 +65,6 @@ def main(options):
 
 
 if __name__ == "__main__":
-    arguments = args_parser()
-    main(arguments)
+    collect_similarity_distributions_per_class()
+    # arguments = args_parser()
+    # main(arguments)

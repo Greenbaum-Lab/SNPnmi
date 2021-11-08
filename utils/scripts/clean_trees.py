@@ -4,7 +4,7 @@ import json
 import sys
 from os.path import dirname, abspath, basename
 
-# python3 steps/s5_build_baseline_pst/clean_trees.py -d hgdp
+# python3 utils/scripts/clean_trees.py -d hgdp
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)

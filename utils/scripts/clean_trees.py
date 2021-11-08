@@ -15,7 +15,7 @@ from utils.loader import Timer
 
 
 def track_invalid_hashes_per_class(options, paths_helper, class_name):
-    ns_dir = paths_helper.net_struct_dir + f'{class_name}'
+    ns_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
     hash_length_dict = load_dict_from_json(hash_file)
@@ -27,7 +27,7 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
             invalid_hashes.append(k)
         elif not os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
             invalid_hashes.append(k)
-        elif not os.path.isdir(ns_dir + f'_{k}') or not os.listdir(ns_dir + f'_{k}'):
+        elif not os.path.isdir(ns_dir + f'{class_name}_{k}') or not os.listdir(ns_dir + f'{class_name}_{k}'):
             invalid_hashes.append(k)
     if invalid_hashes:
         print(f"Deleting for class {class_name} the next hashes: {invalid_hashes}")
@@ -35,7 +35,7 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
 
 
 def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
-    ns_dir = paths_helper.net_struct_dir + f'{class_name}'
+    ns_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     hash_data = load_dict_from_json(hash_file)
@@ -53,7 +53,7 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
             os.remove(sim_dir + f"{class_name}_hash{k}_similarity.npy")
         if os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
             os.remove(sim_dir + f"{class_name}_hash{k}_edges.txt")
-        ns_path = ns_dir + f"_{k}/"
+        ns_path = ns_dir + f"{class_name}_{k}/"
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
     with open(hash_file, "w") as f:

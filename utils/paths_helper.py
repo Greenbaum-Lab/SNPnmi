@@ -23,6 +23,7 @@ class PathsHelper:
         self.tree_sizes = self.summary_dir + '/tree_sizes.csv'
 
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
+        self.net_struct_dir_class = f'{self.net_struct_dir}' +'{class_name}/'
         self.nmi_dir = f'{self.classes_dir}nmi/'
         self.nmi_tree_template = self.nmi_dir + '{class_name}_{tree_hash}/step_{ns_ss}/'
         self.nmi_file_template = self.nmi_tree_template + '{nmi_type}.txt'

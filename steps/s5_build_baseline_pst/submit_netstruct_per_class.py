@@ -35,7 +35,7 @@ def submit_netstruct_per_class(options):
                 class_name = f"{mac_maf}_{val}"
                 job_long_name = f'{mac_maf}{val}_weighted_true'
                 job_name = f'ns_{val}'
-                output_folder = paths_helper.net_struct_dir + f'{class_name}_all/'
+                output_folder = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_all/'
 
                 similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
                 similarity_matrix_path = similarity_dir + f'{class_name}_all_similarity.npy'

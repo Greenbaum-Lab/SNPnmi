@@ -17,7 +17,7 @@ from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
 
-def collect_similarity_distributions_per_class(class_name='mac_2'):
+def collect_similarity_distributions_per_class(paths_helper, class_name, df):
     # similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_dir = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/similarity/maf_0.4/"
     df_path = "/home/lab2/shahar/cluster_dirs/vcf/hgdp/classes/summary/nmi_matrix_ss_0.01.csv"
@@ -27,13 +27,18 @@ def collect_similarity_distributions_per_class(class_name='mac_2'):
     bins = 101  # bins = 1 / options.ns_ss + 1
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
-        if f'{class_name}_{hash_tree}' in trees_in_df:
-            continue
+        tree_name = f'{class_name}_{hash_tree}'
+        if tree_name in trees_in_df:
+            pass
+            # continue
         with open(similarity_dir + file, "r") as f:
             edges = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])
-        hist = np.histogram(edges, bins=np.linspace(0, 1, bins))
-        print()
+        hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
+        df_tree = pd.DataFrame([[edges.min(), edges.mean(), np.median(edges), edges.max()] + list(hist)],
+                               columns=["min", "mean", "median", "max"] + np.linspace(0, 1, bins), index=tree_name)
+        df = df.append(df_tree)
+    return df
 
 
 def collect_similarity_distributions(options):
@@ -56,7 +61,7 @@ def collect_similarity_distributions(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_similarity_distributions_per_class(paths_helper, class_name, df)
-    df.to_csv(csv_path, index_label='Class')
+    df.to_csv(csv_path, index_label='Tree')
 
 
 def main(options):

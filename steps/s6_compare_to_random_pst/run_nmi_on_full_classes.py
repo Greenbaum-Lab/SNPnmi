@@ -35,7 +35,7 @@ def run_nmi_on_all(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f"{mac_maf}_{val}"
                 run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,
-                                  ns_base_dir, options, 'all')
+                                  f'{ns_base_dir}{class_name}/', options, 'all')
 
 
 def main(options):

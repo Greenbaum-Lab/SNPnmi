@@ -27,7 +27,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     tree_hash = handle_hash_file(class_name, paths_helper, winds)
     job_long_name = f'{class_name}_hash{tree_hash}_ns_{options.ns_ss}_weighted_true'
     job_name = f'ns{class_val}_{tree_hash}'
-    output_dir = paths_helper.net_struct_dir + f'{class_name}_{tree_hash}/'
+    output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
     # job data
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type, job_name=job_long_name)
@@ -50,7 +50,7 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
         return False
     if os.stat(stderr_file_name).st_size > 0:
         return False
-    net_struct_dir = paths_helper.net_struct_dir
+    net_struct_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
     if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
         return False
     list_trees = os.listdir(f'{net_struct_dir}{class_name}_{k}')

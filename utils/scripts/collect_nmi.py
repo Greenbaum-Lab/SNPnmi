@@ -36,9 +36,11 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
     for hash_idx in tree_sizes:
         tree_name = f'{class_name}_{hash_idx}'
         if tree_name in trees_in_df:
+            print(1)
             continue
         df_tree = pd.DataFrame(columns=["Tree", "Size"] + ALL_SCORES_TYPES)
         if np.all(np.isnan(tree_sizes[hash_idx])):
+            print(2)
             continue
         df_tree['Tree'] = tree_name
         df_tree['Size'] = int(tree_sizes[hash_idx])
@@ -48,11 +50,13 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
                                                                   ns_ss=options.ns_ss, nmi_type=nmi_type)
             if not os.path.exists(nmi_type_file):
                 tree_vaild = False
+                print(3)
                 continue
             scores = get_scores_from_nmi_file(nmi_type_file)
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]
         if tree_vaild:
+            print('a')
             df_class = df_class.append(df_tree, sort=False)
     df = df.append(df_class, sort=False)
     return df

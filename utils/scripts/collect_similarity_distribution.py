@@ -16,7 +16,8 @@ from utils.loader import Timer
 
 
 def collect_similarity_distributions_per_class(paths_helper, class_name, df):
-    similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    # similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+
     files = [f for f in os.listdir() if "edges" in f and "all" not in f]
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]

@@ -53,6 +53,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
             for i in range(len(SCORES)):
                 df_tree[[f'{nmi_type}_{SCORES[i]}']] = scores[i]
         if tree_vaild:
+            print(df_tree)
             df_class = df_class.append(df_tree, sort=False)
     print(df_class)
     df = df.append(df_class, sort=False)

@@ -90,7 +90,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     print(
         f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
     for tree_idx in range(rest_num_of_trees):
-        time.sleep(0.1)  # To avoid FileLock failures.
+        time.sleep(0.02)  # To avoid FileLock failures.
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
         stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
     return stderr_files

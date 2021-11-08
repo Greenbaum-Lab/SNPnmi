@@ -3,7 +3,6 @@ import os
 from os.path import dirname, abspath, basename
 import sys
 import pandas as pd
-from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -38,7 +37,7 @@ def collect_tree_sizes_to_csv(options):
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range >= 0:
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+            for val in range(min_range, max_range + 1):
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

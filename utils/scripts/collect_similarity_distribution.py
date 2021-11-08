@@ -18,10 +18,7 @@ from utils.loader import Timer
 
 def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    try:
-        trees_in_df = list(df['Tree'])
-    except:
-        trees_in_df = []
+    trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
     bins = int(1 / float(options.ns_ss) + 1)
     for file in files:

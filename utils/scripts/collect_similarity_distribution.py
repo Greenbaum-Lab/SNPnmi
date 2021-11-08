@@ -22,7 +22,7 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
     except:
         trees_in_df = []
     files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
-    bins = 1 / float(options.ns_ss) + 1
+    bins = int(1 / float(options.ns_ss) + 1)
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'

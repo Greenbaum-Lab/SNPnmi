@@ -1,5 +1,4 @@
-# python3 utils/scripts/collect_tree_size_to_csv.py -d hgdp
-import json
+# python3 utils/scripts/collect_similarity_distribution.py -d hgdp
 import os
 from os.path import dirname, abspath, basename
 import sys
@@ -8,12 +7,11 @@ import numpy as np
 import pandas as pd
 import re
 
-from utils.filelock import FileLock
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper
 from utils.loader import Timer
 
 

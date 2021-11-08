@@ -18,6 +18,8 @@ from utils.loader import Timer
 
 def collect_similarity_distributions_per_class(options, paths_helper, class_name, df):
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    print(list(df['Tree']))
+    return
     try:
         trees_in_df = list(df['Tree'])
     except:
@@ -27,9 +29,7 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
     for file in files:
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
-        print(tree_name)
         if tree_name in trees_in_df:
-            print(f"skip - {tree_name}")
             continue
         with open(similarity_dir + file, "r") as f:
             edges = f.readlines()

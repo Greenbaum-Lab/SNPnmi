@@ -35,7 +35,7 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
         df_tree = pd.DataFrame([[edges.min(), edges.mean(), np.median(edges)] + list(hist)],
                                columns=["min", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1], index=[tree_name])
-        df = df.append(df_tree)
+        df = df.append(df_tree, sort=False)
     return df
 
 

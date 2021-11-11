@@ -67,7 +67,6 @@ def collect_similarity_distributions(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df)
-                print(f"Done with {class_name}")
     df.to_csv(csv_path, index=False)
     return df
 
@@ -82,6 +81,7 @@ def combine_distributions_per_class(options, paths_helper, class_name, input_df,
         class_df[f'avg_{c}'] = avg
         std = np.std(input_df[c])
         class_df[f'std_{c}'] = std
+    print(class_df)
     sum_df = sum_df.append(class_df)
     return sum_df
 
@@ -109,7 +109,6 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
             sum_mat_df = combine_distributions_per_class(options, paths_helper, class_name,
                                                          full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
                                                          sum_mat_df)
-            print(f"Done with {class_name}")
     sum_mat_df.to_csv(csv_output_path, index=False)
 
 

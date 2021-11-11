@@ -78,10 +78,9 @@ def combine_distributions_per_class(options, paths_helper, class_name, input_df,
         if c == 'Tree':
             continue
         avg = np.mean(input_df[c])
-        class_df[f'avg_{c}'] = avg
+        class_df[f'avg_{c}'] = [avg]
         std = np.std(input_df[c])
-        class_df[f'std_{c}'] = std
-    print(class_df)
+        class_df[f'std_{c}'] = [std]
     sum_df = sum_df.append(class_df)
     return sum_df
 

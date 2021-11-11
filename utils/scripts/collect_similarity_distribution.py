@@ -73,7 +73,7 @@ def collect_similarity_distributions(options):
 
 def combine_distributions_per_class(options, paths_helper, class_name, input_df, sum_df):
     class_df = pd.DataFrame(columns=sum_df.columns)
-    class_df['Class'] = class_name
+    class_df['Class'] = [class_name]
     for c in input_df.columns:
         if c == 'Tree':
             continue
@@ -81,7 +81,6 @@ def combine_distributions_per_class(options, paths_helper, class_name, input_df,
         class_df[f'avg_{c}'] = [avg]
         std = np.std(input_df[c])
         class_df[f'std_{c}'] = [std]
-    print(class_df)
     sum_df = sum_df.append(class_df)
     return sum_df
 

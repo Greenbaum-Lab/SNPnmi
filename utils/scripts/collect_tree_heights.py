@@ -9,6 +9,7 @@ import re
 
 from tqdm import tqdm
 
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -20,21 +21,23 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
-    files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
-    hash_length_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
-    tree_length_dict = load_dict_from_json(hash_length_path)
+    tree_nums = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
+    tree_dirs = {h: paths_helper.net_struct_dir_class.format(class_name=class_name, tree_hash=h) for h in tree_nums.keys()}
+    tree_length_dict = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
     tree_size = options.args[0]
-    for file in files:
-        hash_tree = re.findall('[0-9]+', file)[-1]
-        tree_name = f'{class_name}_{hash_tree}'
+    for tree_hash, dir in tree_dirs.items():
+        tree_name = f'{class_name}_{tree_hash}'
         if tree_name in trees_in_df:
             continue
-        assert str(
-            hash_tree) in tree_length_dict.keys(), f"class {class_name} tree {tree_name} is missing from tree size file!"
-        if tree_length_dict[hash_tree] != tree_size:
+        if tree_length_dict[tree_hash] != tree_size:
             continue
-        with open(similarity_dir + file, "r") as f:
-            edges = f.readlines()
+        sub_trees = os.listdir(dir)
+        correct_trees = [t for t in sub_trees if f"SS_{options.ns_ss}" in t]
+        assert len(correct_trees) == 1, f"more than 1 tree or tree {tree_hash} for class {class_name} is missing"
+        tree_dir = correct_trees[0]
+        comm_analysis_file = [f for f in os.listdir(dir + sub_trees + tree_dir) if "CommAnalysis" in f][0]
+        with open(dir + sub_trees + tree_dir + comm_analysis_file, "r") as f:
+            tree_structure = f.readlines()
         edges = np.array([float(e.split(" ")[2]) for e in edges])
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
         df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges)] + list(hist)],
@@ -44,7 +47,7 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
     return df
 
 
-def collect_similarity_distributions(options):
+def collect_tree_heights(options):
     print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
     mac_min_range, mac_max_range = options.mac
@@ -52,7 +55,7 @@ def collect_similarity_distributions(options):
     tree_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
-    csv_path = paths_helper.summary_dir + f'/distribution_similarity_per_tree_{tree_size}.csv'
+    csv_path = paths_helper.summary_dir + f'/tree_heights_{tree_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
     bins = int(1 / float(options.ns_ss) + 1)
     for mac_maf in ['mac', 'maf']:
@@ -70,7 +73,7 @@ def collect_similarity_distributions(options):
     return df
 
 
-def combine_distributions_per_class(class_name, input_df, sum_df):
+def combine_distributions_per_class(options, paths_helper, class_name, input_df, sum_df):
     class_df = pd.DataFrame(columns=sum_df.columns)
     class_df['Class'] = [class_name]
     for c in input_df.columns:
@@ -104,14 +107,15 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
             if not is_mac:
                 val = f'{val * 1.0 / 100}'
             class_name = f'{mac_maf}_{val}'
-            sum_mat_df = combine_distributions_per_class(class_name, full_mat_df[
-                full_mat_df['Tree'].str.contains(f'{class_name}_')], sum_mat_df)
+            sum_mat_df = combine_distributions_per_class(options, paths_helper, class_name,
+                                                         full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
+                                                         sum_mat_df)
     sum_mat_df.to_csv(csv_output_path, index=False)
 
 
 def main(options):
-    with Timer(f"Collect similarity distribution to csv"):
-        df = collect_similarity_distributions(options)
+    with Timer(f"Collect tree heights to csv"):
+        df = collect_tree_heights(options)
         combine_distributions_to_sum_matrix(options, df)
 
 

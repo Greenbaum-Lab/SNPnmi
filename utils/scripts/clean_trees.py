@@ -9,8 +9,7 @@ from os.path import dirname, abspath, basename
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_dict_from_json
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.loader import Timer
 
 

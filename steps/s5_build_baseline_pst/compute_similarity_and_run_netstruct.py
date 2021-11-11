@@ -7,9 +7,9 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.netstrcut_helper import build_netstruct_cmd
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_dict_from_json
+from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows
 from utils.loader import Timer
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.similarity_helper import matrix_to_edges_file
 
 job_type = "mini_net-struct"

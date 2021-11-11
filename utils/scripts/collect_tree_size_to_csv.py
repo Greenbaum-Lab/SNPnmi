@@ -1,15 +1,14 @@
 # python3 utils/scripts/collect_tree_size_to_csv.py -d hgdp
 import json
 import os
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import sys
 import pandas as pd
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import load_dict_from_json
-from utils.common import get_paths_helper, args_parser, get_window_size
+from utils.common import get_paths_helper, args_parser, get_window_size, load_dict_from_json
 from utils.loader import Timer
 
 

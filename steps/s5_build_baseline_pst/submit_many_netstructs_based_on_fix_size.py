@@ -5,22 +5,22 @@ import sys
 from random import sample
 import numpy as np
 
-from utils.checkpoint_helper import execute_with_checkpoint
-from utils.cluster.cluster_helper import submit_to_cluster
-from utils.config import get_cluster_code_folder
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows, load_dict_from_json, handle_hash_file
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size
+
+from utils.checkpoint_helper import execute_with_checkpoint
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.config import get_cluster_code_folder
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size, \
+    load_dict_from_json, handle_hash_file
 from utils.loader import Loader, Timer
-from utils.netstrcut_helper import submit_netstruct, get_cluster_time, is_tree_exists
-from utils.similarity_helper import matrix_to_edges_file
+from utils.netstrcut_helper import is_tree_exists
 
 job_type = "mini_net-struct"
 SCRIPT_NAME = basename(__file__)
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/compute_similarity_and_run_netstruct.py'
+
 
 def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     class_name = f'{mac_maf}_{class_val}'
@@ -39,6 +39,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, script_args, job_stdout_file,
                       job_stderr_file, num_hours_to_run=2, memory=4, debug=False)
     return job_stderr_file
+
 
 def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
     if len(v) != num_of_winds:

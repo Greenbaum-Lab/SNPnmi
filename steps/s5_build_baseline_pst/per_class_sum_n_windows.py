@@ -18,7 +18,7 @@ sys.path.append(root_path)
 
 from utils.loader import Timer
 from utils.filelock import FileLock
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, handle_hash_file
 from utils.similarity_helper import generate_similarity_matrix
 
 
@@ -35,33 +35,6 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
 
     return new_hash
 
-
-def load_dict_from_json(json_path):
-    with FileLock(json_path):
-        if not os.path.exists(json_path) or os.stat(json_path).st_size == 0:
-            with open(json_path, "w+") as f:
-                f.write("{}")
-            return {}
-        with open(json_path, "r") as f:
-            data = json.load(f)
-        return data
-
-
-def handle_hash_file(class_name, paths_helper, windows_id_list):
-    windows_id_list = [int(wind) for wind in windows_id_list]
-    hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    data = load_dict_from_json(hash_file)
-    with FileLock(hash_file):
-        hash_codes = [int(i) for i in data.keys()]
-        new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
-        if windows_id_list not in data.values():
-            data[str(new_hash)] = windows_id_list
-            with open(hash_file, "w") as f:
-                json.dump(data, f)
-            return new_hash
-        else:
-            reverse_dict = {tuple(val): key for (key, val) in data.items()}
-            return reverse_dict[tuple(windows_id_list)]
 
 def get_args(options):
     print('Number of arguments:', len(options.args), 'arguments.')

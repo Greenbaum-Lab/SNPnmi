@@ -56,7 +56,7 @@ def summarize_nmi_mat(options, paths_helper, ns_ss, df):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                df = summarize_nmi_per_class(ns_ss, class_name, df, nmi_matrix[nmi_matrix['Class'].str.contains(f'{class_name}_')])
+                df = summarize_nmi_per_class(ns_ss, class_name, df, nmi_matrix[nmi_matrix['Tree'].str.contains(f'{class_name}_')])
     return df
 
 

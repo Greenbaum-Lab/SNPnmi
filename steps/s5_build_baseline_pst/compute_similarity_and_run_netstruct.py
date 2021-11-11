@@ -31,15 +31,14 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
                             similarity_window_template=paths_helper.similarity_by_class_and_window_template,
                             count_window_template=paths_helper.count_by_class_and_window_template,
                             output_dir=paths_helper.similarity_by_class_folder_template.format(
-                                class_name=class_name),
-                            paths_helper=paths_helper)
+                                class_name=class_name), paths_helper=paths_helper)
 
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npy'
     count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npy'
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
     matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
-    output_dir = paths_helper.net_struct_dir_clas.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
+    output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
     run_net_struct(options, job_type, similarity_edges_file, output_dir)
 
 
@@ -55,6 +54,7 @@ def main(options):
     compute_similarity_and_run_net_struct(options, mac_maf, val, paths_helper, winds)
 
     return True
+
 
 if __name__ == "__main__":
     arguments = args_parser()

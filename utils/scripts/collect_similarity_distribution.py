@@ -81,6 +81,7 @@ def combine_distributions_per_class(options, paths_helper, class_name, input_df,
         class_df[f'avg_{c}'] = [avg]
         std = np.std(input_df[c])
         class_df[f'std_{c}'] = [std]
+    print(class_df)
     sum_df = sum_df.append(class_df)
     return sum_df
 

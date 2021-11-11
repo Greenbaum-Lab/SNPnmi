@@ -30,7 +30,10 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:
+            print("c")
             continue
+        print(tree_name)
+        print(tree_length_dict.keys())
         assert tree_name in tree_length_dict.keys(), f"class {class_name} tree {tree_name} is missing from tree size file!"
         if tree_length_dict[hash_tree] != tree_size:
             continue

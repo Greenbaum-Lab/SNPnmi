@@ -92,7 +92,7 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
     maf_min_range, maf_max_range = options.maf
     bins = int(1 / float(options.ns_ss) + 1)
 
-    csv_output_path = paths_helper.summary_dir + f'/distribution_similarity_per_class.csv'
+    csv_output_path = paths_helper.summary_dir + f'/distribution_similarity_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_mean', 'std_mean', 'avg_median', 'std_median'] +
                                       [f'avg_{e}' for e in np.linspace(0, 1, bins)] +
                                       [f'std_{e}' for e in np.linspace(0, 1, bins)])

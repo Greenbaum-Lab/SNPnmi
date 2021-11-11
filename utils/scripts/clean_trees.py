@@ -40,7 +40,8 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
     hash_data = load_dict_from_json(hash_file)
     for k in invalid_hashes:
-        del hash_data[k]
+        if k in hash_data.keys():
+            del hash_data[k]
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
         stdout = paths_helper.logs_cluster_jobs_stdout_template.format(job_type='mini_net-struct', job_name=job_name)
         stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)

@@ -17,8 +17,29 @@ from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.loader import Timer
 
 
-def collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df):
-    similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
+def analyze_tree_heights(tree_struct):
+    level_indices = [i for i in range(len(tree_struct)) if '--- LEVEL' in tree_struct[i]]
+    max_level = len(level_indices) - 1
+    nodes_per_level = np.diff(level_indices + [len(tree_struct)]) - 1
+    num_of_nodes = np.sum(nodes_per_level)
+    avg_height = np.sum(nodes_per_level * np.arange(max_level + 1)) / num_of_nodes
+    leaves = []
+    for node in np.delete(tree_struct, level_indices):
+        match = re.search('Level_(\d+)_Entry_(\d+)_Line_(\d+)', node)
+        level = match.group(1)
+        entry = match.group(2)
+        line = match.group(3)
+        is_leaf = True
+        for other in tree_struct:
+            if f'ParentLevel_{level}_ParentEntry_{entry}_ParentLine_{line}_' in other:
+                is_leaf = False
+        if is_leaf:
+            leaves.append(int(level))
+    avg_leaves = np.mean(leaves)
+    return max_level, avg_height, avg_leaves
+
+
+def collect_tree_heights_per_class(options, paths_helper, class_name, df):
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
     tree_nums = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
@@ -31,17 +52,17 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
             continue
         if tree_length_dict[tree_hash] != tree_size:
             continue
-        sub_trees = os.listdir(dir)
+        sub_trees = os.listdir(f'{dir}{tree_name}/')
         correct_trees = [t for t in sub_trees if f"SS_{options.ns_ss}" in t]
         assert len(correct_trees) == 1, f"more than 1 tree or tree {tree_hash} for class {class_name} is missing"
-        tree_dir = correct_trees[0]
-        comm_analysis_file = [f for f in os.listdir(dir + sub_trees + tree_dir) if "CommAnalysis" in f][0]
-        with open(dir + sub_trees + tree_dir + comm_analysis_file, "r") as f:
+        tree_dir = f'{dir}{tree_name}/{correct_trees[0]}/'
+        comm_analysis_file = [f for f in os.listdir(tree_dir) if "CommAnalysis" in f][0]
+        with open(tree_dir + comm_analysis_file, "r") as f:
             tree_structure = f.readlines()
-        edges = np.array([float(e.split(" ")[2]) for e in edges])
-        hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
-        df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges)] + list(hist)],
-                               columns=["Tree", "mean", "median"] + [str(e) for e in np.linspace(0, 1, bins)][:-1])
+        max_height, avg_height, avg_leaves = analyze_tree_heights(tree_structure)
+
+        df_tree = pd.DataFrame([tree_name, max_height, avg_height, avg_leaves],
+                               columns=["Tree", "max_height", "avg_height", "avg_leaves"])
         df_class = df_class.append(df_tree, sort=False)
     df = df.append(df_class)
     return df
@@ -52,12 +73,12 @@ def collect_tree_heights(options):
     paths_helper = get_paths_helper(options.dataset_name)
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
-    tree_size = options.args[0]
+    data_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
-    csv_path = paths_helper.summary_dir + f'/tree_heights_{tree_size}_ss_{options.ns_ss}.csv'
+    csv_path = paths_helper.summary_dir + f'/tree_heights_{data_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
-    bins = int(1 / float(options.ns_ss) + 1)
+
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -68,7 +89,7 @@ def collect_tree_heights(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                df = collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df)
+                df = collect_tree_heights_per_class(options, paths_helper, class_name, df)
     df.to_csv(csv_path, index=False)
     return df
 

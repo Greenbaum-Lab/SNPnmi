@@ -20,8 +20,10 @@ def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
     with open(length_dict_path, "w") as f:
         json.dump(length_dict, f)
     if length_dict:
+        for non_exists_hash in set(df.columns) - length_dict.keys():
+            length_dict[non_exists_hash] = 0
         new_df = pd.DataFrame.from_records([length_dict], index=[class_name])
-        df = df.append(new_df, sort=True)
+        df = df.append(new_df, sort=False)
     return df
 
 

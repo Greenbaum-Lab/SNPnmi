@@ -42,7 +42,7 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
             continue
         df_tree['Tree'] = [tree_name]
         df_tree['Size'] = int(tree_sizes[hash_idx])
-        is_tree_valid = df_tree['Size'] > 0
+        is_tree_valid = int(df_tree['Size']) > 0
         for nmi_type in NMI_TYPES:
             nmi_type_file = paths_helper.nmi_file_template.format(class_name=class_name, tree_hash=hash_idx,
                                                                   ns_ss=options.ns_ss, nmi_type=nmi_type)

@@ -9,7 +9,6 @@ import re
 
 from tqdm import tqdm
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -43,7 +42,8 @@ def collect_tree_heights_per_class(options, paths_helper, class_name, df):
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
     tree_nums = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
-    tree_dirs = {h: paths_helper.net_struct_dir_class.format(class_name=class_name, tree_hash=h) for h in tree_nums.keys()}
+    tree_dirs = {h: paths_helper.net_struct_dir_class.format(class_name=class_name, tree_hash=h) for h in
+                 tree_nums.keys()}
     tree_length_dict = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
     tree_size = options.args[0]
     for tree_hash, dir in tree_dirs.items():
@@ -61,7 +61,7 @@ def collect_tree_heights_per_class(options, paths_helper, class_name, df):
             tree_structure = f.readlines()
         max_height, avg_height, avg_leaves = analyze_tree_heights(tree_structure)
 
-        df_tree = pd.DataFrame([tree_name, max_height, avg_height, avg_leaves],
+        df_tree = pd.DataFrame([[tree_name, max_height, avg_height, avg_leaves]],
                                columns=["Tree", "max_height", "avg_height", "avg_leaves"])
         df_class = df_class.append(df_tree, sort=False)
     df = df.append(df_class)
@@ -94,7 +94,7 @@ def collect_tree_heights(options):
     return df
 
 
-def combine_distributions_per_class(options, paths_helper, class_name, input_df, sum_df):
+def combine_height_per_class(class_name, input_df, sum_df):
     class_df = pd.DataFrame(columns=sum_df.columns)
     class_df['Class'] = [class_name]
     for c in input_df.columns:
@@ -108,17 +108,15 @@ def combine_distributions_per_class(options, paths_helper, class_name, input_df,
     return sum_df
 
 
-def combine_distributions_to_sum_matrix(options, full_mat_df):
+def combine_heights_to_sum_matrix(options, full_mat_df):
     print("stage 2")
     paths_helper = get_paths_helper(options.dataset_name)
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
-    bins = int(1 / float(options.ns_ss) + 1)
 
-    csv_output_path = paths_helper.summary_dir + f'/distribution_similarity_per_class_{options.args[0]}.csv'
-    sum_mat_df = pd.DataFrame(columns=['Class', 'avg_mean', 'std_mean', 'avg_median', 'std_median'] +
-                                      [f'avg_{e}' for e in np.linspace(0, 1, bins)] +
-                                      [f'std_{e}' for e in np.linspace(0, 1, bins)])
+    csv_output_path = paths_helper.summary_dir + f'/tree_heights_per_class_{options.args[0]}.csv'
+    sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max', 'std_max', 'avg_avg_height', 'std_avg_height',
+                                       'avg_avg_leaves', 'std_avg_leaves'])
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range
@@ -128,16 +126,16 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
             if not is_mac:
                 val = f'{val * 1.0 / 100}'
             class_name = f'{mac_maf}_{val}'
-            sum_mat_df = combine_distributions_per_class(options, paths_helper, class_name,
-                                                         full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
-                                                         sum_mat_df)
+            sum_mat_df = combine_height_per_class(class_name,
+                                                  full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
+                                                  sum_mat_df)
     sum_mat_df.to_csv(csv_output_path, index=False)
 
 
 def main(options):
     with Timer(f"Collect tree heights to csv"):
         df = collect_tree_heights(options)
-        combine_distributions_to_sum_matrix(options, df)
+        combine_heights_to_sum_matrix(options, df)
 
 
 if __name__ == "__main__":

@@ -83,7 +83,6 @@ def collect_nmi(options):
     df.to_csv(csv_path, index=False)
 
 
-
 def main(options):
     with Timer(f"Collect nmi"):
         collect_tree_sizes_to_csv(options)

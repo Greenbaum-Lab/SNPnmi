@@ -111,7 +111,10 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
 
 def main(options):
     with Timer(f"Collect similarity distribution to csv"):
-        df = collect_similarity_distributions(options)
+        # df = collect_similarity_distributions(options)
+        paths_helper = get_paths_helper(options.dataset_name)
+        csv_path = paths_helper.summary_dir + f'/distribution_similarity_per_tree_{options.args[0]}.csv'
+        df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
         combine_distributions_to_sum_matrix(options, df)
 
 

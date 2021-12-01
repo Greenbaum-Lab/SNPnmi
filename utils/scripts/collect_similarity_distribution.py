@@ -24,7 +24,7 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
     hash_length_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
     tree_length_dict = load_dict_from_json(hash_length_path)
     tree_size = options.args[0]
-    for file in files:
+    for file in tqdm(files, leaves=False):
         hash_tree = re.findall('[0-9]+', file)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:

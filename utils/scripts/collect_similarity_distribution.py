@@ -1,4 +1,4 @@
-# python3 utils/scripts/collect_similarity_distribution.py -d hgdp
+# python3 utils/scripts/collect_similarity_distribution.py -d hgdp --args 1000
 import os
 from os.path import dirname, abspath, basename
 import sys

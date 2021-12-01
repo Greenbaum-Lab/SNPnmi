@@ -1,4 +1,4 @@
-# python3 utils/scripts/collect_tree_heights.py -d hgdp
+# python3 utils/scripts/collect_tree_heights.py -d hgdp --args 1000
 import os
 from os.path import dirname, abspath, basename
 import sys
@@ -104,7 +104,7 @@ def combine_height_per_class(class_name, input_df, sum_df):
         class_df[f'avg_{c}'] = [avg]
         std = np.std(input_df[c])
         class_df[f'std_{c}'] = [std]
-    sum_df = sum_df.append(class_df)
+    sum_df = sum_df.append(class_df, sort=False)
     return sum_df
 
 

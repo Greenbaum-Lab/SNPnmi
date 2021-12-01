@@ -80,7 +80,7 @@ def combine_distributions_per_class(class_name, input_df, sum_df):
         class_df[f'avg_{c}'] = [avg]
         std = np.std(input_df[c])
         class_df[f'std_{c}'] = [std]
-    sum_df = sum_df.append(class_df)
+    sum_df = sum_df.append(class_df, sort=False)
     return sum_df
 
 
@@ -111,10 +111,7 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
 
 def main(options):
     with Timer(f"Collect similarity distribution to csv"):
-        # df = collect_similarity_distributions(options)
-        paths_helper = get_paths_helper(options.dataset_name)
-        csv_path = paths_helper.summary_dir + f'/distribution_similarity_per_tree_{options.args[0]}.csv'
-        df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
+        df = collect_similarity_distributions(options)
         combine_distributions_to_sum_matrix(options, df)
 
 

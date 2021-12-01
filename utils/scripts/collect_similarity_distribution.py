@@ -66,7 +66,7 @@ def collect_similarity_distributions(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df)
-            df.to_csv(csv_path, index=False)
+                df.to_csv(csv_path, index=False)
     return df
 
 

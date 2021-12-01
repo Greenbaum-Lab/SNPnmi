@@ -115,7 +115,7 @@ def combine_heights_to_sum_matrix(options, full_mat_df):
     maf_min_range, maf_max_range = options.maf
 
     csv_output_path = paths_helper.summary_dir + f'/tree_heights_per_class_{options.args[0]}.csv'
-    sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max', 'std_max', 'avg_avg_height', 'std_avg_height',
+    sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max_height', 'std_max_height', 'avg_avg_height', 'std_avg_height',
                                        'avg_avg_leaves', 'std_avg_leaves'])
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'

@@ -6,6 +6,7 @@ import sys
 from os.path import dirname, abspath, basename
 
 # python3 utils/scripts/clean_trees.py -d hgdp
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -72,7 +73,7 @@ def delete_unfinished_trees_and_hashes(options):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range + 1):
+            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

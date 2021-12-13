@@ -18,7 +18,7 @@ from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.loader import Timer
 
 def compute_class_bias(options, mac_maf, class_val):
-    f = class_val
+    f = float(class_val)
     num_of_individuals = get_num_individuals(options.dataset_name)
     if mac_maf == 'mac':
         f = class_val / num_of_individuals

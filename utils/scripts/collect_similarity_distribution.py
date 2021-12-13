@@ -2,7 +2,7 @@
 import os
 from os.path import dirname, abspath, basename
 import sys
-
+from scipy.special import comb
 import numpy as np
 import pandas as pd
 import re
@@ -22,7 +22,9 @@ def compute_class_bias(options, mac_maf, class_val):
     if mac_maf == 'mac':
         num_of_individuals = get_num_individuals(options.dataset_name)
         f = class_val / num_of_individuals
-    return 4 / (2 * (1 - f) * f)
+    expected_value = comb(f * num_of_individuals, 2) * (1 - f)
+    expected_value += comb((1 - f) * num_of_individuals, 2) * f
+    return 4 / expected_value
 
 
 def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, class_val, bins, df):

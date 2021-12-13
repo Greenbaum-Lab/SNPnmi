@@ -13,9 +13,10 @@ class DataSetNames():
     hdgp = 'hgdp'
     hdgp_test = 'hgdp_test'
     amur = 'amur'
+    arabidopsis = "arabidopsis"
 
 def validate_dataset_name(dataset_name):
-    return dataset_name in [DataSetNames.hdgp, DataSetNames.hdgp_test, DataSetNames.amur]
+    return dataset_name in [DataSetNames.hdgp, DataSetNames.hdgp_test, DataSetNames.amur, DataSetNames.arabidopsis]
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:

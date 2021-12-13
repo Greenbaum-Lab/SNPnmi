@@ -50,7 +50,8 @@ def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, c
         counts = np.load(similarity_dir + count_file_name)
         similarity = np.true_divide(orig_similarity, counts)
         similarity *= compute_class_bias(options,mac_maf, class_val)
-        edges = similarity.flatten()
+        np.fill_diagonal(similarity, np.nan)
+        edges = similarity[~np.isnan(similarity)].flatten()
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
         df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges), np.std(edges)] + list(hist)],
                                columns=["Tree", "mean", "median", "std"] + [str(round(e, 10)) for e in np.linspace(0, 1, bins)][:-1])

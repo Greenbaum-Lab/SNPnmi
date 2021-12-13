@@ -21,11 +21,11 @@ def compute_class_bias(options, mac_maf, class_val):
     f = float(class_val)
     num_of_individuals = get_num_individuals(options.dataset_name)
     if mac_maf == 'mac':
-        f = class_val / num_of_individuals
+        f = class_val / (2 * num_of_individuals)
     expected_value = comb(f * num_of_individuals, 2) * (1 - f)
     expected_value += comb((1 - f) * num_of_individuals, 2) * f
     expected_mean = expected_value / comb(num_of_individuals, 2)
-    return 4 / (expected_mean * 2)
+    return 4 / expected_mean
 
 
 def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, class_val, bins, df):

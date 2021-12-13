@@ -33,12 +33,12 @@ def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, c
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
-    file_names = [f for f in os.listdir(similarity_dir) if "similarity" in f and "all" not in f]
+    file_names = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
     hash_length_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
     tree_length_dict = load_dict_from_json(hash_length_path)
     tree_size = options.args[0]
     for file_name in tqdm(file_names, leave=False):
-        blank_name = file_name[:-14]
+        blank_name = file_name[:-9]
         similarity_file_name = blank_name + "similarity.npy"
         count_file_name = blank_name + "count.npy"
         hash_tree = re.findall('[0-9]+', blank_name)[-1]

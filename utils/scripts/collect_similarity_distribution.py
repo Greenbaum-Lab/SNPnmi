@@ -55,9 +55,9 @@ def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, c
         similarity *= compute_class_bias(options,mac_maf, class_val)
         np.fill_diagonal(similarity, np.nan)
         edges = similarity[~np.isnan(similarity)].flatten()
-        hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
+        hist = np.histogram(edges, bins=np.linspace(0, 2, bins))[0]
         df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges), np.std(edges)] + list(hist)],
-                               columns=["Tree", "mean", "median", "std"] + [str(round(e, 10)) for e in np.linspace(0, 1, bins)][:-1])
+                               columns=["Tree", "mean", "median", "std"] + [str(round(e, 10)) for e in np.linspace(0, 2, bins)][:-1])
         df_class = df_class.append(df_tree, sort=False)
     df = df.append(df_class)
     return df
@@ -83,7 +83,6 @@ def collect_similarity_distributions(options):
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
                 df = collect_similarity_distributions_per_class(options, paths_helper, mac_maf, val, bins, df)
                 df.to_csv(csv_path, index=False)
     return df
@@ -112,8 +111,8 @@ def combine_distributions_to_sum_matrix(options, full_mat_df):
 
     csv_output_path = paths_helper.summary_dir + f'/distribution_similarity_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_mean', 'std_mean', 'avg_median', 'std_median'] +
-                                      [f'avg_{round(e,10)}' for e in np.linspace(0, 1, bins)] +
-                                      [f'std_{round(e,10)}' for e in np.linspace(0, 1, bins)])
+                                      [f'avg_{round(e,10)}' for e in np.linspace(0, 2, bins)] +
+                                      [f'std_{round(e,10)}' for e in np.linspace(0, 2, bins)])
     for mac_maf in ['mac', 'maf']:
         is_mac = mac_maf == 'mac'
         min_range = mac_min_range if is_mac else maf_min_range

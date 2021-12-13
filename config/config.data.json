@@ -144,6 +144,7 @@
     "metadata_files_names": "md5.txt",
     "indlist_file_name": "XXXXX",
     "indlist_coords_file_name": "XXXXXXXX",
-    "vcf_files_short_names": ["all"]
+    "vcf_files_short_names": ["all"],
+    "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt"
   }
 }

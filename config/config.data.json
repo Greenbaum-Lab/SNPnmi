@@ -132,19 +132,9 @@
     "vcf_files_names": ["africa_and1001.EVA.vcf.gz"],
     "vcf_files_short_names" : ["all"],
     "num_chrs": 1,
+    "num_individulas": 1217,
     "indlist_file_name" : "inlist.txt",
     "sample_sites_file_name" : "inlist.txt"
   
   },
 
-  "lettuce": {
-    "vcf_files_names":["Lactuca.snp.vcf.gz"],
-    "ftp_source_host": "cngb.org",
-    "ftp_source_path": "/pub/CNSA/data2/CNP0000335/Other/variation/",
-    "metadata_files_names": ["md5.txt"],
-    "indlist_file_name": "XXXXX",
-    "indlist_coords_file_name": "XXXXXXXX",
-    "vcf_files_short_names": ["all"],
-    "sample_sites_file_name": "XXXXXXX"
-  }
-}

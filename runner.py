@@ -60,7 +60,6 @@ def runner(options):
         step = options.step
         dataset_name = options.dataset_name
         print(f'Argument List: {step}, {dataset_name}, {str_for_timer(options)}')
-        assert validate_dataset_name(dataset_name), f'Invalid dataset name, got: {dataset_name}'
 
         is_executed = run_step(options)
         print(f'is executed: {is_executed}')

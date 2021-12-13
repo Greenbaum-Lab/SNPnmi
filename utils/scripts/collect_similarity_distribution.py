@@ -9,23 +9,36 @@ import re
 
 from tqdm import tqdm
 
+from utils.config import get_num_individuals
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.loader import Timer
 
+def compute_class_bias(options, mac_maf, class_val):
+    f = class_val
+    if mac_maf == 'mac':
+        num_of_individuals = get_num_individuals(options.dataset_name)
+        f = class_val / num_of_individuals
+    return 1 / ((1 - f) * f)
 
-def collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df):
+
+def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, class_val, bins, df):
+    class_name = f'{mac_maf}_{class_val}'
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
-    files = [f for f in os.listdir(similarity_dir) if "edges" in f and "all" not in f]
+    file_names = [f for f in os.listdir(similarity_dir) if "similarity" in f and "all" not in f]
     hash_length_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
     tree_length_dict = load_dict_from_json(hash_length_path)
     tree_size = options.args[0]
-    for file in tqdm(files, leave=False):
-        hash_tree = re.findall('[0-9]+', file)[-1]
+    for file_name in tqdm(file_names, leave=False):
+        blank_name = file_name[:-14]
+        similarity_file_name = blank_name + "similarity.npy"
+        count_file_name = blank_name + "count.npy"
+        hash_tree = re.findall('[0-9]+', blank_name)[-1]
         tree_name = f'{class_name}_{hash_tree}'
         if tree_name in trees_in_df:
             continue
@@ -33,9 +46,11 @@ def collect_similarity_distributions_per_class(options, paths_helper, class_name
             hash_tree) in tree_length_dict.keys(), f"class {class_name} tree {tree_name} is missing from tree size file!"
         if tree_length_dict[hash_tree] != tree_size:
             continue
-        with open(similarity_dir + file, "r") as f:
-            edges = f.readlines()
-        edges = np.array([float(e.split(" ")[2]) for e in edges])
+        orig_similarity = np.load(similarity_dir + similarity_file_name)
+        counts = np.load(similarity_dir + count_file_name)
+        similarity = np.true_divide(orig_similarity, counts)
+        similarity *= compute_class_bias(options,mac_maf, class_val)
+        edges = similarity.flatten()
         hist = np.histogram(edges, bins=np.linspace(0, 1, bins))[0]
         df_tree = pd.DataFrame([[tree_name, edges.mean(), np.median(edges), np.std(edges)] + list(hist)],
                                columns=["Tree", "mean", "median", "std"] + [str(round(e, 10)) for e in np.linspace(0, 1, bins)][:-1])

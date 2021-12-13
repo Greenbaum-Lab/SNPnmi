@@ -58,7 +58,6 @@ def generate_vcfs_stats(options, stat_types):
             cluster_setting = f'sbatch --time=2:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
             python_script_params = f'-d {options.dataset_name} --args {gzvcf_file},{stat_type},{output_folder + gzvcf_file}'
             cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {python_script_to_run} {python_script_params}'
-            print(cmd_to_run)
             subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
     if len(errors) == 0:

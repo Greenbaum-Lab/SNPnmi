@@ -80,7 +80,7 @@ def collect_similarity_distributions(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
-                df = collect_similarity_distributions_per_class(options, paths_helper, class_name, bins, df)
+                df = collect_similarity_distributions_per_class(options, paths_helper, mac_maf, val, bins, df)
                 df.to_csv(csv_path, index=False)
     return df
 

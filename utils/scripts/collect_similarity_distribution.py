@@ -9,11 +9,11 @@ import re
 
 from tqdm import tqdm
 
-from utils.config import get_num_individuals
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.config import get_num_individuals
 from utils.common import get_paths_helper, args_parser, load_dict_from_json
 from utils.loader import Timer
 

@@ -24,6 +24,7 @@ def compute_class_bias(options, mac_maf, class_val):
         f = class_val / num_of_individuals
     expected_value = comb(f * num_of_individuals, 2) * (1 - f)
     expected_value += comb((1 - f) * num_of_individuals, 2) * f
+    expected_mean = expected_value / comb(num_of_individuals, 2)
     return 4 / expected_value
 
 

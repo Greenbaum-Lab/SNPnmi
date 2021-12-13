@@ -103,7 +103,6 @@ def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folde
 
 # wrappers for execution
 def get_data(options):
-    assert validate_dataset_name(options.dataset_name)
     return get_files_by_dataset_name(options.dataset_name)
 
 

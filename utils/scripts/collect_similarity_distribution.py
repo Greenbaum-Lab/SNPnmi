@@ -22,7 +22,7 @@ def compute_class_bias(options, mac_maf, class_val):
     if mac_maf == 'mac':
         num_of_individuals = get_num_individuals(options.dataset_name)
         f = class_val / num_of_individuals
-    return 1 / (2 * (1 - f) * f)
+    return 4 / ((1 - f) * f)
 
 
 def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, class_val, bins, df):

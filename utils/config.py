@@ -81,5 +81,3 @@ def validate_dataset_vcf_files_short_names(dataset_name):
     dataset_vcf_files_short_names = get_dataset_vcf_files_short_names(dataset_name)
     dataset_vcf_files_names = get_dataset_vcf_files_names(dataset_name)
     assert len(dataset_vcf_files_short_names) == len(dataset_vcf_files_names)
-    for i in range(len(dataset_vcf_files_names)):
-        assert  dataset_vcf_files_short_names[i] in dataset_vcf_files_names[i]

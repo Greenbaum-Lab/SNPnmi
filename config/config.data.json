@@ -84,8 +84,6 @@
       "hgdp_wgs.20190516.full.chr5.vcf.gz.tbi"
     ]
   },
-
-
   "hgdp_test": {
     "ftp_source_host": "ngs.sanger.ac.uk",
     "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
@@ -108,8 +106,6 @@
       "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi"
     ]
   },
-
-
   "amur": {
     "ftp_source_host": "171.64.60.175",
     "ftp_source_path": "/simba/tiger-download-temp/",
@@ -129,12 +125,16 @@
     ]
   },
   "arabidopsis": {
-    "vcf_files_names": ["africa_and1001.EVA.vcf.gz"],
-    "vcf_files_short_names" : ["all"],
+    "vcf_files_names": [
+      "africa_and1001.EVA.vcf.gz"
+    ],
+    "vcf_files_short_names": [
+      "all"
+    ],
     "num_chrs": 1,
     "num_individulas": 1217,
-    "indlist_file_name" : "inlist.txt",
-    "sample_sites_file_name" : "inlist.txt"
-  
-  },
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "inlist.txt"
+  }
+}
 

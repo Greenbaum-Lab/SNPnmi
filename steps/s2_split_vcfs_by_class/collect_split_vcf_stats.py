@@ -233,17 +233,18 @@ def validate_correct_individual_num(df, num_ind):
 def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf):
     passed = True
     for chr_i in range(min_chr, max_chr + 1):
+        chr_name = 'all' if min_chr == max_chr == 1 else f'chr_{chr_i}'
         for mac in range(min_mac, max_mac + 1):
-            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == f'{mac}')])
+            count = len(df[(df['chr_name'] == chr_name) & (df['mac'] == f'{mac}')])
             if count != 1:
                 passed = False
-                print(f'chr{chr_i}, mac {mac} appears {count} times')
+                print(f'{chr_name}, mac {mac} appears {count} times')
         for maf in range(min_maf, max_maf + 1):
-            chr_df = df[(df['chr_name'] == 'chr' + str(chr_i))]
+            chr_df = df[(df['chr_name'] == chr_name)]
             count = len(chr_df[chr_df['maf'] == str(maf / 100.0)])
             if count != 1:
                 passed = False
-                print(f'chr{chr_i}, maf {maf} appears {count} times')
+                print(f'{chr_name}, maf {maf} appears {count} times')
     return passed
 
 

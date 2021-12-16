@@ -48,8 +48,6 @@ def submit_split_vcfs_by_class(options):
             while how_many_jobs_run(string_to_find="s2"):
                 time.sleep(5)
 
-    assert validate_stderr_empty(stderr_files)
-
 
 def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
                            vcf_files, vcf_files_short_names, vcfs_dir):

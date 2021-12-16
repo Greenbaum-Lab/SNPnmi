@@ -30,12 +30,16 @@ def get_num_chrs(dataset_name):
 def get_min_chr(dataset_name):
     #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
     data_config = get_config(CONFIG_NAME_DATA)
+    if len(data_config[dataset_name]['vcf_files_short_names']) == 1:
+        return 1
     chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
     return np.min(chr_numbers)
 
 def get_max_chr(dataset_name):
     #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
     data_config = get_config(CONFIG_NAME_DATA)
+    if len(data_config[dataset_name]['vcf_files_short_names']) == 1:
+        return 1
     chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
     return np.max(chr_numbers)
 
@@ -74,6 +78,11 @@ def get_cluster_data_folder():
 def get_cluster_code_folder():
     data_config = get_config(CONFIG_NAME_PATHS)
     return data_config['cluster_code_folder']
+
+def get_local_code_dir():
+    data_config = get_config(CONFIG_NAME_PATHS)
+    return data_config['local_code_folder']
+
 
 # order of vcf_files_short_names should match vcf_files_names.
 # we verify each short name is contained in the full name.

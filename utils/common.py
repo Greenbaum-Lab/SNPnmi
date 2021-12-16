@@ -175,6 +175,11 @@ def how_many_jobs_run(string_to_find=""):
     except subprocess.CalledProcessError:
         return 0
 
+def how_many_local_jobs_run(string_to_find=""):
+    top_outputs = os.popen('top -bi -n 1').readlines()
+    num_of_running_jobs = len([i for i in top_outputs if string_to_find in i])
+    return num_of_running_jobs
+
 
 # Deprecated?
 def get_class2sites(dataset_name):
@@ -207,6 +212,8 @@ def args_parser():
     parser.add_argument("--args", dest="args", help="Any additional args")
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
+                        help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
                         help="Net-struct step size (relevant for step 5 only)")
 
     options = parser.parse_args()

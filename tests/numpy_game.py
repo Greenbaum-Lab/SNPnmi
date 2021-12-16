@@ -1,6 +1,8 @@
 import gzip
 import json
 import os
+import subprocess
+import time
 from random import sample
 
 import numpy as np
@@ -37,4 +39,8 @@ def compare_amir_similarities():
         exit(0)
 
 
-compare_amir_similarities()
+def test_subprocess():
+    a = os.popen('top -bi -n 1').readlines()
+    c = [i for i in a if 'vcftools' in i]
+    print(len(c))
+test_subprocess()

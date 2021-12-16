@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/python3
 
 # given a step number and params, will run the step.
 import time
@@ -24,7 +24,7 @@ from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     submit_many_netstructs_based_on_fix_size
 from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_mini_trees
 
-from utils.config import *
+
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser, str_for_timer
 

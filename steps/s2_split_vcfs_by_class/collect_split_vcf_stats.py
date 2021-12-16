@@ -121,8 +121,7 @@ def write_values_to_csv(values, output_path):
         f.write(','.join([str(values[k]) for k in expected_keys]) + '\n')
 
 
-# TODO renmae? collect_vcf_classes_stats
-def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
+def collect_vcf_classes_stats(log_files, chr_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_names)
     for i in range(len(log_files)):
         chr_name = chr_names[i]
@@ -131,9 +130,8 @@ def collect_split_vcf_stats(log_files, chr_names, split_vcf_stats_csv_path):
         write_values_to_csv(values, split_vcf_stats_csv_path)
         print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
-# hgdp_text, 2, 8, 1, 49
-# TODO renmae? collect_and_validate_vcf_classes_stats
-def call_collect_split_vcf_stats(options):
+
+def collect_and_validate_vcf_classes_stats(options):
     dataset_name = options.dataset_name
     min_mac_range, max_mac_range = options.mac
     min_maf_range, max_maf_range = options.maf
@@ -160,7 +158,7 @@ def call_collect_split_vcf_stats(options):
 
     print(f'will process {len(log_files)} files')
 
-    collect_split_vcf_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
+    collect_vcf_classes_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
     return validate_split_vcf_output_stats_file(options=options,
                                                 split_vcf_output_stats_file=split_vcf_stats_csv_path)
 
@@ -251,7 +249,7 @@ def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, mi
 
 def main(options):
     with Timer(f"Collect split vcf stats with {str_for_timer(options)}"):
-        is_executed, msg = execute_with_checkpoint(call_collect_split_vcf_stats, SCRIPT_NAME, options)
+        is_executed, msg = execute_with_checkpoint(collect_and_validate_vcf_classes_stats, SCRIPT_NAME, options)
     return is_executed
 
 

@@ -32,3 +32,10 @@ def submit_to_cluster(options, job_type, job_name, script_path, script_args, job
         print(cmd_to_run)
     else:
         execute_with_checkpoint(submit_wrapper, job_type, options)
+
+
+def submit_to_heavy_lab(script_path, script_args, job_stdout_path, job_stderr_path):
+    os.makedirs(dirname(job_stderr_path), exist_ok=True)
+    params = script_args.split(' ')
+    with open(job_stdout_path, 'w') as stdout_file, open(job_stderr_path, 'w') as stderr_file:
+        subprocess.Popen(['python3'] + [script_path] + params, stdout=stdout_file, stderr=stderr_file)

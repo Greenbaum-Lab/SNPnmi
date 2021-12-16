@@ -9,15 +9,16 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, str_for_timer
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, str_for_timer, \
+    is_cluster, how_many_local_jobs_run
 from utils.config import *
-from utils.cluster.cluster_helper import submit_to_cluster
+from utils.cluster.cluster_helper import submit_to_cluster, submit_to_heavy_lab
 from utils.checkpoint_helper import *
 from steps.s2_split_vcfs_by_class.split_vcf_by_class import compute_max_min_val
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'split_vcf_by_class'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
+path_to_python_script_to_run = '{base_dir}snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
 
 def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
     return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'
@@ -40,14 +41,19 @@ def submit_split_vcfs_by_class(options):
                                                options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
     with Loader("Splitting jobs are running", string_to_find="s2"):
-        while how_many_jobs_run(string_to_find="s2"):
-            time.sleep(5)
+        if options.local_jobs:
+            while how_many_local_jobs_run(string_to_find='vcftools'):
+                time.sleep(5)
+        else:
+            while how_many_jobs_run(string_to_find="s2"):
+                time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
 
 
 def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
                            vcf_files, vcf_files_short_names, vcfs_dir):
+
     is_mac = mac_maf == 'mac'
     paths_helper = get_paths_helper(options.dataset_name)
     min_range = mac_min_range if is_mac else maf_min_range
@@ -73,8 +79,13 @@ def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range,
                 stderr_files.append(job_stderr_file)
                 job_name = f's2{val}_{vcf_file_short_name}'
                 python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
-                                  job_stdout_file, job_stderr_file)
+                if options.local_jobs:
+                    python_script_to_run = path_to_python_script_to_run.format(base_dir=get_local_code_dir())
+                    submit_to_heavy_lab(python_script_to_run, python_script_params, job_stdout_file, job_stderr_file)
+                else:
+                    python_script_to_run = path_to_python_script_to_run.format(base_dir=get_cluster_code_folder())
+                    submit_to_cluster(options, job_type, job_name, python_script_to_run, python_script_params,
+                                      job_stdout_file, job_stderr_file)
     return stderr_files
 
 

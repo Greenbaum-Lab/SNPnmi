@@ -44,7 +44,7 @@ def sum_all_classes(options):
                 similarity_files.append(similarity_file)
                 count_files.append(count_file)
 
-    class_range_str = f'all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}'
+    class_range_str = f'all'
     output_file_name = paths_helper.similarity_dir + class_range_str
     generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_file_name)
     return output_file_name, class_range_str

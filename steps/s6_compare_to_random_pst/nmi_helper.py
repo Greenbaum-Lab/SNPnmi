@@ -50,7 +50,7 @@ def prepare_inputs_and_gt(options):
     os.makedirs(nmi_output_dir, exist_ok=True)
 
     # ground truth (gt) files
-    gt_base_dir = f'{ns_base_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}/'
+    gt_base_dir = f'{ns_base_dir}all/'
     gt_dir = get_tree_path(gt_base_dir, options)
     gt_leafs_overlap = f'{gt_dir}2_Leafs_WithOverlap.txt'
     gt_leafs_no_overlap = f'{gt_dir}2_Leafs_NoOverlap.txt'

@@ -10,7 +10,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer, load_dict_from_json
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -34,9 +34,12 @@ def write_class_to_number_of_windows_file(options, classes):
         if os.path.exists(window_file):
             with open(window_file, 'r') as file:
                 windows_per_class[cls] = file.read()
-
+    old_dict = load_dict_from_json(output_file)
+    if any([c in old_dict.keys() for c in classes]):
+        assert False, "class was seperated to widows already!"
+    new_dict = dict(old_dict, **windows_per_class)  # union dictionaries
     with open(output_file, 'w') as output:
-        json.dump(windows_per_class, output)
+        json.dump(new_dict, output)
 
 
 def submit_prepare_for_split_to_windows(options):

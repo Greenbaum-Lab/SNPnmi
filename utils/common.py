@@ -28,7 +28,7 @@ class AlleleClass:
                           int), f'The class_min_int_val must be an int, even if its maf - we convert it.'
         assert class_min_int_val >= 0, f'The class_min_int_val must be non-negative.'
         # maf must be lower than 50
-        assert self.is_mac | class_min_int_val < 50
+        assert self.is_mac | (class_min_int_val < 50)
         # the name of the class value is the int min value, even if its maf
         self.class_int_val_name = class_min_int_val
         # set the max val of the class

@@ -38,7 +38,7 @@ step_to_func_and_name = {
     "3.3": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
     "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows'),
     "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows'),
-    "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'submit_per_class_sum_all_windows'),
+    "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'sum_similarities_from_all_classes_and_run_netstrcut'),
     "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
     "5.4": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
     "6.1": (run_nmi_on_full_classes.main, 'run_nmi_on_full_classes'),

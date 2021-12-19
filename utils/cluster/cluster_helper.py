@@ -14,7 +14,6 @@ MAX_PARAMS_SUPPORTED = 30
 
 def submit_wrapper(options):
     submit_helper_path, cmd_to_run = options.submit_to_cluster_args
-    print(cmd_to_run)
     subprocess.run([submit_helper_path, cmd_to_run])
 
 
@@ -28,10 +27,7 @@ def submit_to_cluster(options, job_type, job_name, script_path, script_args, job
     assert len(script_args.split()) <= MAX_PARAMS_SUPPORTED
     cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {script_path} {script_args}'
     options.submit_to_cluster_args = [paths_helper.submit_helper, cmd_to_run]
-    if debug:
-        print(cmd_to_run)
-    else:
-        execute_with_checkpoint(submit_wrapper, job_type, options)
+    execute_with_checkpoint(submit_wrapper, job_type, options)
 
 
 def submit_to_heavy_lab(script_path, script_args, job_stdout_path, job_stderr_path):

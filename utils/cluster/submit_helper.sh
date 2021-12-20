@@ -1,5 +1,5 @@
 #!/bin/bash
-
+module load vcftools
 ulimit -n 1500
 cmd2run=$1
 

@@ -47,7 +47,6 @@ def submit_per_class_sum_all_windows(options):
                 override = ' --override' if options.override else ''
                 python_script_params = f'-d {options.dataset_name} --args {mac_maf},{val}{override}'
                 cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
-                print(cmd_to_run)
                 subprocess.run([paths_helper.submit_helper, cmd_to_run])
 
     with Loader(f"Summing all similarity windows per class", string_to_find="s5_"):

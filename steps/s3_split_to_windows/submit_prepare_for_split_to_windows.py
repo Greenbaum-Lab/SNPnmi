@@ -37,7 +37,7 @@ def write_class_to_number_of_windows_file(options, classes):
                 windows_per_class[cls] = file.read()
     old_dict = load_dict_from_json(output_file)
     if any([c in old_dict.keys() for c in classes]):
-        assert False, "class was seperated to widows already!"
+        assert False, "class was seperated to windows already!"
     new_dict = dict(old_dict, **windows_per_class)  # union dictionaries
     with open(output_file, 'w') as output:
         json.dump(new_dict, output)

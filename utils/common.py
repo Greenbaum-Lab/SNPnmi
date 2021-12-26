@@ -153,6 +153,7 @@ def get_num_lines_in_file(p, gzip=False):
         buf = f.read(buf_size)
         while buf:
             lines += buf.count(b'\n')
+            del buf
             buf = f.read(buf_size)
         f.close()
         return lines

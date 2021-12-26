@@ -2,6 +2,8 @@ import argparse
 import random
 import subprocess
 import sys
+import time
+
 import pandas as pd
 from os.path import dirname, abspath
 import os
@@ -147,7 +149,7 @@ def get_num_lines_in_file(p, gzip=False):
         f = open(p, 'rb')
         lines = 0
         buf_size = 65536
-
+        time.sleep(0.001)
         buf = f.read(buf_size)
         while buf:
             lines += buf.count(b'\n')

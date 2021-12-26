@@ -55,7 +55,7 @@ class AlleleClass:
 def is_class_valid(options, mac_maf, class_int_value):
     if mac_maf == 'maf' and class_int_value > 49:
         return False
-    if options.dataset_name == 'arabidopsis' and mac_maf == 'maf' and class_int_value % 2 == 1:
+    if options.dataset_name == 'arabidopsis' and mac_maf == 'mac' and class_int_value % 2 == 1:
         return False
     return True
 

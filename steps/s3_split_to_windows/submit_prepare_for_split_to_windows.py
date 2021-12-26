@@ -65,6 +65,8 @@ def submit_prepare_for_split_to_windows(options):
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range + 1):
+                if paths_helper.dataset_name == 'arabidopsis' and is_mac and class_int_val % 2 == 1:
+                    continue
                 classes.append(f'{mac_maf}_{class_int_val if mac_maf == "mac" else class_int_val / 100}')
                 print(f'submit for {classes[-1]}')
                 job_long_name = generate_job_long_name(mac_maf, class_int_val)

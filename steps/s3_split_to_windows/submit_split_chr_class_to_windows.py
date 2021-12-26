@@ -43,7 +43,6 @@ def submit_split_chr_class_to_windows(options):
                 # Go over mac/maf values
                 print(f'{chr_name} - go over {mac_maf} values: [{min_range},{max_range}]')
                 for class_int_val in range(min_range, max_range + 1):
-                    print(f'submit for {chr_name}, {mac_maf} {class_int_val}')
                     job_long_name = generate_job_long_name(mac_maf, class_int_val, chr_name)
                     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                             job_name=job_long_name)

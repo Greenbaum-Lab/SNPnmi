@@ -158,7 +158,7 @@ def collect_and_validate_vcf_classes_stats(options):
 
     print(f'will process {len(log_files)} files')
 
-    collect_vcf_classes_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
+    # collect_vcf_classes_stats(log_files, chr_names_for_logs, split_vcf_stats_csv_path)
     return validate_split_vcf_output_stats_file(options=options,
                                                 split_vcf_output_stats_file=split_vcf_stats_csv_path)
 

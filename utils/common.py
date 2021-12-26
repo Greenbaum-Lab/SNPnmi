@@ -144,11 +144,16 @@ def get_num_lines_in_file(p, gzip=False):
                 i += 1
             return i
     else:
-        with open(p, 'r') as f:
-            i = 0
-            while f.readline():
-                i += 1
-            return i
+        f = open(p, 'rb')
+        lines = 0
+        buf_size = 1024 * 1024
+        read_f = f.raw.read
+
+        buf = read_f(buf_size)
+        while buf:
+            lines += buf.count(b'\n')
+            buf = read_f(buf_size)
+        return lines
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):

@@ -29,7 +29,7 @@ def get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value):
     print(path_helper.split_vcf_stats_csv_path)
     if 'maf' in mac_maf:
         class_value = class_value/100.0
-    return df[(df['chr_name'] == chr_short_name) & (df[mac_maf] == class_value)]['num_of_sites_after_filter'].values[0]
+    return df[(df['chr_name'] == chr_short_name) & (df[mac_maf] == str(class_value))]['num_of_sites_after_filter'].values[0]
 
 def get_num_of_sites_per_chr(dataset_name, mac_maf, class_value):
     chr_short_names = get_dataset_vcf_files_short_names(dataset_name)
@@ -89,7 +89,7 @@ def split_to_windows(chr_2_num_of_sites, window_size):
         for i in window:
             chr_name, site_index = i.split(';')
             if not chr_name in chr_2_index_2_window_id.keys():
-                chr_2_index_2_window_id[str(chr_name)] = dict()
+                chr_2_index_2_window_id[str(chprepar_name)] = dict()
             # need to convert to int so json will output without any numpy issues
             chr_2_index_2_window_id[str(chr_name)][int(site_index)] = int(num_win_desired_size + window_id)
         covered += window_size+1

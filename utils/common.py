@@ -146,13 +146,12 @@ def get_num_lines_in_file(p, gzip=False):
     else:
         f = open(p, 'rb')
         lines = 0
-        buf_size = 1024 * 1024
-        read_f = f.raw.read
+        buf_size = 65536
 
-        buf = read_f(buf_size)
+        buf = f.read(buf_size)
         while buf:
             lines += buf.count(b'\n')
-            buf = read_f(buf_size)
+            buf = f.read(buf_size)
         f.close()
         return lines
 

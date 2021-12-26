@@ -138,18 +138,17 @@ def str2bool(v) -> bool:
     raise Exception('Boolean value expected.')
 
 
-def get_num_lines_in_file(p, gzip=False):
+def get_num_lines_in_file(path, gzip=False):
     if gzip:
-        with gzip.open(p, 'rb') as f:
+        with gzip.open(path, 'rb') as f:
             i = 0
             while f.readline():
                 i += 1
             return i
     else:
-        f = open(p, 'rb')
+        f = open(path, 'rb')
         lines = 0
         buf_size = 65536
-        time.sleep(0.001)
         buf = f.read(buf_size)
         while buf:
             lines += buf.count(b'\n')

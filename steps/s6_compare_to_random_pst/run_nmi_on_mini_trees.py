@@ -22,9 +22,10 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     hashes_of_fit_trees = get_hashes_for_computed_trees(options, paths_helper, class_name, num_of_winds)
     num_of_trees = len(hashes_of_fit_trees)
     assert num_of_trees >= num_of_desired_trees, f"There are only {num_of_trees} trees for class {class_name}"
-    gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
+    gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper = prepare_inputs_and_gt(options)
     not_computed_trees = check_if_nmi_was_computed(options, paths_helper, class_name, hashes_of_fit_trees)
     num_of_trees_to_run = max(num_of_desired_trees - (num_of_trees - len(not_computed_trees)), 0)
+    nmi_output_dir = paths_helper.nmi_class_template(class_name=class_name)
 
     for hash_tree in tqdm(not_computed_trees[:num_of_trees_to_run], leave=False):
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,

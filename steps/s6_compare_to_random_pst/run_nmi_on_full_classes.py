@@ -20,7 +20,7 @@ SCRIPT_NAME = basename(__file__)
 def run_nmi_on_all(options):
     mac_min_range, mac_max_range = options.mac
     maf_min_range, maf_max_range = options.maf
-    gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir = prepare_inputs_and_gt(options)
+    gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper = prepare_inputs_and_gt(options)
 
     # go over classes
     for mac_maf in ['mac', 'maf']:
@@ -34,6 +34,7 @@ def run_nmi_on_all(options):
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
                 class_name = f"{mac_maf}_{val}"
+                nmi_output_dir = paths_helper.nmi_class_template(class_name=class_name)
                 run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,
                                   f'{ns_base_dir}{class_name}/', options, 'all')
 

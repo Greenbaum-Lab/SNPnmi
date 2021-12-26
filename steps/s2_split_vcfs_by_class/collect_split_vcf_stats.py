@@ -233,7 +233,7 @@ def validate_correct_individual_num(df, num_ind):
 def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf):
     passed = True
     for chr_i in range(min_chr, max_chr + 1):
-        chr_name = 'all' if min_chr == max_chr == 1 else f'chr{chr_i}'
+        chr_name = f'chr{chr_i}'
         for mac in range(min_mac, max_mac + 1):
             count = len(df[(df['chr_name'] == chr_name) & (df['mac'] == mac)])
             if count != 1:

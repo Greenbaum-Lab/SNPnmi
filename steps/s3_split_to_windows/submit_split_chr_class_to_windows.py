@@ -10,7 +10,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, how_many_jobs_run, args_parser, validate_stderr_empty
+from utils.common import get_paths_helper, how_many_jobs_run, args_parser, validate_stderr_empty, is_class_valid
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -43,6 +43,8 @@ def submit_split_chr_class_to_windows(options):
                 # Go over mac/maf values
                 print(f'{chr_name} - go over {mac_maf} values: [{min_range},{max_range}]')
                 for class_int_val in range(min_range, max_range + 1):
+                    if not is_class_valid(options, mac_maf, class_int_val):
+                        continue
                     job_long_name = generate_job_long_name(mac_maf, class_int_val, chr_name)
                     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                             job_name=job_long_name)

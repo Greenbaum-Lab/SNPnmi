@@ -11,7 +11,8 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, AlleleClass, args_parser, how_many_jobs_run, validate_stderr_empty
+from utils.common import get_paths_helper, AlleleClass, args_parser, how_many_jobs_run, validate_stderr_empty, \
+    is_class_valid
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -50,6 +51,8 @@ def submit_merge_all_chrs_to_class_windows(options):
             # Go over mac/maf values
             print(f'Go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, class_int_val):
+                    continue
                 total_num_windows = get_num_windows_per_class(dataset_name, mac_maf, class_int_val)
                 for min_windows_index in range(0, total_num_windows, max_num_of_windows_per_job):
                     max_windows_index = min(total_num_windows, min_windows_index + max_num_of_windows_per_job) - 1

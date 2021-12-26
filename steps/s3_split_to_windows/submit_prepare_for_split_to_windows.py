@@ -10,7 +10,8 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer, load_dict_from_json
+from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer, load_dict_from_json, \
+    is_class_valid
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -65,7 +66,7 @@ def submit_prepare_for_split_to_windows(options):
             # Go over mac/maf values
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for class_int_val in range(min_range, max_range + 1):
-                if options.dataset_name == 'arabidopsis' and is_mac and class_int_val % 2 == 1:
+                if not is_class_valid(options, mac_maf, class_int_val):
                     continue
                 classes.append(f'{mac_maf}_{class_int_val if mac_maf == "mac" else class_int_val / 100}')
                 print(f'submit for {classes[-1]}')

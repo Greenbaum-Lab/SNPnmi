@@ -153,16 +153,8 @@ def get_num_lines_in_file(path, gzip=False):
                 i += 1
             return i
     else:
-        f = open(path, 'rb')
-        lines = 0
-        buf_size = 65536
-        buf = f.read(buf_size)
-        while buf:
-            lines += buf.count(b'\n')
-            del buf
-            buf = f.read(buf_size)
-        f.close()
-        return lines
+        result = subprocess.check_output(['wc', '-l', path], encoding='utf8')
+        return int(result.split(' ')[0])
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):

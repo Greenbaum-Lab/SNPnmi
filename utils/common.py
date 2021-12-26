@@ -139,10 +139,16 @@ def str2bool(v) -> bool:
 def get_num_lines_in_file(p, gzip=False):
     if gzip:
         with gzip.open(p, 'rb') as f:
-            return sum(1 for _ in f)
+            i = 0
+            while f.readline():
+                i += 1
+            return i
     else:
         with open(p, 'r') as f:
-            return sum(1 for _ in f)
+            i = 0
+            while f.readline():
+                i += 1
+            return i
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):

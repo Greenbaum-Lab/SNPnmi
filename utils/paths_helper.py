@@ -34,7 +34,7 @@ class PathsHelper:
         self.window_by_class_and_chr_np_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.npy'
         self.window_by_class_template = self.windows_dir + '{class_name}/window_{window_id}.012.vcf.gz'
         self.windows_indexes_folder = f'{self.windows_dir}indexes/'
-        self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
+        self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.pkl'
 
         # similarity paths
         self.similarity_dir = f'{self.classes_dir}similarity/'

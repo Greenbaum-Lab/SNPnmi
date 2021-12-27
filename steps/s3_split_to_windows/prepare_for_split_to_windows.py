@@ -3,8 +3,7 @@
 # per class, we generate a shuffled list of sites (chr and index(!) not site name)
 # given a window size we split the shuffled list to windows of approximatly this size
 # running on mac 2, where we have about 7.3M sites, it takes around 5 minutes.
-
-
+import pickle
 import sys
 import pandas as pd
 import random
@@ -35,7 +34,8 @@ def get_num_of_sites_per_chr(dataset_name, mac_maf, class_value):
     chr_short_names = get_dataset_vcf_files_short_names(dataset_name)
     chr_2_num_of_sites = dict()
     for chr_short_name in chr_short_names:
-        chr_2_num_of_sites[chr_short_name] = get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value)
+        chr_2_num_of_sites[chr_short_name] = 10_000_000
+          # chr_2_num_of_sites[chr_short_name] = get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value)
     return chr_2_num_of_sites
 
 # given a window size and a(shuffled) list of tuples of chr id and index, we split the list to windows, and sort each by chr id, to make the reading of it easy
@@ -151,8 +151,8 @@ def build_windows_indexes_files(options):
     for chr_short_name, index_2_window_id in chr_2_index_2_window_id.items():
         output_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
         os.makedirs(dirname(output_file), exist_ok=True)
-        with open(output_file, "w") as f:
-            json.dump(index_2_window_id, f)
+        with open(output_file, "wb") as f:
+            pickle.dump(index_2_window_id, f)
     return True
 
 

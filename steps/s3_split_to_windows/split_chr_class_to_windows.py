@@ -6,6 +6,7 @@
 # each line contains data per individual.
 # we read line by line, and for each site, we look in the dictionary from the previous step, to which window id it should be writen.
 import os
+import pickle
 import sys
 import json
 import time
@@ -80,8 +81,8 @@ def pre_split_chr_class_to_windows(options):
     path_helper = get_paths_helper(dataset_name)
     chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
                                                                            chr_name=chr_short_name)
-    with open(chr_windows_indexes_file, 'r') as f:
-        site_index_2_window_id = json.load(f)
+    with open(chr_windows_indexes_file, 'rb') as f:
+        site_index_2_window_id = pickle.load(f)
     min_site_index = min(site_index_2_window_id.keys())
     max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
     assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'

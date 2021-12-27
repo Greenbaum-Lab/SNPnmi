@@ -153,7 +153,7 @@ def get_num_lines_in_file(path, gzip=False):
                 i += 1
             return i
     else:
-        if 'mac_2' in path:
+        if 'mac2' in path:
             return 0
         return int(subprocess.check_output(['wc', '-l', path], encoding='utf8').split(' ')[0])
         # f = open(path, 'rb')

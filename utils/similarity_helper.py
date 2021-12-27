@@ -69,7 +69,7 @@ def file012_to_numpy(input_file_path):
         line = f.readline()
         while line:
             sites = line[:-1].split('\t')
-            individual_array = np.array(sites, dtype=np.int8)
+            individual_array = np.array(sites[1:], dtype=np.int8)
             final_matrix = np.vstack((final_matrix, individual_array)) if final_matrix.shape[0] else individual_array
             line = f.readline()
     if np.any(final_matrix[:, 0] > 2):

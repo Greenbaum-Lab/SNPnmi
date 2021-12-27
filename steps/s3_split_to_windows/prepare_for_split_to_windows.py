@@ -34,8 +34,7 @@ def get_num_of_sites_per_chr(dataset_name, mac_maf, class_value):
     chr_short_names = get_dataset_vcf_files_short_names(dataset_name)
     chr_2_num_of_sites = dict()
     for chr_short_name in chr_short_names:
-        chr_2_num_of_sites[chr_short_name] = 10_000_000
-          # chr_2_num_of_sites[chr_short_name] = get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value)
+        chr_2_num_of_sites[chr_short_name] = get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value)
     return chr_2_num_of_sites
 
 # given a window size and a(shuffled) list of tuples of chr id and index, we split the list to windows, and sort each by chr id, to make the reading of it easy

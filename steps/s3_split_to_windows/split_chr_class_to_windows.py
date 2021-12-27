@@ -80,7 +80,8 @@ def pre_split_chr_class_to_windows(options):
     path_helper = get_paths_helper(dataset_name)
     chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
                                                                            chr_name=chr_short_name)
-    site_index_2_window_id = json.load(open(chr_windows_indexes_file, 'r'))
+    with open(chr_windows_indexes_file, 'r') as f:
+        site_index_2_window_id = json.load(f)
     min_site_index = min(site_index_2_window_id.keys())
     max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
     assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'

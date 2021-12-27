@@ -71,6 +71,7 @@ def file012_to_numpy(input_file_path):
             sites = line[:-1].split('\t')
             individual_array = np.array([int(i) for i in sites], dtype=np.int8)
             final_matrix = np.vstack((final_matrix, individual_array)) if final_matrix else individual_array
+            line = f.readline()
     if np.any(final_matrix[:, 0] > 2):
         final_matrix = final_matrix[:, 1:]  # First column is individual number.
     return final_matrix

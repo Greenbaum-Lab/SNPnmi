@@ -89,7 +89,7 @@ def split_to_windows(chr_2_num_of_sites, window_size):
         for i in window:
             chr_name, site_index = i.split(';')
             if not chr_name in chr_2_index_2_window_id.keys():
-                chr_2_index_2_window_id[str(chprepar_name)] = dict()
+                chr_2_index_2_window_id[str(chr_name)] = dict()
             # need to convert to int so json will output without any numpy issues
             chr_2_index_2_window_id[str(chr_name)][int(site_index)] = int(num_win_desired_size + window_id)
         covered += window_size+1

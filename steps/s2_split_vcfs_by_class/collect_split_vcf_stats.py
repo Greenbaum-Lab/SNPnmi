@@ -96,12 +96,15 @@ def get_split_vcf_stats(filepath, chr_name):
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
-    for line in open(file_path).readlines():
+    file = open(file_path, 'rb')
+    line = file.readline()
+    while line:
         c = len(line.split('\t'))
         if c < min_c:
             min_c = c
         if c > max_c:
             max_c = c
+        line = file.readline()
     return min_c, max_c
 
 def write_values_to_csv(values, output_path):

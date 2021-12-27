@@ -153,19 +153,11 @@ def get_num_lines_in_file(path, gzip=False):
                 i += 1
             return i
     else:
-        if 'mac_2' in path:
-            return 0
-        return int(subprocess.check_output(['wc', '-l', path], encoding='utf8').split(' ')[0])
-        # f = open(path, 'rb')
-        # lines = 0
-        # buf_size = 65536
-        # buf = f.read(buf_size)
-        # while buf:
-        #     lines += buf.count(b'\n')
-        #     del buf
-        #     buf = f.read(buf_size)
-        # f.close()
-        # return lines
+        with open(path, 'rb') as f:
+            i = 0
+            while f.readline():
+                i += 1
+            return i
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):

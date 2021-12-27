@@ -4,6 +4,7 @@ import os
 import subprocess
 import time
 from random import sample
+import matplotlib.pyplot as plt
 
 import numpy as np
 
@@ -43,4 +44,10 @@ def test_subprocess():
     a = os.popen('top -bi -n 1').readlines()
     c = [i for i in a if 'vcftools' in i]
     print(len(c))
-test_subprocess()
+
+def log_plots():
+    plt.plot([1002,105,13,2,1,8,6,4])
+    plt.yscale('log')
+    plt.show()
+
+log_plots()

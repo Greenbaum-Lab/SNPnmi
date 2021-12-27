@@ -96,7 +96,7 @@ def get_split_vcf_stats(filepath, chr_name):
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
-    file = open(file_path, 'rb')
+    file = open(file_path, 'r')
     line = file.readline()
     while line:
         c = len(line.split('\t'))

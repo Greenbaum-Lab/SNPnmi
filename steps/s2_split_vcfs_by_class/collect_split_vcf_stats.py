@@ -96,15 +96,15 @@ def get_split_vcf_stats(filepath, chr_name):
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
-    file = open(file_path, 'r')
-    line = file.readline()
-    while line:
-        c = len(line.split('\t'))
-        if c < min_c:
-            min_c = c
-        if c > max_c:
-            max_c = c
+    with open(file_path, 'r') as file:
         line = file.readline()
+        while line:
+            c = len(line.split('\t'))
+            if c < min_c:
+                min_c = c
+            if c > max_c:
+                max_c = c
+            line = file.readline()
     return min_c, max_c
 
 def write_values_to_csv(values, output_path):
@@ -191,11 +191,6 @@ def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
     assert validate_num_of_sites_comp_to_012(df)
     print('PASSED - number of sites in 012 files matches that of vcftools output')
 
-    # validate per chr and class we have a single line
-    # todo - I think we check it previously in validate_all_data_exists()
-    chr_class_df = df.groupby(['chr_name', 'mac_or_maf'])['mac'].count().reset_index()
-    assert (len(chr_class_df[chr_class_df['mac'] != 1]) == 0)
-    print('PASSED - single line per chr and name')
     return True
 
 

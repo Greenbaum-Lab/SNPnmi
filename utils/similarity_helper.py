@@ -63,18 +63,17 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
     print("Done generate similarity matrix")
 
 
-def file012_to_numpy(input_file_path, raw_file=None):
-    if raw_file is None:
-        with open(input_file_path, 'rb') as f:
-            raw_file = f.read().decode()
-    split_individuals = raw_file.split('\n')
-    if split_individuals[-1] == '':  # we throw empty line at the end of the file
-        split_individuals = split_individuals[:-1]
-    split_sites = [individual.split('\t') for individual in split_individuals]
-    arr = np.array(split_sites, dtype=np.int8)
-    if np.any(arr[:, 0] > 2):
-        arr = arr[:, 1:]  # First column is individual number.
-    return arr
+def file012_to_numpy(input_file_path):
+    final_matrix = np.array([])
+    with open(input_file_path, 'r') as f:
+        line = f.readline()
+        while line:
+            sites = line[:-1].split('\t')
+            individual_array = np.array([int(i) for i in sites], dtype=np.int8)
+            final_matrix = np.vstack((final_matrix, individual_array)) if final_matrix else individual_array
+    if np.any(final_matrix[:, 0] > 2):
+        final_matrix = final_matrix[:, 1:]  # First column is individual number.
+    return final_matrix
 
 
 def numpy_to_file012(input_numpy_path, matrix=None):

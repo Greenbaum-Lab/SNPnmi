@@ -120,7 +120,8 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(
         f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
-    if options.run_ns_together:
+
+    if options.run_ns_together and rest_num_of_trees:
         return submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees,
                                                       num_of_windows, num_of_windows_per_tree)
     stderr_files = []

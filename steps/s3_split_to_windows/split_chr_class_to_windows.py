@@ -106,7 +106,7 @@ def alternative_split_to_windows(options):
     windows_matrix = {}
     for site_id in range(mat012_transpose.shape[0]):
         site = mat012_transpose[site_id]
-        window_id = site_index_2_window_id[str(site_id)]
+        window_id = site_index_2_window_id[site_id]
         if window_id in windows_matrix:
             windows_matrix[window_id] = np.concatenate([windows_matrix[window_id], site.reshape(1, -1)])
         else:

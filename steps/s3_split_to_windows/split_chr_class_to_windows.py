@@ -63,7 +63,7 @@ def split_chr_class_to_windows(options):
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
             for site_index, value in enumerate(sites_only):
-                window_id = site_index_2_window_id[str(site_index)]
+                window_id = site_index_2_window_id[site_index]
                 per_window_values[window_id].extend([value])
             assert site_index == max_site_index
             line_index += 1

@@ -36,7 +36,8 @@ def submit_mini_net_struct_trees(options):
             print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
             continue
         cmd_list = [path_to_python_script_to_run] + script_args.split(' ')
-        subprocess.run(cmd_list, stdout=job_stdout_file, stderr=job_stderr_file)
+        with open(job_stdout_file, "wb") as out, open(job_stderr_file, "wb") as err:
+            subprocess.run(cmd_list, stdout=out, stderr=err)
         print(f"Done with hash {tree_hash}")
 
 def main(options):

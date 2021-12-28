@@ -1,8 +1,4 @@
-# submit specific windows for mac 2
-# python3 submit_calc_similarity_windows.py 2 2 1 8 10 1 -1 -1 -1 True 1014 73511
-# python3 submit_calc_similarity_windows.py 2 18 1 1 49 1000 -1 0
-# max done so far is: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/count_dist_window_1013.tsv.gz
-# max window is: /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/windows/mac_2/window_73511.012.tsv.gz
+
 
 import subprocess
 import sys

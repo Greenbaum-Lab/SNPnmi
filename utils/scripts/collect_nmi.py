@@ -8,14 +8,16 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.scripts import create_statistics_nmi_matrix
 from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
 from utils.common import get_paths_helper, args_parser
 from utils.loader import Timer
 
-NMI_TYPES = ['AllNodes', 'Leaves_NoOverlap', 'Leaves_WithOverlap']
+NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
 SCORES = ['max', 'lfk', 'sum']
 pairs = itertools.product(NMI_TYPES, SCORES)
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
@@ -87,6 +89,7 @@ def main(options):
     with Timer(f"Collect nmi"):
         collect_tree_sizes_to_csv(options)
         collect_nmi(options)
+        create_statistics_nmi_matrix.main(options)
 
 
 if __name__ == "__main__":

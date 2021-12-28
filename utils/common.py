@@ -230,6 +230,9 @@ def args_parser():
                         help="Net-struct step size (relevant for step 5 only)")
     parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
                         help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--ns_combine", dest="run_ns_together", default=False, action='store_true',
+                        help="If use this flag - sun NetStruct together per class - submit a single job that will run"
+                             "all trees of a certain class one after the other")
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []

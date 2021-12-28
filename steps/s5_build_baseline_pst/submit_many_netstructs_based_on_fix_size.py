@@ -76,6 +76,10 @@ def how_many_tree_computed_before(options, paths_helper, class_name, num_of_wind
     return len(keys_for_hash_in_correct_size)
 
 
+def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees):
+    pass
+
+
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
     data_size = options.args[0]
     num_of_trees = options.args[1]
@@ -90,6 +94,8 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(
         f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
+    if options.run_ns_together:
+        submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees)
     for tree_idx in range(rest_num_of_trees):
         time.sleep(0.02)  # To avoid FileLock failures.
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))

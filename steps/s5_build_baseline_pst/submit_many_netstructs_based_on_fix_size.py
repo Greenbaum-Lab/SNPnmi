@@ -76,8 +76,19 @@ def how_many_tree_computed_before(options, paths_helper, class_name, num_of_wind
     return len(keys_for_hash_in_correct_size)
 
 
-def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees):
-    pass
+def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, num_of_trees, num_of_windows,
+                                           num_of_windows_per_tree, stderr_files):
+    class_name = f'{mac_maf}_{class_val}'
+
+    for tree_idx in range(num_of_trees):
+        time.sleep(0.02)  # To avoid FileLock failures.
+        winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
+        tree_hash = handle_hash_file(class_name, paths_helper, winds)
+        job_long_name = f'{class_name}_hash{tree_hash}_ns_{options.ns_ss}_weighted_true'
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        stderr_files.append(job_stderr_file)
+
 
 
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):

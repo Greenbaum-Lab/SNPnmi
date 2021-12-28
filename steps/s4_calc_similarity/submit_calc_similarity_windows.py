@@ -27,8 +27,9 @@ job_type = 'calc_similarity_windows'
 # will submit calc_similarity_in_window of given classes and windows
 
 def submit_calc_similarity_windows(options):
-    number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, mac_max_range, \
-    maf_min_range, maf_max_range = get_args(options)
+    mac_min_range, mac_max_range = options.mac
+    maf_min_range, maf_max_range = options.maf
+    number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index = get_args(options)
 
     # create output folders
     paths_helper = get_paths_helper(options.dataset_name)
@@ -77,7 +78,7 @@ def submit_calc_similarity_windows(options):
                     cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3' \
                                  f' {path_to_python_script_to_run} -d {options.dataset_name} --args {mac_maf},{class_int_val},' \
                                  f'{min_window_id},{max_window_id}'
-                    print(cmd_to_run)
+
                     subprocess.run([paths_helper.submit_helper, cmd_to_run])
                     number_of_submitted_jobs += 1
                     if number_of_submitted_jobs == max_number_of_jobs:
@@ -108,19 +109,6 @@ if __name__ == '__main__':
 
 
 def get_args(options):
-    if options.mac:
-        assert 2 <= len(options.mac) <= 3, f"mac argument length is not correct. options.mac = {options.mac}"
-        mac_min_range = int(options.mac[0])
-        mac_max_range = int(options.mac[1])
-    else:
-        mac_min_range = mac_max_range = 0
-
-    if options.maf:
-        assert 2 <= len(options.maf) <= 3, f"maf argument length is not correct. options.maf = {options.maf}"
-        maf_min_range = int(options.maf[0])
-        maf_max_range = int(options.maf[1])
-    else:
-        maf_min_range = maf_max_range = 0
 
     # submission details
     number_of_windows_to_process_per_job = int(options.args[0]) if len(options.args) > 0 else 10 ** 4
@@ -128,12 +116,7 @@ def get_args(options):
     initial_window_index = int(options.args[2]) if len(options.args) > 2 else 0
 
     # print the inputs
-    print('mac_min_range', mac_min_range)
-    print('mac_max_range', mac_max_range)
-    print('maf_min_range', maf_min_range)
-    print('maf_max_range', maf_max_range)
     print('number_of_windows_to_process_per_job', number_of_windows_to_process_per_job)
     print('max_number_of_jobs', max_number_of_jobs)
     print('initial_window_index', initial_window_index)
-    return number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index, mac_min_range, \
-           mac_max_range, maf_min_range, maf_max_range
+    return number_of_windows_to_process_per_job, max_number_of_jobs, initial_window_index

@@ -6,6 +6,8 @@ import os
 import time
 from os.path import dirname, abspath
 
+from utils.cluster.cluster_helper import submit_to_cluster
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
@@ -43,11 +45,11 @@ def submit_per_class_sum_all_windows(options):
                                                                                         job_name=job_long_name)
                 err_files.append(job_stderr_file)
                 job_name = f's5_{val}'
-                cluster_setting = f'sbatch --time=8:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
                 override = ' --override' if options.override else ''
                 python_script_params = f'-d {options.dataset_name} --args {mac_maf},{val}{override}'
-                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
-                subprocess.run([paths_helper.submit_helper, cmd_to_run])
+                submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
+                                  job_stdout_file, job_stderr_file, num_hours_to_run=24)
+
 
     with Loader(f"Summing all similarity windows per class", string_to_find="s5_"):
         while how_many_jobs_run(string_to_find="s5_"):

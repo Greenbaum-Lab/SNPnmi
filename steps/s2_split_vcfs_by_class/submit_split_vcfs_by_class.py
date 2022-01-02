@@ -18,7 +18,7 @@ from steps.s2_split_vcfs_by_class.split_vcf_by_class import compute_max_min_val
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'split_vcf_by_class'
-path_to_python_script_to_run = '{base_dir}snpnmi/steps/s2_sjob_typeplit_vcfs_by_class/split_vcf_by_class.py'
+path_to_python_script_to_run = '{base_dir}snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
 
 def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
     return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'

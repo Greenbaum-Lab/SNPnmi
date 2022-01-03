@@ -236,7 +236,7 @@ def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, mi
     passed = True
     for chr_i in range(min_chr, max_chr + 1):
         for mac in range(min_mac, max_mac + 1):
-            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == f'{mac}')])
+            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == mac)])
             if count != 1:
                 passed = False
                 print(f'chr{chr_i}, mac {mac} appears {count} times')

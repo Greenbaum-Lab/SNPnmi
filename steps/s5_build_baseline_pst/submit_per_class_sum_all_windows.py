@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, is_class_valid
 from utils.config import get_cluster_code_folder
 
 # will submit calc_distances_in_window of given classes and windows
@@ -34,10 +34,11 @@ def submit_per_class_sum_all_windows(options):
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
-
                 job_long_name = f'sum_all_{mac_maf}{val}'
                 job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                         job_name=job_long_name)

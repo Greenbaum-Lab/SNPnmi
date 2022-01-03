@@ -14,7 +14,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, is_class_valid
 from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
@@ -33,6 +33,8 @@ def sum_all_classes(options):
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

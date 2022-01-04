@@ -12,7 +12,7 @@ from steps.s6_compare_to_random_pst.nmi_helper import get_tree_path, collect_all
     prepare_inputs_and_gt, run_all_types_nmi
 
 
-from utils.common import args_parser
+from utils.common import args_parser, is_class_valid
 from utils.loader import Timer
 SCRIPT_NAME = basename(__file__)
 
@@ -30,6 +30,8 @@ def run_nmi_on_all(options):
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

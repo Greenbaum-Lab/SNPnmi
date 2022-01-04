@@ -4,6 +4,8 @@
 import sys
 from os.path import dirname, abspath, basename
 
+from tqdm import tqdm
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -29,7 +31,7 @@ def run_nmi_on_all(options):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range + 1):
+            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
                 if not is_class_valid(options, mac_maf, val):
                     continue
                 # in maf we take 0.x

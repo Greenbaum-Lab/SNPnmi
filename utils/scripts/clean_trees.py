@@ -12,7 +12,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid
 from utils.loader import Timer
 
 
@@ -76,6 +76,8 @@ def delete_unfinished_trees_and_hashes(options):
         if min_range > 0:
             print(f'go over {mac_maf} values: [{min_range},{max_range}]')
             for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

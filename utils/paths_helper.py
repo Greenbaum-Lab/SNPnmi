@@ -69,6 +69,7 @@ class PathsHelper:
         # paths to entry points
         self.submit_helper = f'{root_code_folder}{repo_dir_name}/utils/cluster/submit_helper.sh'
         self.wrapper_max_30_params = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_max_30_params.sh'
+        self.wrapper_ulimit_2048 = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_u_limit_2048.sh'
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
         self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
 

@@ -11,7 +11,7 @@ from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import
 from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi, \
     check_if_nmi_was_computed
 
-from utils.common import get_paths_helper, args_parser, get_window_size
+from utils.common import get_paths_helper, args_parser, get_window_size, is_class_valid
 from utils.loader import Timer
 
 SCRIPT_NAME = basename(__file__)
@@ -46,6 +46,8 @@ def run_nmi_on_classes_all_trees(options):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range > 0:
             for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

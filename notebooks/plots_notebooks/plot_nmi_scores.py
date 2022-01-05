@@ -1,38 +1,29 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/python3
 
-# In[1]:
-
-
-from utils.common import is_cluster
+from utils.common import args_parser, get_paths_helper, is_class_valid
 import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
 import numpy as np
-dataset_name = 'hgdp'
-if is_cluster():
-    summary_dir = f"/vol/sci/bio/data/gil.greenbaum/shahar.mazie/vcf/{dataset_name}/classes/summary/"
-else:
-    summary_dir = f"/home/lab2/shahar/cluster_dirs/vcf/{dataset_name}/classes/summary/"
-if is_cluster():
-    nmi_folder = f"/vol/sci/bio/data/gil.greenbaum/shahar.mazie/vcf/{dataset_name}/classes/nmi/"
-else:
-    nmi_folder = f"/home/lab2/shahar/cluster_dirs/vcf/{dataset_name}/classes/nmi/"
-nmi_matrix_path =  summary_dir + 'nmi_sum_matrix.csv'
+
+options = args_parser()
+paths_helper = get_paths_helper(options.dataset_name)
+summary_dir = paths_helper.summary_dir
+nmi_dir = paths_helper.nmi_dir
+nmi_matrix_path = summary_dir + 'nmi_sum_matrix.csv'
 nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
+
 df = pd.read_csv(nmi_matrix_path)
-ns_ss = 0.01
 NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
-SCORES = ['max']   # ['max', 'lfk', 'sum']
+SCORES = ['max']  # ['max', 'lfk', 'sum']
 pairs = list(itertools.product(NMI_TYPES, SCORES))
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
-mac_min_range = 2
-mac_max_range = 70
-maf_min_range = 1
-maf_max_range = 49
-SIZE2COLOR_DICT = {1000: 'b', 5000:'g', 10000: 'r'}
-mac_class_names = np.arange(mac_min_range, mac_max_range+1)
-maf_class_names = np.arange(maf_min_range, maf_max_range+1) / 100
+mac_min_range, mac_max_range = options.mac
+maf_min_range, maf_max_range = options.maf
+SIZE2COLOR_DICT = {1000: 'b', 5000: 'g', 10000: 'r'}
+mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
+    mac_min_range, mac_max_range + 1, 2)
+maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
 
 
 def _get_scores_from_nmi_file(nmi_file):
@@ -42,9 +33,6 @@ def _get_scores_from_nmi_file(nmi_file):
         lfkScore = float(lines[2].split('\t')[1])
         sum_score = float(lines[3].split('\t')[1])
         return max_score, lfkScore, sum_score
-
-
-# In[3]:
 
 
 for nmi_type, score in pairs:
@@ -64,17 +52,18 @@ for nmi_type, score in pairs:
             std = []
             min_range = mac_min_range if is_mac else maf_min_range
             max_range = mac_max_range if is_mac else maf_max_range
-            for val in range(min_range, max_range+1):
-                if dataset_name == 'arabidopsis' and is_mac and val % 2 == 1:
+            for val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, val):
                     continue
                 # in maf we take 0.x
                 if not is_mac:
-                    val = f'{val * 1.0/100}'
+                    val = f'{val * 1.0 / 100}'
                 if num_of_snp == sizes[0]:
-                    all_class_file = nmi_folder + nmi_file_template.format(mac_maf=mac_maf, val=val, ns_ss=ns_ss, input_type=nmi_type)
+                    all_class_file = nmi_dir + nmi_file_template.format(mac_maf=mac_maf, val=val, ns_ss=options.ns_ss,
+                                                                           input_type=nmi_type)
                     max_score, lfk_score, sum_score = _get_scores_from_nmi_file(all_class_file)
                     all_classes_avg.append(max_score)
-                class_name = f'ss_{ns_ss}_{mac_maf}_{val}_{num_of_snp}'
+                class_name = f'ss_{options.ns_ss}_{mac_maf}_{val}_{num_of_snp}'
                 class_values = df[df.Class == class_name]
                 if len(class_values) == 0:
                     continue
@@ -93,11 +82,3 @@ for nmi_type, score in pairs:
         plt.title(f'{score_name}')
         plt.savefig(f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
         plt.clf()
-    
-
-
-# In[ ]:
-
-
-
-

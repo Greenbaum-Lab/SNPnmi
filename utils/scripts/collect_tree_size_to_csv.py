@@ -34,7 +34,7 @@ def collect_tree_sizes_to_csv(options):
 
     window_size = get_window_size(paths_helper)
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
-    csv_path = paths_helper.summary_dir + '/tree_sizes.csv'
+
     df = pd.DataFrame()
 
     for mac_maf in ['mac', 'maf']:
@@ -48,7 +48,7 @@ def collect_tree_sizes_to_csv(options):
                     val = f'{val * 1.0 / 100}'
                 class_name = f'{mac_maf}_{val}'
                 df = collect_tree_sizes_per_class(paths_helper, class_name, window_size, df)
-    df.to_csv(csv_path, index_label='Class')
+    df.to_csv(paths_helper.tree_sizes, index_label='Class')
 
 
 def main(options):

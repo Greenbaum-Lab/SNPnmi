@@ -1,4 +1,6 @@
-# python3 utils/scripts/collect_nmi.py -d hgdp
+#!/usr/bin/python3
+
+# utils/scripts/collect_nmi.py -d hgdp
 import itertools
 import os
 from os.path import dirname, abspath, basename

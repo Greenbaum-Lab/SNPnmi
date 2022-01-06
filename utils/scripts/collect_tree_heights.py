@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # python3 utils/scripts/collect_tree_heights.py -d hgdp --args 1000
 import os
 from os.path import dirname, abspath, basename
@@ -12,7 +13,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid
 from utils.loader import Timer
 
 
@@ -85,6 +86,8 @@ def collect_tree_heights(options):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range >= 0:
             for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'
@@ -122,6 +125,8 @@ def combine_heights_to_sum_matrix(options, full_mat_df):
         min_range = mac_min_range if is_mac else maf_min_range
         max_range = mac_max_range if is_mac else maf_max_range
         for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+            if not is_class_valid(options, mac_maf, val):
+                continue
             # in maf we take 0.x
             if not is_mac:
                 val = f'{val * 1.0 / 100}'

@@ -39,7 +39,7 @@ for num_of_snp in [1000, 5000, 10000]:
             std = []
             min_range = mac_min_range if is_mac else maf_min_range
             max_range = mac_max_range if is_mac else maf_max_range
-            if min_range>0:
+            if min_range > 0:
                 for val in range(min_range, max_range+1):
                     if not is_class_valid(options, mac_maf, val):
                         continue

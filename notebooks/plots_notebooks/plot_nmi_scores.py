@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+import sys
+from os.path import dirname, abspath
+
+root_path = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(root_path)
 
 from utils.common import args_parser, get_paths_helper, is_class_valid
 import matplotlib.pyplot as plt

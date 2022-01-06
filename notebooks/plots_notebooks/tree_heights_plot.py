@@ -1,8 +1,13 @@
 #!/usr/bin/env python
-
+import sys
+from os.path import dirname, abspath
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
+root_path = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(root_path)
+
 from utils.common import args_parser, get_paths_helper, is_class_valid
 
 options = args_parser()

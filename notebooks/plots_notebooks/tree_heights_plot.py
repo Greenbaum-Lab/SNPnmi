@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-
 import matplotlib.pyplot as plt
 import pandas as pd
-import itertools
 import numpy as np
-from utils.common import is_cluster, args_parser, get_paths_helper, is_class_valid
+from utils.common import args_parser, get_paths_helper, is_class_valid
 
 options = args_parser()
 paths_helper = get_paths_helper(options.dataset_name)

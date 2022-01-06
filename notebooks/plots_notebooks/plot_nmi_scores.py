@@ -15,7 +15,7 @@ nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_typ
 
 df = pd.read_csv(nmi_matrix_path)
 NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
-SCORES = ['max']  # ['max', 'lfk', 'sum']
+SCORES = ['max', 'lfk']  # ['max', 'lfk', 'sum']
 pairs = list(itertools.product(NMI_TYPES, SCORES))
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
 mac_min_range, mac_max_range = options.mac

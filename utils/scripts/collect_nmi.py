@@ -17,7 +17,7 @@ sys.path.append(root_path)
 from utils.scripts import create_statistics_nmi_matrix
 from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
 from utils.common import get_paths_helper, args_parser, is_class_valid
-from utils.loader import Timer
+from utils.loader import Timer, Loader
 
 NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
 SCORES = ['max', 'lfk', 'sum']
@@ -91,7 +91,8 @@ def collect_nmi(options):
 
 def main(options):
     with Timer(f"Collect nmi"):
-        collect_tree_sizes_to_csv(options)
+        with Loader("collecting tree size"):
+            collect_tree_sizes_to_csv(options)
         collect_nmi(options)
         create_statistics_nmi_matrix.main(options)
 

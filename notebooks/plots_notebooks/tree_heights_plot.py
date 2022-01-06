@@ -23,7 +23,7 @@ mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range+1) / 100
 
-for num_of_snp in [1000, 5000, 10000]:
+for num_of_snp in [1000, 5000]:
     f = plt.figure()
     f.set_figwidth(15)
     f.set_figheight(15)

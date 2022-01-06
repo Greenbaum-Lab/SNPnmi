@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.scripts.collect_nmi import ALL_SCORES_TYPES
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, is_class_valid
 from utils.loader import Timer
 
 
@@ -52,6 +52,8 @@ def summarize_nmi_mat(options, paths_helper, ns_ss, df):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range > 0:
             for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

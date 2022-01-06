@@ -8,7 +8,7 @@ import pandas as pd
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, get_window_size, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, get_window_size, load_dict_from_json, is_class_valid
 from utils.loader import Timer
 
 
@@ -43,6 +43,8 @@ def collect_tree_sizes_to_csv(options):
         max_range = mac_max_range if is_mac else maf_max_range
         if min_range >= 0:
             for val in range(min_range, max_range + 1):
+                if not is_class_valid(options, mac_maf, val):
+                    continue
                 # in maf we take 0.x
                 if not is_mac:
                     val = f'{val * 1.0 / 100}'

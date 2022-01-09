@@ -19,7 +19,8 @@ maf_min_range, maf_max_range = options.maf
 SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g', 'leaves': 'b', 'nodes': 'r'}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
-maf_class_names = np.arange(maf_min_range, maf_max_range+1) / 100
+maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
+
 
 def csv_to_plot(csv_path, plot_path):
     for num_of_snp in [1000, 5000]:
@@ -38,11 +39,11 @@ def csv_to_plot(csv_path, plot_path):
                 min_range = mac_min_range if is_mac else maf_min_range
                 max_range = mac_max_range if is_mac else maf_max_range
                 if min_range > 0:
-                    for val in range(min_range, max_range+1):
+                    for val in range(min_range, max_range + 1):
                         if not is_class_valid(options, mac_maf, val):
                             continue
                         # in maf we take 0.x
-                        float_val = val if is_mac else val * 1.0/100
+                        float_val = val if is_mac else val * 1.0 / 100
                         class_name = f"{mac_maf}_{float_val}"
                         class_values = df[df.Class == class_name]
                         avg.append(float(class_values[f'avg_{score}']))
@@ -60,14 +61,18 @@ def csv_to_plot(csv_path, plot_path):
 
 if options.args[0] == 1:
     SCORES = ['max_height', 'avg_height', 'avg_leaves']
-    csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
+    csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',
+                summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
 elif options.args[0] == 2:
     SCORES = ['max_height', 'avg_height', 'avg_leaves']
-    csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
-    SCORES = ['leaves', 'nodes']
-    csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
+    csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',
+                summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
+    SCORES = ['num_of_leaves', 'num_of_nodes']
+    csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',
+                summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
 elif options.args[0] == 3:
-    SCORES = ['leaves', 'nodes']
-    csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
+    SCORES = ['num_of_leaves', 'num_of_nodes']
+    csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',
+                summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
 else:
     raise ValueError

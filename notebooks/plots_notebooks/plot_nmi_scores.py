@@ -5,7 +5,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import args_parser, get_paths_helper, is_class_valid
+from utils.common import args_parser, get_paths_helper, is_class_valid, repr_num
 import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
@@ -87,9 +87,9 @@ for nmi_type, score in pairs:
         p = np.poly1d(z)
         plt.plot(class_names, p(class_names), 'b--')
         y_hat = np.poly1d(z)(class_names)
-        e = [f'{z[i]}' if i == 0 or z[i] < 0 else f'+{z[i]}' for i in range(len(z))]
+        e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]}x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]}x' for i in range(len(e))]
-        text = f"$y={''.join(equation)}$\n$R^2 = {r2_score(all_classes_avg, y_hat):0.3f}$"
+        text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
         plt.gca().text(0.05, 0.9, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")

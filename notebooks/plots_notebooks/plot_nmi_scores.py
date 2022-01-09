@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
 import numpy as np
+from sklearn.metrics import r2_score
 
 options = args_parser()
 paths_helper = get_paths_helper(options.dataset_name)
@@ -85,6 +86,10 @@ for nmi_type, score in pairs:
         z = np.polyfit(class_names, all_classes_avg, 3)
         p = np.poly1d(z)
         plt.plot(class_names, p(class_names), 'b--')
+        y_hat = np.poly1d(z)(class_names)
+        text = f"$y={z[0]:0.3f}\;x{z[1]:+0.3f}$\n$R^2 = {r2_score(all_classes_avg, y_hat):0.3f}$"
+        plt.gca().text(0.05, 0.95, text, transform=plt.gca().transAxes,
+                       fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")
         plt.legend(title="Num of SNPs")
         plt.title(f'{score_name}')

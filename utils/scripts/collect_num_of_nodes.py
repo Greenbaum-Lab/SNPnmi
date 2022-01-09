@@ -7,7 +7,6 @@ import sys
 import pandas as pd
 from tqdm import tqdm
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 

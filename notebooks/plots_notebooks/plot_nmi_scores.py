@@ -90,7 +90,7 @@ for nmi_type, score in pairs:
         e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]
         text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
-        plt.gca().text(0.05, 0.9, text, transform=plt.gca().transAxes,
+        plt.gca().text(0.01, 0.92, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")
         plt.legend(title="Num of SNPs", loc='upper left')

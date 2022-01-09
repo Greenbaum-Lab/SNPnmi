@@ -262,5 +262,5 @@ def repr_num(x):
         return f'{x:.2e}'
     else:
         num_length = np.log10(np.abs(x))
-        max_num_of_digits_after_dot = 5 - int(num_length)
+        max_num_of_digits_after_dot = np.max(5 - int(num_length), 5)
         return round(x, max_num_of_digits_after_dot)

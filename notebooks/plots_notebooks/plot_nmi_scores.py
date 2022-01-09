@@ -20,8 +20,8 @@ nmi_matrix_path = summary_dir + 'nmi_sum_matrix.csv'
 nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
 
 df = pd.read_csv(nmi_matrix_path)
-NMI_TYPES = ['AllNodes']  # ['AllNodes', 'Leaves_WithOverlap']
-SCORES = ['max']  # ['max', 'lfk']  # ['max', 'lfk', 'sum']
+NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
+SCORES = ['max', 'lfk']  # ['max', 'lfk', 'sum']
 pairs = list(itertools.product(NMI_TYPES, SCORES))
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
 mac_min_range, mac_max_range = options.mac
@@ -90,7 +90,7 @@ for nmi_type, score in pairs:
         e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]
         text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
-        plt.gca().text(0.01, 0.92, text, transform=plt.gca().transAxes,
+        plt.gca().text(0.01, 0.91, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")
         plt.legend(title="Num of SNPs", loc='upper left')

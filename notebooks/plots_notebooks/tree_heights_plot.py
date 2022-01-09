@@ -14,11 +14,9 @@ options = args_parser()
 paths_helper = get_paths_helper(options.dataset_name)
 summary_dir = paths_helper.summary_dir
 
-SCORES = ['max_height', 'avg_height', 'avg_leaves']
-
 mac_min_range, mac_max_range = options.mac
 maf_min_range, maf_max_range = options.maf
-SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g'}
+SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g', 'leaves': 'b', 'nodes': 'r'}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range+1) / 100
@@ -61,11 +59,15 @@ def csv_to_plot(csv_path, plot_path):
 
 
 if options.args[0] == 1:
+    SCORES = ['max_height', 'avg_height', 'avg_leaves']
     csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
 elif options.args[0] == 2:
+    SCORES = ['max_height', 'avg_height', 'avg_leaves']
     csv_to_plot(summary_dir + 'tree_heights_per_class_{size}.csv',summary_dir + 'tree_height/height_{mac_maf}_{num_of_snp}.svg')
+    SCORES = ['leaves', 'nodes']
     csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
 elif options.args[0] == 3:
+    SCORES = ['leaves', 'nodes']
     csv_to_plot(summary_dir + 'tree_num_of_nodes_per_class_{size}.csv',summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg')
 else:
     raise ValueError

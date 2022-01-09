@@ -78,8 +78,11 @@ for nmi_type, score in pairs:
             avg = np.array(avg)
             std = np.array(std)
             plt.plot(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], label=num_of_snp)
-            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp])
             plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3, color=SIZE2COLOR_DICT[num_of_snp])
+            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp])
+            z = np.polyfit(class_names, avg, 3)
+            p = np.poly1d(z)
+            plt.plot(class_names, p(class_names), 'b--')
 
         plt.scatter(class_names, all_classes_avg)
         plt.xlabel(f"{mac_maf}")

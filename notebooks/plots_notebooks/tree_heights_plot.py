@@ -46,7 +46,7 @@ for num_of_snp in [1000, 5000]:
                     # in maf we take 0.x
                     if not is_mac:
                         val = val * 1.0/100
-                    class_name = f'{mac_maf}_{val}'
+                    class_name = f"{mac_maf}_{val}"
                     class_values = df[df.Class == class_name]
                     avg.append(float(class_values[f'avg_{score}']))
                     std.append(float(class_values[f'std_{score}']))

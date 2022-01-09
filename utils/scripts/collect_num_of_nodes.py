@@ -40,14 +40,14 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df):
             num_of_nodes = 0
             all_nodes = f.readlines()
             for node in all_nodes:
-                if len(node.split(" ")) >= MIN_INDIVIDUAL_PER_NODE:
+                if len(node.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
                     num_of_nodes += 1
         all_leaves_files = f'{tree_dir}2_Leafs_NoOverlap.txt'
         with open(all_leaves_files, "r") as f:
             num_of_leaves = 0
             all_leaves = f.readlines()
             for leaf in all_leaves:
-                if len(leaf.split(" ")) >= MIN_INDIVIDUAL_PER_NODE:
+                if len(leaf.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
                     num_of_leaves += 1
 
         df_tree = pd.DataFrame([[tree_name, num_of_leaves, num_of_nodes]],

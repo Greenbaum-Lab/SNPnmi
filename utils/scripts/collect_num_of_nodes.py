@@ -1,20 +1,17 @@
 #!/usr/bin/python3
-# python3 utils/scripts/collect_num_of_nodes.py -d hgdp --args 1000
+# utils/scripts/collect_num_of_nodes.py -d hgdp --args 1000
+
 import os
 from os.path import dirname, abspath, basename
 import sys
-
-import numpy as np
 import pandas as pd
-import re
-
 from tqdm import tqdm
 
-from utils.scripts.collect_tree_heights import combine_attributes_per_class
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.scripts.collect_tree_heights import combine_attributes_per_class
 from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid
 from utils.loader import Timer
 

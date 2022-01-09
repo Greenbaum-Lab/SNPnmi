@@ -56,5 +56,6 @@ for num_of_snp in [1000, 5000]:
         plt.xlabel(f"{mac_maf}")
         plt.legend(title="Scores", loc='upper left')
         plt.title(f'Structure depth with {num_of_snp} SNPs')
-        plt.savefig(f'{summary_dir}tree_height/height_{mac_maf}_{num_of_snp}.png')
+        plt.savefig(f'{summary_dir}tree_height/height_{mac_maf}_{num_of_snp}.svg')
+        plt.clf()
 

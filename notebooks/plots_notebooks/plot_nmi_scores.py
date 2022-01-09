@@ -87,7 +87,8 @@ for nmi_type, score in pairs:
         p = np.poly1d(z)
         plt.plot(class_names, p(class_names), 'b--')
         y_hat = np.poly1d(z)(class_names)
-        text = f"$y={z[0]:0.3f}\;x{z[1]:+0.3f}$\n$R^2 = {r2_score(all_classes_avg, y_hat):0.3f}$"
+        equation = [f'${z[i]:0.3f};x^{len(z) - (i+1)}$' if len(z) - (i+1) > 0 else f'${z[i]:0.3f}$' for i in range(len(z))]
+        text = f"$y={''.join(equation)}$\n$R^2 = {r2_score(all_classes_avg, y_hat):0.3f}$"
         plt.gca().text(0.05, 0.95, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")

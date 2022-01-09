@@ -20,8 +20,8 @@ nmi_matrix_path = summary_dir + 'nmi_sum_matrix.csv'
 nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
 
 df = pd.read_csv(nmi_matrix_path)
-NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
-SCORES = ['max', 'lfk']  # ['max', 'lfk', 'sum']
+NMI_TYPES = ['AllNodes']  # ['AllNodes', 'Leaves_WithOverlap']
+SCORES = ['max']  # ['max', 'lfk']  # ['max', 'lfk', 'sum']
 pairs = list(itertools.product(NMI_TYPES, SCORES))
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
 mac_min_range, mac_max_range = options.mac
@@ -87,12 +87,13 @@ for nmi_type, score in pairs:
         p = np.poly1d(z)
         plt.plot(class_names, p(class_names), 'b--')
         y_hat = np.poly1d(z)(class_names)
-        equation = [f'{z[i]}x^{len(z) - (i+1)}' if len(z) - (i+1) > 1 else f'{z[i]}' if len(z) - (i+1) == 0 else f'{z[i]}x' for i in range(len(z))]
+        e = [f'{z[i]}' if i == 0 or z[i] < 0 else f'+{z[i]}' for i in range(len(z))]
+        equation = [f'{e[i]}x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]}x' for i in range(len(e))]
         text = f"$y={''.join(equation)}$\n$R^2 = {r2_score(all_classes_avg, y_hat):0.3f}$"
-        plt.gca().text(0.05, 0.95, text, transform=plt.gca().transAxes,
+        plt.gca().text(0.05, 0.9, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}")
-        plt.legend(title="Num of SNPs")
+        plt.legend(title="Num of SNPs", loc='upper left')
         plt.title(f'{score_name}')
         plt.savefig(f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
         plt.clf()

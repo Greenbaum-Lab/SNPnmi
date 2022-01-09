@@ -16,7 +16,7 @@ summary_dir = paths_helper.summary_dir
 
 mac_min_range, mac_max_range = options.mac
 maf_min_range, maf_max_range = options.maf
-SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g', 'leaves': 'b', 'nodes': 'r'}
+SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g', 'num_of_leaves': 'b', 'num_of_nodes': 'r'}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100

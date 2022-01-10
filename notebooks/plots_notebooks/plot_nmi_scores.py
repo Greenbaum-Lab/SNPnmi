@@ -94,6 +94,7 @@ for nmi_type, score in pairs:
                        fontsize=14, verticalalignment='top')
         plt.xlabel(f"{mac_maf}", fontsize=20)
         plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
         plt.ylabel("NMI score", fontsize=20)
         plt.legend(title="Num of SNPs", loc='upper left', fontsize=20)
         plt.title(f'{score_name}', fontsize=20)

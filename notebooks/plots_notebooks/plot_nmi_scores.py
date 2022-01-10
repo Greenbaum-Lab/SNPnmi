@@ -82,7 +82,7 @@ for nmi_type, score in pairs:
             plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3, color=SIZE2COLOR_DICT[num_of_snp])
             plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp])
 
-        plt.scatter(class_names, all_classes_avg, label='Full class', color='atb:orange')
+        plt.scatter(class_names, all_classes_avg, label='Full class', color='tab:orange')
         z = np.polyfit(class_names, all_classes_avg, 3)
         p = np.poly1d(z)
         plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--')

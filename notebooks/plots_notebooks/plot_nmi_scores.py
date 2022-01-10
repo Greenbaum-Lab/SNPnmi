@@ -92,6 +92,7 @@ for nmi_type, score in pairs:
         text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
         plt.gca().text(0.01, 0.99, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
+        plt.plot(0.01, 0.99, transform=plt.gca().transAxes, color='none')
         plt.xlabel(f"{mac_maf}", fontsize=20)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)

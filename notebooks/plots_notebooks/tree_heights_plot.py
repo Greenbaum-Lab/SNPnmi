@@ -17,6 +17,7 @@ summary_dir = paths_helper.summary_dir
 mac_min_range, mac_max_range = options.mac
 maf_min_range, maf_max_range = options.maf
 SCORE2COLOR_DICT = {'max_height': 'b', 'avg_height': 'r', 'avg_leaves': 'g', 'num_of_leaves': 'b', 'num_of_nodes': 'r'}
+gt_nodes = {'hgdp': (77, 36), 'arabidopsis': (194, 62)}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
@@ -52,6 +53,8 @@ def csv_to_plot(csv_path, plot_path):
                 std = np.array(std)
                 plt.plot(class_names, avg, color=SCORE2COLOR_DICT[score], label=score)
                 plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3)
+                if score == 'num_of_leaves':
+                    plt.plot([gt_nodes[options.dataset_name][1] for _ in range(2)], [min(class_names), max(class_names)])
             plt.xlabel(f"{mac_maf}")
             plt.legend(title="Scores", loc='upper left')
             plt.title(f'Structure depth with {num_of_snp} SNPs')

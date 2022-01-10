@@ -51,7 +51,7 @@ for nmi_type, score in pairs:
         sizes = [1000, 5000]
         f = plt.figure()
         f.set_figwidth(15)
-        f.set_figheight(15)
+        f.set_figheight(12)
         ax = f.add_subplot(111)
         for num_of_snp in sizes:
             avg = []
@@ -92,8 +92,9 @@ for nmi_type, score in pairs:
         text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
         plt.gca().text(0.01, 0.91, text, transform=plt.gca().transAxes,
                        fontsize=14, verticalalignment='top')
-        plt.xlabel(f"{mac_maf}")
-        plt.legend(title="Num of SNPs", loc='upper left')
-        plt.title(f'{score_name}')
+        plt.xlabel(f"{mac_maf}", fontsize=20)
+        plt.ylabel("NMI score", fontsize=20)
+        plt.legend(title="Num of SNPs", loc='upper left', fontsize=20)
+        plt.title(f'{score_name}', fontsize=20)
         plt.savefig(f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
         plt.clf()

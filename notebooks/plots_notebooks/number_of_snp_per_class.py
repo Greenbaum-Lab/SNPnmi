@@ -1,19 +1,11 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[22]:
 
 
-# %run notebooks/plots_notebooks/number_of_snp_per_class.ipynb
 
-from utils.common import is_cluster
-import matplotlib.pyplot as plt
 import json
-import numpy as np
 import sys
 from os.path import dirname, abspath
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
@@ -38,8 +30,9 @@ with open(window_to_snps_path) as f:
     windows2count = json.load(f)
 with open(window_size_path, 'r') as f:
     window_size = int(f.readline())
-num_of_snps = []
+
 for mac_maf in ['mac', 'maf']:
+    num_of_snps = []
     is_mac = mac_maf == 'mac'
     min_range = mac_min_range if is_mac else maf_min_range
     max_range = mac_max_range if is_mac else maf_max_range
@@ -58,5 +51,5 @@ for mac_maf in ['mac', 'maf']:
     plt.title('Num of SNPs per class')
     plt.savefig(f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg')
     plt.clf()
-    num_of_snps = []
+
 

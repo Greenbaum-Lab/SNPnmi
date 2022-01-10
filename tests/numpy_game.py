@@ -52,8 +52,8 @@ def log_plots():
 
 def legend_loc_check():
     x = [1, 2]
-    plt.plot(x, x, label='plot name')
     plt.gca().text(0.05, 0.95, 'some text', transform=plt.gca().transAxes, verticalalignment='top')
+    plt.plot(x, x, label='plot name')
     plt.plot(0.05, 0.95, transform=plt.gca().transAxes, color='none')
     plt.legend(loc='best')
     plt.show()

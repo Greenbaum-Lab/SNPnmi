@@ -82,10 +82,10 @@ for nmi_type, score in pairs:
             plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3, color=SIZE2COLOR_DICT[num_of_snp])
             plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp])
 
-        plt.scatter(class_names, all_classes_avg, label='Full class', color='o')
+        plt.scatter(class_names, all_classes_avg, label='Full class', color='atb:orange')
         z = np.polyfit(class_names, all_classes_avg, 3)
         p = np.poly1d(z)
-        plt.plot(class_names, p(class_names), 'o--')
+        plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--')
         y_hat = np.poly1d(z)(class_names)
         e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]

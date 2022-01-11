@@ -54,11 +54,10 @@ def csv_to_plot(csv_path, plot_path):
                 plt.plot(class_names, avg, color=SCORE2COLOR_DICT[score], label=score)
                 plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3)
                 if score == 'num_of_leaves':
-                    plt.plot([gt_nodes[options.dataset_name][1] for _ in range(2)], [min(class_names), max(class_names)],
+                    plt.plot( [min(class_names), max(class_names)], [gt_nodes[options.dataset_name][1] for _ in range(2)],
                              linestyle='--', color=SCORE2COLOR_DICT['num_of_leaves'], alpha=0.5)
                 if score == 'num_of_nodes':
-                    plt.plot([gt_nodes[options.dataset_name][0] for _ in range(2)],
-                             [min(class_names), max(class_names)],
+                    plt.plot( [min(class_names), max(class_names)], [gt_nodes[options.dataset_name][0] for _ in range(2)],
                              linestyle='--', color=SCORE2COLOR_DICT['num_of_nodes'], alpha=0.5)
             plt.xlabel(f"{mac_maf}", fontsize=20)
             legend = plt.legend(title="Scores", loc='upper left', fontsize=20)

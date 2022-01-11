@@ -27,7 +27,7 @@ def csv_to_plot(csv_path, plot_path):
     for num_of_snp in [1000, 5000]:
         f = plt.figure()
         f.set_figwidth(15)
-        f.set_figheight(15)
+        f.set_figheight(12)
         path = csv_path.format(size=num_of_snp)
         df = pd.read_csv(path)
         for mac_maf in ['mac', 'maf']:
@@ -54,14 +54,18 @@ def csv_to_plot(csv_path, plot_path):
                 plt.plot(class_names, avg, color=SCORE2COLOR_DICT[score], label=score)
                 plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3)
                 if score == 'num_of_leaves':
-                    plt.plot( [min(class_names), max(class_names)], [gt_nodes[options.dataset_name][1] for _ in range(2)],
+                    plt.plot([min(class_names), max(class_names)],
+                             [gt_nodes[options.dataset_name][1] for _ in range(2)],
                              linestyle='--', color=SCORE2COLOR_DICT['num_of_leaves'], alpha=0.5)
                 if score == 'num_of_nodes':
-                    plt.plot( [min(class_names), max(class_names)], [gt_nodes[options.dataset_name][0] for _ in range(2)],
+                    plt.plot([min(class_names), max(class_names)],
+                             [gt_nodes[options.dataset_name][0] for _ in range(2)],
                              linestyle='--', color=SCORE2COLOR_DICT['num_of_nodes'], alpha=0.5)
             plt.xlabel(f"{mac_maf}", fontsize=20)
             legend = plt.legend(title="Scores", loc='upper left', fontsize=20)
             plt.setp(legend.get_title(), fontsize=20)
+            plt.xticks(fontsize=14)
+            plt.yticks(fontsize=14)
             plt.title(f'Structure depth with {num_of_snp} SNPs', fontsize=20)
             plt.savefig(plot_path.format(mac_maf=mac_maf, num_of_snp=num_of_snp))
             plt.clf()

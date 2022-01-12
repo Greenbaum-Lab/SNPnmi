@@ -47,10 +47,10 @@ for mac_maf in ['mac', 'maf']:
     class_names = mac_class_names if is_mac else maf_class_names
     plt.plot(class_names, num_of_snps)
     plt.yscale('log')
-    plt.xlabel(f"{mac_maf}", fontsize=24)
-    plt.xticks(fontsize=16)
-    plt.yticks(fontsize=16)
-    plt.title('site frequency spectrum (SFS)', fontsize=24)
+    plt.xlabel(f"{mac_maf}", fontsize=16)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.title('site frequency spectrum (SFS)', fontsize=18)
     plt.savefig(f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg')
     plt.clf()
 

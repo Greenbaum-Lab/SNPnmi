@@ -20,8 +20,8 @@ nmi_matrix_path = summary_dir + 'nmi_sum_matrix.csv'
 nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
 
 df = pd.read_csv(nmi_matrix_path)
-NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
-SCORES = ['max', 'lfk']  # ['max', 'lfk', 'sum']
+NMI_TYPES = ['AllNodes']  # ['AllNodes', 'Leaves_WithOverlap']
+SCORES = ['max']  #  ['max', 'lfk']  # ['max', 'lfk', 'sum']
 pairs = list(itertools.product(NMI_TYPES, SCORES))
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
 mac_min_range, mac_max_range = options.mac
@@ -44,7 +44,7 @@ def _get_scores_from_nmi_file(nmi_file):
 for nmi_type, score in pairs:
     score_name = f'{nmi_type}_{score}'
 
-    for mac_maf in ['mac', 'maf']:
+    for mac_maf in ['mac']:  # ['mac', 'maf']:
         all_classes_avg = []
         is_mac = mac_maf == 'mac'
         class_names = mac_class_names if is_mac else maf_class_names
@@ -78,14 +78,14 @@ for nmi_type, score in pairs:
                 std.append(float(class_values[f'{score_name}_std']))
             avg = np.array(avg)
             std = np.array(std)
-            plt.plot(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], label=num_of_snp)
+            plt.plot(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], label=num_of_snp, linewidth=0.5)
             plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3, color=SIZE2COLOR_DICT[num_of_snp])
-            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp])
+            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], s=0.2)
 
-        plt.scatter(class_names, all_classes_avg, label='Full class', color='tab:orange')
+        plt.scatter(class_names, all_classes_avg, label='Full class', color='tab:orange', s=0.2)
         z = np.polyfit(class_names, all_classes_avg, 3)
         p = np.poly1d(z)
-        plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--')
+        plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--', linewidth=0.5)
         y_hat = np.poly1d(z)(class_names)
         e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]

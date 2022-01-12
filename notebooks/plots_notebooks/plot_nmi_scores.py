@@ -50,8 +50,8 @@ for nmi_type, score in pairs:
         class_names = mac_class_names if is_mac else maf_class_names
         sizes = [1000, 5000]
         f = plt.figure()
-        # f.set_figwidth(15)
-        # f.set_figheight(12)
+        f.set_figwidth(8)
+        f.set_figheight(6)
         ax = f.add_subplot(111)
         for num_of_snp in sizes:
             avg = []

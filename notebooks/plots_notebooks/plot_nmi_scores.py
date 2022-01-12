@@ -91,7 +91,7 @@ for nmi_type, score in pairs:
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]
         text = f"$y={''.join(equation)}$\n$R^2 = {repr_num(r2_score(all_classes_avg, y_hat))}$"
         plt.gca().text(0.01, 0.99, text, transform=plt.gca().transAxes,
-                       fontsize=14, verticalalignment='top')
+                       fontsize=10, verticalalignment='top')
         plt.plot(0.05, 0.95, transform=plt.gca().transAxes, color='none')
         plt.xlabel(f"{mac_maf}", fontsize=20)
         plt.xticks(fontsize=14)

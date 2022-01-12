@@ -30,6 +30,9 @@ SIZE2COLOR_DICT = {1000: 'b', 5000: 'g', 10000: 'r'}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
+line_width = 1
+scatter_size = 0.5
+
 
 
 def _get_scores_from_nmi_file(nmi_file):
@@ -78,14 +81,14 @@ for nmi_type, score in pairs:
                 std.append(float(class_values[f'{score_name}_std']))
             avg = np.array(avg)
             std = np.array(std)
-            plt.plot(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], label=num_of_snp, linewidth=0.5)
+            plt.plot(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], label=num_of_snp, linewidth=line_width)
             plt.fill_between(class_names, y1=avg - std, y2=avg + std, alpha=0.3, color=SIZE2COLOR_DICT[num_of_snp])
-            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], s=0.2)
+            plt.scatter(class_names, avg, color=SIZE2COLOR_DICT[num_of_snp], s=scatter_size)
 
-        plt.scatter(class_names, all_classes_avg, label='Full class', color='tab:orange', s=0.2)
+        plt.scatter(class_names, all_classes_avg, label='Full class', color='tab:orange', s=scatter_size)
         z = np.polyfit(class_names, all_classes_avg, 3)
         p = np.poly1d(z)
-        plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--', linewidth=0.5)
+        plt.plot(class_names, p(class_names), color='tab:orange', linestyle='--', linewidth=line_width)
         y_hat = np.poly1d(z)(class_names)
         e = [f'{repr_num(z[i])}' if i == 0 or z[i] < 0 else f'+{repr_num(z[i])}' for i in range(len(z))]
         equation = [f'{e[i]} x^{len(e) - (i+1)}' if len(e) - (i+1) > 1 else f'{e[i]}' if len(e) - (i+1) == 0 else f'{e[i]} x' for i in range(len(e))]

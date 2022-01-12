@@ -30,8 +30,8 @@ SIZE2COLOR_DICT = {1000: 'b', 5000: 'g', 10000: 'r'}
 mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset_name != 'arabidopsis' else np.arange(
     mac_min_range, mac_max_range + 1, 2)
 maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
-line_width = 1.2
-scatter_size = 1.2
+line_width = 1.5
+scatter_size = 2.5
 
 
 

@@ -102,6 +102,6 @@ for nmi_type, score in pairs:
         plt.ylabel("NMI score", fontsize=16)
         legend = plt.legend(title="Num of SNPs", loc='best', fontsize=12)
         plt.setp(legend.get_title(), fontsize=12)
-        plt.title(f'{options.dataset_name} - {nmi_type} - {mac_maf}', fontsize=16)
+        plt.title(f'{options.dataset_name} - {nmi_type} - {mac_maf}', fontsize=18)
         plt.savefig(f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
         plt.clf()

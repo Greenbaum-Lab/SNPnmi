@@ -12,7 +12,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid, class_iter
 from utils.loader import Timer
 
 
@@ -65,28 +65,14 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
 
 def delete_unfinished_trees_and_hashes(options):
     dry_run = len(options.args) > 0
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(dataset_name=options.dataset_name)
     num_of_deleted_trees = 0
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
-                invalid_hashes = track_invalid_hashes_per_class(options, paths_helper, class_name)
-                if invalid_hashes:
-                    num_of_deleted_trees += len(invalid_hashes)
-                    if not dry_run:
-                        erase_invalid_trees(options, paths_helper, class_name, invalid_hashes)
+    for cls in class_iter(options):
+        invalid_hashes = track_invalid_hashes_per_class(options, paths_helper, cls.name)
+        if invalid_hashes:
+            num_of_deleted_trees += len(invalid_hashes)
+            if not dry_run:
+                erase_invalid_trees(options, paths_helper, cls.name, invalid_hashes)
     print(f"Erased {num_of_deleted_trees} trees")
 
 def main(options):

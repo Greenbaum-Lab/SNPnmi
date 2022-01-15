@@ -11,7 +11,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.scripts.collect_tree_heights import combine_attributes_per_class
-from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 
 MIN_INDIVIDUAL_PER_NODE = 5
@@ -60,27 +60,14 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df):
 def collect_num_of_nodes(options):
     print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     data_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/num_of_nodes_{data_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
-                df = collect_num_of_nodes_per_class(options, paths_helper, class_name, df)
+    for cls in class_iter(options):
+        df = collect_num_of_nodes_per_class(options, paths_helper, cls.name, df)
     df.to_csv(csv_path, index=False)
     return df
 
@@ -88,24 +75,12 @@ def collect_num_of_nodes(options):
 def combine_num_of_nodes_to_matrix(options, full_mat_df):
     print("stage 2")
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
 
     csv_output_path = paths_helper.summary_dir + f'/tree_num_of_nodes_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_leaves', 'std_leaves', 'avg_nodes', 'std_nodes'])
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-            if not is_class_valid(options, mac_maf, val):
-                continue
-            # in maf we take 0.x
-            if not is_mac:
-                val = f'{val * 1.0 / 100}'
-            class_name = f'{mac_maf}_{val}'
-            sum_mat_df = combine_attributes_per_class(class_name,
-                                                      full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
+    for cls in class_iter(options):
+        sum_mat_df = combine_attributes_per_class(cls.name,
+                                                      full_mat_df[full_mat_df['Tree'].str.contains(f'{cls.name}_')],
                                                       sum_mat_df)
     sum_mat_df.to_csv(csv_output_path, index=False)
 

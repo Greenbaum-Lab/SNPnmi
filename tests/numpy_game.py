@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from scipy import stats
+from tqdm import tqdm
 
 from utils.common import args_parser, class_iter
 
@@ -77,7 +78,7 @@ def norm_dist():
 
 def test_class_iter():
     options = args_parser()
-    for cls in class_iter(options):
-        print(cls.mac_maf, cls.val)
+    for cls in tqdm(list(class_iter(options))):
+        time.sleep(0.5)
 
 test_class_iter()

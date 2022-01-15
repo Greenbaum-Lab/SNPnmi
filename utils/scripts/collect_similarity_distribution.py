@@ -14,7 +14,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.config import get_num_individuals
-from utils.common import get_paths_helper, args_parser, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 
 def compute_class_bias(options, mac_maf, class_val):
@@ -66,25 +66,15 @@ def collect_similarity_distributions_per_class(options, paths_helper, mac_maf, c
 def collect_similarity_distributions(options):
     print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     tree_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/distribution_similarity_per_tree_{tree_size}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
     bins = int(1 / float(options.ns_ss) + 1)
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                df = collect_similarity_distributions_per_class(options, paths_helper, mac_maf, val, bins, df)
-                df.to_csv(csv_path, index=False)
+    for cls in tqdm(class_iter(options)):
+        df = collect_similarity_distributions_per_class(options, paths_helper, cls.mac_maf, cls.val, bins, df)
+        df.to_csv(csv_path, index=False)
     return df
 
 

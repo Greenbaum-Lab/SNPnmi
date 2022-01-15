@@ -1,5 +1,3 @@
-# specific input 012 file:
-# python3 calc_distances_in_window.py maf 1 0 5
 import numpy as np
 import os
 import sys

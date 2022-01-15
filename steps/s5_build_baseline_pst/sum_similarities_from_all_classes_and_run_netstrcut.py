@@ -14,7 +14,8 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, is_class_valid
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, is_class_valid, \
+    class_iter
 from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
@@ -26,25 +27,13 @@ def sum_all_classes(options):
     # get inputs
     similarity_files = []
     count_files = []
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range + 1):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_str = f"{mac_maf}_{val}"
-                similarity_file = paths_helper.similarity_by_class_folder_template.format(class_name=class_str) + \
-                                  f"{class_str}_all_similarity.npy"
-                count_file = paths_helper.similarity_by_class_folder_template.format(class_name=class_str) + \
-                             f"{class_str}_all_count.npy"
-                similarity_files.append(similarity_file)
-                count_files.append(count_file)
+    for cls in class_iter(options):
+        similarity_file = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name) + \
+                          f"{cls.name}_all_similarity.npy"
+        count_file = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name) + \
+                     f"{cls.name}_all_count.npy"
+        similarity_files.append(similarity_file)
+        count_files.append(count_file)
 
     class_range_str = f'all'
     output_file_name = paths_helper.similarity_dir + class_range_str

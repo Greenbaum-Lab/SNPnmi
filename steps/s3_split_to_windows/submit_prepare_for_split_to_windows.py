@@ -11,7 +11,7 @@ sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
 from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, str_for_timer, load_dict_from_json, \
-    is_class_valid
+    is_class_valid, class_iter
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -45,8 +45,6 @@ def write_class_to_number_of_windows_file(options, classes):
 
 def submit_prepare_for_split_to_windows(options):
     dataset_name = options.dataset_name
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     window_size = options.args[0]
     paths_helper = get_paths_helper(dataset_name)
     os.makedirs(paths_helper.windows_dir, exist_ok=True)
@@ -57,30 +55,20 @@ def submit_prepare_for_split_to_windows(options):
 
     classes = []
     stderr_files = []
-
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            # Go over mac/maf values
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for class_int_val in range(min_range, max_range + 1):
-                if not is_class_valid(options, mac_maf, class_int_val):
-                    continue
-                classes.append(f'{mac_maf}_{class_int_val if mac_maf == "mac" else class_int_val / 100}')
-                print(f'submit for {classes[-1]}')
-                job_long_name = generate_job_long_name(mac_maf, class_int_val)
-                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                stderr_files.append(job_stderr_file)
-                memory = 16 if (is_mac and class_int_val < 5) else 8
-                job_name = f'p3_{mac_maf[-1]}{class_int_val}'
-                python_script_params = f'-d {dataset_name} --args {mac_maf},{class_int_val},{window_size}'
-                submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
-                                  python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4, memory=memory)
+    for cls in class_iter(options):
+        classes.append(cls.name)
+        print(f'submit for {classes[-1]}')
+        job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val)
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        stderr_files.append(job_stderr_file)
+        memory = 16 if (cls.is_mac and cls.int_val < 5) else 8
+        job_name = f'p3_{cls.mac_maf[-1]}{cls.int_val}'
+        python_script_params = f'-d {dataset_name} --args {cls.mac_maf},{cls.int_val},{window_size}'
+        submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
+                          python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4, memory=memory)
 
     with Loader("Splitting jobs are running", string_to_find="p3_"):
         while how_many_jobs_run(string_to_find="p3_"):

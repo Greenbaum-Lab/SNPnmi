@@ -19,6 +19,31 @@ from utils.filelock import FileLock
 from utils.paths_helper import PathsHelper
 
 
+class Cls:
+    def __init__(self, mac_maf, int_val):
+        self.mac_maf = mac_maf
+        self.is_mac = mac_maf == 'mac'
+        self.int_val = int_val
+        self.val = int_val if self.is_mac else int_val / 100
+        self.name = f"{mac_maf}_{self.val}"
+        self.max_val = self.val if self.is_mac else (int_val + 1) / 100
+
+def class_iter(options):
+    if options.mac[1] >= options.mac[0]:
+        for val in range(options.mac[0], options.mac[1] + 1):
+            if options.dataset_name == 'arabidopsis' and val % 2 == 1:
+                continue
+            obj = Cls('mac', val)
+            yield obj
+
+    if options.maf[1] >= options.maf[0]:
+        for val in range(options.maf[0], options.maf[1] + 1):
+            if val > 49:
+                continue
+            obj = Cls('maf', val)
+            yield obj
+
+
 # a class to represent classes of alleles count/frequency (mac/maf)
 class AlleleClass:
     def __init__(self, mac_maf, class_min_int_val, class_max_int_val=None):
@@ -51,13 +76,6 @@ class AlleleClass:
             self.class_max_val = (class_max_int_val * 1.0 / 100.0)
 
         self.class_name = f'{mac_maf}_{self.class_min_val}'
-
-def is_class_valid(options, mac_maf, class_int_value):
-    if mac_maf == 'maf' and class_int_value > 49:
-        return False
-    if options.dataset_name == 'arabidopsis' and mac_maf == 'mac' and class_int_value % 2 == 1:
-        return False
-    return True
 
 
 def hash_args(options):

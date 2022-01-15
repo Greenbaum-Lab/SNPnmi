@@ -13,7 +13,7 @@ from utils.checkpoint_helper import execute_with_checkpoint
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.config import get_cluster_code_folder
 from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size, \
-    load_dict_from_json, handle_hash_file, is_class_valid
+    load_dict_from_json, handle_hash_file, class_iter
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import is_tree_exists
 
@@ -133,24 +133,12 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
 
 
 def submit_mini_net_struct_for_all_classes(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
     stderr_files = []
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in range(min_range, max_range + 1):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                stderr_files += submit_mini_net_struct_for_class(options, mac_maf, val, paths_helper, window_size)
+    for cls in class_iter(options):
+        stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size)
 
     with Loader("Running NetStruct_Hierarchy per many classes", string_to_find='ns'):
         while how_many_jobs_run(string_to_find="ns"):

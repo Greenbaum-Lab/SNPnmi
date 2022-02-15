@@ -12,8 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, is_class_valid, \
-    class_iter
+from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
 from utils.config import get_cluster_code_folder
 
 # will submit calc_distances_in_window of given classes and windows

@@ -134,7 +134,20 @@
     "num_chrs": 1,
     "num_individulas": 1217,
     "indlist_file_name": "inlist.txt",
-    "sample_sites_file_name": "inlist.txt"
-  }
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_2_v0":
+  {
+    "vcf_files_names": [
+      "sim_2_v0.cvf"
+    ],
+    "vcf_files_short_names": [
+      "all"
+    ],
+    "num_chrs": 1,
+    "num_individulas": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+}
 }
 

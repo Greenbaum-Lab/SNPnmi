@@ -46,4 +46,4 @@ def execute_with_checkpoint(func, checkpoint_name, options):
     if success:
         write_checkpoint_file(checkpoint_file, options.args)
         return True, 'successful run'
-    return True, 'non successful run'
+    return False, 'non successful run'

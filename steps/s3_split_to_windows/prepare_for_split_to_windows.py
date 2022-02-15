@@ -28,7 +28,7 @@ def get_num_of_sites(dataset_name, chr_short_name, mac_maf, class_value):
     print(path_helper.split_vcf_stats_csv_path)
     if 'maf' in mac_maf:
         class_value = class_value/100.0
-    return df[(df['chr_name'] == chr_short_name) & (df[mac_maf] == class_value)]['num_of_sites_after_filter'].values[0]
+    return df[(df['chr_name'] == chr_short_name) & (df[mac_maf] == str(class_value))]['num_of_sites_after_filter'].values[0]
 
 def get_num_of_sites_per_chr(dataset_name, mac_maf, class_value):
     chr_short_names = get_dataset_vcf_files_short_names(dataset_name)

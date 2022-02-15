@@ -45,8 +45,8 @@ step_to_func_and_name = {
     "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees')
 }
 
-def run_step(options, use_checkpoint=True):
-    func, step_name = step_to_func_and_name[options.step]
+def run_step(options, step, use_checkpoint=True):
+    func, step_name = step_to_func_and_name[step]
     if not use_checkpoint:
         return func(options)
     # note that we use the step number and name for the checkpont, so this will only not run if we used runner in the past.
@@ -58,7 +58,7 @@ def run_all_pipeline(options):
     done_steps = []
     for step in ['1.2', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
         print(f'start step {step}')
-        success_run = 0
+        success_run = run_step(options, step)
 
 
 
@@ -68,18 +68,18 @@ def runner(options):
         dataset_name = options.dataset_name
         print(f'Argument List: {step}, {dataset_name}, {str_for_timer(options)}')
 
-        is_executed = run_step(options)
+        is_executed = run_step(options, options.step)
         print(f'is executed: {is_executed}')
 
 #  python3 runner.py -d hgdp -s 1.1
 
 #  python3 runner.py -d hgdp -s 1.2 --args freq
 
-#  python3 runner.py -s 2.1 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py -s 2.1 -d hgdp
 
-#  python3 runner.py  -s 2.2 -d hgdp --mac 2,18 --maf 1,49
+#  python3 runner.py  -s 2.2 -d hgdp
 
-#  python3 runner.py -s 3.1 -d hgdp --mac 2,18 --maf 1,49 --args 100
+#  python3 runner.py -s 3.1 -d hgdp --args 100
 
 #  python3 runner.py -s 3.2 -d hgdp
 

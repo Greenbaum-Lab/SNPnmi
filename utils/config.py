@@ -14,6 +14,7 @@ class DataSetNames():
     hdgp_test = 'hgdp_test'
     amur = 'amur'
     arabidopsis = "arabidopsis"
+    sim_2_v0 = 'sim_2_v0'
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:

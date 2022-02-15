@@ -77,7 +77,6 @@ def generate_vcfs_stats(options, stat_types):
 # wrappers for execution
 def get_vcfs_stats(options):
     stat_types = options.args
-    assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
     all_stats_done = generate_vcfs_stats(options, stat_types)
     return all_stats_done

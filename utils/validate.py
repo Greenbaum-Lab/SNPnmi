@@ -1,3 +1,4 @@
+import pickle
 import sys
 import time
 import os
@@ -45,8 +46,8 @@ def validate_split_transposed_windows(mac_maf, class_name, min_window_id, max_wi
         output_indexes_file = paths_helper.windows_indexes_template.format(
             class_name=f'{class_name}_window_{window_id}_split')
         print(output_indexes_file)
-        with open(output_indexes_file, 'r') as jsf:
-            split_id_2_indexes = json.load(jsf)
+        with open(output_indexes_file, 'rb') as jsf:
+            split_id_2_indexes = pickle.load(jsf)
             assert expected_number_of_splits_per_window == len(
                 split_id_2_indexes.keys()), f'found {len(split_id_2_indexes.keys())}'
             for split_id in split_id_2_indexes.keys():

@@ -40,9 +40,6 @@ def run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class
 
 
 def prepare_inputs_and_gt(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
-
     # prepare paths
     paths_helper = get_paths_helper(options.dataset_name)
     ns_base_dir = paths_helper.net_struct_dir
@@ -50,12 +47,12 @@ def prepare_inputs_and_gt(options):
     os.makedirs(nmi_output_dir, exist_ok=True)
 
     # ground truth (gt) files
-    gt_base_dir = f'{ns_base_dir}all_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}/'
+    gt_base_dir = f'{ns_base_dir}all/'
     gt_dir = get_tree_path(gt_base_dir, options)
     gt_leafs_overlap = f'{gt_dir}2_Leafs_WithOverlap.txt'
     gt_leafs_no_overlap = f'{gt_dir}2_Leafs_NoOverlap.txt'
     gt_all_nodes = collect_all_nodes_if_needed(gt_dir)
-    return gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, nmi_output_dir, ns_base_dir
+    return gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper
 
 
 def get_tree_path(tree_base_dir, options):

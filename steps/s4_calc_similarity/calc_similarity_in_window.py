@@ -1,5 +1,3 @@
-# specific input 012 file:
-# python3 calc_distances_in_window.py maf 1 0 5
 import numpy as np
 import os
 import sys
@@ -10,7 +8,7 @@ sys.path.append(root_path)
 
 from utils.loader import Timer
 from steps.s4_calc_similarity.calc_similarity_helper import check_guardrails, get_012_df
-from utils.common import get_paths_helper, write_pairwise_similarity, AlleleClass, args_parser
+from utils.common import get_paths_helper, write_pairwise_similarity, args_parser, Cls
 
 
 def window_calc_pairwise_similarities(window_df, min_valid_sites_percentage, min_minor_expected, max_minor_expected,
@@ -69,35 +67,32 @@ def matrix2upper_tri_list(matrix):
 
 def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_index, max_window_index,
                                min_valid_sites_percentage=0.1):
-    allele_class = AlleleClass(mac_maf, class_value)
-    class_name = allele_class.class_name
-    min_minor_expected = allele_class.class_min_val
-    max_minor_expected = allele_class.class_max_val
+    cls = Cls(mac_maf, class_value)
 
     # prepare paths
     path_helper = get_paths_helper(dataset_name)
-    similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=class_name)
+    similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=cls.name)
     os.makedirs(similarity_output_dir, exist_ok=True)
 
     for window_id in range(min_window_index, max_window_index):
 
-        input_012_file = path_helper.window_by_class_template.format(class_name=class_name, window_id=window_id)
-        output_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=class_name,
-                                                                                                  window_id=window_id)
-        output_count_file = path_helper.count_by_class_and_window_template.format(class_name=class_name,
-                                                                                                  window_id=window_id)
+        input_012_file = path_helper.window_by_class_template.format(class_name=cls.name, window_id=window_id)
+        output_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=cls.name,
+                                                                                            window_id=window_id)
+        output_count_file = path_helper.count_by_class_and_window_template.format(class_name=cls.name,
+                                                                                  window_id=window_id)
         if os.path.isfile(output_similarity_file) and os.path.isfile(output_count_file):
             print(f'output_count_similarity_file exist, do not calc! {output_similarity_file}')
             continue
 
         window_df = get_012_df(input_012_file)
 
-        window_pairwise_counts, window_pairwise_similarity = window_calc_pairwise_similarities(
-            window_df, min_valid_sites_percentage, min_minor_expected, max_minor_expected, mac_maf)
+        window_counts, window_similarity = window_calc_pairwise_similarities(window_df, min_valid_sites_percentage,
+                                                                             cls.val, cls.max_val, mac_maf)
         print(f'output similarity file to {output_similarity_file}\noutput count file to {output_count_file}')
 
-        write_pairwise_similarity(output_similarity_file, window_pairwise_similarity, output_count_file,
-                                  window_pairwise_counts)
+        write_pairwise_similarity(output_similarity_file, window_similarity, output_count_file,
+                                  window_counts)
 
 
 def main(options):

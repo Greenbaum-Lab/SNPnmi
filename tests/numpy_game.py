@@ -1,9 +1,17 @@
 import gzip
 import json
+import math
 import os
+import subprocess
+import time
 from random import sample
+import matplotlib.pyplot as plt
 
 import numpy as np
+from scipy import stats
+from tqdm import tqdm
+
+from utils.common import args_parser, class_iter
 
 
 def file012_to_numpy(input_file_path, raw_file=None):
@@ -37,4 +45,40 @@ def compare_amir_similarities():
         exit(0)
 
 
-compare_amir_similarities()
+def test_subprocess():
+    a = os.popen('top -bi -n 1').readlines()
+    c = [i for i in a if 'vcftools' in i]
+    print(len(c))
+
+def log_plots():
+    plt.plot([1002,105,13,2,1,8,6,4])
+    plt.yscale('log')
+    plt.show()
+
+def legend_loc_check():
+    x = [1, 2]
+    plt.gca().text(0.05, 0.95, 'some text', transform=plt.gca().transAxes, verticalalignment='top')
+    plt.plot(x, x, label='plot name')
+    plt.legend(loc='best')
+    plt.show()
+
+def norm_dist():
+    mu = 0
+    variance = 1
+    n = 5
+    sigma = math.sqrt(variance)
+    x = np.linspace(mu - n * sigma, mu + n * sigma, 100)
+    y = np.abs(x)
+    y[np.where(x < 1)[0]] = 1
+    plt.plot(x, stats.norm.pdf(x, mu, sigma) + 1/y)
+    plt.xticks([])
+    plt.plot(x, [1.5] * len(x))
+    # plt.yticks([])
+    plt.show()
+
+def test_class_iter():
+    options = args_parser()
+    for cls in tqdm(list(class_iter(options))):
+        time.sleep(0.5)
+
+test_class_iter()

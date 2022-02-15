@@ -1,4 +1,6 @@
-# python3 utils/scripts/collect_nmi.py -d hgdp
+#!/usr/bin/python3
+
+# utils/scripts/collect_nmi.py -d hgdp
 import itertools
 import os
 from os.path import dirname, abspath, basename
@@ -8,14 +10,16 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.scripts import create_statistics_nmi_matrix
 from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
-from utils.common import get_paths_helper, args_parser
-from utils.loader import Timer
+from utils.common import get_paths_helper, args_parser, class_iter
+from utils.loader import Timer, Loader
 
-NMI_TYPES = ['AllNodes', 'Leaves_NoOverlap', 'Leaves_WithOverlap']
+NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
 SCORES = ['max', 'lfk', 'sum']
 pairs = itertools.product(NMI_TYPES, SCORES)
 ALL_SCORES_TYPES = [f'{p[0]}_{p[1]}' for p in pairs]
@@ -60,33 +64,24 @@ def collect_nmi_per_class(options, paths_helper, class_name, df, tree_sizes):
 
 def collect_nmi(options):
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
 
     csv_path = paths_helper.summary_dir + f'/nmi_matrix_ss_{options.ns_ss}.csv'
     t_size = pd.read_csv(paths_helper.tree_sizes)
 
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
-                df = collect_nmi_per_class(options, paths_helper, class_name, df,
-                                           t_size[t_size['Class'] == class_name].drop(['Class'], axis=1))
+    for cls in class_iter(options):
+        df = collect_nmi_per_class(options, paths_helper, cls.name, df,
+                                   t_size[t_size['Class'] == cls.name].drop(['Class'], axis=1))
     df.to_csv(csv_path, index=False)
 
 
 def main(options):
     with Timer(f"Collect nmi"):
-        collect_tree_sizes_to_csv(options)
+        with Loader("collecting tree size"):
+            collect_tree_sizes_to_csv(options)
         collect_nmi(options)
+        create_statistics_nmi_matrix.main(options)
 
 
 if __name__ == "__main__":

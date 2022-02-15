@@ -8,7 +8,7 @@ import pandas as pd
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, get_window_size, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, get_window_size, load_dict_from_json, class_iter
 from utils.loader import Timer
 
 
@@ -29,26 +29,14 @@ def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
 
 def collect_tree_sizes_to_csv(options):
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
-
     window_size = get_window_size(paths_helper)
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
-    csv_path = paths_helper.summary_dir + '/tree_sizes.csv'
+
     df = pd.DataFrame()
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in range(min_range, max_range + 1):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
-                df = collect_tree_sizes_per_class(paths_helper, class_name, window_size, df)
-    df.to_csv(csv_path, index_label='Class')
+    for cls in class_iter(options):
+        df = collect_tree_sizes_per_class(paths_helper, cls.name, window_size, df)
+    df.to_csv(paths_helper.tree_sizes, index_label='Class')
 
 
 def main(options):

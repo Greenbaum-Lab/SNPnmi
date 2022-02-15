@@ -23,17 +23,18 @@ class PathsHelper:
         self.tree_sizes = self.summary_dir + '/tree_sizes.csv'
 
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
-        self.net_struct_dir_class = f'{self.net_struct_dir}' +'{class_name}/'
-        self.net_struct_dir_tree = f'{self.net_struct_dir_class}' +'{class_name}_{tree_hash}'
+        self.net_struct_dir_class = f'{self.net_struct_dir}' + '{class_name}/'
+        self.net_struct_dir_tree = f'{self.net_struct_dir_class}' + '{class_name}_{tree_hash}'
         self.nmi_dir = f'{self.classes_dir}nmi/'
-        self.nmi_tree_template = self.nmi_dir + '{class_name}_{tree_hash}/step_{ns_ss}/'
+        self.nmi_class_template = self.nmi_dir + '{class_name}/'
+        self.nmi_tree_template = self.nmi_class_template + '{class_name}_{tree_hash}/step_{ns_ss}/'
         self.nmi_file_template = self.nmi_tree_template + '{nmi_type}.txt'
         self.class_by_chr_template = self.classes_dir + '{chr_name}/{class_name}.012'
         self.window_by_class_and_chr_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
         self.window_by_class_and_chr_np_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.npy'
         self.window_by_class_template = self.windows_dir + '{class_name}/window_{window_id}.012.vcf.gz'
         self.windows_indexes_folder = f'{self.windows_dir}indexes/'
-        self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.json'
+        self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.pkl'
 
         # similarity paths
         self.similarity_dir = f'{self.classes_dir}similarity/'
@@ -68,6 +69,7 @@ class PathsHelper:
         # paths to entry points
         self.submit_helper = f'{root_code_folder}{repo_dir_name}/utils/cluster/submit_helper.sh'
         self.wrapper_max_30_params = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_max_30_params.sh'
+        self.wrapper_ulimit_2048 = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_u_limit_2048.sh'
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
         self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
 

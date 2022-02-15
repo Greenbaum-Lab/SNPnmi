@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # python3 utils/scripts/collect_tree_heights.py -d hgdp --args 1000
 import os
 from os.path import dirname, abspath, basename
@@ -12,7 +13,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 
 
@@ -71,30 +72,19 @@ def collect_tree_heights_per_class(options, paths_helper, class_name, df):
 def collect_tree_heights(options):
     print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     data_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/tree_heights_{data_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f'{mac_maf}_{val}'
-                df = collect_tree_heights_per_class(options, paths_helper, class_name, df)
+    for cls in class_iter(options):
+        df = collect_tree_heights_per_class(options, paths_helper, cls.name, df)
     df.to_csv(csv_path, index=False)
     return df
 
 
-def combine_height_per_class(class_name, input_df, sum_df):
+def combine_attributes_per_class(class_name, input_df, sum_df):
     class_df = pd.DataFrame(columns=sum_df.columns)
     class_df['Class'] = [class_name]
     for c in input_df.columns:
@@ -111,23 +101,13 @@ def combine_height_per_class(class_name, input_df, sum_df):
 def combine_heights_to_sum_matrix(options, full_mat_df):
     print("stage 2")
     paths_helper = get_paths_helper(options.dataset_name)
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
 
     csv_output_path = paths_helper.summary_dir + f'/tree_heights_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max_height', 'std_max_height', 'avg_avg_height', 'std_avg_height',
                                        'avg_avg_leaves', 'std_avg_leaves'])
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-            # in maf we take 0.x
-            if not is_mac:
-                val = f'{val * 1.0 / 100}'
-            class_name = f'{mac_maf}_{val}'
-            sum_mat_df = combine_height_per_class(class_name,
-                                                  full_mat_df[full_mat_df['Tree'].str.contains(f'{class_name}_')],
+    for cls in class_iter(options):
+        sum_mat_df = combine_attributes_per_class(cls.name,
+                                                  full_mat_df[full_mat_df['Tree'].str.contains(f'{cls.name}_')],
                                                   sum_mat_df)
     sum_mat_df.to_csv(csv_output_path, index=False)
 

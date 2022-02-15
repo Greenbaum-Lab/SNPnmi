@@ -18,7 +18,7 @@
       "hgdp_wgs.20190516.full.chr7.vcf.gz",
       "hgdp_wgs.20190516.full.chr8.vcf.gz",
       "hgdp_wgs.20190516.full.chr9.vcf.gz",
-      "hgdp_wgs.20190516.full.chr10.vcf.g",
+      "hgdp_wgs.20190516.full.chr10.vcf.gz",
       "hgdp_wgs.20190516.full.chr11.vcf.gz",
       "hgdp_wgs.20190516.full.chr12.vcf.gz",
       "hgdp_wgs.20190516.full.chr13.vcf.gz",
@@ -129,7 +129,7 @@
       "africa_and1001.EVA.vcf.gz"
     ],
     "vcf_files_short_names": [
-      "all"
+      "chr1"
     ],
     "num_chrs": 1,
     "num_individulas": 1217,
@@ -142,7 +142,7 @@
       "sim_2_v0.cvf"
     ],
     "vcf_files_short_names": [
-      "all"
+      "chr1"
     ],
     "num_chrs": 1,
     "num_individulas": 1000,

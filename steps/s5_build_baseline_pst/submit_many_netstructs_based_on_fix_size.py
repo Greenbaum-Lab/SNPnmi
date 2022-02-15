@@ -13,7 +13,7 @@ from utils.checkpoint_helper import execute_with_checkpoint
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.config import get_cluster_code_folder
 from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size, \
-    load_dict_from_json, handle_hash_file
+    load_dict_from_json, handle_hash_file, class_iter
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import is_tree_exists
 
@@ -76,6 +76,36 @@ def how_many_tree_computed_before(options, paths_helper, class_name, num_of_wind
     return len(keys_for_hash_in_correct_size)
 
 
+def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, num_of_trees, num_of_windows,
+                                           num_of_windows_per_tree):
+    class_name = f'{mac_maf}_{class_val}'
+    tree_hashes = []
+    stderr_files = []
+    for tree_idx in range(num_of_trees):
+        time.sleep(0.02)  # To avoid FileLock failures.
+        winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
+        tree_hash = handle_hash_file(class_name, paths_helper, winds)
+        tree_hashes.append(tree_hash)
+        job_long_name = f'{class_name}_hash{tree_hash}_ns_{options.ns_ss}_weighted_true'
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        stderr_files.append(job_stderr_file)
+    script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/run_ns_mini_trees_for_class.py'
+    params_to_run = f'-d {options.dataset_name} --args {mac_maf},{class_val},{",".join([str(i) for i in tree_hashes])} ' \
+                    f'--ns_ss {options.ns_ss}'
+    job_long_name = f'{class_name}_few_trees_ns_{options.ns_ss}_weighted_true'
+    job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                            job_name=job_long_name)
+    job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                            job_name=job_long_name)
+
+    job_short_name = f'ns_{class_name}'
+    submit_to_cluster(options, job_type="step5.4 per class", job_name=job_short_name, script_path=script_to_run,
+                      script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file)
+    return stderr_files
+
+
+
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
     data_size = options.args[0]
     num_of_trees = options.args[1]
@@ -85,11 +115,16 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     assert num_of_windows_per_tree == int(num_of_windows_per_tree), "Data size is not dividable in windows size"
     with open(paths_helper.number_of_windows_per_class_template.format(class_name=class_name), 'r') as f:
         num_of_windows = int(f.read())
-        stderr_files = []
+
     num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(
         f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
+
+    if options.run_ns_together and rest_num_of_trees:
+        return submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees,
+                                                      num_of_windows, num_of_windows_per_tree)
+    stderr_files = []
     for tree_idx in range(rest_num_of_trees):
         time.sleep(0.02)  # To avoid FileLock failures.
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
@@ -98,22 +133,12 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
 
 
 def submit_mini_net_struct_for_all_classes(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
     stderr_files = []
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in range(min_range, max_range + 1):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                stderr_files += submit_mini_net_struct_for_class(options, mac_maf, val, paths_helper, window_size)
+    for cls in class_iter(options):
+        stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size)
 
     with Loader("Running NetStruct_Hierarchy per many classes", string_to_find='ns'):
         while how_many_jobs_run(string_to_find="ns"):

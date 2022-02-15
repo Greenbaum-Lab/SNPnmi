@@ -2,6 +2,8 @@ import argparse
 import random
 import subprocess
 import sys
+import time
+
 import pandas as pd
 from os.path import dirname, abspath
 import os
@@ -17,6 +19,31 @@ from utils.filelock import FileLock
 from utils.paths_helper import PathsHelper
 
 
+class Cls:
+    def __init__(self, mac_maf, int_val):
+        self.mac_maf = mac_maf
+        self.is_mac = mac_maf == 'mac'
+        self.int_val = int_val
+        self.val = int_val if self.is_mac else int_val / 100
+        self.name = f"{mac_maf}_{self.val}"
+        self.max_val = self.val if self.is_mac else (int_val + 1) / 100
+
+def class_iter(options):
+    if options.mac[1] >= options.mac[0]:
+        for val in range(options.mac[0], options.mac[1] + 1):
+            if options.dataset_name == 'arabidopsis' and val % 2 == 1:
+                continue
+            obj = Cls('mac', val)
+            yield obj
+
+    if options.maf[1] >= options.maf[0]:
+        for val in range(options.maf[0], options.maf[1] + 1):
+            if val > 49:
+                continue
+            obj = Cls('maf', val)
+            yield obj
+
+
 # a class to represent classes of alleles count/frequency (mac/maf)
 class AlleleClass:
     def __init__(self, mac_maf, class_min_int_val, class_max_int_val=None):
@@ -28,7 +55,7 @@ class AlleleClass:
                           int), f'The class_min_int_val must be an int, even if its maf - we convert it.'
         assert class_min_int_val >= 0, f'The class_min_int_val must be non-negative.'
         # maf must be lower than 50
-        assert self.is_mac | class_min_int_val < 50
+        assert self.is_mac | (class_min_int_val < 50)
         # the name of the class value is the int min value, even if its maf
         self.class_int_val_name = class_min_int_val
         # set the max val of the class
@@ -86,7 +113,7 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
     data = load_dict_from_json(hash_file)
     with FileLock(hash_file):
         hash_codes = [int(i) for i in data.keys()]
-        new_hash = 0 if len(hash_codes) == 0 else 1 + max(hash_codes)
+        new_hash = 0 if len(hash_codes) == 0 else min([i+1 for i in hash_codes if (i+1) not in hash_codes])
         if windows_id_list not in data.values():
             data[str(new_hash)] = windows_id_list
             with open(hash_file, "w") as f:
@@ -136,13 +163,19 @@ def str2bool(v) -> bool:
     raise Exception('Boolean value expected.')
 
 
-def get_num_lines_in_file(p, gzip=False):
+def get_num_lines_in_file(path, gzip=False):
     if gzip:
-        with gzip.open(p, 'rb') as f:
-            return sum(1 for _ in f)
+        with gzip.open(path, 'rb') as f:
+            i = 0
+            while f.readline():
+                i += 1
+            return i
     else:
-        with open(p, 'r') as f:
-            return sum(1 for _ in f)
+        with open(path, 'rb') as f:
+            i = 0
+            while f.readline():
+                i += 1
+            return i
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):
@@ -175,6 +208,11 @@ def how_many_jobs_run(string_to_find=""):
     except subprocess.CalledProcessError:
         return 0
 
+def how_many_local_jobs_run(string_to_find=""):
+    top_outputs = os.popen('top -bi -n 1').readlines()
+    num_of_running_jobs = len([i for i in top_outputs if string_to_find in i])
+    return num_of_running_jobs
+
 
 # Deprecated?
 def get_class2sites(dataset_name):
@@ -201,13 +239,18 @@ def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
     parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
-    parser.add_argument("--mac", dest="mac", default="2,18", help="min value, max value, delta")
+    parser.add_argument("--mac", dest="mac", default="2,70", help="min value, max value, delta")
     parser.add_argument("--override", dest="override", action="store_true", help="If true, can override existing files")
     parser.add_argument("--maf", dest="maf", default="1,49", help="min value, max value, delta")
     parser.add_argument("--args", dest="args", help="Any additional args")
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
                         help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
+                        help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--ns_combine", dest="run_ns_together", default=False, action='store_true',
+                        help="If use this flag - sun NetStruct together per class - submit a single job that will run"
+                             "all trees of a certain class one after the other")
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []
@@ -229,3 +272,13 @@ def str_for_timer(options):
         str += f"args--{options.args}"
     return str
 
+
+def repr_num(x):
+    if x > 10e4 or x < -10e4:
+        return f'{x:.2e}'
+    if -1 / 10e4 < x < 1 / 10e4:
+        return f'{x:.2e}'
+    else:
+        num_length = np.log10(np.abs(x))
+        max_num_of_digits_after_dot = min(5 - int(num_length), 5)
+        return round(x, max_num_of_digits_after_dot)

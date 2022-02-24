@@ -69,6 +69,7 @@ def run_all_pipeline(options):
     for step in ['1.2', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
+        options.step = step
         success_run = run_step(options, step)
         assert success_run(f"Failed in step {step}")
 
@@ -82,6 +83,8 @@ def runner(options):
 
         is_executed = run_step(options, options.step)
         print(f'is executed: {is_executed}')
+
+# runner.py -d sim_2_v0 --args 50,2000 --run_all
 
 #  python3 runner.py -d hgdp -s 1.1
 

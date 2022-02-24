@@ -139,7 +139,7 @@
   "sim_2_v0":
   {
     "vcf_files_names": [
-      "sim_2_v0.cvf"
+      "sim_2_v0.vcf"
     ],
     "vcf_files_short_names": [
       "chr1"

@@ -64,12 +64,11 @@ def generate_vcfs_stats(options, stat_types):
         print("Done submissions with no errors!")
     else:
         print(f"Errors in:\n{errors}")
+        return False
 
     with Loader("Computing stats", string_to_find="s1"):
         while how_many_jobs_run(string_to_find="s1"):
             time.sleep(5)
-
-    # assert validate_stderr_empty(stderr_files)
 
     return all_stats_done
 

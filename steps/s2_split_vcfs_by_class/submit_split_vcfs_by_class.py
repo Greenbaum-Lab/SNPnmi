@@ -103,8 +103,8 @@ def is_output_exits(class_max_val, class_min_val, mac_maf, output_dir):
 
 def main(options):
     with Timer(f"Submitting split vcf by class with {str_for_timer(options)}"):
-        is_executed, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, options)
-    return is_executed
+        is_done, msg = execute_with_checkpoint(submit_split_vcfs_by_class, SCRIPT_NAME, options)
+    return is_done
 
 
 if __name__ == '__main__':

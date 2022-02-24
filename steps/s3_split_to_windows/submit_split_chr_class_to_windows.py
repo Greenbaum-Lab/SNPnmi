@@ -28,11 +28,7 @@ def submit_split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
     paths_helper = get_paths_helper(options.dataset_name)
     stderr_files = []
-    chrs_to_run = options.args
     for chr_name in get_dataset_vcf_files_short_names(dataset_name):
-        if chrs_to_run:
-            if chr_name not in chrs_to_run:
-                continue
         for cls in class_iter(options):
             job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val, chr_name)
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,

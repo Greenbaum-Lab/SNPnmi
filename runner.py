@@ -71,7 +71,7 @@ def run_all_pipeline(options):
         options = set_options_args(options, step, orig_args)
         options.step = step
         success_run = run_step(options, step)
-        assert success_run(f"Failed in step {step}")
+        assert success_run, f"Failed in step {step}"
 
 
 

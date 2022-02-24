@@ -40,7 +40,7 @@ def checkpoint_file_check(dataset_name, checkpoint_name, options):
 def execute_with_checkpoint(func, checkpoint_name, options):
     is_checkpoint_exists, checkpoint_file = checkpoint_file_check(options.dataset_name, checkpoint_name, options)
     if is_checkpoint_exists:
-        return False, 'checkpoint found'
+        return True, 'checkpoint found'
 
     success = func(options)
     if success:

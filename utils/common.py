@@ -248,6 +248,8 @@ def args_parser():
                         help="Net-struct step size (relevant for step 5 only)")
     parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
                         help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',
+                        help="run all pipeline (from step 1.2 till step 5.3) instead of a single step")
     parser.add_argument("--ns_combine", dest="run_ns_together", default=False, action='store_true',
                         help="If use this flag - sun NetStruct together per class - submit a single job that will run"
                              "all trees of a certain class one after the other")

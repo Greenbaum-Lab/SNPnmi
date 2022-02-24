@@ -10,6 +10,8 @@ import time
 import sys
 from os.path import dirname, abspath
 
+from utils.config import get_num_individuals
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -47,10 +49,18 @@ def convert_numpy_array_to_lists(similarity_matrix_path):
         old_format.write(lists.encode())
     return output_path
 
+def compute_macs_range(options):
+    num_of_indv = get_num_individuals(options.dataset_name)
+    num_of_genomes = num_of_indv * 2  # diploid assumption
+    first_maf = num_of_genomes / 100
+    last_mac = first_maf - 1 if first_maf == int(first_maf) else int(first_maf)
+    return 2, last_mac
+
 
 def main(options):
-    mac_min_range, mac_max_range = options.mac if options.mac else (0, 0)
-    maf_min_range, maf_max_range = options.maf if options.maf else (0, 0)
+
+    mac_min_range, mac_max_range = 1, 49
+    maf_min_range, maf_max_range = compute_macs_range(options)
 
     output_files_name, all_class_range_str = sum_all_classes(options)
     print(output_files_name)

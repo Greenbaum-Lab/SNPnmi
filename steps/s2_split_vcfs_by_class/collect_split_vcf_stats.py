@@ -1,11 +1,8 @@
 # collects stats from the split vcfs by class
 # TOD rename? - collect_vcf_classes_stats?
 import re
-import sys
 import os.path
 import sys
-import os
-from os import path
 from os.path import dirname, abspath
 
 
@@ -250,11 +247,3 @@ def main(options):
     with Timer(f"Collect split vcf stats with {str_for_timer(options)}"):
         is_executed, msg = execute_with_checkpoint(collect_and_validate_vcf_classes_stats, SCRIPT_NAME, options)
     return is_executed
-
-
-if __name__ == '__main__':
-    # arguments = args_parser()
-    # main(arguments)
-    df_path = "C:\\Users\\lab4\\OneDrive\\Desktop\\df.xlsx"
-    df = pd.read_excel(df_path)
-    validate_all_data_exists(df, 22, 0, 1, 1, 1, 1)

@@ -5,9 +5,7 @@ import time
 import sys
 import os
 from os.path import dirname, abspath
-import argparse
-import ftplib
-from pathlib import Path
+
 
 from utils.loader import Timer
 
@@ -50,15 +48,29 @@ def run_step(options, step, use_checkpoint=True):
     if not use_checkpoint:
         return func(options)
     # note that we use the step number and name for the checkpont, so this will only not run if we used runner in the past.
-    is_executed, msg = execute_with_checkpoint(func, options.step + step_name, options)
+    is_done, msg = execute_with_checkpoint(func, options.step + step_name, options)
     print(msg)
-    return is_executed
+    return is_done
 
 def run_all_pipeline(options):
-    done_steps = []
+
+    def set_options_args(options, step, orig_args):
+        if step == '1.2':
+            options.args = ['freq']
+        elif step == '3.1':
+            options.args = [orig_args[0]]   # window size
+        elif step == '3.3':
+            options.args = [orig_args[1]]  # num_of_winds_per_job
+        else:
+            options.args = orig_args
+        return options
+
+    orig_args = options.args
     for step in ['1.2', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
         print(f'start step {step}')
+        options = set_options_args(options, step, orig_args)
         success_run = run_step(options, step)
+        assert success_run(f"Failed in step {step}")
 
 
 
@@ -79,11 +91,11 @@ def runner(options):
 
 #  python3 runner.py  -s 2.2 -d hgdp
 
-#  python3 runner.py -s 3.1 -d hgdp --args 100
+#  python3 runner.py -s 3.1 -d hgdp --args 100  (# window size)
 
 #  python3 runner.py -s 3.2 -d hgdp
 
-#  python3 runner.py -s 3.3 -d hgdp --args 2000
+#  python3 runner.py -s 3.3 -d hgdp --args 2000  (# num of windows per job)
 
 #  python3 runner.py -s 4.1 -d hgdp
 
@@ -93,14 +105,17 @@ def runner(options):
 
 #  python3 runner.py -s 5.3 -d hgdp
 
-#  python3 runner.py -s 5.4 -d hgdp --args 1000,3
+#  python3 runner.py -s 5.4 -d hgdp --args 1000,3   (# num of SNPs per tree, num of trees)
 
 #  python3 runner.py -s 6.1 -d hgdp
 
-#  python3 runner.py -s 6.2 -d hgdp --args 1000,3
+#  python3 runner.py -s 6.2 -d hgdp --args 1000,3   (# num of SNPs per tree, num of trees)
 
 
 
 if __name__ == "__main__":
     options = args_parser()
-    runner(options)
+    if options.run_all:
+        run_all_pipeline(options)
+    else:
+        runner(options)

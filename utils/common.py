@@ -93,7 +93,7 @@ def get_paths_helper(dataset_name):
 
 def is_cluster():
     # danger! make sure local code is not under this path!
-    return '/vol/sci/' in os.path.abspath(__file__)
+    return '/sci/labs/' in os.path.abspath(__file__)
 
 
 def load_dict_from_json(json_path):

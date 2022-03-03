@@ -8,6 +8,9 @@ import pandas as pd
 from os.path import dirname, abspath
 import os
 import gzip
+import pyhash
+hasher = pyhash.metro_64()
+
 
 
 root_path = dirname(dirname(abspath(__file__)))
@@ -80,7 +83,8 @@ class AlleleClass:
 
 def hash_args(options):
     args = options.args + options.mac + options.maf + [options.ns_ss]
-    return hash(tuple(args))
+    args = [str(e) for e in args]
+    return hasher(*args)
 
 
 def get_paths_helper(dataset_name):

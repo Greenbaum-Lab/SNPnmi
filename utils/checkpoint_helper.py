@@ -27,6 +27,7 @@ def get_checkpoint_time(checkpoint_file_path):
 
 def checkpoint_file_check(dataset_name, checkpoint_name, options):
     checkpoint_file = get_checkpoint_file_path(dataset_name, checkpoint_name, options)
+    print(f"checkpoint name --- {checkpoint_file}")
     checkpoint_file_exist = os.path.exists(checkpoint_file)
     if checkpoint_file_exist:
         checkpoint_time = get_checkpoint_time(checkpoint_file)

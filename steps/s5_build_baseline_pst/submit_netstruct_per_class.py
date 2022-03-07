@@ -44,10 +44,11 @@ def submit_netstruct_per_class(options):
 
 
 def main(options):
-    submit_netstruct_per_class(options)
+    with Timer(f"netstruct per class with {options.args}"):
+        submit_netstruct_per_class(options)
+    return True
 
 
 if __name__ == '__main__':
     arguments = args_parser()
-    with Timer(f"submit_netstruct_per_class with {arguments.args}"):
-        main(arguments)
+    main(arguments)

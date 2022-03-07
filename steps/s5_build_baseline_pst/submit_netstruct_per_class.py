@@ -2,19 +2,21 @@
 
 import sys
 import os
-from os.path import dirname, abspath
+from os.path import dirname, abspath, basename
 import time
+
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
 from utils.similarity_helper import matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
 job_type = 'netstruct_per_class'
-
+SCRIPT_NAME = basename(__file__)
 
 def submit_netstruct_per_class(options):
     paths_helper = get_paths_helper(options.dataset_name)
@@ -45,8 +47,9 @@ def submit_netstruct_per_class(options):
 
 def main(options):
     with Timer(f"netstruct per class with {options.args}"):
-        submit_netstruct_per_class(options)
-    return True
+        is_executed, msg = execute_with_checkpoint(submit_netstruct_per_class, SCRIPT_NAME, options)
+        print(msg)
+    return is_executed
 
 
 if __name__ == '__main__':

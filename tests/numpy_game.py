@@ -1,84 +1,27 @@
-import gzip
-import json
-import math
-import os
-import subprocess
-import time
-from random import sample
+from io import BytesIO
+from PIL import Image
+import numpy as np
+
 import matplotlib.pyplot as plt
 
-import numpy as np
-from scipy import stats
-from tqdm import tqdm
-
-from utils.common import args_parser, class_iter
+import cairosvg
+import msprime
 
 
-def file012_to_numpy(input_file_path, raw_file=None):
-    if raw_file is None:
-        with gzip.open(input_file_path, 'rb') as f:
-            raw_file = f.read().decode()
-    split_individuals = raw_file.split('\n')
-    if split_individuals[-1] == '':  # we throw empty line at the end of the file
-        split_individuals = split_individuals[:-1]
-    split_sites = [individual.split(' ') for individual in split_individuals]
-    new_mat = np.zeros(shape=(929, 929))
-    for i in range(len(split_sites)):
-        for j in range(len(split_sites[i])):
-            new_mat[i, i + j] = float(split_sites[i][j])
-    for i in range(929):
-        for j in range(i):
-            new_mat[i, j] = new_mat[j, i]
-    return new_mat
+pop_configs = [msprime.PopulationConfiguration(sample_size=100),
+               msprime.PopulationConfiguration(sample_size=100)]
 
-
-def compare_amir_similarities():
-    amir_dir_path = "/vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/distances/"
-    files = [f for f in os.listdir(amir_dir_path) if "_all_norm_dist.tsv.gz" in f]
-    for f in files:
-        nump = file012_to_numpy(amir_dir_path + f)
-        class_name = f.replace("_all_norm_dist.tsv.gz", "")
-        print(f"class_name: {class_name}")
-        print(f"type: {type(nump)}")
-        print(f"shape: {nump.shape}")
-        print(f"min,max: {nump.min(), nump.max()}")
-        exit(0)
-
-
-def test_subprocess():
-    a = os.popen('top -bi -n 1').readlines()
-    c = [i for i in a if 'vcftools' in i]
-    print(len(c))
-
-def log_plots():
-    plt.plot([1002,105,13,2,1,8,6,4])
-    plt.yscale('log')
-    plt.show()
-
-def legend_loc_check():
-    x = [1, 2]
-    plt.gca().text(0.05, 0.95, 'some text', transform=plt.gca().transAxes, verticalalignment='top')
-    plt.plot(x, x, label='plot name')
-    plt.legend(loc='best')
-    plt.show()
-
-def norm_dist():
-    mu = 0
-    variance = 1
-    n = 5
-    sigma = math.sqrt(variance)
-    x = np.linspace(mu - n * sigma, mu + n * sigma, 100)
-    y = np.abs(x)
-    y[np.where(x < 1)[0]] = 1
-    plt.plot(x, stats.norm.pdf(x, mu, sigma) + 1/y)
-    plt.xticks([])
-    plt.plot(x, [1.5] * len(x))
-    # plt.yticks([])
-    plt.show()
-
-def test_class_iter():
-    options = args_parser()
-    for cls in tqdm(list(class_iter(options))):
-        time.sleep(0.5)
-
-test_class_iter()
+ts = msprime.simulate(population_configurations=pop_configs, length=1e8, Ne=2000, mutation_rate=1e-6,
+                      recombination_rate=1e-8,
+                      demographic_events=[
+                          msprime.MassMigration(10000, source=1, dest=0, proportion=1)
+                      ])
+with open("/home/lab2/shahar/sample_tmp.vcf", 'w+') as f:
+    ts.write_vcf(f)
+color_map = {0: 'red', 1: 'blue', 2: 'green'}
+tree = ts.first()
+node_colors = {u: color_map[tree.population(u)] for u in tree.nodes()}
+img = cairosvg.svg2png(tree.draw(node_colours=node_colors))
+img = Image.open(BytesIO(img))
+plt.imshow(img)
+plt.show()

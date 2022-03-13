@@ -17,7 +17,7 @@ sys.path.append(root_path)
 
 from utils.common import get_paths_helper
 
-SCRIPT_NAME = os.path.basename(__file__)
+SCRIPT_PATH = os.path.abspath(__file__)
 SIMULAITION_NAME = 'sim_2_v0_coal'
 
 
@@ -46,7 +46,7 @@ def plot_tree(ts):
 
 
 def copy_runner_to_vcf_dir(paths_helper):
-    subprocess.Popen(['cp', SCRIPT_NAME, paths_helper.data_dir])
+    subprocess.Popen(['cp', SCRIPT_PATH, paths_helper.data_dir])
 
 
 if __name__ == '__main__':

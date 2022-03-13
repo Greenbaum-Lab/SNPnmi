@@ -9,13 +9,13 @@ from PIL import Image
 import subprocess
 
 import matplotlib.pyplot as plt
-import cairosvg
 import msprime
 
-from utils.common import get_paths_helper
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+
+from utils.common import get_paths_helper
 
 SCRIPT_NAME = os.path.basename(__file__)
 SIMULAITION_NAME = 'sim_2_v0_coal'

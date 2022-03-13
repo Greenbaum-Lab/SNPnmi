@@ -31,7 +31,7 @@ def run_simulation(paths_helper):
                               msprime.MassMigration(10000, source=1, dest=0, proportion=1)
                           ])
     os.makedirs(paths_helper.data_dir, exist_ok=True)
-    with open(paths_helper.data_dir + SCRIPT_NAME + '.vcf', 'w+') as f:
+    with open(paths_helper.data_dir + SCRIPT_PATH + '.vcf', 'w+') as f:
         ts.write_vcf(f)
 
 

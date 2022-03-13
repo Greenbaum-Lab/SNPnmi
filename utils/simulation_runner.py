@@ -46,6 +46,7 @@ def plot_tree(ts):
 
 
 def copy_runner_to_vcf_dir(paths_helper):
+    print(f"Copy {SCRIPT_PATH} to {paths_helper.data_dir}")
     subprocess.Popen(['cp', SCRIPT_PATH, paths_helper.data_dir])
 
 

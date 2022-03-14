@@ -69,6 +69,6 @@ def write_ind_list_for_ns(paths_helper):
 
 if __name__ == '__main__':
     paths_helper = get_paths_helper(SIMULAITION_NAME)
-    run_simulation(paths_helper)
+    run_simulation_and_save_vcf(paths_helper)
     copy_runner_to_vcf_dir(paths_helper)
     write_ind_list_for_ns(paths_helper)

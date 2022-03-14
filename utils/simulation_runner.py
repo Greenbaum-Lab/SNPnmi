@@ -12,11 +12,11 @@ import subprocess
 import matplotlib.pyplot as plt
 import msprime
 
-from utils.loader import Timer
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
+from utils.loader import Timer
 from utils.common import get_paths_helper
 
 SCRIPT_PATH = os.path.abspath(__file__)

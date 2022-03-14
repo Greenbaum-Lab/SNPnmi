@@ -23,10 +23,10 @@ SIMULAITION_NAME = 'sim_2_v0_coal'
 POPULATION_SIZE = 1000
 
 def run_simulation(paths_helper):
-    pop_configs = [msprime.PopulationConfiguration(sample_size=100),
-                   msprime.PopulationConfiguration(sample_size=100)]
+    pop_configs = [msprime.PopulationConfiguration(sample_size=500),
+                   msprime.PopulationConfiguration(sample_size=500)]
 
-    ts = msprime.simulate(population_configurations=pop_configs, length=1e5, Ne=2000, mutation_rate=1e-6,
+    ts = msprime.simulate(population_configurations=pop_configs, length=1e9, Ne=2000, mutation_rate=1e-8,
                           recombination_rate=1e-8,
                           demographic_events=[
                               msprime.MassMigration(10000, source=1, dest=0, proportion=1)

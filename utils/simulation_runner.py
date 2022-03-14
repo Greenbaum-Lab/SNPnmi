@@ -22,16 +22,16 @@ from utils.common import get_paths_helper
 SCRIPT_PATH = os.path.abspath(__file__)
 SIMULAITION_NAME = 'sim_2_v0_coal'
 POPULATION_SIZE = 1000
-
+NUMBER_OF_SUBPOPS = 50
+INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS
 
 def run_simulation():
-    pop_configs = [msprime.PopulationConfiguration(sample_size=500),
-                   msprime.PopulationConfiguration(sample_size=500)]
+    pop_configs = [msprime.PopulationConfiguration(sample_size=INDV_PER_POP) for _ in range(NUMBER_OF_SUBPOPS)]
 
     ts = msprime.simulate(population_configurations=pop_configs, length=5e8, Ne=2000, mutation_rate=5e-7,
                           recombination_rate=1e-8,
                           demographic_events=[
-                              msprime.MassMigration(10000, source=1, dest=0, proportion=1)
+                              msprime.MassMigration(10000, source=i, dest=0, proportion=1) for i in range(1, NUMBER_OF_SUBPOPS)
                           ])
     return ts
 

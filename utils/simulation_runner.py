@@ -12,6 +12,7 @@ import subprocess
 import matplotlib.pyplot as plt
 import msprime
 
+from utils.loader import Timer
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -22,7 +23,8 @@ SCRIPT_PATH = os.path.abspath(__file__)
 SIMULAITION_NAME = 'sim_2_v0_coal'
 POPULATION_SIZE = 1000
 
-def run_simulation(paths_helper):
+
+def run_simulation():
     pop_configs = [msprime.PopulationConfiguration(sample_size=500),
                    msprime.PopulationConfiguration(sample_size=500)]
 
@@ -31,9 +33,16 @@ def run_simulation(paths_helper):
                           demographic_events=[
                               msprime.MassMigration(10000, source=1, dest=0, proportion=1)
                           ])
+    return ts
+
+
+def run_simulation_and_save_vcf(paths_helper):
+    with Timer("Running simulation"):
+        ts = run_simulation()
     os.makedirs(paths_helper.data_dir, exist_ok=True)
-    with open(paths_helper.data_dir + SIMULAITION_NAME + '.vcf', 'w+') as f:
-        ts.write_vcf(f)
+    with Timer("Saving VCF"):
+        with open(paths_helper.data_dir + SIMULAITION_NAME + '.vcf', 'w+') as f:
+            ts.write_vcf(f)
 
 
 def plot_tree(ts):

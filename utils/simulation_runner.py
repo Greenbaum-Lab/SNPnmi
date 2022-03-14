@@ -5,6 +5,7 @@ import sys
 from io import BytesIO
 from os.path import dirname, abspath
 
+import cairosvg as cairosvg
 from PIL import Image
 import subprocess
 
@@ -19,13 +20,13 @@ from utils.common import get_paths_helper
 
 SCRIPT_PATH = os.path.abspath(__file__)
 SIMULAITION_NAME = 'sim_2_v0_coal'
-
+POPULATION_SIZE = 1000
 
 def run_simulation(paths_helper):
     pop_configs = [msprime.PopulationConfiguration(sample_size=100),
                    msprime.PopulationConfiguration(sample_size=100)]
 
-    ts = msprime.simulate(population_configurations=pop_configs, length=1e6, Ne=2000, mutation_rate=1e-6,
+    ts = msprime.simulate(population_configurations=pop_configs, length=1e7, Ne=2000, mutation_rate=1e-6,
                           recombination_rate=1e-8,
                           demographic_events=[
                               msprime.MassMigration(10000, source=1, dest=0, proportion=1)
@@ -50,7 +51,15 @@ def copy_runner_to_vcf_dir(paths_helper):
     subprocess.Popen(['cp', SCRIPT_PATH, paths_helper.data_dir])
 
 
+def write_ind_list_for_ns(paths_helper):
+    with open(paths_helper.data_dir + 'sampleSite.txt', 'w+') as f:
+        f.write('A')
+    with open(paths_helper.data_dir + 'inlist.txt', 'w+') as f:
+        f.write('A\n' * POPULATION_SIZE)
+
+
 if __name__ == '__main__':
     paths_helper = get_paths_helper(SIMULAITION_NAME)
     run_simulation(paths_helper)
     copy_runner_to_vcf_dir(paths_helper)
+    write_ind_list_for_ns(paths_helper)

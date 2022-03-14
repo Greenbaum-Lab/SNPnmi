@@ -28,7 +28,7 @@ def run_simulation():
     pop_configs = [msprime.PopulationConfiguration(sample_size=500),
                    msprime.PopulationConfiguration(sample_size=500)]
 
-    ts = msprime.simulate(population_configurations=pop_configs, length=1e8, Ne=2000, mutation_rate=1e-7,
+    ts = msprime.simulate(population_configurations=pop_configs, length=5e8, Ne=2000, mutation_rate=5e-7,
                           recombination_rate=1e-8,
                           demographic_events=[
                               msprime.MassMigration(10000, source=1, dest=0, proportion=1)

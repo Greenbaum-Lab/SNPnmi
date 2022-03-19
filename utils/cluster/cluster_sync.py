@@ -3,12 +3,12 @@ import sys
 import time
 from os.path import dirname, abspath
 
-from utils.common import how_many_jobs_run
-from utils.loader import Loader
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.loader import Loader
+from utils.common import how_many_jobs_run
 
 def sync_dir(source):
     num_hours_to_run = 2

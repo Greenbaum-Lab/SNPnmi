@@ -52,9 +52,10 @@ def tar_files(source_list):
     memory = 8
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'
-        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} --error="{job_stderr_file}"'
+        job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}.err'
+        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'tr' + source[-3:]
-        cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
+        cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name} --error="{job_stderr_file}" --output="{job_stdout_file}"'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])
     with Loader(f"Taring {dirname(source_list[0])}", string_to_find="tr"):
         while how_many_jobs_run(string_to_find="tr"):

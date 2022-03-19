@@ -28,4 +28,4 @@ def sync_dir(source):
             time.sleep(5)
     print('Done!')
 
-sync_dir('test_file.txt')
+sync_dir('test_dir')

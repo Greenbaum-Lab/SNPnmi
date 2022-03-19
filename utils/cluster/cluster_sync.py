@@ -33,7 +33,7 @@ def sync_dir(source_list):
 def del_dir(source_list):
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
-    num_hours_to_run = 2
+    num_hours_to_run = 8
     memory = 8
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/rm_{source}'
@@ -48,7 +48,7 @@ def del_dir(source_list):
 
 
 source_list = []
-for i in range(1, 23):
+for i in range(23, 50):
     maf = i / 100
     mini_source_list = [f'hgdp/classes/windows/maf_{maf}/chr'] * 22
     for j in range(1, 23):

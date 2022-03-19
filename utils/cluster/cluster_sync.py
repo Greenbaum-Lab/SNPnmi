@@ -1,6 +1,10 @@
 import subprocess
 import sys
+import time
 from os.path import dirname, abspath
+
+from utils.common import how_many_jobs_run
+from utils.loader import Loader
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -11,7 +15,7 @@ def sync_dir(source):
     memory = 8
     job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}'
     job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}'
-    job_name = source[:-5]
+    job_name = 'dr' + source[:-3]
     cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                       f'" --output="{job_stdout_file}" --job-name="{job_name}"'
     cmd_line = f'rclone copy /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} remote:gili_lab/vcf/{source}'
@@ -19,6 +23,9 @@ def sync_dir(source):
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
     print('Start!')
     subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {cmd_line}'])
+    with Loader(f"uploading {source}", string_to_find="dr"):
+        while how_many_jobs_run(string_to_find="dr"):
+            time.sleep(5)
     print('Done!')
 
 sync_dir('test_file.txt')

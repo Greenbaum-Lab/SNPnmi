@@ -128,6 +128,24 @@ def handle_hash_file(class_name, paths_helper, windows_id_list):
             return reverse_dict[tuple(windows_id_list)]
 
 
+def comp_and_save_012_mat(mat, path):
+    bin_mat = np.empty(shape=(mat.shape[0], mat.shape[1], 2), dtype=bool)
+    bin_mat[:, :, 0] = mat > 0
+    bin_mat[:, :, 1] = mat % 2 == 0
+    comped_mat = np.packbits(bin_mat)
+    np.save(path, comped_mat)
+
+
+def load_and_decomp_012_mat(path, wind_size):
+    comp_mat = np.load(path)
+    unpacked = np.unpackbits(comp_mat).astype(bool).reshape((-1, wind_size, 2))
+    decomp_mat = np.empty(shape=(unpacked.shape[0], unpacked.shape[1]), dtype=np.int8)
+    decomp_mat[:, :] = unpacked[:, :, 0] & ~ unpacked[:, :, 1]
+    decomp_mat[:, :] -= ~unpacked[:, :, 0] & ~ unpacked[:, :, 1]
+    decomp_mat[:, :] += 2 * (unpacked[:, :, 0] & unpacked[:, :, 1])
+    return decomp_mat
+
+
 def write_pairwise_similarity(output_similarity_file, similarity_matrix, output_count_file, count_matrix):
     with open(output_similarity_file, 'wb') as f:
         np.save(f, similarity_matrix)

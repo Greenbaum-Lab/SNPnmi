@@ -15,14 +15,8 @@ def numpy_compress(matrix):
     bin_mat = np.empty(shape=(matrix.shape[0], matrix.shape[1], 2), dtype=bool)
     bin_mat[:, :, 0] = matrix > 0
     bin_mat[:, :, 1] = matrix % 2 == 0
-    return bin_mat
+    return np.packbits(bin_mat)
 
-def numpy_decompress(bin_mat):
-    decomp_mat = np.empty(shape=(bin_mat.shape[0], bin_mat.shape[1]), dtype=np.int8)
-    decomp_mat[:, :] = bin_mat[:, :, 0] & ~ bin_mat[:, :, 1]
-    decomp_mat[:, :] -= ~bin_mat[:, :, 0] & ~ bin_mat[:, :, 1]
-    decomp_mat[:, :] += 2 * (bin_mat[:, :, 0] & bin_mat[:, :, 1])
-    return decomp_mat
 
 
 path = '/sci/labs/gilig/shahar.mazie/icore-data/vcf/sim_2_v0/classes/windows/maf_0.39/chr1/'

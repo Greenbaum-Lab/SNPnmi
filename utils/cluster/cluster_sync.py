@@ -51,7 +51,7 @@ def tar_files(source_list):
     num_hours_to_run = 2
     memory = 8
     for source in source_list:
-        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
+        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'tr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])

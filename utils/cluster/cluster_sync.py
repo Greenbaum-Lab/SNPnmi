@@ -29,6 +29,7 @@ def sync_dir(source_list):
             time.sleep(5)
     print("Done sync!")
 
+
 def del_dir(source_list):
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
@@ -45,8 +46,16 @@ def del_dir(source_list):
         with Loader(f"uploading {source}", string_to_find="rm"):
             while how_many_jobs_run(string_to_find="rm"):
                 time.sleep(5)
-source_list = ['hgdp/classes/windows/maf_0.23/chr'] * 22
-for i in range(1, 23):
-    source_list[i-1] += str(i)
+
+
+source_list = []
+for i in range(1, 20):
+    maf = i / 100
+    mini_source_list = [f'hgdp/classes/windows/maf_{maf}/chr'] * 22
+    for j in range(1, 23):
+        mini_source_list[j-1] += str(j)
+    source_list += mini_source_list
+
 sync_dir(source_list)
+del_dir(source_list)
 

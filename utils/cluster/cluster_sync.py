@@ -9,8 +9,8 @@ sys.path.append(root_path)
 def sync_dir(source):
     num_hours_to_run = 2
     memory = 8
-    job_stderr_file = 'f/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}'
-    job_stdout_file = 'f/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}'
+    job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}'
+    job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}'
     job_name = source[:-5]
     cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                       f'" --output="{job_stdout_file}" --job-name="{job_name}"'

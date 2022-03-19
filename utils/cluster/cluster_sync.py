@@ -52,7 +52,7 @@ def tar_files(source_list):
     memory = 8
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'
-        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} --error="{job_stderr_file}'
+        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} --error="{job_stderr_file}"'
         job_name = 'tr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])

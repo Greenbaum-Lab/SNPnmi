@@ -14,8 +14,8 @@ def sync_dir(source_list):
     num_hours_to_run = 2
     memory = 8
     for source in source_list:
-        job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}'
-        job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}'
+        job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'
+        job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}.out'
         job_name = 'dr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                           f'" --output="{job_stdout_file}" --job-name="{job_name}"'

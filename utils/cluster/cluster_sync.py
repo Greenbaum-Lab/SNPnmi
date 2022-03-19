@@ -60,7 +60,7 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-lst = [f'hgdp/classes/netstruct/mac_{i}' for i in range(3, 23)]
+lst = [f'hgdp/classes/netstruct/mac_{i}' for i in range(3, 70)]
 
 # sync_dir(source_list)
 # del_dir(source_list)

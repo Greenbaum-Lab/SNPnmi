@@ -1,6 +1,6 @@
 #!/bin/bash
 module load vcftools
-ulimit -n 1500
+module load rclone
 cmd2run=$1
 
 echo "$cmd2run"

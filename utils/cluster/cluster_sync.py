@@ -48,7 +48,7 @@ def del_dir(source_list):
 def tar_files(source_list):
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
-    num_hours_to_run = 2
+    num_hours_to_run = 4
     memory = 8
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'
@@ -62,7 +62,7 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-lst = [f'hgdp/classes/netstruct/mac_{i}' for i in range(2, 71)]
+lst = [f'hgdp/classes/netstruct/maf_{i/100}' for i in range(1, 50)]
 
 # sync_dir(source_list)
 # del_dir(source_list)

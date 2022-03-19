@@ -17,5 +17,6 @@ def sync_dir(source):
     cmd_line = cluster_setting + f' rclone cp /sci/labs/gilig/shahar.mazie/icore-data/vcf{source} remote:gili_lab/vcf/{source}'
     cmd_list = cmd_line.split()
     subprocess.run(cmd_list)
+    print('Done!')
 
 sync_dir('test_file.txt')

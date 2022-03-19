@@ -11,7 +11,7 @@ from utils.loader import Loader
 from utils.common import how_many_jobs_run
 
 def sync_dir(source_list):
-    num_hours_to_run = 2
+    num_hours_to_run = 8
     memory = 8
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'

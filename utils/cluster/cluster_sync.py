@@ -14,7 +14,7 @@ def sync_dir(source):
     job_name = source[:-5]
     cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                       f'" --output="{job_stdout_file}" --job-name="{job_name}"'
-    cmd_line = f'rclone cp /sci/labs/gilig/shahar.mazie/icore-data/vcf{source} remote:gili_lab/vcf/{source}'
+    cmd_line = f'rclone copy /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} remote:gili_lab/vcf/{source}'
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
     print('Start!')

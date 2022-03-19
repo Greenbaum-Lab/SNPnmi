@@ -49,7 +49,7 @@ def del_dir(source_list):
 
 
 source_list = []
-for i in range(1, 20):
+for i in range(1, 23):
     maf = i / 100
     mini_source_list = [f'hgdp/classes/windows/maf_{maf}/chr'] * 22
     for j in range(1, 23):

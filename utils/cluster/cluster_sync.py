@@ -43,9 +43,9 @@ def del_dir(source_list):
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                           f'" --output="{job_stdout_file}" --job-name="{job_name}"'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {delete_line}'])
-        with Loader(f"uploading {source}", string_to_find="rm"):
-            while how_many_jobs_run(string_to_find="rm"):
-                time.sleep(5)
+    with Loader(f"uploading {dirname(dirname(source_list[0]))}", string_to_find="rm"):
+        while how_many_jobs_run(string_to_find="rm"):
+            time.sleep(5)
 
 
 source_list = []

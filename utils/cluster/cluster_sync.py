@@ -62,8 +62,9 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-lst = [f'hgdp/classes/netstruct/maf_{i/100}' for i in range(1, 50)]
-
+mac_lst = [f'hgdp/classes/similarity/mac_{i}/per_window_similarity' for i in range(2, 71)]
+maf_lst = [f'hgdp/classes/similarity/maf_{i/100}/per_window_similarity' for i in range(1, 50)]
+lst = mac_lst + maf_lst
 # sync_dir(source_list)
 # del_dir(source_list)
 tar_files(lst)

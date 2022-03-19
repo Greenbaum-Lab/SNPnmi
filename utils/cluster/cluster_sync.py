@@ -33,27 +33,37 @@ def sync_dir(source_list):
 def del_dir(source_list):
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
-    num_hours_to_run = 8
+    num_hours_to_run = 2
     memory = 8
     for source in source_list:
-        job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/rm_{source}'
-        job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/rm_{source}'
         delete_line = f'rm -rf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'rm' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {delete_line}'])
-    with Loader(f"uploading {dirname(dirname(source_list[0]))}", string_to_find="rm"):
+    with Loader(f"deleting {dirname(dirname(source_list[0]))}", string_to_find="rm"):
         while how_many_jobs_run(string_to_find="rm"):
             time.sleep(5)
 
 
-source_list = []
-for i in range(2, 71):
-    mini_source_list = [f'hgdp/classes/windows/mac_{i}/chr'] * 22
-    for j in range(1, 23):
-        mini_source_list[j-1] += str(j)
-    source_list += mini_source_list
+def tar_files(source_list):
+    warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
+    submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
+    num_hours_to_run = 2
+    memory = 8
+    for source in source_list:
+        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
+        job_name = 'tr' + source[-3:]
+        cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
+        subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])
+    with Loader(f"Taring {dirname(source_list[0])}", string_to_find="tr"):
+        while how_many_jobs_run(string_to_find="tr"):
+            time.sleep(5)
+
+
+
+lst = [f'hgdp/classes/netstruct/mac_2']
 
 # sync_dir(source_list)
-del_dir(source_list)
+# del_dir(source_list)
+tar_files(lst)
 

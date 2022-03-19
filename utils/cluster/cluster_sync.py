@@ -18,7 +18,7 @@ def sync_dir(source):
     warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
     submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
     print('Start!')
-    subprocess.run(f'{submit_helper_path} {cluster_setting} {warp_30_params_path} {cmd_line}')
+    subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {cmd_line}'])
     print('Done!')
 
 sync_dir('test_file.txt')

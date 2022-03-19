@@ -56,6 +56,6 @@ for i in range(1, 23):
         mini_source_list[j-1] += str(j)
     source_list += mini_source_list
 
-sync_dir(source_list)
+# sync_dir(source_list)
 del_dir(source_list)
 

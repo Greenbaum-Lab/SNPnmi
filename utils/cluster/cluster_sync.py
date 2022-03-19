@@ -16,7 +16,7 @@ def sync_dir(source_list):
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}'
         job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}'
-        job_name = 'dr' + source[:-3]
+        job_name = 'dr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}' \
                           f'" --output="{job_stdout_file}" --job-name="{job_name}"'
         cmd_line = f'rclone sync /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} remote:gili_lab/vcf/{source}'
@@ -45,7 +45,7 @@ def del_dir(source_list):
         with Loader(f"uploading {source}", string_to_find="rm"):
             while how_many_jobs_run(string_to_find="rm"):
                 time.sleep(5)
-source_list = ['/hgdp/classes/windows/maf_0.23/chr'] * 22
+source_list = ['hgdp/classes/windows/maf_0.23/chr'] * 22
 for i in range(1, 23):
     source_list[i-1] += str(i)
 sync_dir(source_list)

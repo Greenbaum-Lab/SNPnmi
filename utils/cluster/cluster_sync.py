@@ -36,7 +36,7 @@ def del_dir(source_list):
     num_hours_to_run = 2
     memory = 8
     for source in source_list:
-        delete_line = f'rm -rf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
+        delete_line = f'rm -f /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}/mac*'
         job_name = 'rm' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {delete_line}'])
@@ -62,10 +62,10 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-mac_lst = [f'hgdp/classes/similarity/mac_{i}/per_window_similarity' for i in range(2, 71)]
-maf_lst = [f'hgdp/classes/similarity/maf_{i/100}/per_window_similarity' for i in range(1, 50)]
-lst = mac_lst + maf_lst
+mac_lst = [f'hgdp/classes/similarity/mac_{i}' for i in range(2, 71)]
+# maf_lst = [f'hgdp/classes/similarity/maf_{i/100}' for i in range(1, 50)]
+# lst = mac_lst + maf_lst
 # sync_dir(source_list)
 # del_dir(source_list)
-tar_files(lst)
+del_dir(mac_lst)
 

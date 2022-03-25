@@ -53,7 +53,7 @@ def tar_files(source_list):
     for source in source_list:
         job_stderr_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_err_files/{source}.err'
         job_stdout_file = f'/sci/labs/gilig/shahar.mazie/icore-data/tmp/cluster_out_files/{source}.err'
-        tar_line = f'tar -cvzf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
+        tar_line = f'tar -czf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'tr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name} --error="{job_stderr_file}"'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])
@@ -62,8 +62,8 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-mac_lst = [f'arabidopsis/classes/netstruct/mac_{i}' for i in range(2, 71)]
-maf_lst = [f'arabidopsis/classes/netstruct/maf_{i/100}' for i in range(1, 50)]
+mac_lst = [f'hgdp/classes/similarity/mac_{i}' for i in range(5, 71)]
+maf_lst = [f'hgdp/classes/similarity/maf_{i/100}' for i in range(1, 50)]
 lst = mac_lst + maf_lst
 # sync_dir(source_list)
 tar_files(lst)

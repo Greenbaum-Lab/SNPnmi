@@ -5,7 +5,6 @@ import sys
 from io import BytesIO
 from os.path import dirname, abspath
 
-import cairosvg as cairosvg
 from PIL import Image
 import subprocess
 
@@ -20,9 +19,9 @@ from utils.loader import Timer
 from utils.common import get_paths_helper
 
 SCRIPT_PATH = os.path.abspath(__file__)
-SIMULAITION_NAME = 'sim_2_v0_coal'
+SIMULAITION_NAME = 'sim_v0'
 POPULATION_SIZE = 1000
-NUMBER_OF_SUBPOPS = 50
+NUMBER_OF_SUBPOPS = 2
 INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS
 
 def run_simulation():

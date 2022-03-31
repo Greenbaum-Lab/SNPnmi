@@ -10,7 +10,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import how_many_jobs_run, args_parser, validate_stderr_empty, class_iter
+from utils.common import warp_how_many_jobs, args_parser, validate_stderr_empty, class_iter
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
@@ -42,8 +42,9 @@ def submit_split_chr_class_to_windows(options):
             submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
                               python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4,
                               memory=memory)
-    with Loader("Splitting jobs are running", string_to_find="s3_"):
-        while how_many_jobs_run(string_to_find="s3_"):
+    jobs_func = warp_how_many_jobs("s3_")
+    with Loader("Splitting jobs are running", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

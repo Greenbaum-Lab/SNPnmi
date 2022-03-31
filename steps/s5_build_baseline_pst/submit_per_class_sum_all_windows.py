@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
 from utils.config import get_cluster_code_folder
 
 # will submit calc_distances_in_window of given classes and windows
@@ -40,8 +40,9 @@ def submit_per_class_sum_all_windows(options):
         submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
                           job_stdout_file, job_stderr_file, num_hours_to_run=time_to_run)
 
-    with Loader(f"Summing all similarity windows per class", string_to_find="s5_"):
-        while how_many_jobs_run(string_to_find="s5_"):
+    jobs_func = warp_how_many_jobs("s5_")
+    with Loader(f"Summing all similarity windows per class", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(err_files)

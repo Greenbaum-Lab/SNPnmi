@@ -220,15 +220,21 @@ def validate_stderr_empty(err_files):
     return True
 
 
-def how_many_jobs_run(string_to_find=""):
-    assert is_cluster(), "Cannot check for jobs when run locally"
-    username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
-    ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE, encoding='utf8')
-    try:  # if grep is empty, it raise subprocess.CalledProcessError
-        output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout, encoding='utf8')
-        return output.count('\n')
-    except subprocess.CalledProcessError:
-        return 0
+def warp_how_many_jobs(txt_to_find):
+
+    def how_many_jobs_run(string_to_find=txt_to_find):
+        assert is_cluster(), "Cannot check for jobs when run locally"
+        username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
+        ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE, encoding='utf8')
+        try:  # if grep is empty, it raise subprocess.CalledProcessError
+            output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout, encoding='utf8')
+            num_of_jobs = output.count("\n")
+            return f'({num_of_jobs} running jobs) '
+        except subprocess.CalledProcessError:
+            return "(0 running jobs!) "
+
+    return how_many_jobs_run
+
 
 def how_many_local_jobs_run(string_to_find=""):
     top_outputs = os.popen('top -bi -n 1').readlines()

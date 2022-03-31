@@ -12,7 +12,7 @@ sys.path.append(root_path)
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.config import get_cluster_code_folder
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size, \
+from utils.common import get_paths_helper, warp_how_many_jobs, validate_stderr_empty, args_parser, get_window_size, \
     load_dict_from_json, handle_hash_file, class_iter
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import is_tree_exists
@@ -140,8 +140,9 @@ def submit_mini_net_struct_for_all_classes(options):
     for cls in class_iter(options):
         stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size)
 
-    with Loader("Running NetStruct_Hierarchy per many classes", string_to_find='ns'):
-        while how_many_jobs_run(string_to_find="ns"):
+    jobs_func = warp_how_many_jobs('ns')
+    with Loader("Running NetStruct_Hierarchy per many classes", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

@@ -17,11 +17,11 @@ import msprime
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.loader import Timer
+from utils.loader import Timer, Loader
 from utils.common import get_paths_helper
 
 SCRIPT_PATH = os.path.abspath(__file__)
-SIMULAITION_NAME = 'sim_dip_v0'
+SIMULAITION_NAME = 'sim_dip_v1'
 POPULATION_SIZE = 1000
 NUMBER_OF_SUBPOPS = 2
 INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS
@@ -35,15 +35,15 @@ def run_simulation():
 
     ts = msprime.sim_ancestry(samples={'A': 5, 'B': 5}, sequence_length=5e5, demography=demography,
                               recombination_rate=1e-8, random_seed=1)
-    mts = msprime.sim_mutations(ts, rate=5e-3, random_seed=1)
+    mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-3, random_seed=1)
     return mts
 # sequence_length=5e8
 #  mutation_rate=5e-7
 def run_simulation_and_save_vcf(paths_helper):
-    with Timer("Running simulation"):
+    with Loader("Running simulation"):
         ts = run_simulation()
     os.makedirs(paths_helper.data_dir, exist_ok=True)
-    with Timer("Saving VCF"):
+    with Loader("Saving VCF"):
         with open(paths_helper.data_dir + SIMULAITION_NAME + '.vcf', 'w+') as f:
             ts.write_vcf(f)
 

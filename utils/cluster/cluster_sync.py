@@ -8,7 +8,8 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader
-from utils.common import how_many_jobs_run
+from utils.common import warp_how_many_jobs
+
 
 def sync_dir(source_list):
     num_hours_to_run = 8
@@ -24,8 +25,9 @@ def sync_dir(source_list):
         submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {cmd_line}'])
 
-    with Loader(f"uploading dir {dirname(source_list[0])}", string_to_find="dr"):
-        while how_many_jobs_run(string_to_find="dr"):
+    jobs_func = warp_how_many_jobs("dr")
+    with Loader(f"uploading dir {dirname(source_list[0])}", jobs_func):
+        while jobs_func():
             time.sleep(5)
     print("Done sync!")
 
@@ -40,8 +42,9 @@ def del_dir(source_list):
         job_name = 'rm' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {delete_line}'])
-    with Loader(f"deleting {dirname(dirname(source_list[0]))}", string_to_find="rm"):
-        while how_many_jobs_run(string_to_find="rm"):
+    jobs_func = warp_how_many_jobs("rm")
+    with Loader(f"deleting {dirname(dirname(source_list[0]))}", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
 
@@ -57,8 +60,9 @@ def tar_files(source_list):
         job_name = 'tr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name} --error="{job_stderr_file}"'
         subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])
-    with Loader(f"Taring {dirname(source_list[0])}", string_to_find="tr"):
-        while how_many_jobs_run(string_to_find="tr"):
+    jobs_func = warp_how_many_jobs("tr")
+    with Loader(f"Taring {dirname(source_list[0])}", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
 

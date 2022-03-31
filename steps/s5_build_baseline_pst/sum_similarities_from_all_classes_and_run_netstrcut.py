@@ -16,7 +16,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
 from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
@@ -77,8 +77,9 @@ def main(options):
     print(output_folder)
     err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder)
 
-    with Loader("Running NetStruct_Hierarchy", string_to_find='ns'):
-        while how_many_jobs_run(string_to_find="ns"):
+    jobs_func = warp_how_many_jobs('ns')
+    with Loader("Running NetStruct_Hierarchy", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     if not err_file:

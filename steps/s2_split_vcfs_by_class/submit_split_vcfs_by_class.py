@@ -9,7 +9,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, str_for_timer, \
+from utils.common import get_paths_helper, warp_how_many_jobs, validate_stderr_empty, args_parser, str_for_timer, \
     is_cluster, how_many_local_jobs_run
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster, submit_to_heavy_lab
@@ -40,13 +40,10 @@ def submit_split_vcfs_by_class(options):
         stderr_files += submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range,
                                                options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
-    with Loader("Splitting jobs are running", string_to_find="s2"):
-        if options.local_jobs:
-            while how_many_local_jobs_run(string_to_find='vcftools'):
-                time.sleep(5)
-        else:
-            while how_many_jobs_run(string_to_find="s2"):
-                time.sleep(5)
+    jobs_func = warp_how_many_jobs("s2")
+    with Loader("Splitting jobs are running", jobs_func):
+        while jobs_func:
+            time.sleep(5)
 
     return True
 

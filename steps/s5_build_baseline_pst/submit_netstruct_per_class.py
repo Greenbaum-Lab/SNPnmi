@@ -11,7 +11,7 @@ sys.path.append(root_path)
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
 from utils.similarity_helper import matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
@@ -37,8 +37,9 @@ def submit_netstruct_per_class(options):
                                     output_folder)
         stderr_files.append(err_file)
 
-    with Loader("Running NetStruct_Hierarchy", string_to_find='ns'):
-        while how_many_jobs_run(string_to_find="ns"):
+    jobs_func = warp_how_many_jobs("ns")
+    with Loader("Running NetStruct_Hierarchy", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

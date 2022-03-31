@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty, class_iter
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
 from utils.config import *
 
 SCRIPT_NAME = os.path.basename(__file__)
@@ -72,8 +72,9 @@ def submit_calc_similarity_windows(options):
         print("Done submissions with no errors!")
     else:
         print(f"Errors in:\n{errors}")
-    with Loader("Similarities computations are running", string_to_find="_w"):
-        while how_many_jobs_run(string_to_find="_w"):
+    jobs_func = warp_how_many_jobs("_w")
+    with Loader("Similarities computations are running", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

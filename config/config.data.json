@@ -161,6 +161,19 @@
     "num_individulas": 1000,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
+},
+      "sim_dip_v1":
+  {
+    "vcf_files_names": [
+      "sim_dip_v1.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individulas": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
 }
 }
 

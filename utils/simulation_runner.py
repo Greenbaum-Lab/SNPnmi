@@ -21,7 +21,7 @@ from utils.loader import Timer, Loader
 from utils.common import get_paths_helper
 
 SCRIPT_PATH = os.path.abspath(__file__)
-SIMULAITION_NAME = 'sim_dip_v1'
+SIMULAITION_NAME = 'sim_dip_v0'
 POPULATION_SIZE = 1000
 NUMBER_OF_SUBPOPS = 2
 INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS
@@ -33,9 +33,9 @@ def run_simulation():
     demography.add_population(name="AB", initial_size=POPULATION_SIZE)
     demography.add_population_split(time=10000, derived=[e for e in ascii_uppercase[:NUMBER_OF_SUBPOPS]], ancestral="AB")
 
-    ts = msprime.sim_ancestry(samples={'A': 5, 'B': 5}, sequence_length=5e5, demography=demography,
+    ts = msprime.sim_ancestry(samples={'A': 5, 'B': 5}, sequence_length=5e3, demography=demography,
                               recombination_rate=1e-8, random_seed=1)
-    mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-3, random_seed=1)
+    mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-5, random_seed=1)
     return mts
 # sequence_length=5e8
 #  mutation_rate=5e-7

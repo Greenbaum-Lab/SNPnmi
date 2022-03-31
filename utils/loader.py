@@ -6,7 +6,7 @@ from time import sleep
 
 
 class Loader:
-    def __init__(self, is_done_method=None, desc="Loading...",  end="Done!", timeout=0.15):
+    def __init__(self, desc="Loading...", is_done_method=None,  end="Done!", timeout=0.15):
         """
         A loader-like context manager
 

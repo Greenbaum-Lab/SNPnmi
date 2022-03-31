@@ -35,7 +35,7 @@ def run_simulation():
 
     ts = msprime.sim_ancestry(samples={'A': 5, 'B': 5}, sequence_length=5e3, demography=demography,
                               recombination_rate=1e-8, random_seed=1)
-    mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-15, random_seed=1)
+    mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-8, random_seed=1)
     return mts
 # sequence_length=5e8
 #  mutation_rate=5e-7

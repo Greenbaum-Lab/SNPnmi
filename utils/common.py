@@ -231,7 +231,7 @@ def warp_how_many_jobs(txt_to_find):
             num_of_jobs = output.count("\n")
             return f'({num_of_jobs} running jobs) '
         except subprocess.CalledProcessError:
-            return "(0 running jobs!) "
+            return ""
 
     return how_many_jobs_run
 

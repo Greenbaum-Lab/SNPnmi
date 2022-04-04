@@ -42,7 +42,7 @@ def submit_split_vcfs_by_class(options):
 
     jobs_func = warp_how_many_jobs("s2")
     with Loader("Splitting jobs are running", jobs_func):
-        while jobs_func:
+        while jobs_func():
             time.sleep(5)
 
     return True

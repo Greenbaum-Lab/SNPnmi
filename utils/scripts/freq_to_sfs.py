@@ -19,8 +19,8 @@ def freq2sfs(options):
     paths_helper = get_paths_helper(options.dataset_name)
     stats_dir = paths_helper.vcf_stats_folder
     file_name = f'{options.dataset_name}.vcf.freq.frq'
-    macs = {i:0 for i in range(options.mac[0] - 1, options.mac[1] + 1)}
-    mafs = {i:0 for i in range(options.maf[0], options.maf[1] + 2)}
+    macs = {i: 0 for i in range(options.mac[0] - 1, options.mac[1] + 1)}
+    mafs = {i: 0 for i in range(options.maf[0], options.maf[1] + 2)}
     line_num = 0
     with open(stats_dir + file_name, 'r') as f:
         line = f.readline()  # Throw headers
@@ -29,6 +29,7 @@ def freq2sfs(options):
             line_num += 1
             if line_num % 10000 == 0:
                 print(f"Line number: {line_num/1000}k")
+                break
             line_lst = line.split()
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)

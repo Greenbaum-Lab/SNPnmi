@@ -85,7 +85,7 @@ def runner(options):
         is_executed = run_step(options, options.step)
         print(f'is executed: {is_executed}')
 
-# runner.py -d sim_2_v0 --args 50,2000 --run_all
+# runner.py -d sim_2_v0 --args 100,2000 --run_all
 
 #  python3 runner.py -d hgdp -s 1.1
 
@@ -109,7 +109,7 @@ def runner(options):
 
 #  python3 runner.py -s 5.3 -d hgdp
 
-#  python3 runner.py -s 5.4 -d hgdp --args 1000,3   (# num of SNPs per tree, num of trees)
+#  python3 runner.py -s 5.4 -d hgdp --ns_combine --args 1000,3  (# num of SNPs per tree, num of trees)
 
 #  python3 runner.py -s 6.1 -d hgdp
 

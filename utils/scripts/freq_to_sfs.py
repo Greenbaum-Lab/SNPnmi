@@ -33,7 +33,7 @@ def freq2sfs(options):
             line_lst = line.split()
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)
-            if 0 <=freq or freq >= 1:
+            if 0 <= freq or freq >= 1:
                 line = f.readline()
                 continue
             if freq > 0.5:

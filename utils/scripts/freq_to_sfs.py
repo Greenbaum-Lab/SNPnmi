@@ -54,8 +54,7 @@ def freq2sfs(options):
 
 def main(options):
     with Timer(f"Freq to SFS"):
-        with Loader("Freq to SFS"):
-            freq2sfs(options)
+        freq2sfs(options)
 
 
 if __name__ == "__main__":

@@ -32,7 +32,9 @@ def freq2sfs(options):
             line_lst = line.split()
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)
-            assert 0.5 >= freq > 0
+            assert 0 < freq < 1
+            if freq > 0.5:
+                freq = 1 - freq
             num_of_chrs = int(line_lst[3])
             mac = freq * num_of_chrs
             assert int(mac) == mac

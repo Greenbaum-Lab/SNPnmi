@@ -66,9 +66,9 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-mac_lst = [f'arabidopsis/classes/nmi/mac_{i}' for i in range(2, 71, 2)]
-maf_lst = [f'arabidopsis/classes/nmi/maf_{i/100}' for i in range(1, 50)]
+mac_lst = [f'arabidopsis/classes/netstruct/mac_{i}' for i in range(2, 71, 2)]
+maf_lst = [f'arabidopsis/classes/netstruct/maf_{i/100}' for i in range(1, 50)]
 tmp = [f'arabidopsis/classes/similarity/mac_{i}' for i in [2,4]]
 lst = mac_lst + maf_lst
 # sync_dir(source_list)
-tar_files(lst)
+del_dir(lst)

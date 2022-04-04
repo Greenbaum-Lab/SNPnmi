@@ -40,9 +40,8 @@ def freq2sfs(options):
                 mafs[int(freq * 100)] += 1
             if mac <= options.mac[1]:
                 macs[mac] += 1
-
-
             line = f.readline()
+
     num_of_snps = sum([v for k, v in mafs.items()]) + sum([v for k, v in macs.items()])
     assert num_of_snps == line_num
     with open(f"{stats_dir}/mafs_macs_dicts.json", 'w') as output_file:

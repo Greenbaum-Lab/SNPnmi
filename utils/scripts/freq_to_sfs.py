@@ -37,7 +37,7 @@ def freq2sfs(options):
                 freq = 1 - freq
             num_of_chrs = int(line_lst[3])
             mac = freq * num_of_chrs
-            assert int(mac) == mac
+            assert int(mac) == mac, f"line number: {line_num}\n, line: {line}"
             if freq >= 0.01:
                 mafs[int(freq * 100)] += 1
             if mac <= options.mac[1]:

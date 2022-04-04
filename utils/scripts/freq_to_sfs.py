@@ -27,8 +27,8 @@ def freq2sfs(options):
         line = f.readline()
         while line:
             line_num += 1
-            if line_num % 100 == 0:
-                print(f"Line number: {line_num}")
+            if line_num % 10000 == 0:
+                print(f"Line number: {line_num/1000}k")
             line_lst = line.split()
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)

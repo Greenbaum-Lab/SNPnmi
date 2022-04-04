@@ -34,7 +34,6 @@ def freq2sfs(options):
             freq = float(freq)
             if 0 <=freq or freq >= 1:
                 line = f.readline()
-                line_num += 1
                 continue
             if freq > 0.5:
                 freq = round(1 - freq, 10)
@@ -53,8 +52,7 @@ def freq2sfs(options):
         json.dump(([mafs, macs]), output_file)
 
 def main(options):
-    with Timer(f"Freq to SFS"):
-        freq2sfs(options)
+    freq2sfs(options)
 
 
 if __name__ == "__main__":

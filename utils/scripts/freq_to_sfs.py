@@ -19,7 +19,7 @@ def freq2sfs(options):
     paths_helper = get_paths_helper(options.dataset_name)
     stats_dir = paths_helper.vcf_stats_folder
     file_name = f'{options.dataset_name}.vcf.freq.frq'
-    macs = {i:0 for i in range(options.mac[0], options.mac[1] + 1)}
+    macs = {i:0 for i in range(options.mac[0] - 1, options.mac[1] + 1)}
     mafs = {i:0 for i in range(options.maf[0], options.maf[1] + 2)}
     line_num = 0
     with open(stats_dir + file_name, 'r') as f:
@@ -36,10 +36,12 @@ def freq2sfs(options):
             num_of_chrs = int(line_lst[3])
             mac = freq * num_of_chrs
             assert int(mac) == mac
-            if freq < 0.01:
+            if freq >= 0.01:
+                mafs[int(freq * 100)] += 1
+            if mac <= options.mac[1]:
                 macs[mac] += 1
-            else:
-                mafs[int(freq*100)] += 1
+
+
             line = f.readline()
     num_of_snps = sum([v for k, v in mafs.items()]) + sum([v for k, v in macs.items()])
     assert num_of_snps == line_num

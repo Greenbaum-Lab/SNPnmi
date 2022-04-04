@@ -32,7 +32,10 @@ def freq2sfs(options):
             line_lst = line.split()
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)
-            assert 0 < freq < 1
+            if 0 <=freq or freq >= 1:
+                line = f.readline()
+                line_num += 1
+                continue
             if freq > 0.5:
                 freq = round(1 - freq, 10)
             num_of_chrs = int(line_lst[3])

@@ -66,7 +66,7 @@ def submit_prepare_for_split_to_windows(options):
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)
         stderr_files.append(job_stderr_file)
-        script_params = ['-d', dataset_name, '--args', cls.mac_maf + ',' + cls.int_val + ',' + str(window_size)]
+        script_params = ['-d', dataset_name, '--args', cls.mac_maf + ',' + str(cls.int_val) + ',' + str(window_size)]
         subprocess.run([path_to_script_to_run] + script_params, stdout=job_stdout_file, stderr=job_stderr_file)
 
     write_class_to_number_of_windows_file(options, classes)

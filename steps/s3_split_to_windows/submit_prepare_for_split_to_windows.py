@@ -70,7 +70,7 @@ def submit_prepare_for_split_to_windows(options):
         stderr_files.append(job_stderr_file)
         script_params = ['-d', dataset_name, '--args', cls.mac_maf + ',' + str(cls.int_val) + ',' + str(window_size)]
         with open(job_stdout_file, 'w') as stdout_f, open(job_stderr_file, 'w') as stderr_f:
-            subprocess.run([path_to_script_to_run] + script_params, stdout=stdout_f, stderr=stderr_f)
+            subprocess.run(['python3', path_to_script_to_run] + script_params, stdout=stdout_f, stderr=stderr_f)
 
     write_class_to_number_of_windows_file(options, classes)
 

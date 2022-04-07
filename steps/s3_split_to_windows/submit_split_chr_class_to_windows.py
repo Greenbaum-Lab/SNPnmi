@@ -50,7 +50,6 @@ def submit_split_chr_class_to_windows(options):
 
     assert validate_stderr_empty(stderr_files)
 
-
 def main(options):
     with Timer(f"split chr class to windows with {options.args}"):
         submit_split_chr_class_to_windows(options)

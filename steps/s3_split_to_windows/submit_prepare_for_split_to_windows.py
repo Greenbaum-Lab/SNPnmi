@@ -72,7 +72,6 @@ def submit_prepare_for_split_to_windows(options):
         with open(job_stdout_file, 'w') as stdout_f, open(job_stderr_file, 'w') as stderr_f:
             subprocess.run([path_to_script_to_run] + script_params, stdout=stdout_f, stderr=stderr_f)
 
-
     write_class_to_number_of_windows_file(options, classes)
 
     assert validate_stderr_empty(stderr_files)

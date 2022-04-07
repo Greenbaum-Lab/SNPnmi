@@ -114,7 +114,7 @@ def alternative_split_to_windows(options):
     for wind_id, window in windows_matrix.items():
         window_file = window_per_class_and_chr_template.format(class_name=cls.name, chr_name=chr_short_name,
                                                                window_id=wind_id)
-        comp_and_save_012_mat(window_file, window.T)
+        comp_and_save_012_mat(window.T, window_file)
 
 
 def main(options):

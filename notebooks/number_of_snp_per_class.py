@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-
-
-
 import json
 import sys
 from os.path import dirname, abspath
@@ -11,7 +8,7 @@ import numpy as np
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import args_parser, get_paths_helper, is_class_valid
+from utils.common import args_parser, get_paths_helper, class_iter
 
 options = args_parser()
 paths_helper = get_paths_helper(options.dataset_name)
@@ -31,21 +28,12 @@ with open(window_to_snps_path) as f:
 with open(window_size_path, 'r') as f:
     window_size = int(f.readline())
 
-for mac_maf in ['mac', 'maf']:
-    num_of_snps = []
-    is_mac = mac_maf == 'mac'
-    min_range = mac_min_range if is_mac else maf_min_range
-    max_range = mac_max_range if is_mac else maf_max_range
-    for val in range(min_range, max_range+1):
-        if not is_class_valid(options, mac_maf, val):
-            continue
-        # in maf we take 0.x
-        if not is_mac:
-            val = f'{val * 1.0/100}'
-        class_name = f'{mac_maf}_{val}'
-        num_of_snps.append(int(windows2count[class_name]) * window_size)
-    class_names = mac_class_names if is_mac else maf_class_names
-    plt.plot(class_names, num_of_snps)
+num_of_snps = {'mac': [], 'maf': []}
+for cls in class_iter(options):
+    num_of_snps[cls.mac_maf].append(int(windows2count[cls.name]) * window_size)
+for mac_maf in ["mac", "maf"]:
+    class_names = mac_class_names if mac_maf == ' maf' else maf_class_names
+    plt.plot(class_names, num_of_snps[mac_maf])
     plt.yscale('log')
     plt.xlabel(f"{mac_maf}", fontsize=16)
     plt.xticks(fontsize=10)

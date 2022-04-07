@@ -17,7 +17,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.similarity_helper import file012_to_numpy, numpy_to_file012
-from utils.common import get_paths_helper, AlleleClass, args_parser, Cls
+from utils.common import get_paths_helper, AlleleClass, args_parser, Cls, comp_and_save_012_mat
 from utils.loader import Timer, Loader
 from utils.config import *
 from utils.checkpoint_helper import *
@@ -112,9 +112,9 @@ def alternative_split_to_windows(options):
             windows_matrix[window_id] = site.reshape(1, -1)
 
     for wind_id, window in windows_matrix.items():
-        with open(window_per_class_and_chr_template.format(class_name=cls.name, chr_name=chr_short_name,
-                                                           window_id=wind_id), 'wb') as window_file:
-            np.save(window_file, window.T)
+        window_file = window_per_class_and_chr_template.format(class_name=cls.name, chr_name=chr_short_name,
+                                                               window_id=wind_id)
+        comp_and_save_012_mat(window_file, window.T)
 
 
 def main(options):

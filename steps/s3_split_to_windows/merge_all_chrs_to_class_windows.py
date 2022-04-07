@@ -9,7 +9,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from utils.common import get_paths_helper, AlleleClass, args_parser, Cls
+from utils.common import args_parser, Cls, get_window_size, load_and_decomp_012_mat
 from utils.config import *
 from utils.checkpoint_helper import *
 import pandas as pd
@@ -34,10 +34,10 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_int_value, windo
         chr_window_path = path_helper.window_by_class_and_chr_np_template.format(class_name=cls.name,
                                                                               chr_name=chr_name, window_id=window_id)
         if not os.path.isfile(chr_window_path):
-            # it is theorticlly possible that a given window wont have sites in all chrs. In such case, the 012 window file of this chr wont exist.
+            # it is theoretically possible that a given window wont have sites in a pecific chr.
+            # In such case, the 012 window file of this chr wont exist.
             continue
-        with open(chr_window_path, 'rb') as f:
-            chr_window_matrix = np.load(f)
+        chr_window_matrix = load_and_decomp_012_mat(chr_window_path, get_window_size(path_helper))
         chr_window_df = pd.DataFrame(data=chr_window_matrix, index=np.arange(chr_window_matrix.shape[0]),
                                      columns=[str(c) + chr_name for c in np.arange(chr_window_matrix.shape[1])])
 

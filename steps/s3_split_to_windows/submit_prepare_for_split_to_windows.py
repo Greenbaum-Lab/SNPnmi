@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 DEBUG = False
 # Per class will submit a job which will generate a file per chr, holding a mapping of sites indexes to windows ids
 # such that the windows sizes are window_size or window_size + 1 (across all chrs)
@@ -5,6 +7,7 @@ import sys
 import time
 import os
 from os.path import dirname, abspath
+import subprocess
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -18,7 +21,7 @@ from utils.common import args_parser
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'prepare_for_split_to_windows'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_split_to_windows/prepare_for_split_to_windows.py'
+path_to_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_split_to_windows/prepare_for_split_to_windows.py'
 
 
 def generate_job_long_name(mac_maf, class_val):
@@ -54,24 +57,17 @@ def submit_prepare_for_split_to_windows(options):
 
     classes = []
     stderr_files = []
-    for cls in class_iter(options):
+    classes_to_run = list(class_iter(options))
+    for cls in tqdm(classes_to_run, desc="Preparing split for classes: "):
         classes.append(cls.name)
-        print(f'submit for {classes[-1]}')
         job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val)
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)
         stderr_files.append(job_stderr_file)
-        memory = 16 if (cls.is_mac and cls.int_val < 5) else 8
-        job_name = f'p3_{cls.mac_maf[-1]}{cls.int_val}'
-        python_script_params = f'-d {dataset_name} --args {cls.mac_maf},{cls.int_val},{window_size}'
-        submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run,
-                          python_script_params, job_stdout_file, job_stderr_file, num_hours_to_run=4, memory=memory)
-
-    with Loader("Splitting jobs are running", warp_how_many_jobs("p3_")):
-        while warp_how_many_jobs("p3_")():
-            time.sleep(5)
+        script_params = ['-d', dataset_name, '--args', cls.mac_maf + ',' + cls.int_val + ',' + str(window_size)]
+        subprocess.run([path_to_script_to_run] + script_params, stdout=job_stdout_file, stderr=job_stderr_file)
 
     write_class_to_number_of_windows_file(options, classes)
 

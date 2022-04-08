@@ -85,7 +85,7 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
             print(f'output_count_similarity_file exist, do not calc! {output_similarity_file}')
             continue
 
-        window_matrix = load_and_decomp_012_mat(input_012_file, window_size)
+        window_matrix = load_and_decomp_012_mat(input_012_file, window_size).astype(float)
 
         window_counts, window_similarity = window_calc_pairwise_similarities(window_matrix, min_valid_sites_percentage,
                                                                              cls.val, cls.max_val, mac_maf)

@@ -67,8 +67,8 @@ def is_vcf_already_good(stats_file_path):
     return flag, STATS_POS
 
 def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
-    subprocess.run(['mv', vcf_file_name, f'old_{vcf_file_name}'])
     paths_helper = get_paths_helper(dataset_name)
+    subprocess.run(['mv', paths_helper.data_dir + vcf_file_name, paths_helper.data_dir + f'old_{vcf_file_name}'])
     vcf_file_path = paths_helper.data_dir + f'old_{vcf_file_name}'
     new_vcf_file_path = paths_helper.data_dir + vcf_file_name
     stats_file_path = paths_helper.vcf_stats_folder + vcf_file_name + '.freq.frq'

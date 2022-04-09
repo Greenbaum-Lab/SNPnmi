@@ -54,24 +54,18 @@ def fix_all_chrs(options):
 
 def is_vcf_already_good(stats_file_path):
     flag = True
-    num_of_rows = 0
     with open(stats_file_path, 'r') as stats_file:
-        first_stats_line = stats_file.readline()
-        stats_lst = first_stats_line.split('\t')
+        stats_lines = stats_file.readlines()
+        stats_lst = stats_lines[0].split('\t')
         STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
-        stats_line = stats_file.readline()
-        while stats_line:
-            num_of_rows += 1
-            if num_of_rows % 10000 == 0:
-                print(f'{num_of_rows / 1000}k')
+        for stats_line in tqdm(stats_lines[1:]):
             stats_line_lst = stats_line.split('\t')
             ref = stats_line_lst[-2].split(":")
             non_ref = stats_line_lst[-1].split(":")
             if float(non_ref[-1]) > float(ref[-1]):
                 flag = False
                 break
-            stats_line = stats_file.readline()
-    return flag, STATS_POS, num_of_rows
+    return flag, STATS_POS, len(stats_lines) - 1
 
 def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
     paths_helper = get_paths_helper(dataset_name)

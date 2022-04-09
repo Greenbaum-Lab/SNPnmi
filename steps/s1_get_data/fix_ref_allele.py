@@ -58,7 +58,7 @@ def is_vcf_already_good(stats_file_path):
         stats_lines = stats_file.readlines()
         stats_lst = stats_lines[0].split('\t')
         STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
-        for stats_line in tqdm(stats_lines[1:]):
+        for stats_line in stats_lines[1:]:
             stats_line_lst = stats_line.split('\t')
             ref = stats_line_lst[-2].split(":")
             non_ref = stats_line_lst[-1].split(":")

@@ -18,7 +18,7 @@ from utils.checkpoint_helper import *
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'merge_all_chrs_to_class_windows'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_split_to_windows/merge_all_chrs_to_class_windows.py'
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s4_calc_similarity/merge_all_chrs_to_class_windows.py'
 
 
 def generate_job_long_name(mac_maf, class_val, min_windows_index, max_windows_index):

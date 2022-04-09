@@ -140,7 +140,7 @@
       "chr1"
     ],
     "num_chrs": 1,
-    "num_individulas": 1000,
+    "num_individulas": 100,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 }

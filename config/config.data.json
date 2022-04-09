@@ -106,24 +106,6 @@
       "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi"
     ]
   },
-  "amur": {
-    "ftp_source_host": "171.64.60.175",
-    "ftp_source_path": "/simba/tiger-download-temp/",
-    "num_individulas": 32,
-    "num_chrs": 1,
-    "sample_sites_file_name": "xxxxxxxxxxxxx",
-    "indlist_file_name": "xxxxxxxxxxxxxx",
-    "indlist_coords_file_name": "xxxxxxxxx",
-    "vcf_files_names": [
-      "amur-highcov-filtered.recode.vcf"
-    ],
-    "vcf_files_short_names": [
-      "all"
-    ],
-    "metadata_files_names": [
-      "amur.txt"
-    ]
-  },
   "arabidopsis": {
     "vcf_files_names": [
       "africa_and1001.EVA.vcf.gz"
@@ -136,19 +118,6 @@
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
   },
-  "sim_v0":
-  {
-    "vcf_files_names": [
-      "sim_v0.vcf"
-    ],
-    "vcf_files_short_names": [
-      "chr1"
-    ],
-    "num_chrs": 1,
-    "num_individulas": 1000,
-    "indlist_file_name": "inlist.txt",
-    "sample_sites_file_name": "sampleSite.txt"
-},
   "sim_dip_v0":
   {
     "vcf_files_names": [
@@ -162,10 +131,10 @@
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 },
-  "sim_dip_v1":
+  "debug":
   {
     "vcf_files_names": [
-      "sim_dip_v1.vcf"
+      "debug.vcf"
     ],
     "vcf_files_short_names": [
       "chr1"

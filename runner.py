@@ -82,7 +82,7 @@ def runner(options):
         dataset_name = options.dataset_name
         print(f'Argument List: {step}, {dataset_name}, {str_for_timer(options)}')
 
-        is_executed = run_step(options, options.step)
+        is_executed = run_step(options, step)
         print(f'is executed: {is_executed}')
 
 # runner.py -d sim_2_v0 --args 100,2000 --run_all

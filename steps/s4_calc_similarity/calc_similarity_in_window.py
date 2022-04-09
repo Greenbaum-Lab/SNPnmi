@@ -74,7 +74,7 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
     path_helper = get_paths_helper(dataset_name)
     similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=cls.name)
     os.makedirs(similarity_output_dir, exist_ok=True)
-    num_of_individuals = get_num_individuals(path_helper)
+    num_of_individuals = get_num_individuals(dataset_name)
     for window_id in range(min_window_index, max_window_index):
 
         input_012_file = path_helper.window_by_class_template.format(class_name=cls.name, window_id=window_id)

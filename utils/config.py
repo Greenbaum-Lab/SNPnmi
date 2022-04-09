@@ -9,12 +9,6 @@ CONFIG_DIR_PATTERN = str(Path(__file__).parents[1]) + '/config/config.{config_fi
 CONFIG_NAME_DATA = 'data'
 CONFIG_NAME_PATHS = 'paths'
 
-class DataSetNames():
-    hdgp = 'hgdp'
-    hdgp_test = 'hgdp_test'
-    amur = 'amur'
-    arabidopsis = "arabidopsis"
-    sim_2_v0 = 'sim_2_v0'
 
 def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:

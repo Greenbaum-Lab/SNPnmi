@@ -62,6 +62,8 @@ def is_vcf_already_good(stats_file_path):
         stats_line = stats_file.readline()
         while stats_line:
             num_of_rows += 1
+            if num_of_rows % 1000 == 0:
+                print(f'{num_of_rows / 1000}k')
             stats_line_lst = stats_line.split('\t')
             ref = stats_line_lst[-2].split(":")
             non_ref = stats_line_lst[-1].split(":")

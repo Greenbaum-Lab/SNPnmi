@@ -30,9 +30,9 @@ def sum_all_classes(options):
     count_files = []
     for cls in class_iter(options):
         similarity_file = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name) + \
-                          f"{cls.name}_all_similarity.npy"
+                          f"{cls.name}_all_similarity.npz"
         count_file = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name) + \
-                     f"{cls.name}_all_count.npy"
+                     f"{cls.name}_all_count.npz"
         similarity_files.append(similarity_file)
         count_files.append(count_file)
 

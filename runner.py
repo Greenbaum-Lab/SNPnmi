@@ -58,7 +58,7 @@ def run_all_pipeline(options):
             options.args = []
         elif step == '3.1':
             options.args = [orig_args[0]]   # window size
-        elif step == '3.3':
+        elif step == '4.1':
             options.args = [orig_args[1]]  # num_of_winds_per_job
         else:
             options.args = orig_args

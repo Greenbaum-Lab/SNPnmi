@@ -21,7 +21,7 @@ from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, get_dataset_vcf_files_names
 
 SCRIPT_PATH = os.path.abspath(__file__)
-SIMULAITION_NAME = 'debug'
+SIMULAITION_NAME = 'debug2'
 POPULATION_SIZE = 2000
 NUMBER_OF_SUBPOPS = 2
 INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS

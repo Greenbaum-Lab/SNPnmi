@@ -55,7 +55,7 @@ def run_all_pipeline(options):
         if step == '1.2':
             options.args = ['freq']
         elif step == '1.3':
-            options.args = ""
+            options.args = []
         elif step == '3.1':
             options.args = [orig_args[0]]   # window size
         elif step == '3.3':

@@ -62,7 +62,7 @@ def is_vcf_already_good(stats_file_path):
         stats_line = stats_file.readline()
         while stats_line:
             num_of_rows += 1
-            if num_of_rows % 1000 == 0:
+            if num_of_rows % 10000 == 0:
                 print(f'{num_of_rows / 1000}k')
             stats_line_lst = stats_line.split('\t')
             ref = stats_line_lst[-2].split(":")
@@ -70,6 +70,7 @@ def is_vcf_already_good(stats_file_path):
             if float(non_ref[-1]) > float(ref[-1]):
                 flag = False
                 break
+            stats_line = stats_file.readline()
     return flag, STATS_POS, num_of_rows
 
 def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):

@@ -41,6 +41,8 @@ def submit_merge_all_chrs_to_class_windows(options):
     stderr_files = []
     max_num_of_windows_per_job = options.args[0] if options.args else 1000
     for cls in class_iter(options):
+        similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name)
+        os.makedirs(similarity_dir, exist_ok=True)
         total_num_windows = get_num_windows_per_class(dataset_name, cls.mac_maf, cls.int_val)
         for min_windows_index in range(0, total_num_windows, max_num_of_windows_per_job):
             max_windows_index = min(total_num_windows, min_windows_index + max_num_of_windows_per_job) - 1

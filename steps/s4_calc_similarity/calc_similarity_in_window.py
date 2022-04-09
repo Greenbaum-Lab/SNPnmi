@@ -3,6 +3,8 @@ import os
 import sys
 from os.path import dirname, abspath
 
+from utils.config import get_num_individuals
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -72,11 +74,11 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
     path_helper = get_paths_helper(dataset_name)
     similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=cls.name)
     os.makedirs(similarity_output_dir, exist_ok=True)
-    window_size = get_window_size(path_helper)
+    num_of_individuals = get_num_individuals(path_helper)
     for window_id in range(min_window_index, max_window_index):
 
         input_012_file = path_helper.window_by_class_template.format(class_name=cls.name, window_id=window_id)
-        window_matrix = load_and_decomp_012_mat(input_012_file, window_size).astype(float)
+        window_matrix = load_and_decomp_012_mat(input_012_file, num_of_individuals).astype(float)
         compute_similarity_and_save_outputs(path_helper, window_matrix, cls, window_id)
 
 

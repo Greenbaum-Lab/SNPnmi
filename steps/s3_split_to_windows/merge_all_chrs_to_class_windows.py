@@ -38,7 +38,7 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_int_value, windo
             # it is theoretically possible that a given window wont have sites in a pecific chr.
             # In such case, the 012 window file of this chr wont exist.
             continue
-        chr_window_matrix = load_and_decomp_012_mat(chr_window_path, get_window_size(path_helper))
+        chr_window_matrix = load_and_decomp_012_mat(chr_window_path, get_num_individuals(path_helper))
 
         if window_full_matrix.size == 0:
             window_full_matrix = chr_window_matrix

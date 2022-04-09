@@ -136,9 +136,9 @@ def comp_and_save_012_mat(mat, path):
     np.save(path, comped_mat)
 
 
-def load_and_decomp_012_mat(path, wind_size):
+def load_and_decomp_012_mat(path, num_individuals):
     comp_mat = np.load(path)
-    unpacked = np.unpackbits(comp_mat).astype(bool).reshape((-1, wind_size, 2))
+    unpacked = np.unpackbits(comp_mat).astype(bool).reshape((num_individuals, -1, 2))
     decomp_mat = np.empty(shape=(unpacked.shape[0], unpacked.shape[1]), dtype=np.int8)
     decomp_mat[:, :] = unpacked[:, :, 0] & ~ unpacked[:, :, 1]
     decomp_mat[:, :] -= ~unpacked[:, :, 0] & ~ unpacked[:, :, 1]

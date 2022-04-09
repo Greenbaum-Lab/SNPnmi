@@ -38,7 +38,7 @@ def freq2sfs(options):
             if freq > 0.5:
                 freq = round(1 - freq, 10)
             num_of_chrs = int(line_lst[3])
-            mac = freq * num_of_chrs
+            mac = round(freq * num_of_chrs, 10)
             assert int(mac) == mac, f"line number: {line_num}\n, line: {line}"
             if freq >= 0.01:
                 mafs[int(freq * 100)] += 1

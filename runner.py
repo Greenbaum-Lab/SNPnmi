@@ -1,12 +1,9 @@
 #!/usr/bin/python3
 
 # given a step number and params, will run the step.
-import time
 import sys
 import os
-from os.path import dirname, abspath
-
-
+from os.path import dirname
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -16,8 +13,7 @@ from steps.s1_get_data import get_data, get_vcfs_stats, fix_ref_allele
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
 from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
-from steps.s3_split_to_windows import submit_merge_all_chrs_to_class_windows
-from steps.s4_calc_similarity import submit_calc_similarity_windows
+from steps.s4_calc_similarity import submit_merge_all_chrs_to_class_windows
 from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class, \
     submit_many_netstructs_based_on_fix_size
@@ -35,8 +31,7 @@ step_to_func_and_name = {
     "2.2": (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
     "3.1": (submit_prepare_for_split_to_windows.main, 'submit_prepare_for_split_to_windows'),
     "3.2": (submit_split_chr_class_to_windows.main, 'submit_split_chr_class_to_windows'),
-    "3.3": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
-    "4.1": (submit_calc_similarity_windows.main, 'submit_calc_similarity_windows'),
+    "4.1": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
     "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows'),
     "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'sum_similarities_from_all_classes_and_run_netstrcut'),
     "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
@@ -70,7 +65,7 @@ def run_all_pipeline(options):
         return options
 
     orig_args = options.args
-    for step in ['1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
+    for step in ['1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3']:
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
         options.step = step

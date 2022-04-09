@@ -1,4 +1,3 @@
-from steps.s4_calc_similarity.calc_similarity_in_window import compute_similarity_and_save_outputs
 
 DEBUG = False
 # given class and window id(s), merge the files from all chrs, generating a single file per class-window.
@@ -9,6 +8,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from steps.s4_calc_similarity.calc_similarity_in_window import compute_similarity_and_save_outputs
 from utils.loader import Timer
 from utils.common import args_parser, Cls, get_window_size, load_and_decomp_012_mat, comp_and_save_012_mat
 from utils.config import *

@@ -2,7 +2,7 @@
   "hgdp": {
     "ftp_source_host": "ngs.sanger.ac.uk",
     "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
-    "num_individulas": 929,
+    "num_individuals": 929,
     "num_chrs": 22,
     "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt",
     "ftp_metadata_path": "ftp://ngs.sanger.ac.uk/production/hgdp/hgdp_structural_variation/HGDP.metadata",
@@ -87,7 +87,7 @@
   "hgdp_test": {
     "ftp_source_host": "ngs.sanger.ac.uk",
     "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
-    "num_individulas": 929,
+    "num_individuals": 929,
     "num_chrs": 2,
     "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt",
     "indlist_file_name": "hgdp_wgs.20190516.indlist.csv",
@@ -114,7 +114,7 @@
       "chr1"
     ],
     "num_chrs": 1,
-    "num_individulas": 1217,
+    "num_individuals": 1217,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
   },
@@ -127,7 +127,7 @@
       "chr1"
     ],
     "num_chrs": 1,
-    "num_individulas": 1000,
+    "num_individuals": 1000,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 },
@@ -140,7 +140,7 @@
       "chr1"
     ],
     "num_chrs": 1,
-    "num_individulas": 100,
+    "num_individuals": 100,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 }

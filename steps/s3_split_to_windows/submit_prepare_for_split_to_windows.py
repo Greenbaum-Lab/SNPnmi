@@ -25,7 +25,7 @@ path_to_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s3_split_to_wi
 
 
 def generate_job_long_name(mac_maf, class_val):
-    return f'class_{mac_maf}{class_val}'
+    return f'class_{mac_maf}_{class_val}'
 
 
 def write_class_to_number_of_windows_file(options, classes):

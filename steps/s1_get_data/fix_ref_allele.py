@@ -49,11 +49,30 @@ def fix_all_chrs(options):
             time.sleep(5)
     return validate_stderr_empty(err_files)
 
+
+def is_vcf_already_good(stats_file_path):
+    flag = True
+    with open(stats_file_path, 'r') as stats_file:
+        first_stats_line = stats_file.readline()
+        stats_lst = first_stats_line.split('\t')
+        STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
+        stats_line = stats_file.readline()
+        while stats_line:
+            stats_line_lst = stats_line.split('\t')
+            ref = stats_line_lst[-2].split(":")
+            non_ref = stats_line_lst[-1].split(":")
+            if float(non_ref[-1]) > float(ref[-1]):
+                flag = False
+                break
+    return flag, STATS_POS
+
 def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
     paths_helper = get_paths_helper(dataset_name)
     vcf_file_path = paths_helper.data_dir + vcf_file_name
     new_vcf_file_path = paths_helper.data_dir + vcf_file_name[:-4] + '_fix.vcf'
-    stats_file_path = paths_helper.vcf_stats_folder + dataset_name + '.vcf.freq.frq'
+    stats_file_path = paths_helper.vcf_stats_folder + vcf_file_name + '.freq.frq'
+    is_good, STATS_POS = is_vcf_already_good(stats_file_path)
+
     with open(vcf_file_path, "r") as vcf_file, open(stats_file_path, 'r') as stats_file, open(new_vcf_file_path,
                                                                                               'w') as new_f:
         old_vcf_line = vcf_file.readline()
@@ -69,9 +88,7 @@ def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
                 new_f.write(old_vcf_line)
                 old_vcf_line = vcf_file.readline()
 
-        first_stats_line = stats_file.readline()
-        stats_lst = first_stats_line.split('\t')
-        STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
+        stats_file.readline()
         stats_line = stats_file.readline()
         while stats_line:
             stats_line_lst = stats_line.split('\t')

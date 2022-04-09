@@ -23,7 +23,7 @@ def freq2sfs(options):
     mafs = {i: 0 for i in range(options.maf[0], options.maf[1] + 2)}
     line_num = 0
     with open(stats_dir + file_name, 'r') as f:
-        line = f.readline()  # Throw headers
+        f.readline()  # Throw headers
         line = f.readline()
         while line:
             line_num += 1

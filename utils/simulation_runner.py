@@ -18,7 +18,7 @@ root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
 from utils.loader import Timer, Loader
-from utils.common import get_paths_helper
+from utils.common import get_paths_helper, get_dataset_vcf_files_names
 
 SCRIPT_PATH = os.path.abspath(__file__)
 SIMULAITION_NAME = 'debug'
@@ -40,11 +40,11 @@ def run_simulation():
 
 def run_simulation_and_save_vcf(paths_helper):
     with Loader("Running simulation"):
-        ts = run_simulation()
+        mts = run_simulation()
     os.makedirs(paths_helper.data_dir, exist_ok=True)
     with Loader("Saving VCF"):
         with open(paths_helper.data_dir + SIMULAITION_NAME + '.vcf', 'w+') as f:
-            ts.write_vcf(f)
+            mts.write_vcf(f)
 
 
 def plot_tree(ts):
@@ -67,6 +67,47 @@ def write_ind_list_for_ns(paths_helper):
         f.write('A')
     with open(paths_helper.data_dir + 'inlist.txt', 'w+') as f:
         f.write('A\n' * POPULATION_SIZE)
+
+
+def fix_ref_in_vcf_to_be_minor_allele():
+    paths_helper = get_paths_helper(SIMULAITION_NAME)
+    vcf_file = paths_helper.data_dir + SIMULAITION_NAME + '.vcf'
+    new_vcf_file = paths_helper.data_dir + SIMULAITION_NAME + '_fix.vcf'
+    stats_file = paths_helper.vcf_stats_folder + SIMULAITION_NAME + '.vcf.freq.frq'
+    with open(vcf_file, "r+"), open(stats_file, 'r'), open(new_vcf_file, 'w'):
+        old_vcf_line = vcf_file.readline()
+        while old_vcf_line.startwith('#'):
+            if "REF" not in old_vcf_line:
+                new_vcf_file.write(old_vcf_line)
+                old_vcf_line = vcf_file.read_line()
+                continue
+            else:
+                stats_line_lst = old_vcf_line.strip()
+                VCF_POS = [i for i in range(len(stats_line_lst)) if stats_line_lst == "POS"][0]
+                VCF_REF = [i for i in range(len(stats_line_lst)) if stats_line_lst == "REF"][0]
+                new_vcf_file.write(old_vcf_line)
+                old_vcf_line = vcf_file.read_line()
+
+        first_stats_line = stats_file.read_line()
+        stats_lst = first_stats_line.strip()
+        STATS_POS = [i for i in range(len(stats_lst)) if stats_lst == "POS"][0]
+        stats_line = stats_file.read_line()
+        while stats_line:
+            stats_line_lst = stats_line.strip()
+            stats_pos = int(stats_line_lst[STATS_POS])
+            old_vcf_line_lst = old_vcf_line.split('\t')
+            vcf_pos = int(old_vcf_line_lst[VCF_POS])
+
+            assert vcf_pos == stats_pos
+            ref = stats_line_lst[-2].split(":")
+            non_ref = stats_line_lst[-1].split(":")
+            if float(non_ref[-1]) > float(ref[-1]):
+                old_vcf_line_lst[VCF_REF] = str(non_ref[0])
+                old_vcf_line = '\t'.join(old_vcf_line_lst)
+            new_vcf_file.write(old_vcf_line)
+            stats_line = stats_file.read_line()
+            old_vcf_line = vcf_file.line()
+
 
 
 if __name__ == '__main__':

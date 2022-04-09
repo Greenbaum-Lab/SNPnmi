@@ -33,7 +33,7 @@ def run_simulation():
     demography.add_population(name="AB", initial_size=POPULATION_SIZE)
     demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:NUMBER_OF_SUBPOPS]], ancestral="AB")
 
-    ts = msprime.sim_ancestry(samples={'A': 50, 'B': 50}, sequence_length=5e6, demography=demography,
+    ts = msprime.sim_ancestry(samples={'A': 50, 'B': 50}, sequence_length=5e5, demography=demography,
                               recombination_rate=1e-8, random_seed=1)
     mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-7, random_seed=1)
     return mts

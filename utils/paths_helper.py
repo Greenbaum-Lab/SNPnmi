@@ -40,8 +40,8 @@ class PathsHelper:
         self.similarity_dir = f'{self.classes_dir}similarity/'
         self.similarity_by_class_folder_template = self.similarity_dir + '{class_name}/'
         self.per_window_similarity = self.similarity_by_class_folder_template + 'per_window_similarity/'
-        self.similarity_by_class_and_window_template = self.per_window_similarity + 'similarity_by_window_{window_id}.npy'
-        self.count_by_class_and_window_template = self.per_window_similarity + 'count_by_window_{window_id}.npy'
+        self.similarity_by_class_and_window_template = self.per_window_similarity + 'similarity_by_window_{window_id}.npz'
+        self.count_by_class_and_window_template = self.per_window_similarity + 'count_by_window_{window_id}.npz'
         self.hash_windows_list_template = self.similarity_by_class_folder_template + 'hash_windows_list.json'
         self.hash_winds_lengths_template = self.similarity_by_class_folder_template + 'hash_windows_length.json'
 

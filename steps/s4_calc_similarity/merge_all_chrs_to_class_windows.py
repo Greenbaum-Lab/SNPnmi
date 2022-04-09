@@ -56,7 +56,6 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_int_value, windo
 
     # output to file
     compute_similarity_and_save_outputs(path_helper, window_full_matrix.astype(float), cls, window_id)
-    # comp_and_save_012_mat(window_full_matrix, output_class_window_file_path)
 
 
 

@@ -33,13 +33,11 @@ def calc_similarity_based_on_files(similarity_files, count_files):
     count_all_counts = None
     for i, (similarity_file, count_file) in enumerate(zip(similarity_files, count_files)):
         assert check_similarity_count_correlate(count_file, similarity_file), f"Using different windows!! file names:\n{similarity_file}\n{count_file}"
-        with open(similarity_file, 'rb') as sim:
-            simi_mat = np.load(sim)
+        simi_mat = np.load(similarity_file)['arr_0']
         if similarity_result is None:
             similarity_result = np.zeros_like(simi_mat)
             count_all_counts = np.zeros_like(simi_mat)
-        with open(count_file, 'rb') as count:
-            count_mat = np.load(count)
+        count_mat = np.load(count_file)['arr_0']
         similarity_result += simi_mat
         count_all_counts += count_mat
 
@@ -90,10 +88,8 @@ def numpy_to_file012(input_numpy_path, matrix=None):
 
 
 def matrix_to_edges_file(similarity_matrix_path, count_matrix_path, edges_file_path):
-    with open(similarity_matrix_path, 'rb') as f:
-        similarity_matrix = np.load(f)
-    with open(count_matrix_path, 'rb') as f:
-        count_matrix = np.load(f)
+    similarity_matrix = np.load(similarity_matrix_path)['arr_0']
+    count_matrix = np.load(count_matrix_path)['arr_0']
     similarity_matrix = np.true_divide(similarity_matrix, count_matrix)
     max_e = np.max(similarity_matrix)
     num_of_indv = similarity_matrix.shape[0]

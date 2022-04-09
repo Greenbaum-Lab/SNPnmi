@@ -82,7 +82,7 @@ def fix_ref_in_vcf_to_be_minor_allele(SIMULAITION_NAME):
                 old_vcf_line = vcf_file.readline()
                 continue
             else:
-                stats_line_lst = old_vcf_line.strip()
+                stats_line_lst = old_vcf_line.split('\t')
                 VCF_POS = [i for i in range(len(stats_line_lst)) if stats_line_lst[i] == "POS"][0]
                 VCF_REF = [i for i in range(len(stats_line_lst)) if stats_line_lst[i] == "REF"][0]
                 new_f.write(old_vcf_line)

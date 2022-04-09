@@ -22,7 +22,7 @@ def get_config(config_name):
 
 def get_num_individuals(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[dataset_name]['num_individulas']
+    return data_config[dataset_name]['num_individuals']
 
 def get_num_chrs(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)

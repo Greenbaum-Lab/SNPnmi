@@ -46,8 +46,8 @@ def calc_similarity_based_on_files(similarity_files, count_files):
 
 def generate_similarity_matrix(similarity_files, count_files, output_folder, output_files_name, override=False):
     # validate output paths - check that we don't override if we should not
-    all_count_file = f'{output_files_name}_count.npy'
-    all_similarity_file = f'{output_files_name}_similarity.npy'
+    all_count_file = f'{output_files_name}_count.npz'
+    all_similarity_file = f'{output_files_name}_similarity.npz'
     if (not override) and os.path.isfile(all_count_file) and os.path.isfile(all_similarity_file):
         print(f'count and similarity files exist, do not calc! {all_count_file}')
         return

@@ -34,8 +34,8 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
                                 class_name=class_name), paths_helper=paths_helper)
 
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npy'
-    count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npy'
+    similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npz'
+    count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npz'
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
     matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'

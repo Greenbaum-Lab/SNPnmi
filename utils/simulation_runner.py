@@ -93,7 +93,7 @@ def fix_ref_in_vcf_to_be_minor_allele(SIMULAITION_NAME):
         STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
         stats_line = stats_file.readline()
         while stats_line:
-            stats_line_lst = stats_line.strip()
+            stats_line_lst = stats_line.split('\t')
             stats_pos = int(stats_line_lst[STATS_POS])
             old_vcf_line_lst = old_vcf_line.split('\t')
             vcf_pos = int(old_vcf_line_lst[VCF_POS])

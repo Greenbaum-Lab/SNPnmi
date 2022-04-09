@@ -65,8 +65,7 @@ def matrix2upper_tri_list(matrix):
     return results
 
 
-def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_index, max_window_index,
-                               min_valid_sites_percentage=0.1):
+def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_index, max_window_index):
     cls = Cls(mac_maf, class_value)
 
     # prepare paths
@@ -77,22 +76,26 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
     for window_id in range(min_window_index, max_window_index):
 
         input_012_file = path_helper.window_by_class_template.format(class_name=cls.name, window_id=window_id)
-        output_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=cls.name,
-                                                                                            window_id=window_id)
-        output_count_file = path_helper.count_by_class_and_window_template.format(class_name=cls.name,
-                                                                                  window_id=window_id)
-        if os.path.isfile(output_similarity_file) and os.path.isfile(output_count_file):
-            print(f'output_count_similarity_file exist, do not calc! {output_similarity_file}')
-            continue
-
         window_matrix = load_and_decomp_012_mat(input_012_file, window_size).astype(float)
+        compute_similarity_and_save_outputs(path_helper, window_matrix, cls, window_id)
 
-        window_counts, window_similarity = window_calc_pairwise_similarities(window_matrix, min_valid_sites_percentage,
-                                                                             cls.val, cls.max_val, mac_maf)
-        print(f'output similarity file to {output_similarity_file}\noutput count file to {output_count_file}')
 
-        write_pairwise_similarity(output_similarity_file, window_similarity, output_count_file,
-                                  window_counts)
+def compute_similarity_and_save_outputs(path_helper, window_matrix, cls, window_id, min_valid_sites_percentage=0.1):
+
+    output_similarity_file = path_helper.similarity_by_class_and_window_template.format(class_name=cls.name,
+                                                                                        window_id=window_id)
+    output_count_file = path_helper.count_by_class_and_window_template.format(class_name=cls.name,
+                                                                              window_id=window_id)
+    if os.path.isfile(output_similarity_file) and os.path.isfile(output_count_file):
+        print(f'output_count_similarity_file exist, do not calc! {output_similarity_file}')
+        return
+
+    window_counts, window_similarity = window_calc_pairwise_similarities(window_matrix, min_valid_sites_percentage,
+                                                                         cls.val, cls.max_val, cls.mac_maf)
+    print(f'output similarity file to {output_similarity_file}\noutput count file to {output_count_file}')
+
+    write_pairwise_similarity(output_similarity_file, window_similarity, output_count_file,
+                              window_counts)
 
 
 def main(options):

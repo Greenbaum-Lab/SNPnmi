@@ -1,3 +1,4 @@
+from steps.s4_calc_similarity.calc_similarity_in_window import compute_similarity_and_save_outputs
 
 DEBUG = False
 # given class and window id(s), merge the files from all chrs, generating a single file per class-window.
@@ -54,7 +55,8 @@ def merge_class_window_across_chrs(dataset_name, mac_maf, class_int_value, windo
                                                              f' {window_size}+-1, window_id={window_id}'
 
     # output to file
-    comp_and_save_012_mat(window_full_matrix, output_class_window_file_path)
+    compute_similarity_and_save_outputs(path_helper, window_full_matrix, cls, window_id)
+    # comp_and_save_012_mat(window_full_matrix, output_class_window_file_path)
 
 
 

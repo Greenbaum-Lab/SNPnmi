@@ -69,52 +69,8 @@ def write_ind_list_for_ns(paths_helper):
         f.write('A\n' * POPULATION_SIZE)
 
 
-def fix_ref_in_vcf_to_be_minor_allele(SIMULAITION_NAME):
-    paths_helper = get_paths_helper(SIMULAITION_NAME)
-    vcf_file_path = paths_helper.data_dir + SIMULAITION_NAME + '.vcf'
-    new_vcf_file_path = paths_helper.data_dir + SIMULAITION_NAME + '_fix.vcf'
-    stats_file_path = paths_helper.vcf_stats_folder + SIMULAITION_NAME + '.vcf.freq.frq'
-    with open(vcf_file_path, "r") as vcf_file, open(stats_file_path, 'r') as stats_file, open(new_vcf_file_path, 'w') as new_f:
-        old_vcf_line = vcf_file.readline()
-        while old_vcf_line.startswith('#'):
-            if "REF" not in old_vcf_line:
-                new_f.write(old_vcf_line)
-                old_vcf_line = vcf_file.readline()
-                continue
-            else:
-                stats_line_lst = old_vcf_line.split('\t')
-                VCF_POS = [i for i in range(len(stats_line_lst)) if stats_line_lst[i] == "POS"][0]
-                VCF_REF = [i for i in range(len(stats_line_lst)) if stats_line_lst[i] == "REF"][0]
-                new_f.write(old_vcf_line)
-                old_vcf_line = vcf_file.readline()
-
-        first_stats_line = stats_file.readline()
-        stats_lst = first_stats_line.split('\t')
-        STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
-        stats_line = stats_file.readline()
-        while stats_line:
-            stats_line_lst = stats_line.split('\t')
-            stats_pos = int(stats_line_lst[STATS_POS])
-            old_vcf_line_lst = old_vcf_line.split('\t')
-            vcf_pos = int(old_vcf_line_lst[VCF_POS])
-
-            assert vcf_pos == stats_pos
-            ref = stats_line_lst[-2].split(":")
-            non_ref = stats_line_lst[-1].split(":")
-            if float(non_ref[-1]) > float(ref[-1]):
-                old_vcf_line_lst[VCF_REF] = str(non_ref[0])
-                old_vcf_line = '\t'.join(old_vcf_line_lst)
-            new_f.write(old_vcf_line)
-            stats_line = stats_file.readline()
-            old_vcf_line = vcf_file.readline()
-        assert not old_vcf_line
-    print("Done!")
-
-
-
 if __name__ == '__main__':
-    # paths_helper = get_paths_helper(SIMULAITION_NAME)
-    # run_simulation_and_save_vcf(paths_helper)
-    # copy_runner_to_vcf_dir(paths_helper)
-    # write_ind_list_for_ns(paths_helper)
-    fix_ref_in_vcf_to_be_minor_allele("debug")
+    paths_helper = get_paths_helper(SIMULAITION_NAME)
+    run_simulation_and_save_vcf(paths_helper)
+    copy_runner_to_vcf_dir(paths_helper)
+    write_ind_list_for_ns(paths_helper)

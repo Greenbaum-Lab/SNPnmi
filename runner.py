@@ -12,7 +12,7 @@ root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from steps.s1_get_data import get_data, get_vcfs_stats
+from steps.s1_get_data import get_data, get_vcfs_stats, fix_ref_allele
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
 from steps.s3_split_to_windows import submit_prepare_for_split_to_windows
 from steps.s3_split_to_windows import submit_split_chr_class_to_windows
@@ -30,6 +30,7 @@ from utils.common import args_parser, str_for_timer
 step_to_func_and_name = {
     "1.1": (get_data.main, 'get_data'),
     "1.2": (get_vcfs_stats.main, 'get_vcfs_stats'),
+    "1.3": (fix_ref_allele.main, 'fix_vcf_ref_allele'),
     "2.1": (submit_split_vcfs_by_class.main, 'submit_split_vcfs_by_class'),
     "2.2": (collect_split_vcf_stats.main, 'collect_split_vcf_stats'),
     "3.1": (submit_prepare_for_split_to_windows.main, 'submit_prepare_for_split_to_windows'),
@@ -58,6 +59,8 @@ def run_all_pipeline(options):
     def set_options_args(options, step, orig_args):
         if step == '1.2':
             options.args = ['freq']
+        elif step == '1.3':
+            options.args = ""
         elif step == '3.1':
             options.args = [orig_args[0]]   # window size
         elif step == '3.3':
@@ -67,7 +70,7 @@ def run_all_pipeline(options):
         return options
 
     orig_args = options.args
-    for step in ['1.2', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
+    for step in ['1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1', '5.1', '5.2', '5.3']:
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
         options.step = step

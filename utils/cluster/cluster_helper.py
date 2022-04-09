@@ -20,7 +20,7 @@ def submit_wrapper(options):
 
 
 def submit_to_cluster(options, job_type, job_name, script_path, script_args, job_stdout_file,
-                      job_stderr_file, num_hours_to_run=8, memory=8, debug=False):
+                      job_stderr_file, num_hours_to_run=8, memory=8):
     # prepare for submission
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(job_stderr_file), exist_ok=True)

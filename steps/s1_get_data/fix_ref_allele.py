@@ -8,6 +8,8 @@ import os
 import time
 from os.path import dirname, abspath
 
+from tqdm import tqdm
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
@@ -52,19 +54,21 @@ def fix_all_chrs(options):
 
 def is_vcf_already_good(stats_file_path):
     flag = True
+    num_of_rows = 0
     with open(stats_file_path, 'r') as stats_file:
         first_stats_line = stats_file.readline()
         stats_lst = first_stats_line.split('\t')
         STATS_POS = [i for i in range(len(stats_lst)) if stats_lst[i] == "POS"][0]
         stats_line = stats_file.readline()
         while stats_line:
+            num_of_rows += 1
             stats_line_lst = stats_line.split('\t')
             ref = stats_line_lst[-2].split(":")
             non_ref = stats_line_lst[-1].split(":")
             if float(non_ref[-1]) > float(ref[-1]):
                 flag = False
                 break
-    return flag, STATS_POS
+    return flag, STATS_POS, num_of_rows
 
 def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
     paths_helper = get_paths_helper(dataset_name)
@@ -72,8 +76,8 @@ def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
     vcf_file_path = paths_helper.data_dir + f'old_{vcf_file_name}'
     new_vcf_file_path = paths_helper.data_dir + vcf_file_name
     stats_file_path = paths_helper.vcf_stats_folder + vcf_file_name + '.freq.frq'
-    is_good, STATS_POS = is_vcf_already_good(stats_file_path)
-
+    is_good, STATS_POS, num_of_sites = is_vcf_already_good(stats_file_path)
+    pbar = tqdm(total=num_of_sites)
     with open(vcf_file_path, "r") as vcf_file, open(stats_file_path, 'r') as stats_file, open(new_vcf_file_path,
                                                                                               'w') as new_f:
         old_vcf_line = vcf_file.readline()
@@ -92,6 +96,7 @@ def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
         stats_file.readline()
         stats_line = stats_file.readline()
         while stats_line:
+            pbar.update(1)
             stats_line_lst = stats_line.split('\t')
             stats_pos = int(stats_line_lst[STATS_POS])
             old_vcf_line_lst = old_vcf_line.split('\t')
@@ -107,6 +112,7 @@ def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
             stats_line = stats_file.readline()
             old_vcf_line = vcf_file.readline()
         assert not old_vcf_line
+    pbar.close()
     print("Done!")
 
 

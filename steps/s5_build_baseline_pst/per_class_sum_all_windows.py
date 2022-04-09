@@ -24,7 +24,7 @@ from utils.similarity_helper import generate_similarity_matrix
 def _get_similarity_per_window_files_names(paths_helper, class_str):
     with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
         num_of_wind_per_class = json.load(f)
-    windows_similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_str) + 'per_window_similarity/'
+    windows_similarity_dir = paths_helper.per_window_similarity.format(class_name=class_str)
     count_similarity_files = os.listdir(windows_similarity_dir)
     assert int(num_of_wind_per_class[class_str]) == len(count_similarity_files) / 2  # count and similarity are diff files
     count_files = [windows_similarity_dir + file for file in count_similarity_files if "count" in file]

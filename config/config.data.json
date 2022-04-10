@@ -131,29 +131,16 @@
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 },
-  "debug":
+  "sim_dip_v1":
   {
     "vcf_files_names": [
-      "debug.vcf"
+      "sim_dip_v1.vcf"
     ],
     "vcf_files_short_names": [
       "chr1"
     ],
     "num_chrs": 1,
-    "num_individuals": 100,
-    "indlist_file_name": "inlist.txt",
-    "sample_sites_file_name": "sampleSite.txt"
-},
-  "debug2":
-  {
-    "vcf_files_names": [
-      "debug2.vcf"
-    ],
-    "vcf_files_short_names": [
-      "chr1"
-    ],
-    "num_chrs": 1,
-    "num_individuals": 100,
+    "num_individuals": 1000,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
 }

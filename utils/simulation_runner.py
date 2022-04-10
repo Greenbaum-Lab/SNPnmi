@@ -21,19 +21,20 @@ from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, get_dataset_vcf_files_names
 
 SCRIPT_PATH = os.path.abspath(__file__)
-SIMULAITION_NAME = 'debug2'
+SIMULAITION_NAME = 'sim_dip_v1'
 POPULATION_SIZE = 2000
 NUMBER_OF_SUBPOPS = 2
+OUTPUT_SIZE = 1000
 INDV_PER_POP = POPULATION_SIZE // NUMBER_OF_SUBPOPS
-
+POP_SAMPLE_SIZE = OUTPUT_SIZE / NUMBER_OF_SUBPOPS
 def run_simulation():
     demography = msprime.Demography()
     for i in range(NUMBER_OF_SUBPOPS):
         demography.add_population(name=ascii_uppercase[i], initial_size=INDV_PER_POP)
     demography.add_population(name="AB", initial_size=POPULATION_SIZE)
-    demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:NUMBER_OF_SUBPOPS]], ancestral="AB")
+    demography.add_population_split(time=5000, derived=[e for e in ascii_uppercase[:NUMBER_OF_SUBPOPS]], ancestral="AB")
 
-    ts = msprime.sim_ancestry(samples={'A': 50, 'B': 50}, sequence_length=5e6, demography=demography,
+    ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: POP_SAMPLE_SIZE for i in range(NUMBER_OF_SUBPOPS)}, sequence_length=5e8, demography=demography,
                               recombination_rate=1e-8, random_seed=1)
     mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-7, random_seed=1)
     return mts
@@ -50,7 +51,6 @@ def run_simulation_and_save_vcf(paths_helper):
 def plot_tree(ts):
     color_map = {0: 'red', 1: 'blue', 2: 'green'}
     tree = ts.first()
-    node_colors = {u: color_map[tree.population(u)] for u in tree.nodes()}
     img = cairosvg.svg2png(ts.draw_svg(y_axis=True))
     img = Image.open(BytesIO(img))
     plt.imshow(img)
@@ -66,7 +66,7 @@ def write_ind_list_for_ns(paths_helper):
     with open(paths_helper.data_dir + 'sampleSite.txt', 'w+') as f:
         f.write('A')
     with open(paths_helper.data_dir + 'inlist.txt', 'w+') as f:
-        f.write('A\n' * POPULATION_SIZE)
+        f.write('A\n' * OUTPUT_SIZE)
 
 
 if __name__ == '__main__':

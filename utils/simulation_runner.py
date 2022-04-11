@@ -5,6 +5,7 @@ import sys
 from string import ascii_uppercase
 from io import BytesIO
 from os.path import dirname, abspath
+import json
 
 import cairosvg as cairosvg
 from PIL import Image
@@ -66,9 +67,24 @@ def write_ind_list_for_ns(paths_helper):
     with open(paths_helper.data_dir + 'inlist.txt', 'w+') as f:
         f.write('A\n' * OUTPUT_SIZE)
 
+def add_simulation_to_data_config_file(paths_helper):
+    data_json = '../config/config.data.json'
+    with open(data_json, "r") as f:
+        js = json.load(f)
+    assert SIMULAITION_NAME not in js, "Cannot overwrite simulations! First delete old simulation"
+    js[SIMULAITION_NAME] = {'vcf_files_name': [f'{SIMULAITION_NAME}.vcf'],
+                            'vcf_files_short_names': ['chr1'],
+                            'num_chrs': 1,
+                            'num_individuals': OUTPUT_SIZE,
+                            'indlist_file_name': 'inlist.txt',
+                            'sample_sites_file_name': 'sampleSite.txt'}
+    with open(data_json, "w") as f:
+        json.dump(js, f)
+
 
 if __name__ == '__main__':
     paths_helper = get_paths_helper(SIMULAITION_NAME)
+    add_simulation_to_data_config_file(paths_helper)
     run_simulation_and_save_vcf(paths_helper)
     copy_runner_to_vcf_dir(paths_helper)
     write_ind_list_for_ns(paths_helper)

@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 DEBUG = False
 # Per class and a number N, will submit jobs which will each merge N windows.
 # For example, for class mac 18, and max_num_of_windows_per_job=10, assuming in total the class has 101 (0-100) windows, we will submit 11 jobs:
@@ -40,7 +42,7 @@ def submit_merge_all_chrs_to_class_windows(options):
     paths_helper = get_paths_helper(dataset_name)
     stderr_files = []
     max_num_of_windows_per_job = options.args[0] if options.args else 1000
-    for cls in class_iter(options):
+    for cls in tqdm(class_iter(options), desc="Submitting merge & similarity per class"):
         similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=cls.name)
         os.makedirs(similarity_dir, exist_ok=True)
         per_window = paths_helper.per_window_similarity.format(class_name=cls.name)

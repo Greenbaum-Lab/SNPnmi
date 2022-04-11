@@ -5,6 +5,7 @@ import os.path
 import sys
 from os.path import dirname, abspath
 
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -123,12 +124,11 @@ def write_values_to_csv(values, output_path):
 
 def collect_vcf_classes_stats(log_files, chr_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_names)
-    for i in range(len(log_files)):
+    for i in tqdm(range(len(log_files)), desc='PArsing log files and building csv file'):
         chr_name = chr_names[i]
         log_file = log_files[i]
         values = get_split_vcf_stats(log_file, chr_name)
         write_values_to_csv(values, split_vcf_stats_csv_path)
-        print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
 
 def collect_and_validate_vcf_classes_stats(options):

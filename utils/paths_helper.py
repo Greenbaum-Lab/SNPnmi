@@ -72,6 +72,7 @@ class PathsHelper:
         self.wrapper_ulimit_2048 = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_u_limit_2048.sh'
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
         self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
+        self.garbage = f'{root_data_folder}/tmp/garbage.txt'
 
         # sanity check folders:
         # TODO -remove?

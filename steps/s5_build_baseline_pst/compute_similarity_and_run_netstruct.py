@@ -21,7 +21,8 @@ def run_net_struct(options, job_type, similarity_matrix_path, output_dir):
                 exist_ok=True)
 
     net_struct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_dir, options.ns_ss)
-    subprocess.run([paths_helper.submit_helper, net_struct_cmd])
+    with open(paths_helper.garbage, "wb") as garbage_output:
+        subprocess.run([paths_helper.submit_helper, net_struct_cmd], stdout=garbage_output)
 
 
 def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_helper, winds):

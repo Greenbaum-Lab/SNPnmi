@@ -17,7 +17,6 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from utils.filelock import FileLock
 from utils.common import get_paths_helper, args_parser, handle_hash_file
 from utils.similarity_helper import generate_similarity_matrix
 
@@ -31,7 +30,7 @@ def sum_windows(class_name, windows_id_list, similarity_window_template, count_w
     new_hash = handle_hash_file(class_name, paths_helper, [int(wind) for wind in windows_id_list])
 
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_hash{new_hash}',
-                               override=False)
+                               save_np=False, save_edges=True)
 
     return new_hash
 

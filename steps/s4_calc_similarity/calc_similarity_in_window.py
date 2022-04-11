@@ -3,6 +3,8 @@ import os
 import sys
 from os.path import dirname, abspath
 
+from tqdm import tqdm
+
 from utils.config import get_num_individuals
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
@@ -75,7 +77,7 @@ def calc_similarity_in_windows(dataset_name, mac_maf, class_value, min_window_in
     similarity_output_dir = path_helper.similarity_by_class_folder_template.format(class_name=cls.name)
     os.makedirs(similarity_output_dir, exist_ok=True)
     num_of_individuals = get_num_individuals(dataset_name)
-    for window_id in range(min_window_index, max_window_index):
+    for window_id in tqdm(range(min_window_index, max_window_index)):
 
         input_012_file = path_helper.window_by_class_template.format(class_name=cls.name, window_id=window_id)
         window_matrix = load_and_decomp_012_mat(input_012_file, num_of_individuals).astype(float)
@@ -94,7 +96,6 @@ def compute_similarity_and_save_outputs(path_helper, window_matrix, cls, window_
 
     window_counts, window_similarity = window_calc_pairwise_similarities(window_matrix, min_valid_sites_percentage,
                                                                          cls.val, cls.max_val, cls.mac_maf)
-    print(f'output similarity file to {output_similarity_file}\noutput count file to {output_count_file}')
 
     write_pairwise_similarity(output_similarity_file, window_similarity, output_count_file,
                               window_counts)

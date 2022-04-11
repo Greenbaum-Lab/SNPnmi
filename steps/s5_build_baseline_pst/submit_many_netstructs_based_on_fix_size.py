@@ -37,7 +37,7 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
         print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
         return job_stderr_file
     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, script_args, job_stdout_file,
-                      job_stderr_file, num_hours_to_run=4, memory=8, debug=False)
+                      job_stderr_file, num_hours_to_run=4, memory=8)
     return job_stderr_file
 
 
@@ -82,7 +82,6 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
     tree_hashes = []
     stderr_files = []
     for tree_idx in range(num_of_trees):
-        time.sleep(0.02)  # To avoid FileLock failures.
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
         tree_hash = handle_hash_file(class_name, paths_helper, winds)
         tree_hashes.append(tree_hash)
@@ -124,12 +123,13 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     if options.run_ns_together and rest_num_of_trees:
         return submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees,
                                                       num_of_windows, num_of_windows_per_tree)
-    stderr_files = []
-    for tree_idx in range(rest_num_of_trees):
-        time.sleep(0.02)  # To avoid FileLock failures.
-        winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
-        stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
-    return stderr_files
+    else:
+        stderr_files = []
+        for tree_idx in range(rest_num_of_trees):
+            time.sleep(0.02)  # To avoid FileLock failures.
+            winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
+            stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
+        return stderr_files
 
 
 def submit_mini_net_struct_for_all_classes(options):

@@ -10,7 +10,6 @@ from utils.netstrcut_helper import build_netstruct_cmd
 from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser, load_dict_from_json
-from utils.similarity_helper import matrix_to_edges_file
 
 job_type = "mini_net-struct"
 
@@ -34,10 +33,7 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
                                 class_name=class_name), paths_helper=paths_helper)
 
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    similarity_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_similarity.npz'
-    count_matrix_path = similarity_dir + f'{class_name}_hash{tree_hash}_count.npz'
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
-    matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
     run_net_struct(options, job_type, similarity_edges_file, output_dir)
 

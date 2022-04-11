@@ -22,8 +22,6 @@ from utils.netstrcut_helper import submit_netstruct
 
 
 def sum_all_classes(options):
-    mac_min_range, mac_max_range = options.mac if options.mac else (0, 0)
-    maf_min_range, maf_max_range = options.maf if options.maf else (0, 0)
     paths_helper = get_paths_helper(options.dataset_name)
     # get inputs
     similarity_files = []
@@ -38,7 +36,8 @@ def sum_all_classes(options):
 
     class_range_str = f'all'
     output_file_name = paths_helper.similarity_dir + class_range_str
-    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_file_name)
+    generate_similarity_matrix(similarity_files, count_files, paths_helper.similarity_dir, output_file_name, save_np=False,
+                               save_edges=True)
     return output_file_name, class_range_str
 
 
@@ -59,20 +58,17 @@ def compute_macs_range(options):
 
 def main(options):
 
-    mac_min_range, mac_max_range = 1, 49
-    maf_min_range, maf_max_range = compute_macs_range(options)
+    options.mac = compute_macs_range(options)
+    options.maf = 1, 49
 
     output_files_name, all_class_range_str = sum_all_classes(options)
     print(output_files_name)
 
     paths_helper = get_paths_helper(options.dataset_name)
     job_type = 'netstruct'
-    job_long_name = f'netstruct_mac_{mac_min_range}-{mac_max_range}_maf_{maf_min_range}-{maf_max_range}_ss_{options.ns_ss}'
-    job_name = f'ns_{mac_min_range}-{mac_max_range}_{maf_min_range}-{maf_max_range}'
-    similarity_matrix_path = output_files_name + '_similarity.npy'
-    count_matrix_path = output_files_name + '_count.npy'
+    job_long_name = f'netstruct_mac_{options.mac[0]}-{options.mac[1]}_maf_{options.maf[0]}-{options.maf[1]}_ss_{options.ns_ss}'
+    job_name = f'ns_{options.mac[0]}-{options.mac[1]}_{options.maf[0]}-{options.maf[1]}'
     similarity_edges_file = output_files_name + '_edges.txt'
-    matrix_to_edges_file(similarity_matrix_path, count_matrix_path, similarity_edges_file)
     output_folder = paths_helper.net_struct_dir + all_class_range_str + '/'
     print(output_folder)
     err_file = submit_netstruct(options, job_type, job_long_name, job_name, similarity_edges_file, output_folder)

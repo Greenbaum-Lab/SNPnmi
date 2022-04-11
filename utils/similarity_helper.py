@@ -44,11 +44,13 @@ def calc_similarity_based_on_files(similarity_files, count_files):
     return similarity_result, count_all_counts
 
 
-def generate_similarity_matrix(similarity_files, count_files, output_folder, output_files_name, override=False):
+def generate_similarity_matrix(similarity_files, count_files, output_folder, output_files_name, save_np=False,
+                               save_edges=True):
     # validate output paths - check that we don't override if we should not
     all_count_file = f'{output_files_name}_count.npz'
     all_similarity_file = f'{output_files_name}_similarity.npz'
-    if (not override) and os.path.isfile(all_count_file) and os.path.isfile(all_similarity_file):
+    edges_file = f'{output_files_name}_edges.txt'
+    if os.path.isfile(all_count_file) and os.path.isfile(all_similarity_file):
         print(f'count and similarity files exist, do not calc! {all_count_file}')
         return
     os.makedirs(output_folder, exist_ok=True)
@@ -56,9 +58,10 @@ def generate_similarity_matrix(similarity_files, count_files, output_folder, out
     # calc similarities and counts
     similarity, counts = calc_similarity_based_on_files(similarity_files, count_files)
 
-    # write (and validate) output
-    write_pairwise_similarity(all_similarity_file, similarity, all_count_file, counts)
-    print("Done generate similarity matrix")
+    if save_np:
+        write_pairwise_similarity(all_similarity_file, similarity, all_count_file, counts)
+    if save_edges:
+        matrix_to_edges_file(similarity, counts, edges_file)
 
 
 def file012_to_numpy(input_file_path):
@@ -87,9 +90,7 @@ def numpy_to_file012(input_numpy_path, matrix=None):
     return result
 
 
-def matrix_to_edges_file(similarity_matrix_path, count_matrix_path, edges_file_path):
-    similarity_matrix = np.load(similarity_matrix_path)['arr_0']
-    count_matrix = np.load(count_matrix_path)['arr_0']
+def matrix_to_edges_file(similarity_matrix, count_matrix, edges_file_path):
     similarity_matrix = np.true_divide(similarity_matrix, count_matrix)
     max_e = np.max(similarity_matrix)
     num_of_indv = similarity_matrix.shape[0]

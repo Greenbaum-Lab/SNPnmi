@@ -51,7 +51,7 @@ def main(options):
     print('output_dir', output_dir)
 
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_all',
-                               override=options.override)
+                               save_np=True, save_edges=True)
 
 
 if __name__ == "__main__":

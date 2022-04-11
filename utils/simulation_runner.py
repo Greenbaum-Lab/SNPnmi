@@ -49,8 +49,6 @@ def run_simulation_and_save_vcf(paths_helper):
 
 
 def plot_tree(ts):
-    color_map = {0: 'red', 1: 'blue', 2: 'green'}
-    tree = ts.first()
     img = cairosvg.svg2png(ts.draw_svg(y_axis=True))
     img = Image.open(BytesIO(img))
     plt.imshow(img)

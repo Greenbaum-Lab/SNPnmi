@@ -53,7 +53,7 @@ def compute_macs_range(options):
     num_of_genomes = num_of_indv * 2  # diploid assumption
     first_maf = num_of_genomes / 100
     last_mac = first_maf - 1 if first_maf == int(first_maf) else int(first_maf)
-    return 2, last_mac
+    return 2, int(last_mac)
 
 
 def main(options):

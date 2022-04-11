@@ -10,7 +10,7 @@ sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
 from utils.common import get_paths_helper, warp_how_many_jobs, validate_stderr_empty, args_parser, str_for_timer, \
-    is_cluster, how_many_local_jobs_run
+    is_cluster, how_many_local_jobs_run, class_iter
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster, submit_to_heavy_lab
 from utils.checkpoint_helper import *
@@ -35,10 +35,8 @@ def submit_split_vcfs_by_class(options):
     vcf_files_short_names = get_dataset_vcf_files_short_names(dataset_name)
     validate_dataset_vcf_files_short_names(dataset_name)
     stderr_files = []
-
-    for mac_maf in ['mac', 'maf']:
-        stderr_files += submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range,
-                                               options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
+    for cls in class_iter(options):
+        stderr_files += submit_one_class_split(cls, options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
     jobs_func = warp_how_many_jobs("s2")
     with Loader("Splitting jobs are running", jobs_func):
@@ -47,41 +45,33 @@ def submit_split_vcfs_by_class(options):
 
     return True
 
-def submit_one_class_split(mac_maf, mac_max_range, mac_min_range, maf_max_range, maf_min_range, options, output_dir,
-                           vcf_files, vcf_files_short_names, vcfs_dir):
 
-    is_mac = mac_maf == 'mac'
+def submit_one_class_split(cls, options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir):
     paths_helper = get_paths_helper(options.dataset_name)
-    min_range = mac_min_range if is_mac else maf_min_range
-    max_range = mac_max_range if is_mac else maf_max_range
     stderr_files = []
-    if min_range > 0:
-        # Go over mac/maf values
-        print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-        for val in range(min_range, max_range + 1):
-            if is_output_exits(None, val, mac_maf, output_dir):
-                continue
-            # go over vcfs
-            for (vcf_file, vcf_file_short_name) in zip(vcf_files, vcf_files_short_names):
-                if is_output_exits(None, val, mac_maf, output_dir + vcf_file_short_name + '/'):
-                    continue
-                print(f'submit for {vcf_file_short_name} ({vcf_file})', flush=True)
-                vcf_full_path = vcfs_dir + vcf_file
-                job_long_name = generate_job_long_name(mac_maf, val, vcf_file_short_name)
-                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                stderr_files.append(job_stderr_file)
-                job_name = f's2{val}_{vcf_file_short_name}'
-                python_script_params = f'{mac_maf} {val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
-                if options.local_jobs:
-                    python_script_to_run = path_to_python_script_to_run.format(base_dir=get_local_code_dir())
-                    submit_to_heavy_lab(python_script_to_run, python_script_params, job_stdout_file, job_stderr_file)
-                else:
-                    python_script_to_run = path_to_python_script_to_run.format(base_dir=get_cluster_code_folder())
-                    submit_to_cluster(options, job_type, job_name, python_script_to_run, python_script_params,
-                                      job_stdout_file, job_stderr_file)
+    if is_output_exits(None, cls.int_val, cls.mac_maf, output_dir):
+        return []
+    # go over vcfs
+    for (vcf_file, vcf_file_short_name) in zip(vcf_files, vcf_files_short_names):
+        if is_output_exits(None, cls.int_val, cls.mac_maf, output_dir + vcf_file_short_name + '/'):
+            continue
+        print(f'submit for {vcf_file_short_name} ({vcf_file})', flush=True)
+        vcf_full_path = vcfs_dir + vcf_file
+        job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val, vcf_file_short_name)
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        stderr_files.append(job_stderr_file)
+        job_name = f's2{cls.int_val}_{vcf_file_short_name}'
+        python_script_params = f'{cls.mac_maf} {cls.int_val} {vcf_full_path} {vcf_file_short_name} {output_dir}'
+        if options.local_jobs:
+            python_script_to_run = path_to_python_script_to_run.format(base_dir=get_local_code_dir())
+            submit_to_heavy_lab(python_script_to_run, python_script_params, job_stdout_file, job_stderr_file)
+        else:
+            python_script_to_run = path_to_python_script_to_run.format(base_dir=get_cluster_code_folder())
+            submit_to_cluster(options, job_type, job_name, python_script_to_run, python_script_params,
+                              job_stdout_file, job_stderr_file)
     return stderr_files
 
 

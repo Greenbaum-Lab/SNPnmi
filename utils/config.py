@@ -14,13 +14,16 @@ def get_config(config_name):
     with open(CONFIG_DIR_PATTERN.format(config_file=config_name), "r") as config_file:
         return json.load(config_file)
 
+
 def get_num_individuals(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['num_individuals']
 
+
 def get_num_chrs(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['num_chrs']
+
 
 def get_min_chr(dataset_name):
     #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
@@ -30,6 +33,7 @@ def get_min_chr(dataset_name):
     chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
     return np.min(chr_numbers)
 
+
 def get_max_chr(dataset_name):
     #  Counting on that the vcf_files_short_names are "chrX" with X an int. This is a risky assumption!
     data_config = get_config(CONFIG_NAME_DATA)
@@ -38,41 +42,55 @@ def get_max_chr(dataset_name):
     chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
     return np.max(chr_numbers)
 
+
 def get_sample_sites_file_name(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['sample_sites_file_name']
+
 
 def get_indlist_file_name(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['indlist_file_name']
 
+
 def get_dataset_ftp_source_host(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['ftp_source_host']
+
 
 def get_dataset_ftp_source_path(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['ftp_source_path']
 
+
 def get_dataset_vcf_files_names(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['vcf_files_names']
+
 
 def get_dataset_vcf_files_short_names(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['vcf_files_short_names']
 
+
 def get_dataset_metadata_files_names(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return data_config[dataset_name]['metadata_files_names']
+
+
+def is_dataset_exists(dataset_name):
+    data_config = get_config(CONFIG_NAME_DATA)
+    return dataset_name in data_config
 
 def get_cluster_data_folder():
     data_config = get_config(CONFIG_NAME_PATHS)
     return data_config['cluster_data_folder']
 
+
 def get_cluster_code_folder():
     data_config = get_config(CONFIG_NAME_PATHS)
     return data_config['cluster_code_folder']
+
 
 def get_local_code_dir():
     data_config = get_config(CONFIG_NAME_PATHS)

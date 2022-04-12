@@ -1,21 +1,18 @@
 #!/usr/bin/python3
 
-# utils/scripts/collect_nmi.py -d hgdp
 import itertools
 import os
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import sys
 
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
-
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.scripts import create_statistics_nmi_matrix
-from utils.scripts.collect_tree_size_to_csv import collect_tree_sizes_to_csv
+from steps.s7_join_to_summary import create_statistics_nmi_matrix
+from steps.s7_join_to_summary.collect_tree_size_to_csv import collect_tree_sizes_to_csv
 from utils.common import get_paths_helper, args_parser, class_iter
 from utils.loader import Timer, Loader
 

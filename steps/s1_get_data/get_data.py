@@ -16,6 +16,7 @@ from utils.common import get_paths_helper
 from utils.config import *
 from utils.checkpoint_helper import *
 from utils.loader import Loader, Timer
+from utils.simulation_runner import simulation_runner
 
 
 def get_ftp_source(ftp_source_host, ftp_source_path):
@@ -103,7 +104,10 @@ def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folde
 
 # wrappers for execution
 def get_data(options):
-    return get_files_by_dataset_name(options.dataset_name)
+    if is_dataset_exists(options.dataset_name):
+        return get_files_by_dataset_name(options.dataset_name)
+    else:
+        return simulation_runner(options.dataset_name)
 
 
 def main(options):

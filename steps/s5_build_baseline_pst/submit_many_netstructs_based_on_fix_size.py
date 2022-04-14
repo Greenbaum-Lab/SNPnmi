@@ -41,10 +41,10 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
     return job_stderr_file
 
 
-def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
-    if len(v) != num_of_winds:
+def is_tree_valid_and_correct_size(options, hash_key, wind_ids, num_of_winds, class_name, paths_helper):
+    if len(wind_ids) != num_of_winds:
         return False
-    job_long_name = f'{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true'
+    job_long_name = f'{class_name}_hash{hash_key}_ns_{options.ns_ss}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):
@@ -52,9 +52,9 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
     if os.stat(stderr_file_name).st_size > 0:
         return False
     net_struct_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
-    if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
+    if not os.path.isdir(f'{net_struct_dir}{class_name}_{hash_key}'):
         return False
-    list_trees = os.listdir(f'{net_struct_dir}{class_name}_{k}')
+    list_trees = os.listdir(f'{net_struct_dir}{class_name}_{hash_key}')
     trees_with_correct_ns_ss = [tree for tree in list_trees if f"SS_{options.ns_ss}" in tree]
     if len(trees_with_correct_ns_ss) == 0:
         return False
@@ -100,7 +100,8 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
 
     job_short_name = f'ns_{class_name}'
     submit_to_cluster(options, job_type="step5.4 per class", job_name=job_short_name, script_path=script_to_run,
-                      script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file)
+                      script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file,
+                      num_hours_to_run=24)
     return stderr_files
 
 

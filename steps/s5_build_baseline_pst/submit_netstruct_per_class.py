@@ -22,7 +22,7 @@ def submit_netstruct_per_class(options):
     paths_helper = get_paths_helper(options.dataset_name)
     stderr_files = []
 
-    for cls in tqdm(class_iter(options), desc='Submitting netstrict per class'):
+    for cls in tqdm(list(class_iter(options)), desc='Submitting netstrict per class'):
         job_long_name = f'{cls.mac_maf}{cls.val}_weighted_true'
         job_name = f'ns_{cls.val}'
         output_folder = paths_helper.net_struct_dir_class.format(class_name=cls.name) + f'{cls.name}_all/'

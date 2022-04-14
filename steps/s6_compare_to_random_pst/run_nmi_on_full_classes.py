@@ -18,7 +18,7 @@ def run_nmi_on_all(options):
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper = prepare_inputs_and_gt(options)
 
     # go over classes
-    for cls in tqdm(class_iter(options)):
+    for cls in tqdm(list(class_iter(options))):
         nmi_output_dir = paths_helper.nmi_class_template.format(class_name=cls.name)
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, cls.name, nmi_output_dir,
                           f'{ns_base_dir}{cls.name}/', options, 'all')

@@ -16,7 +16,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.similarity_helper import file012_to_numpy, numpy_to_file012
+from utils.similarity_helper import file012_to_numpy
 from utils.common import get_paths_helper, AlleleClass, args_parser, Cls, comp_and_save_012_mat
 from utils.loader import Timer, Loader
 from utils.config import *

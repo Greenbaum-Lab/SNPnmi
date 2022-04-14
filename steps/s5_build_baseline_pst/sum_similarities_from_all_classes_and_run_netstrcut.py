@@ -13,7 +13,7 @@ from utils.config import get_num_individuals
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
-from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
+from utils.similarity_helper import generate_similarity_matrix, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
 SCRIPT_NAME = os.path.basename(__file__)

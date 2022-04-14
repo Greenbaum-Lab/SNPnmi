@@ -115,8 +115,6 @@ def write_values_to_csv(values, output_path):
         assert exp_key in values_keys
     write_header = not os.path.isfile(output_path)
     # if the csv was exist, delete it, so we won't have each line twice.
-    if os.path.exists(output_path):
-        subprocess.run(['rm', '-f', output_path])
     with open(output_path, "a+") as f:
         if write_header:
             f.write(','.join(expected_keys) + '\n')
@@ -126,6 +124,8 @@ def write_values_to_csv(values, output_path):
 
 def collect_vcf_classes_stats(log_files, chr_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_names)
+    if os.path.exists(split_vcf_stats_csv_path):
+        subprocess.run(['rm', '-f', split_vcf_stats_csv_path])
     for i in tqdm(range(len(log_files)), desc='PArsing log files and building csv file'):
         chr_name = chr_names[i]
         log_file = log_files[i]

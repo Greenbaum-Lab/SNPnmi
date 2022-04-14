@@ -267,7 +267,13 @@ def add_time_to_controller_file(paths_helper, duration, step):
             js = json.load(f)
     if step in js:
         return
-    js[step] = str(duration) + ' minutes'
+    if duration < 60:
+        duration_str = f'{duration} seconds'
+    elif duration < 3600:
+        duration_str = f'{duration / 60} minutes'
+    else:
+        duration_str = f'{duration / 3600} hours'
+    js[step] = duration_str
     with open(paths_helper.data_dir + 'times.json', 'w') as f:
         json.dump(js, f)
 

@@ -114,6 +114,9 @@ def write_values_to_csv(values, output_path):
     for exp_key in expected_keys:
         assert exp_key in values_keys
     write_header = not os.path.isfile(output_path)
+    # if the csv was exist, delete it, so we won't have each line twice.
+    if os.path.exists(output_path):
+        subprocess.run(['rm', '-f', output_path])
     with open(output_path, "a+") as f:
         if write_header:
             f.write(','.join(expected_keys) + '\n')

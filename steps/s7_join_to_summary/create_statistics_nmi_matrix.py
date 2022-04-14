@@ -10,12 +10,12 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s7_join_to_summary.collect_nmi import ALL_SCORES_TYPES
 from utils.common import get_paths_helper, args_parser, class_iter
 from utils.loader import Timer
 
 
 def summarize_nmi_per_class(ns_ss, class_name, df, one_class_df):
+    from steps.s7_join_to_summary.collect_nmi import ALL_SCORES_TYPES
     sizes = {}
     for tree_tuple in one_class_df.iterrows():
         tree = tree_tuple[1]

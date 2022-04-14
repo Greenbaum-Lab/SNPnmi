@@ -23,7 +23,7 @@ mac_class_names = np.arange(mac_min_range, mac_max_range + 1) if options.dataset
 maf_class_names = np.arange(maf_min_range, maf_max_range + 1) / 100
 
 
-with open(window_to_snps_path) as f:
+with open(window_to_snps_path,'r') as f:
     windows2count = json.load(f)
 with open(window_size_path, 'r') as f:
     window_size = int(f.readline())

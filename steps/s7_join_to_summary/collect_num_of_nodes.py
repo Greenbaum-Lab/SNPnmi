@@ -2,15 +2,14 @@
 # utils/scripts/collect_num_of_nodes.py -d hgdp --args 1000
 
 import os
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import sys
 import pandas as pd
-from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.scripts.collect_tree_heights import combine_attributes_per_class
+from steps.s7_join_to_summary.collect_tree_heights import combine_attributes_per_class
 from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 

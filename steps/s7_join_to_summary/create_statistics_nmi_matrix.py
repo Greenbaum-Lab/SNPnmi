@@ -1,6 +1,6 @@
 # python3 utils/scripts/create_statistics_nmi_matrix.py -d hgdp
 
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import sys
 
 import numpy as np
@@ -10,7 +10,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.scripts.collect_nmi import ALL_SCORES_TYPES
+from steps.s7_join_to_summary.collect_nmi import ALL_SCORES_TYPES
 from utils.common import get_paths_helper, args_parser, class_iter
 from utils.loader import Timer
 

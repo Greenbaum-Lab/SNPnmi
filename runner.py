@@ -4,6 +4,7 @@
 import sys
 import os
 from os.path import dirname
+from time import time
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -18,10 +19,10 @@ from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class, \
     submit_many_netstructs_based_on_fix_size
 from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_mini_trees
-
+from steps.s7_join_to_summary import run_all_summaries
 
 from utils.checkpoint_helper import execute_with_checkpoint
-from utils.common import args_parser, str_for_timer
+from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper
 
 step_to_func_and_name = {
     "1.1": (get_data.main, 'get_data'),
@@ -37,7 +38,8 @@ step_to_func_and_name = {
     "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
     "5.4": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
     "6.1": (run_nmi_on_full_classes.main, 'run_nmi_on_full_classes'),
-    "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees')
+    "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees'),
+    "7.1": (run_all_summaries.main, 'run_all_summaries')
 }
 
 def run_step(options, step, use_checkpoint=True):
@@ -49,29 +51,39 @@ def run_step(options, step, use_checkpoint=True):
     print(msg)
     return is_done
 
+
 def run_all_pipeline(options):
+    def set_options_args(_options, _step, _orig_args):
+        if _step == '1.2':
+            _options.args = ['freq']
+        elif _step == '1.3':
+            _options.args = []
+        elif _step == '3.1':
+            _options.args = [_orig_args[0]]   # window size
 
-    def set_options_args(options, step, orig_args):
-        if step == '1.2':
-            options.args = ['freq']
-        elif step == '1.3':
-            options.args = []
-        elif step == '3.1':
-            options.args = [orig_args[0]]   # window size
-        elif step == '4.1':
-            options.args = [orig_args[1]]  # num_of_winds_per_job
+        elif _step == '4.1':
+            _options.args = [_orig_args[1]]  # num_of_winds_per_job
+
+        elif _step in ['5.4.1', '6.2.1']:
+            _options.args = "1000,100"
+        elif _step in ['5.4.2', '6.2.2']:
+            _options.args = "5000,100"
         else:
-            options.args = orig_args
-        return options
+            _options.args = _orig_args
+        return _options
 
+    paths_helper = get_paths_helper(options.dataset_name)
     orig_args = options.args
-    for step in ['1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3']:
+    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '5.4.1', '5.4.2', '6.1',
+             '6.2.1', '6.2.2', '7.1']
+    for step in s_lst:
+        start_step_time = time()
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
-        options.step = step
+        options.step = '.'.join(step.split('.')[:2])
         success_run = run_step(options, step)
         assert success_run, f"Failed in step {step}"
-
+        add_time_to_controller_file(paths_helper, (time() - start_step_time) / 60, step)
 
 
 def runner(options):
@@ -116,8 +128,8 @@ def runner(options):
 
 
 if __name__ == "__main__":
-    options = args_parser()
-    if options.run_all:
-        run_all_pipeline(options)
+    arguments = args_parser()
+    if arguments.run_all:
+        run_all_pipeline(arguments)
     else:
-        runner(options)
+        runner(arguments)

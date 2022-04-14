@@ -110,6 +110,8 @@ def fix_ref_in_vcf_to_be_minor_allele(dataset_name, vcf_file_name):
             old_vcf_line = vcf_file.readline()
         assert not old_vcf_line
     pbar.close()
+    assert os.path.getsize(new_vcf_file_path) == os.path.getsize(new_vcf_file_path)
+    subprocess.run(['rm', '-f', vcf_file_path])
     print("Done!")
 
 

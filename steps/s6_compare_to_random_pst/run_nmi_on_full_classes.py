@@ -26,9 +26,9 @@ def run_nmi_on_all(options):
 
 def main(options):
     with Timer(f"run nmi with {options}"):
-        is_executed, msg = execute_with_checkpoint(run_nmi_on_all, SCRIPT_NAME, options)
+        is_success, msg = execute_with_checkpoint(run_nmi_on_all, SCRIPT_NAME, options)
         print(msg)
-    return is_executed
+    return is_success
 
 
 if __name__ == "__main__":

@@ -84,18 +84,6 @@ def file012_to_numpy(input_file_path):
     return final_matrix
 
 
-def numpy_to_file012(input_numpy_path, matrix=None):
-    if matrix is None:
-        with open(input_numpy_path, 'rb') as f:
-            matrix = np.load(f)
-    result = []
-    for line in matrix:
-        result.append('\t'.join([str(i) for i in line]))
-    result = '\n'.join(result)
-    result += '\n'
-    return result
-
-
 def matrix_to_edges_file(similarity_matrix, count_matrix, edges_file_path):
     similarity_matrix = np.true_divide(similarity_matrix, count_matrix)
     max_e = np.max(similarity_matrix)

@@ -30,10 +30,7 @@ def collect_tree_sizes_per_class(paths_helper, class_name, window_size, df):
 def collect_tree_sizes_to_csv(options):
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
-    os.makedirs(paths_helper.summary_dir, exist_ok=True)
-
     df = pd.DataFrame()
-
     for cls in class_iter(options):
         df = collect_tree_sizes_per_class(paths_helper, cls.name, window_size, df)
     df.to_csv(paths_helper.tree_sizes, index_label='Class')

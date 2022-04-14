@@ -34,7 +34,7 @@ def submit_per_class_sum_all_windows(options):
                                                                                 job_name=job_long_name)
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)
-        time_to_run = 24 if (cls.is_mac and cls.val < 5) else 8
+        time_to_run = 24
         err_files.append(job_stderr_file)
         job_name = f's5_{cls.val}'
         python_script_params = f'-d {options.dataset_name} --args {cls.mac_maf},{cls.val}'

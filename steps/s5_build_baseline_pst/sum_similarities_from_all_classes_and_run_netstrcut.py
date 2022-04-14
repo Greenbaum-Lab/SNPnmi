@@ -37,14 +37,6 @@ def sum_all_classes(options):
                                save_edges=True)
     return output_file_name, class_range_str
 
-
-def convert_numpy_array_to_lists(similarity_matrix_path):
-    lists = numpy_to_file012(similarity_matrix_path)
-    output_path = similarity_matrix_path[:-3] + 'vcf.gz'
-    with gzip.open(output_path, 'wb') as old_format:
-        old_format.write(lists.encode())
-    return output_path
-
 def compute_macs_range(options):
     num_of_indv = get_num_individuals(options.dataset_name)
     num_of_genomes = num_of_indv * 2  # diploid assumption

@@ -48,6 +48,7 @@ def submit_split_chr_class_to_windows(options):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
+    return True
 
 
 def main(options):

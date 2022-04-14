@@ -109,7 +109,7 @@ def get_data(options):
     else:
         paths_helper = get_paths_helper(options.dataset_name)
         vcf_files_path = get_dataset_vcf_files_names(options.dataset_name)
-        if all([paths_helper.data_dir + os.path.exists(file) for file in vcf_files_path]):
+        if all([os.path.exists(paths_helper.data_dir + file) for file in vcf_files_path]):
             print("Data exists. Doesnt run simulation")
             return True
         return simulation_runner(options.dataset_name)

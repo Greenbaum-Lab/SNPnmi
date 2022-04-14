@@ -27,7 +27,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper = prepare_inputs_and_gt(options)
     nmi_output_dir = paths_helper.nmi_class_template.format(class_name=class_name)
 
-    for hash_tree in tqdm(not_computed_trees[:num_of_trees_to_run], leave=False):
+    for hash_tree in tqdm(not_computed_trees[:num_of_trees_to_run], leave=False, desc="trees "):
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,
                           paths_helper.net_struct_dir_class.format(class_name=class_name), options, hash_tree)
 
@@ -38,7 +38,7 @@ def run_nmi_on_classes_all_trees(options):
     data_size = int(options.args[0])
     assert data_size // window_size == data_size / window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
-    for cls in tqdm(list(class_iter(options))):
+    for cls in tqdm(list(class_iter(options)), desc="classes "):
         compute_nmi_scores_per_class(options, cls.name, paths_helper, num_of_windows)
     return True
 

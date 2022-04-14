@@ -1,25 +1,22 @@
-# will use all classes distances matrixes to create a big matrix with all data
-# takes about 1 minute to group 66 windows
-# python3 3_sum_distances_from_all_classes.py 2 18 1 49
 
-# the commands to use to run netstruct on the result:
-# mkdir /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499/
-# sbatch --time=72:00:00 --mem=5G --error="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499_v3.stderr" --output="/vol/sci/bio/data/gil.greenbaum/amir.rubin/logs/cluster/sanity_check_3/netstructh_all_0-499_v3.stdout" --job-name="s3_nt_a" /cs/icore/amir.rubin2/code/snpnmi/cluster/wrapper_max_30_params.sh java -jar /cs/icore/amir.rubin2/code/NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar -ss 0.001 -minb 5 -mino 5 -pro /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/netstruct/mac_2-18_maf_1-49_windows_0-499/ -pm /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/classes/sanity_check/distances/mac_2-18_maf_1-49_windows_0-499_norm_dist.tsv.gz -pmn /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.indlist.csv -pss /vol/sci/bio/data/gil.greenbaum/amir.rubin/vcf/hgdp/hgdp_wgs.20190516.SampleSites.txt -w true
 import gzip
 import time
 import sys
+import os
 from os.path import dirname, abspath
 
-from utils.config import get_num_individuals
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.config import get_num_individuals
+from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
 from utils.similarity_helper import generate_similarity_matrix, numpy_to_file012, matrix_to_edges_file
 from utils.netstrcut_helper import submit_netstruct
 
+SCRIPT_NAME = os.path.basename(__file__)
 
 def sum_all_classes(options):
     paths_helper = get_paths_helper(options.dataset_name)
@@ -56,7 +53,7 @@ def compute_macs_range(options):
     return 2, int(last_mac)
 
 
-def main(options):
+def sum_all_similarity_run_ns_for_all(options):
 
     options.mac = compute_macs_range(options)
     options.maf = 1, 49
@@ -85,7 +82,7 @@ def main(options):
     return True
 
 
-if __name__ == "__main__":
-    arguments = args_parser()
+def main(arguments):
     with Timer(f"run net-struct with {arguments}"):
-        main(arguments)
+        is_success, msg = execute_with_checkpoint(sum_all_similarity_run_ns_for_all, SCRIPT_NAME, arguments)
+    return is_success

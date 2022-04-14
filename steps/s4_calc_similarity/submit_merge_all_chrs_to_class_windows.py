@@ -1,10 +1,5 @@
 from tqdm import tqdm
 
-DEBUG = False
-# Per class and a number N, will submit jobs which will each merge N windows.
-# For example, for class mac 18, and max_num_of_windows_per_job=10, assuming in total the class has 101 (0-100) windows, we will submit 11 jobs:
-# 0-9, 10-19, .. , 90-99 and one run with a single window (100).
-# it takes about 0.5 seconds per window. A good max_num_of_windows_per_job can be 1000
 import sys
 import time
 from os.path import dirname, abspath
@@ -72,8 +67,8 @@ def submit_merge_all_chrs_to_class_windows(options):
 
 def main(options):
     with Timer(f"merge_all_chrs_to_class_windows on {str_for_timer(options)}"):
-        submit_merge_all_chrs_to_class_windows(options)
-    return True
+        is_success, msg = execute_with_checkpoint(submit_merge_all_chrs_to_class_windows, SCRIPT_NAME, options)
+    return is_success
 
 
 if __name__ == '__main__':

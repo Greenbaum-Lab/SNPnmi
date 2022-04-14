@@ -1,7 +1,5 @@
 from tqdm import tqdm
 
-DEBUG = False
-# Per char and class will submit a job which will generate for the given class the part of the windows with values from this chr
 import sys
 import time
 import os
@@ -51,10 +49,11 @@ def submit_split_chr_class_to_windows(options):
 
     assert validate_stderr_empty(stderr_files)
 
+
 def main(options):
     with Timer(f"split chr class to windows with {options.args}"):
-        submit_split_chr_class_to_windows(options)
-    return True
+        is_success, msg = execute_with_checkpoint(submit_split_chr_class_to_windows, SCRIPT_NAME, options)
+    return is_success
 
 
 if __name__ == '__main__':

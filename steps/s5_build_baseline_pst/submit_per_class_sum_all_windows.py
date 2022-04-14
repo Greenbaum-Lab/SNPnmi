@@ -1,6 +1,4 @@
-# python3 submit_per_class_sum_all_windows.py -1 -1 49 49 1000
 
-import subprocess
 import sys
 import os
 import time
@@ -8,16 +6,18 @@ from os.path import dirname, abspath
 
 from tqdm import tqdm
 
-from utils.cluster.cluster_helper import submit_to_cluster
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.loader import Loader
-from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter
+from utils.checkpoint_helper import execute_with_checkpoint
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.loader import Loader, Timer
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter, \
+    str_for_timer
 from utils.config import get_cluster_code_folder
 
-# will submit calc_distances_in_window of given classes and windows
+SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'per_class_sum_all_windows'
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows.py'
 
@@ -50,8 +50,9 @@ def submit_per_class_sum_all_windows(options):
 
 
 def main(options):
-    submit_per_class_sum_all_windows(options)
-    return True
+    with Timer(f"Per class sum all windows on {str_for_timer(options)}"):
+        is_success, msg = execute_with_checkpoint(submit_per_class_sum_all_windows, SCRIPT_NAME, options)
+    return is_success
 
 
 if __name__ == '__main__':

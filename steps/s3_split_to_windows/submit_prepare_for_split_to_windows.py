@@ -12,10 +12,9 @@ import subprocess
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.loader import Loader, Timer
-from utils.common import warp_how_many_jobs, validate_stderr_empty, load_dict_from_json, class_iter
+from utils.loader import Timer
+from utils.common import validate_stderr_empty, load_dict_from_json, class_iter
 from utils.config import *
-from utils.cluster.cluster_helper import submit_to_cluster
 from utils.checkpoint_helper import *
 from utils.common import args_parser
 
@@ -78,8 +77,8 @@ def submit_prepare_for_split_to_windows(options):
 
 def main(options):
     with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):
-        submit_prepare_for_split_to_windows(options)
-    return True
+        is_success, msg = execute_with_checkpoint(submit_prepare_for_split_to_windows, SCRIPT_NAME, options)
+    return is_success
 
 
 if __name__ == '__main__':

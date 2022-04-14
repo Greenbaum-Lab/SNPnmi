@@ -5,7 +5,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import args_parser, get_paths_helper, is_class_valid, repr_num
+from utils.common import args_parser, get_paths_helper, repr_num, class_iter
 import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
@@ -61,18 +61,15 @@ for nmi_type, score in pairs:
             std = []
             min_range = mac_min_range if is_mac else maf_min_range
             max_range = mac_max_range if is_mac else maf_max_range
-            for val in range(min_range, max_range + 1):
-                if not is_class_valid(options, mac_maf, val):
+            for cls in class_iter(options):
+                if cls.mac_maf != mac_maf:
                     continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
                 if num_of_snp == sizes[0]:
-                    all_class_file = nmi_dir + nmi_file_template.format(mac_maf=mac_maf, val=val, ns_ss=options.ns_ss,
+                    all_class_file = nmi_dir + nmi_file_template.format(mac_maf=mac_maf, val=cls.val, ns_ss=options.ns_ss,
                                                                            input_type=nmi_type)
                     max_score, lfk_score, sum_score = _get_scores_from_nmi_file(all_class_file)
                     all_classes_avg.append(max_score)
-                class_name = f'ss_{options.ns_ss}_{mac_maf}_{val}_{num_of_snp}'
+                class_name = f'ss_{options.ns_ss}_{mac_maf}_{cls.val}_{num_of_snp}'
                 class_values = df[df.Class == class_name]
                 if len(class_values) == 0:
                     continue

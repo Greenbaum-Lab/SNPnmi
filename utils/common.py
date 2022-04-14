@@ -283,7 +283,6 @@ def args_parser():
     parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
     parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
     parser.add_argument("--mac", dest="mac", default="2,70", help="min value, max value, delta")
-    parser.add_argument("--override", dest="override", action="store_true", help="If true, can override existing files")
     parser.add_argument("--maf", dest="maf", default="1,49", help="min value, max value, delta")
     parser.add_argument("--args", dest="args", help="Any additional args")
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )

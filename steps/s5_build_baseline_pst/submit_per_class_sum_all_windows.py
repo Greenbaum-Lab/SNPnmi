@@ -47,7 +47,7 @@ def submit_per_class_sum_all_windows(options):
             time.sleep(5)
 
     assert validate_stderr_empty(err_files)
-
+    return True
 
 def main(options):
     with Timer(f"Per class sum all windows on {str_for_timer(options)}"):

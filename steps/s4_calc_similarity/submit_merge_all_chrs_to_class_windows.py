@@ -45,7 +45,6 @@ def submit_merge_all_chrs_to_class_windows(options):
         total_num_windows = get_num_windows_per_class(dataset_name, cls.mac_maf, cls.int_val)
         for min_windows_index in range(0, total_num_windows, max_num_of_windows_per_job):
             max_windows_index = min(total_num_windows, min_windows_index + max_num_of_windows_per_job) - 1
-            print(f'submit for {cls.mac_maf} {cls.int_val} windows [{min_windows_index}, {max_windows_index}]')
             job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val, min_windows_index, max_windows_index)
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                     job_name=job_long_name)
@@ -63,6 +62,7 @@ def submit_merge_all_chrs_to_class_windows(options):
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)
+    return True
 
 
 def main(options):

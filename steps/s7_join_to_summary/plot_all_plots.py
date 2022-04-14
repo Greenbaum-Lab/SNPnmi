@@ -6,20 +6,27 @@ from os.path import dirname, abspath, basename
 import matplotlib.pyplot as plt
 import numpy as np
 
+from notebooks import number_of_snp_per_class
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-def plot_per_class(options, mac_maf, values, title, configs):
-    mac_class_names = np.arange(options.mac[0], options.mac[1] + 1) if options.dataset_name != 'arabidopsis' else np.arange(
-        options.mac[0], options.mac[1] + 1, 2)
-    maf_class_names = np.arange(options.maf[0], options.maf[1] + 1) / 100
+from utils.checkpoint_helper import execute_with_checkpoint
+from utils.common import str_for_timer, get_paths_helper, args_parser
+from utils.loader import Timer
 
-    class_names = mac_class_names if mac_maf == ' maf' else maf_class_names
-    plt.plot(class_names, num_of_snps[mac_maf])
-    plt.yscale('log')
-    plt.xlabel(f"{mac_maf}", fontsize=16)
-    plt.xticks(fontsize=10)
-    plt.yticks(fontsize=10)
-    plt.title('site frequency spectrum (SFS)', fontsize=18)
-    plt.savefig(f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg')
-    plt.clf()
+def main(options):
+    with Timer(f"Plot all plots with {str_for_timer(options)}"):
+
+        is_success1, msg1 = execute_with_checkpoint(number_of_snp_per_class.main, 'collect_nmi', options)
+        print(msg1)
+        is_success2, msg2 = execute_with_checkpoint(collect_tree_heights.main, 'collect_tree_heights', options)
+        print(msg2)
+        is_success3, msg3 = execute_with_checkpoint(collect_num_of_nodes.main, 'collect_num_of_nodes', options)
+        print(msg3)
+    return is_success1 and is_success2 and is_success3
+
+
+if __name__ == '__main__':
+    arguments = args_parser()
+    main(arguments)

@@ -22,7 +22,7 @@ def run_nmi_on_all(options):
         nmi_output_dir = paths_helper.nmi_class_template.format(class_name=cls.name)
         run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, cls.name, nmi_output_dir,
                           f'{ns_base_dir}{cls.name}/', options, 'all')
-
+    return True
 
 def main(options):
     with Timer(f"run nmi with {options}"):

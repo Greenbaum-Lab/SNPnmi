@@ -28,7 +28,6 @@ def get_num_windows_per_class(dataset_name, mac_maf, class_value):
     with open(path_helper.number_of_windows_per_class_template.format(class_name=cls.name),
               'r') as number_of_windows_per_class_file:
         total_num_of_windows = int(number_of_windows_per_class_file.readline().strip())
-        print(f'Class {cls.name} has {total_num_of_windows} windows')
         return total_num_of_windows
 
 

@@ -81,7 +81,7 @@ def run_all_pipeline(options):
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
         options.step = '.'.join(step.split('.')[:2])
-        success_run = run_step(options, step)
+        success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
 

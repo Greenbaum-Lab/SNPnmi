@@ -27,7 +27,6 @@ def get_split_vcf_stats(filepath, chr_name):
     values['maf'] = '-'
     values['max_mac'] = '-'
     values['max_maf'] = '-'
-    print(filepath)
     #regexes
     # After filtering, kept 929 out of 929 Individuals
     r = r'After filtering, kept (\d+) out of (\d+) Individuals'

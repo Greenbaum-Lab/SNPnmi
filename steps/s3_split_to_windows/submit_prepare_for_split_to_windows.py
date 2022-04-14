@@ -58,8 +58,7 @@ def submit_prepare_for_split_to_windows(options):
 
     classes = []
     stderr_files = []
-    classes_to_run = list(class_iter(options))
-    for cls in tqdm(classes_to_run, desc="Preparing split for classes: "):
+    for cls in tqdm(list(class_iter(options)), desc="Preparing split for classes: "):
         classes.append(cls.name)
         job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val)
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,

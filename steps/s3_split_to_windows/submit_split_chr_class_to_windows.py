@@ -1,3 +1,4 @@
+from tqdm import tqdm
 
 DEBUG = False
 # Per char and class will submit a job which will generate for the given class the part of the windows with values from this chr
@@ -28,8 +29,8 @@ def submit_split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
     paths_helper = get_paths_helper(options.dataset_name)
     stderr_files = []
-    for chr_name in get_dataset_vcf_files_short_names(dataset_name):
-        for cls in class_iter(options):
+    for chr_name in tqdm(get_dataset_vcf_files_short_names(dataset_name)):
+        for cls in tqdm(list(class_iter(options)), leave=False):
             job_long_name = generate_job_long_name(cls.mac_maf, cls.int_val, chr_name)
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                     job_name=job_long_name)

@@ -28,7 +28,7 @@ def submit_per_class_sum_all_windows(options):
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
                 exist_ok=True)
     err_files = []
-    for cls in tqdm(class_iter(options), desc="Submitting compute class similarity per class"):
+    for cls in tqdm(list(class_iter(options)), desc="Submitting compute class similarity per class"):
         job_long_name = f'sum_all_{cls.mac_maf}{cls.val}'
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)

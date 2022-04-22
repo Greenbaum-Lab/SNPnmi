@@ -107,11 +107,11 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
 
 
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
-    data_size = options.args[0]
-    num_of_trees = options.args[1]
+    data_size = int(options.args[0])
+    num_of_trees = int(options.args[1])
 
     class_name = f'{mac_maf}_{class_val}'
-    num_of_windows_per_tree = int(data_size) / int(window_size)
+    num_of_windows_per_tree = data_size / window_size
     assert num_of_windows_per_tree == int(num_of_windows_per_tree), "Data size is not dividable in windows size"
     with open(paths_helper.number_of_windows_per_class_template.format(class_name=class_name), 'r') as f:
         num_of_windows = int(f.read())

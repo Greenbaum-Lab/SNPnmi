@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-import json
 import os
 import sys
 from os.path import dirname, abspath, basename
-import matplotlib.pyplot as plt
-import numpy as np
 from tqdm import tqdm
 
 
@@ -29,8 +26,11 @@ def plot_num_of_snp_per_class(options):
     for cls in tqdm(list(class_iter(options))):
         num_of_snps[cls.mac_maf].append(int(windows2count[cls.name]) * window_size)
     for mac_maf in ["mac", "maf"]:
-        plot_per_class(options, mac_maf, num_of_snps[mac_maf], title='site frequency spectrum (SFS)',
-                       output=f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg')
+        plot_per_class(options, mac_maf, values=num_of_snps[mac_maf], std=None, scats=None, colors=['tab:blue'],
+                       labels=['Num of SNPs'],
+                       title='site frequency spectrum (SFS)',
+                       output=f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg',
+                       log_scale=True)
 
 
 def main(options):

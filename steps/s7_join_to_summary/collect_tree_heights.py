@@ -70,7 +70,6 @@ def collect_tree_heights_per_class(options, paths_helper, class_name, df):
 
 
 def collect_tree_heights(options):
-    print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
     data_size = options.args[0]
 
@@ -78,7 +77,7 @@ def collect_tree_heights(options):
     csv_path = paths_helper.summary_dir + f'/tree_heights_{data_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)), desc='collect tree height Stage 1'):
         df = collect_tree_heights_per_class(options, paths_helper, cls.name, df)
     df.to_csv(csv_path, index=False)
     return df
@@ -99,13 +98,12 @@ def combine_attributes_per_class(class_name, input_df, sum_df):
 
 
 def combine_heights_to_sum_matrix(options, full_mat_df):
-    print("stage 2")
     paths_helper = get_paths_helper(options.dataset_name)
 
     csv_output_path = paths_helper.summary_dir + f'/tree_heights_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max_height', 'std_max_height', 'avg_avg_height', 'std_avg_height',
                                        'avg_avg_leaves', 'std_avg_leaves'])
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)), desc='collect tree height Stage 2'):
         sum_mat_df = combine_attributes_per_class(cls.name,
                                                   full_mat_df[full_mat_df['Tree'].str.contains(f'{cls.name}_')],
                                                   sum_mat_df)

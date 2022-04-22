@@ -5,6 +5,7 @@ import os
 from os.path import dirname, abspath
 import sys
 import pandas as pd
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -57,7 +58,6 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df):
 
 
 def collect_num_of_nodes(options):
-    print("Stage 1")
     paths_helper = get_paths_helper(options.dataset_name)
     data_size = options.args[0]
 
@@ -65,7 +65,7 @@ def collect_num_of_nodes(options):
     csv_path = paths_helper.summary_dir + f'/num_of_nodes_{data_size}_ss_{options.ns_ss}.csv'
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)), desc='collect num of nodes Stage 1'):
         df = collect_num_of_nodes_per_class(options, paths_helper, cls.name, df)
     df.to_csv(csv_path, index=False)
     return df
@@ -77,7 +77,7 @@ def combine_num_of_nodes_to_matrix(options, full_mat_df):
 
     csv_output_path = paths_helper.summary_dir + f'/tree_num_of_nodes_per_class_{options.args[0]}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_leaves', 'std_leaves', 'avg_nodes', 'std_nodes'])
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)), desc='collect num of nodes Stage 2'):
         sum_mat_df = combine_attributes_per_class(cls.name,
                                                       full_mat_df[full_mat_df['Tree'].str.contains(f'{cls.name}_')],
                                                       sum_mat_df)

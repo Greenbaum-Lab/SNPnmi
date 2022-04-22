@@ -39,14 +39,13 @@ def analyze_tree_heights(tree_struct):
     return max_level, avg_height, avg_leaves
 
 
-def collect_tree_heights_per_class(options, paths_helper, class_name, df):
+def collect_tree_heights_per_class(options, paths_helper, class_name, df, tree_size):
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
     tree_nums = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
     tree_dirs = {h: paths_helper.net_struct_dir_class.format(class_name=class_name, tree_hash=h) for h in
                  tree_nums.keys()}
     tree_length_dict = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
-    tree_size = options.args[0]
     for tree_hash, dir in tree_dirs.items():
         tree_name = f'{class_name}_{tree_hash}'
         if tree_name in trees_in_df:
@@ -78,7 +77,7 @@ def collect_tree_heights(options, data_size):
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
     for cls in tqdm(list(class_iter(options)), desc='collect tree height Stage 1'):
-        df = collect_tree_heights_per_class(options, paths_helper, cls.name, df)
+        df = collect_tree_heights_per_class(options, paths_helper, cls.name, df, data_size)
     df.to_csv(csv_path, index=False)
     return df
 
@@ -100,7 +99,7 @@ def combine_attributes_per_class(class_name, input_df, sum_df):
 def combine_heights_to_sum_matrix(options, full_mat_df, data_size):
     print(f"combine heights to sum matrix for size {data_size}")
     paths_helper = get_paths_helper(options.dataset_name)
-    csv_output_path = paths_helper.summary_dir + f'/tree_heights_per_class_{data_size}.csv'
+    csv_output_path = paths_helper.summary_dir + f'tree_heights_per_class_{data_size}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_max_height', 'std_max_height', 'avg_avg_height', 'std_avg_height',
                                        'avg_avg_leaves', 'std_avg_leaves'])
     for cls in tqdm(list(class_iter(options)), desc='collect tree height Stage 2'):

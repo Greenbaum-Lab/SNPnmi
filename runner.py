@@ -80,7 +80,7 @@ def run_all_pipeline(options):
         start_step_time = time()
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
-        options.step = '.'.join(step.split('.')[:2])
+        options.step = step[:3]
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
@@ -95,7 +95,7 @@ def runner(options):
         is_executed = run_step(options, step)
         print(f'is executed: {is_executed}')
 
-# runner.py -d sim_2_v0 --args 100,2000 --run_all
+# python3 runner.py -d sim_v0 --args 100,2000 --run_all
 
 #  python3 runner.py -d hgdp -s 1.1
 

@@ -7,6 +7,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -67,7 +68,7 @@ def collect_nmi(options):
 
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)), desc='collect nmi'):
         df = collect_nmi_per_class(options, paths_helper, cls.name, df,
                                    t_size[t_size['Class'] == cls.name].drop(['Class'], axis=1))
     df.to_csv(csv_path, index=False)
@@ -75,8 +76,7 @@ def collect_nmi(options):
 
 def main(options):
     with Timer(f"Collect nmi"):
-        with Loader("collecting tree size"):
-            collect_tree_sizes_to_csv(options)
+        collect_tree_sizes_to_csv(options)
         collect_nmi(options)
         create_statistics_nmi_matrix.main(options)
 

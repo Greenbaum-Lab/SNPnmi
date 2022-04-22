@@ -4,6 +4,7 @@ import os
 from os.path import dirname, abspath
 import sys
 import pandas as pd
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -31,7 +32,7 @@ def collect_tree_sizes_to_csv(options):
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
     df = pd.DataFrame()
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)),desc='collect_tree_sizes'):
         df = collect_tree_sizes_per_class(paths_helper, cls.name, window_size, df)
     df.to_csv(paths_helper.tree_sizes, index_label='Class')
 

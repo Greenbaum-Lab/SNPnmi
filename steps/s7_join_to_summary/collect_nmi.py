@@ -79,7 +79,7 @@ def main(options):
         collect_tree_sizes_to_csv(options)
         collect_nmi(options)
         create_statistics_nmi_matrix.main(options)
-
+    return True
 
 if __name__ == "__main__":
     arguments = args_parser()

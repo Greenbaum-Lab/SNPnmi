@@ -12,7 +12,7 @@ from tqdm import tqdm
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper, args_parser, load_dict_from_json, is_class_valid, class_iter
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 
 
@@ -50,10 +50,6 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         if os.path.exists(stdout):
             os.remove(stderr)
             os.remove(stdout)
-        if os.path.exists(sim_dir + f"{class_name}_hash{k}_count.npy"):
-            os.remove(sim_dir + f"{class_name}_hash{k}_count.npy")
-        if os.path.exists(sim_dir + f"{class_name}_hash{k}_similarity.npy"):
-            os.remove(sim_dir + f"{class_name}_hash{k}_similarity.npy")
         if os.path.exists(sim_dir + f"{class_name}_hash{k}_edges.txt"):
             os.remove(sim_dir + f"{class_name}_hash{k}_edges.txt")
         ns_path = ns_dir + f"{class_name}_{k}/"

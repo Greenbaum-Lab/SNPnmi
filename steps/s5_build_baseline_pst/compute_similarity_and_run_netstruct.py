@@ -3,13 +3,15 @@ import os
 import sys
 from os.path import dirname, abspath
 
+from steps.s6_compare_to_random_pst.nmi_helper import collect_all_nodes_if_needed
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.netstrcut_helper import build_netstruct_cmd
 from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows
 from utils.loader import Timer
-from utils.common import get_paths_helper, args_parser, load_dict_from_json
+from utils.common import get_paths_helper, args_parser, load_dict_from_json, delete_extra_files
 
 job_type = "mini_net-struct"
 
@@ -36,7 +38,12 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
     output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
+    ns_output_dir_name = f'W_1_D_0_Min_5_SS_{options.ns_ss}_B_1.0/'
     run_net_struct(options, job_type, similarity_edges_file, output_dir)
+    collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
+    delete_extra_files(output_dir + ns_output_dir_name,
+                       ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt'])
 
 
 def main(options):

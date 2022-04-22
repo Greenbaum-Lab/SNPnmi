@@ -66,8 +66,8 @@ def tar_files(source_list):
             time.sleep(5)
 
 
-mac_lst = [f'sim_dip_v0/classes/windows/mac_{i}' for i in range(3, 71)]
-maf_lst = [f'sim_dip_v0/classes/windows/maf_{i/100}' for i in range(1, 50)]
+mac_lst = [f'sim_dip_v1/classes/netstruct/mac_{i}' for i in range(2, 71)]
+maf_lst = [f'sim_dip_v1/classes/netstruct/maf_{i/100}' for i in range(1, 50)]
 lst = mac_lst + maf_lst
 # sync_dir(source_list)
 del_dir(lst)

@@ -79,6 +79,16 @@ class AlleleClass:
         self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 
+def delete_extra_files(in_dir, files_to_keep):
+    assert os.path.isdir(in_dir)
+    files = os.listdir(in_dir)
+    files_to_remove = []
+    for file in files:
+        if file not in files_to_keep:
+            files_to_remove.append(file)
+    subprocess.run(['rm', '-f'] + files_to_remove)
+
+
 def hash_args(options):
     args = options.args + options.mac + options.maf + [options.ns_ss]
     args = [str(e) for e in args]

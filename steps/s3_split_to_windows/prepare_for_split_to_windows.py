@@ -156,9 +156,7 @@ def build_windows_indexes_files(options):
 
 
 def main(options):
-    with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):
-        is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, options)
-    return is_executed
+    build_windows_indexes_files(options)
 
 
 if __name__ == '__main__':

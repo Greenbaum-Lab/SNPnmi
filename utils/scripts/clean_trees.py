@@ -63,7 +63,7 @@ def delete_unfinished_trees_and_hashes(options):
     dry_run = len(options.args) > 0
     paths_helper = get_paths_helper(dataset_name=options.dataset_name)
     num_of_deleted_trees = 0
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options)),desc='clean trees'):
         invalid_hashes = track_invalid_hashes_per_class(options, paths_helper, cls.name)
         if invalid_hashes:
             num_of_deleted_trees += len(invalid_hashes)

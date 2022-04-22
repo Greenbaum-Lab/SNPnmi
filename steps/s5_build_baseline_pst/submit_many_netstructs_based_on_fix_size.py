@@ -111,7 +111,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     num_of_trees = options.args[1]
 
     class_name = f'{mac_maf}_{class_val}'
-    num_of_windows_per_tree = data_size / window_size
+    num_of_windows_per_tree = int(data_size) / int(window_size)
     assert num_of_windows_per_tree == int(num_of_windows_per_tree), "Data size is not dividable in windows size"
     with open(paths_helper.number_of_windows_per_class_template.format(class_name=class_name), 'r') as f:
         num_of_windows = int(f.read())

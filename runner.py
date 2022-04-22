@@ -95,7 +95,7 @@ def runner(options):
         is_executed = run_step(options, step)
         print(f'is executed: {is_executed}')
 
-# python3 runner.py -d sim_v0 --args 100,2000 --run_all
+# python3 runner.py -d sim_dip_v1 --args 100,2000 --run_all
 
 #  python3 runner.py -d hgdp -s 1.1
 

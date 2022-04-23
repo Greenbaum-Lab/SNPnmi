@@ -111,7 +111,7 @@ def combine_heights_to_sum_matrix(options, full_mat_df, data_size):
 
 def main(options):
     with Timer(f"Collect tree heights to csv"):
-        for data_size in ['1000', '5000']:
+        for data_size in [1000, 5000]:
             df = collect_tree_heights(options, data_size)
             combine_heights_to_sum_matrix(options, df, data_size)
 

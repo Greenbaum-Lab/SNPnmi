@@ -79,7 +79,7 @@ def plot_nmi_scores(options):
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,
-                           scats=np.array(all_classes_avg),
+                           scats=np.array(all_classes_avg).reshape(1, -1),
                            colors=['tab:blue', 'tab:green', 'tab:orange'],
                            polynomials=[np.polyfit(class_names, all_classes_avg, 3)],
                            labels=[f'{e} SNPs' for e in sizes] + ['Full class'],

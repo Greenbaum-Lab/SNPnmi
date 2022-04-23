@@ -57,9 +57,8 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df):
     return df
 
 
-def collect_num_of_nodes(options):
+def collect_num_of_nodes(options,data_size):
     paths_helper = get_paths_helper(options.dataset_name)
-    data_size = options.args[0]
 
     os.makedirs(paths_helper.summary_dir, exist_ok=True)
     csv_path = paths_helper.summary_dir + f'/num_of_nodes_{data_size}_ss_{options.ns_ss}.csv'
@@ -71,11 +70,10 @@ def collect_num_of_nodes(options):
     return df
 
 
-def combine_num_of_nodes_to_matrix(options, full_mat_df):
-    print("stage 2")
+def combine_num_of_nodes_to_matrix(options, full_mat_df, data_size):
     paths_helper = get_paths_helper(options.dataset_name)
 
-    csv_output_path = paths_helper.summary_dir + f'/tree_num_of_nodes_per_class_{options.args[0]}.csv'
+    csv_output_path = paths_helper.summary_dir + f'/tree_num_of_nodes_per_class_{data_size}.csv'
     sum_mat_df = pd.DataFrame(columns=['Class', 'avg_leaves', 'std_leaves', 'avg_nodes', 'std_nodes'])
     for cls in tqdm(list(class_iter(options)), desc='collect num of nodes Stage 2'):
         sum_mat_df = combine_attributes_per_class(cls.name,
@@ -86,8 +84,9 @@ def combine_num_of_nodes_to_matrix(options, full_mat_df):
 
 def main(options):
     with Timer(f"Collect num of nodes per tree to csv"):
-        df = collect_num_of_nodes(options)
-        combine_num_of_nodes_to_matrix(options, df)
+        for data_size in [1000, 5000]:
+            df = collect_num_of_nodes(options, data_size)
+            combine_num_of_nodes_to_matrix(options, df, data_size)
 
 
 if __name__ == "__main__":

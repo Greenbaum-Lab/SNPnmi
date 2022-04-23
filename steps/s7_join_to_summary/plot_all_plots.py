@@ -17,7 +17,7 @@ from utils.loader import Timer
 def main(options):
     with Timer(f"Plot all plots with {str_for_timer(options)}"):
 
-        is_success1, msg1 = execute_with_checkpoint(number_of_snp_per_class.main, 'number_of_snp_per_clas', options)
+        is_success1, msg1 = execute_with_checkpoint(number_of_snp_per_class.main, 'number of snp per clas', options)
         print(msg1)
         is_success2, msg2 = execute_with_checkpoint(plot_nmi_scores.main, 'plot_nmi_scores', options)
         print(msg2)

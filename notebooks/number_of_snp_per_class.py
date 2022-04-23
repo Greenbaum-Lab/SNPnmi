@@ -34,7 +34,7 @@ def plot_num_of_snp_per_class(options):
                        output=f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg',
                        polynomials=None,
                        log_scale=True)
-
+    return True
 
 def main(options):
     with Timer(f"Per class sum all windows on {str_for_timer(options)}"):

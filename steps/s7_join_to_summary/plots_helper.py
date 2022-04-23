@@ -20,7 +20,7 @@ class PlotConsts:
         mac_class_names = np.arange(options.mac[0], options.mac[1] + 1) if options.dataset_name != 'arabidopsis' else \
             np.arange(options.mac[0], options.mac[1] + 1, 2)
         maf_class_names = np.arange(options.maf[0], options.maf[1] + 1) / 100
-        class_names = mac_class_names if mac_maf == ' maf' else maf_class_names
+        class_names = mac_class_names if mac_maf == 'mac' else maf_class_names
 
         return class_names
 

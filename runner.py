@@ -19,7 +19,7 @@ from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class, \
     submit_many_netstructs_based_on_fix_size
 from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_mini_trees
-from steps.s7_join_to_summary import run_all_summaries
+from steps.s7_join_to_summary import run_all_summaries, plot_all_plots
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper
@@ -39,7 +39,8 @@ step_to_func_and_name = {
     "5.4": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
     "6.1": (run_nmi_on_full_classes.main, 'run_nmi_on_full_classes'),
     "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees'),
-    "7.1": (run_all_summaries.main, 'run_all_summaries')
+    "7.1": (run_all_summaries.main, 'run_all_summaries'),
+    "7.2": (plot_all_plots.main, 'plot_all_plots')
 }
 
 def run_step(options, step, use_checkpoint=True):
@@ -75,7 +76,7 @@ def run_all_pipeline(options):
     paths_helper = get_paths_helper(options.dataset_name)
     orig_args = options.args
     s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '5.4.1', '5.4.2', '6.1',
-             '6.2.1', '6.2.2', '7.1']
+             '6.2.1', '6.2.2', '7.1', '7.2']
     for step in s_lst:
         start_step_time = time()
         print(f'start step {step}')

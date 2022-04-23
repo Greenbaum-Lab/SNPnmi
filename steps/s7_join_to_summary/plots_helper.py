@@ -44,7 +44,7 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, colors, la
     class_names = PlotConsts.get_class_names(options, mac_maf)
     num_of_plots = values.shape[0] if values else 0
     num_of_stds = std.shape[0] if std else 0
-    num_of_scats = scats.shape[0] if std else 0
+    num_of_scats = scats.shape[0] if scats else 0
 
     for idx in range(num_of_plots):
         plt.plot(class_names, values[idx], color=colors[idx], label=labels[idx])

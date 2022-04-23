@@ -30,6 +30,7 @@ def plot_num_of_snp_per_class(options):
                        labels=['Num of SNPs'],
                        title='site frequency spectrum (SFS)',
                        output=f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg',
+                       polynomials=[],
                        log_scale=True)
 
 

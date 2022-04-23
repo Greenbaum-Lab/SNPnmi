@@ -3,6 +3,7 @@ import os
 import sys
 from os.path import dirname, abspath, basename
 from tqdm import tqdm
+import numpy as np
 
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
@@ -26,6 +27,7 @@ def plot_num_of_snp_per_class(options):
     for cls in tqdm(list(class_iter(options))):
         num_of_snps[cls.mac_maf].append(int(windows2count[cls.name]) * window_size)
     for mac_maf in ["mac", "maf"]:
+        num_of_snps[mac_maf] = np.array(num_of_snps[mac_maf])
         plot_per_class(options, mac_maf, values=num_of_snps[mac_maf], std=None, scats=None, colors=['tab:blue'],
                        labels=['Num of SNPs'],
                        title='site frequency spectrum (SFS)',

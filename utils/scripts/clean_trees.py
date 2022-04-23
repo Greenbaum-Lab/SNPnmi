@@ -39,11 +39,15 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
 def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
     ns_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
-    hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    hash_data = load_dict_from_json(hash_file)
+    window_list_dict_path = paths_helper.hash_windows_list_template.format(class_name=class_name)
+    window_length_dict_path = paths_helper.hash_winds_lengths_template.format(class_name=class_name)
+    window_list_file = load_dict_from_json(window_list_dict_path)
+    window_length_file = load_dict_from_json(window_length_dict_path)
     for k in invalid_hashes:
-        if k in hash_data.keys():
-            del hash_data[k]
+        if k in window_list_file.keys():
+            del window_list_file[k]
+        if k in window_length_file.keys():
+            del window_length_file[k]
         job_name = f"{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true"
         stdout = paths_helper.logs_cluster_jobs_stdout_template.format(job_type='mini_net-struct', job_name=job_name)
         stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type='mini_net-struct', job_name=job_name)
@@ -55,8 +59,8 @@ def erase_invalid_trees(options, paths_helper, class_name, invalid_hashes):
         ns_path = ns_dir + f"{class_name}_{k}/"
         if os.path.exists(ns_path):
             shutil.rmtree(ns_path)
-    with open(hash_file, "w") as f:
-        json.dump(hash_data, f)
+    with open(window_list_dict_path, "w") as f:
+        json.dump(window_list_file, f)
 
 
 def delete_unfinished_trees_and_hashes(options):

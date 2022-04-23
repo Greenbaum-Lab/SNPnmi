@@ -49,21 +49,20 @@ def plot_nmi_scores(options):
         for mac_maf in ['mac', 'maf']:
             all_classes_avg = []
             class_names = PlotConsts.get_class_names(options, mac_maf)
-            sizes = [1000, 5000]
             f = plt.figure()
             f.set_figwidth(8)
             f.set_figheight(6)
             avg_arr = np.empty(shape=(0,))
             std_arr = np.empty(shape=(0,))
-            for num_of_snp in sizes:
+            for num_of_snp in options.data_size:
                 avg = []
                 std = []
                 for cls in class_iter(options):
                     if cls.mac_maf != mac_maf:
                         continue
-                    if num_of_snp == sizes[0]:
-                        all_class_file = nmi_dir + nmi_file_template.format(mac_maf=mac_maf, val=cls.val, ns_ss=options.ns_ss,
-                                                                               input_type=nmi_type)
+                    if num_of_snp == options.data_size[0]:
+                        all_class_file = nmi_dir + nmi_file_template.format(mac_maf=mac_maf, val=cls.val,
+                                                                            ns_ss=options.ns_ss, input_type=nmi_type)
                         max_score, lfk_score, sum_score = _get_scores_from_nmi_file(all_class_file)
                         all_classes_avg.append(max_score)
                     class_name = f'ss_{options.ns_ss}_{mac_maf}_{cls.val}_{num_of_snp}'
@@ -74,15 +73,15 @@ def plot_nmi_scores(options):
                     std.append(float(class_values[f'{score_name}_std']))
                 avg_arr = np.concatenate([avg_arr, np.array(avg)])
                 std_arr = np.concatenate([std, np.array(std)])
-            avg_arr.reshape(len(sizes), -1)
-            std_arr.reshape(len(sizes), -1)
+            avg_arr.reshape(len(options.data_size), -1)
+            std_arr.reshape(len(options.data_size), -1)
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,
                            scats=np.array(all_classes_avg).reshape(1, -1),
                            colors=['tab:blue', 'tab:green', 'tab:orange'],
                            polynomials=[np.polyfit(class_names, all_classes_avg, 3)],
-                           labels=[f'{e} SNPs' for e in sizes] + ['Full class'],
+                           labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
                            title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
                            y_label="NMI score",
                            legend_title="Num of SNPs",

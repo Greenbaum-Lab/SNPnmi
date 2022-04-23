@@ -295,6 +295,8 @@ def args_parser():
     parser.add_argument("--mac", dest="mac", default="2,70", help="min value, max value, delta")
     parser.add_argument("--maf", dest="maf", default="1,49", help="min value, max value, delta")
     parser.add_argument("--args", dest="args", help="Any additional args")
+    parser.add_argument("--data_size", dest="data_size", help="Num of SNPSs per tree. Provide as list split by commas",
+                        default='1000,5000')
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
                         help="Net-struct step size (relevant for step 5 only)")
@@ -309,6 +311,8 @@ def args_parser():
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []
     options.args = [int(i) if i.isdecimal() else i for i in options.args]
+    options.data_size = options.data_size.split(',') if options.data_size else []
+    options.data_size = [int(i) for i in options.data_size]
     options.mac = options.mac.split(',') if options.mac else []
     options.mac = [int(i) if i.isdecimal() else i for i in options.mac]
     options.maf = options.maf.split(',') if options.maf else []

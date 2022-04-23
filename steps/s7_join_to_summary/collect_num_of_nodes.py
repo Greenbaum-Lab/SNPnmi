@@ -87,7 +87,7 @@ def main(options):
         for data_size in [1000, 5000]:
             df = collect_num_of_nodes(options, data_size)
             combine_num_of_nodes_to_matrix(options, df, data_size)
-
+    return True
 
 if __name__ == "__main__":
     arguments = args_parser()

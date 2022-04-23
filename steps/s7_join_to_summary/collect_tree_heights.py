@@ -114,7 +114,7 @@ def main(options):
         for data_size in [1000, 5000]:
             df = collect_tree_heights(options, data_size)
             combine_heights_to_sum_matrix(options, df, data_size)
-
+    return True
 
 if __name__ == "__main__":
     arguments = args_parser()

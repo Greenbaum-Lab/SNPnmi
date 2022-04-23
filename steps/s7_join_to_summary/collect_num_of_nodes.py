@@ -17,19 +17,18 @@ from utils.loader import Timer
 MIN_INDIVIDUAL_PER_NODE = 5
 
 
-def collect_num_of_nodes_per_class(options, paths_helper, class_name, df):
+def collect_num_of_nodes_per_class(options, paths_helper, class_name, df, data_size):
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
     tree_nums = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
     tree_dirs = {h: paths_helper.net_struct_dir_class.format(class_name=class_name, tree_hash=h) for h in
                  tree_nums.keys()}
     tree_length_dict = load_dict_from_json(paths_helper.hash_winds_lengths_template.format(class_name=class_name))
-    tree_size = options.args[0]
     for tree_hash, dir in tree_dirs.items():
         tree_name = f'{class_name}_{tree_hash}'
         if tree_name in trees_in_df:
             continue
-        if tree_length_dict[tree_hash] != tree_size:
+        if tree_length_dict[tree_hash] != data_size:
             continue
         sub_trees = os.listdir(f'{dir}{tree_name}/')
         correct_trees = [t for t in sub_trees if f"SS_{options.ns_ss}" in t]
@@ -87,7 +86,7 @@ def main(options):
         for data_size in [1000, 5000]:
             df = collect_num_of_nodes(options, data_size)
             combine_num_of_nodes_to_matrix(options, df, data_size)
-
+    return True
 
 if __name__ == "__main__":
     arguments = args_parser()

@@ -64,7 +64,7 @@ def collect_num_of_nodes(options,data_size):
     df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
     for cls in tqdm(list(class_iter(options)), desc='collect num of nodes Stage 1'):
-        df = collect_num_of_nodes_per_class(options, paths_helper, cls.name, df)
+        df = collect_num_of_nodes_per_class(options, paths_helper, cls.name, df, data_size)
     df.to_csv(csv_path, index=False)
     return df
 

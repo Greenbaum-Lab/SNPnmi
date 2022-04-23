@@ -27,6 +27,7 @@ def _get_scores_from_nmi_file(nmi_file):
         sum_score = float(lines[3].split('\t')[1])
         return max_score, lfkScore, sum_score
 
+
 def get_inputs_for_plot_func(options):
     paths_helper = get_paths_helper(options.dataset_name)
     summary_dir = paths_helper.summary_dir
@@ -39,6 +40,7 @@ def get_inputs_for_plot_func(options):
     SCORES = ['max', 'lfk']
     nmi_type_score_pairs = list(itertools.product(NMI_TYPES, SCORES))
     return nmi_type_score_pairs, df, nmi_dir, nmi_file_template, summary_dir
+
 
 def plot_nmi_scores(options):
     pairs, df, nmi_dir, nmi_file_template, summary_dir = get_inputs_for_plot_func(options)
@@ -86,6 +88,7 @@ def plot_nmi_scores(options):
                            y_label="NMI score",
                            legend_title="Num of SNPs",
                            output=f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
+    return True
 
 
 def main(options):

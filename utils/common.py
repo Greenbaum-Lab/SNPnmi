@@ -90,7 +90,7 @@ def delete_extra_files(in_dir, files_to_keep):
 
 
 def hash_args(options):
-    args = options.args + options.mac + options.maf + [options.ns_ss]
+    args = list(options.args) + options.mac + options.maf + [options.ns_ss]
     args = [str(e) for e in args]
     return hasher(*args)
 

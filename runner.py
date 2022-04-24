@@ -66,9 +66,9 @@ def run_all_pipeline(options):
             _options.args = [_orig_args[1]]  # num_of_winds_per_job
 
         elif _step in ['5.4.1', '6.2.1']:
-            _options.args = [str(_options.data_size[0]), '5']
+            _options.args = [str(_options.data_size[0]), '100']
         elif _step in ['5.4.2', '6.2.2']:
-            _options.args = [str(_options.data_size[1]), '5']
+            _options.args = [str(_options.data_size[1]), '100']
         else:
             _options.args = _orig_args
         return _options

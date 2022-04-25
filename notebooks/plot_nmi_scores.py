@@ -77,12 +77,13 @@ def plot_nmi_scores(options):
                 std_arr = np.concatenate([std, np.array(std)])
             avg_arr = avg_arr.reshape(len(options.data_size), -1)
             std_arr = std_arr.reshape(len(options.data_size), -1)
+            polynomial = np.array([np.polyfit(class_names, all_classes_avg, 3)]).reshape(1,1)
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,
                            scats=np.array(all_classes_avg).reshape(1, -1),
                            colors=['tab:blue', 'tab:green', 'tab:orange'],
-                           polynomials=[np.polyfit(class_names, all_classes_avg, 3)],
+                           polynomials=polynomial,
                            labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
                            title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
                            y_label="NMI score",

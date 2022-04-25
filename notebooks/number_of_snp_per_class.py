@@ -29,6 +29,7 @@ def plot_num_of_snp_per_class(options):
     for mac_maf in ["mac", "maf"]:
         num_of_snps[mac_maf] = np.array(num_of_snps[mac_maf]).reshape((1, -1))
         plot_per_class(options, mac_maf, values=num_of_snps[mac_maf], std=None, scats=None, colors=['tab:blue'],
+                       base_lines=None,
                        labels=['Num of SNPs'],
                        title='site frequency spectrum (SFS)',
                        output=f'{paths_helper.summary_dir}num_of_snps/{mac_maf}.svg',

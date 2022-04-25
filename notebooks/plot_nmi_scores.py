@@ -86,6 +86,7 @@ def plot_nmi_scores(options):
                            scats=np.array(all_classes_avg).reshape(1, -1),
                            colors=['tab:blue', 'tab:green', 'tab:orange'],
                            polynomials=polynomial,
+                           base_lines=None,
                            labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
                            title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
                            y_label="NMI score",

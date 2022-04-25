@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-import json
-import os
+
 import sys
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import matplotlib.pyplot as plt
 import numpy as np
 

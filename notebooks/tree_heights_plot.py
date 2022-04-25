@@ -93,3 +93,4 @@ def main(options):
                 summary_dir + 'tree_height/nodes_{mac_maf}_{num_of_snp}.svg',
                 'PST size properties',
                 scores)
+    return True

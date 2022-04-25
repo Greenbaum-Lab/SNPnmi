@@ -49,7 +49,7 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
             base_line_colors = []
             avg_arr = np.empty(shape=(0,))
             std_arr = np.empty(shape=(0,))
-            for idx, score in enumerate(scores):
+            for score in scores:
                 avg = []
                 std = []
                 for cls in class_iter(options):
@@ -62,7 +62,7 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                 std_arr = np.concatenate([std, np.array(std)])
                 plot_colors.append(SCORE2COLOR_DICT[score])
                 base_line_colors.append(SCORE2COLOR_DICT[score])
-                base_lines.append(gt_scores[scores])
+                base_lines.append(gt_scores[score])
             avg_arr = avg_arr.reshape(len(options.data_size), -1)
             std_arr = std_arr.reshape(len(options.data_size), -1)
 

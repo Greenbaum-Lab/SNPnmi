@@ -75,8 +75,8 @@ def plot_nmi_scores(options):
                     std.append(float(class_values[f'{score_name}_std']))
                 avg_arr = np.concatenate([avg_arr, np.array(avg)])
                 std_arr = np.concatenate([std, np.array(std)])
-            avg_arr.reshape(len(options.data_size), -1)
-            std_arr.reshape(len(options.data_size), -1)
+            avg_arr = avg_arr.reshape(len(options.data_size), -1)
+            std_arr = std_arr.reshape(len(options.data_size), -1)
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,

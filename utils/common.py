@@ -84,7 +84,7 @@ def delete_extra_files(in_dir, files_to_keep):
     files_to_remove = []
     for file in files:
         if file not in files_to_keep:
-            files_to_remove.append(file)
+            files_to_remove.append(in_dir + file)
     subprocess.run(['rm', '-f'] + files_to_remove)
 
 

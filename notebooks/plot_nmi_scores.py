@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import sys
 from os.path import dirname, abspath, basename
 
@@ -44,6 +45,7 @@ def get_inputs_for_plot_func(options):
 
 def plot_nmi_scores(options):
     pairs, df, nmi_dir, nmi_file_template, summary_dir = get_inputs_for_plot_func(options)
+    os.makedirs(f'{summary_dir}fix_size_nmi_scores', exist_ok=True)
     for nmi_type, score in pairs:
         score_name = f'{nmi_type}_{score}'
         nmi_type_rep = 'Full PST' if nmi_type == 'AllNodes' else 'Fine Scale'

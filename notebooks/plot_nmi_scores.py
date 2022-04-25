@@ -77,7 +77,7 @@ def plot_nmi_scores(options):
                 std_arr = np.concatenate([std, np.array(std)])
             avg_arr = avg_arr.reshape(len(options.data_size), -1)
             std_arr = std_arr.reshape(len(options.data_size), -1)
-            polynomial = np.array([np.polyfit(class_names, all_classes_avg, 3)]).reshape(1,1)
+            polynomial = np.array([np.polyfit(class_names, all_classes_avg, 3)]).reshape(1, -1)
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,

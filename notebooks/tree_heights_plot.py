@@ -63,8 +63,8 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                 plot_colors.append(SCORE2COLOR_DICT[score])
                 base_line_colors.append(SCORE2COLOR_DICT[score])
                 base_lines.append(gt_scores[score])
-            avg_arr = avg_arr.reshape(len(options.data_size), -1)
-            std_arr = std_arr.reshape(len(options.data_size), -1)
+            avg_arr = avg_arr.reshape(len(scores), -1)
+            std_arr = std_arr.reshape(len(scores), -1)
 
             plot_per_class(options, mac_maf,
                            values=avg_arr, std=std_arr,

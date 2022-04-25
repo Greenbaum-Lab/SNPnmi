@@ -71,7 +71,7 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
                        fontsize=10, verticalalignment='top')
         plt.plot(0.05, 0.95, transform=plt.gca().transAxes, color='none')
 
-    for idx in base_lines:
+    for idx in range(num_of_base_lines):
         plt.plot([min(class_names), max(class_names)], [base_lines[idx] for _ in range(2)],
                  linestyle='--', color=colors[num_of_plots + num_of_scats + idx], alpha=0.8,
                  linewidth=PlotConsts.line_width)

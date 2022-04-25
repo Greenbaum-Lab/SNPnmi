@@ -59,7 +59,7 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                     avg.append(float(class_values[f'avg_{score}']))
                     std.append(float(class_values[f'std_{score}']))
                 avg_arr = np.concatenate([avg_arr, np.array(avg)])
-                std_arr = np.concatenate([std, np.array(std)])
+                std_arr = np.concatenate([std_arr, np.array(std)])
                 plot_colors.append(SCORE2COLOR_DICT[score])
                 base_line_colors.append(SCORE2COLOR_DICT[score])
                 base_lines.append(gt_scores[score])

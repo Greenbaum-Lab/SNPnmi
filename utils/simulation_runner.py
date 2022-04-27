@@ -31,7 +31,7 @@ class Simulation:
         for i in range(self.NUMBER_OF_SUBPOPS):
             demography.add_population(name=ascii_uppercase[i], initial_size=self.INDV_PER_POP)
         demography.add_population(name="AB", initial_size=self.POPULATION_SIZE)
-        demography.add_population_split(time=5000, derived=[e for e in ascii_uppercase[:self.NUMBER_OF_SUBPOPS]], ancestral="AB")
+        demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.NUMBER_OF_SUBPOPS]], ancestral="AB")
 
         ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.POP_SAMPLE_SIZE for i in range(self.NUMBER_OF_SUBPOPS)}, sequence_length=5e8, demography=demography,
                                   recombination_rate=1e-8, random_seed=1)

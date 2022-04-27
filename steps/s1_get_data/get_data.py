@@ -1,6 +1,7 @@
 ## Download files by config.
 ## Will check that the sized match, and can retry to download if they are not.
 ## Note that it can take a few hours to download 100GB, so better run in screen.
+import subprocess
 import urllib.request
 import time
 import sys
@@ -112,7 +113,15 @@ def get_data(options):
         if all([os.path.exists(paths_helper.data_dir + file) for file in vcf_files_path]):
             print("Data exists. Doesnt run simulation")
             return True
-        return simulation_runner(options.dataset_name)
+        simulation_runner(options.dataset_name)
+        vcf_files = paths_helper.vcf_dir + get_dataset_vcf_files_names(options.dataset_name)
+        for f in vcf_files:
+            try:
+                subprocess.run(['rclone', 'sync', f, f'remote:gili_lab/vcf/{options.dataset_name}/'])
+            except:
+                assert False, f"Failed to sync {f} to google drive. (Is rclone loaded?)"
+
+        return True
 
 
 def main(options):

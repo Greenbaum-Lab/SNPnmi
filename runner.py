@@ -89,8 +89,6 @@ def run_all_pipeline(options):
             add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
 
     subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
-    vcf_file = paths_helper.vcf_dir + get_dataset_vcf_files_names(options.dataset_name)
-    subprocess.run(['rclone',  'sync',  vcf_file,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
 
 
 

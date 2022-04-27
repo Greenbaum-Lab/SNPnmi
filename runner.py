@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 # given a step number and params, will run the step.
+import subprocess
 import sys
 import os
 from os.path import dirname
@@ -85,6 +86,7 @@ def run_all_pipeline(options):
         assert success_run, f"Failed in step {step}"
         if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
             add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
+    subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
 
 
 def runner(options):

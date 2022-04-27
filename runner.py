@@ -86,7 +86,7 @@ def run_all_pipeline(options):
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
-            add_time_to_controller_file(data_dir, (time() - start_step_time), step)
+            add_time_to_controller_file(paths_helper.data_dir, (time() - start_step_time), step)
 
     subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
 

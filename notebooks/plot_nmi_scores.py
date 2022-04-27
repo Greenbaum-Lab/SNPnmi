@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import sys
 from os.path import dirname, abspath, basename
 
@@ -44,6 +45,7 @@ def get_inputs_for_plot_func(options):
 
 def plot_nmi_scores(options):
     pairs, df, nmi_dir, nmi_file_template, summary_dir = get_inputs_for_plot_func(options)
+    os.makedirs(f'{summary_dir}fix_size_nmi_scores', exist_ok=True)
     for nmi_type, score in pairs:
         score_name = f'{nmi_type}_{score}'
         nmi_type_rep = 'Full PST' if nmi_type == 'AllNodes' else 'Fine Scale'
@@ -75,14 +77,16 @@ def plot_nmi_scores(options):
                     std.append(float(class_values[f'{score_name}_std']))
                 avg_arr = np.concatenate([avg_arr, np.array(avg)])
                 std_arr = np.concatenate([std, np.array(std)])
-            avg_arr.reshape(len(options.data_size), -1)
-            std_arr.reshape(len(options.data_size), -1)
+            avg_arr = avg_arr.reshape(len(options.data_size), -1)
+            std_arr = std_arr.reshape(len(options.data_size), -1)
+            polynomial = np.array([np.polyfit(class_names, all_classes_avg, 3)]).reshape(1, -1)
             plot_per_class(options, mac_maf,
                            values=avg_arr,
                            std=std_arr,
                            scats=np.array(all_classes_avg).reshape(1, -1),
                            colors=['tab:blue', 'tab:green', 'tab:orange'],
-                           polynomials=[np.polyfit(class_names, all_classes_avg, 3)],
+                           polynomials=polynomial,
+                           base_lines=None,
                            labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
                            title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
                            y_label="NMI score",

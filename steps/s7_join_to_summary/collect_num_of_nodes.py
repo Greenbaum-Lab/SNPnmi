@@ -17,6 +17,20 @@ from utils.loader import Timer
 MIN_INDIVIDUAL_PER_NODE = 5
 
 
+def count_num_of_nodes_for_tree(file_path):
+    """
+    If given AllNodes.txt file path - return num of nodes.
+    If given 2_Leafs_NoOverlap file path - return num of leaves
+    """
+    with open(file_path, "r") as f:
+        num_of_nodes = 0
+        all_nodes = f.readlines()
+        for node in all_nodes:
+            if len(node.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
+                num_of_nodes += 1
+    return num_of_nodes
+
+
 def collect_num_of_nodes_per_class(options, paths_helper, class_name, df, data_size):
     trees_in_df = list(df['Tree']) if 'Tree' in df.columns else []
     df_class = pd.DataFrame()
@@ -35,19 +49,9 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df, data_s
         assert len(correct_trees) == 1, f"more than 1 tree or tree {tree_hash} for class {class_name} is missing"
         tree_dir = f'{dir}{tree_name}/{correct_trees[0]}/'
         all_nodes_file = f'{tree_dir}AllNodes.txt'
-        with open(all_nodes_file, "r") as f:
-            num_of_nodes = 0
-            all_nodes = f.readlines()
-            for node in all_nodes:
-                if len(node.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
-                    num_of_nodes += 1
+        num_of_nodes = count_num_of_nodes_for_tree(all_nodes_file)
         all_leaves_files = f'{tree_dir}2_Leafs_NoOverlap.txt'
-        with open(all_leaves_files, "r") as f:
-            num_of_leaves = 0
-            all_leaves = f.readlines()
-            for leaf in all_leaves:
-                if len(leaf.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
-                    num_of_leaves += 1
+        num_of_leaves = count_num_of_nodes_for_tree(all_leaves_files)
 
         df_tree = pd.DataFrame([[tree_name, num_of_leaves, num_of_nodes]],
                                columns=["Tree", "num_of_leaves", "num_of_nodes"])

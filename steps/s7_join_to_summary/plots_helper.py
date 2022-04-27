@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-import json
-import os
+
 import sys
-from os.path import dirname, abspath, basename
+from os.path import dirname, abspath
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -39,12 +38,13 @@ def r2score(true, pred):
     return np.average(output_scores)
 
 
-def plot_per_class(options, mac_maf, values, std, scats, polynomials, colors, labels, title, output, log_scale=False,
+def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines, colors, labels, title, output, log_scale=False,
                    y_label="", legend_title=""):
     class_names = PlotConsts.get_class_names(options, mac_maf)
     num_of_plots = values.shape[0] if values is not None else 0
     num_of_stds = std.shape[0] if std is not None else 0
     num_of_scats = scats.shape[0] if scats is not None else 0
+    num_of_base_lines = base_lines.size if base_lines is not None else 0
 
     for idx in range(num_of_plots):
         plt.plot(class_names, values[idx], color=colors[idx], label=labels[idx])
@@ -69,6 +69,11 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, colors, la
         plt.gca().text(.01 + .02 * idx, .99, text, transform=plt.gca().transAxes,
                        fontsize=10, verticalalignment='top')
         plt.plot(0.05, 0.95, transform=plt.gca().transAxes, color='none')
+
+    for idx in range(num_of_base_lines):
+        plt.plot([min(class_names), max(class_names)], [base_lines[idx] for _ in range(2)],
+                 linestyle='--', color=colors[num_of_plots + num_of_scats + idx], alpha=0.8,
+                 linewidth=PlotConsts.line_width)
 
     if log_scale:
         plt.yscale('log')

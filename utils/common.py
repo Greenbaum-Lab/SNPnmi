@@ -299,6 +299,8 @@ def args_parser():
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
                         help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--num_of_trees", dest="num_of_trees", default="100",
+                        help="num of trees in each class to create (B in bootstraps)")
     parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
                         help="Net-struct step size (relevant for step 5 only)")
     parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',

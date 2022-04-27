@@ -106,9 +106,8 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
 
 
 
-def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
-    data_size = int(options.args[0])
-    num_of_trees = int(options.args[1])
+def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size, data_size):
+    num_of_trees = int(options.num_of_trees)
 
     class_name = f'{mac_maf}_{class_val}'
     num_of_windows_per_tree = data_size / window_size
@@ -137,9 +136,10 @@ def submit_mini_net_struct_for_all_classes(options):
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
     stderr_files = []
-
-    for cls in class_iter(options):
-        stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size)
+    for data_size in options.data_size:
+        for cls in class_iter(options):
+            stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size,
+                                                             data_size)
 
     jobs_func = warp_how_many_jobs('ns')
     with Loader("Running NetStruct_Hierarchy per many classes", jobs_func):

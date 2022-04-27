@@ -23,8 +23,8 @@ from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_m
 from steps.s7_join_to_summary import run_all_summaries, plot_all_plots
 
 from utils.checkpoint_helper import execute_with_checkpoint
-from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper, \
-    get_dataset_vcf_files_names
+from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper
+
 
 step_to_func_and_name = {
     "1.1": (get_data.main, 'get_data'),
@@ -86,7 +86,7 @@ def run_all_pipeline(options):
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
-            add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
+            add_time_to_controller_file(data_dir, (time() - start_step_time), step)
 
     subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
 

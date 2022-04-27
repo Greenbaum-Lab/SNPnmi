@@ -68,7 +68,7 @@ class Simulation:
         with open(data_json, "r") as f:
             js = json.load(f)
         assert simulation_name not in js, "Cannot overwrite simulations! First delete old simulation"
-        js[simulation_name] = {'vcf_files_name': [f'{simulation_name}.vcf'],
+        js[simulation_name] = {'vcf_files_names': [f'{simulation_name}.vcf'],
                                'vcf_files_short_names': ['chr1'],
                                'num_chrs': 1,
                                'num_individuals': self.OUTPUT_SIZE,

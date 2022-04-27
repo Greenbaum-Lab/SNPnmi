@@ -114,7 +114,8 @@ def get_data(options):
             print("Data exists. Doesnt run simulation")
             return True
         simulation_runner(options.dataset_name)
-        vcf_files = paths_helper.vcf_dir + get_dataset_vcf_files_names(options.dataset_name)
+        subprocess.run(['rclone', 'sync', f'{paths_helper.data_dir}simulation_runner.py', f'remote:gili_lab/vcf/{options.dataset_name}/'])
+        vcf_files = [paths_helper.data_dir + e for e in get_dataset_vcf_files_names(options.dataset_name)]
         for f in vcf_files:
             try:
                 subprocess.run(['rclone', 'sync', f, f'remote:gili_lab/vcf/{options.dataset_name}/'])

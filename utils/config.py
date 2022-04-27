@@ -79,7 +79,7 @@ def get_dataset_metadata_files_names(dataset_name):
     return data_config[dataset_name]['metadata_files_names']
 
 
-def is_dataset_exists(dataset_name):
+def is_dataset_in_config(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return dataset_name in data_config
 

@@ -105,12 +105,12 @@ def validate_downloaded_files(ftp_source_host, ftp_source_path, local_data_folde
 
 # wrappers for execution
 def get_data(options):
-    if is_dataset_exists(options.dataset_name) and 'sim' not in options.dataset_name:
+    if is_dataset_in_config(options.dataset_name) and 'sim' not in options.dataset_name:
         return get_files_by_dataset_name(options.dataset_name)
     else:
         paths_helper = get_paths_helper(options.dataset_name)
-        vcf_files_path = get_dataset_vcf_files_names(options.dataset_name)
-        if all([os.path.exists(paths_helper.data_dir + file) for file in vcf_files_path]):
+        vcf_files_name = options.dataset_name + '.vcf'
+        if os.path.exists(paths_helper.data_dir + vcf_files_name):
             print("Data exists. Doesnt run simulation")
             return True
         simulation_runner(options.dataset_name)

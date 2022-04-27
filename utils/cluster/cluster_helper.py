@@ -22,7 +22,7 @@ def submit_wrapper(options):
 
 
 def submit_to_cluster(options, job_type, job_name, script_path, script_args, job_stdout_file,
-                      job_stderr_file, num_hours_to_run=8, memory=8):
+                      job_stderr_file, num_hours_to_run=8, memory=8, use_checkpoint=True):
     # prepare for submission
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(job_stderr_file), exist_ok=True)
@@ -32,7 +32,10 @@ def submit_to_cluster(options, job_type, job_name, script_path, script_args, job
     wrapper = choose_wrapper(options, paths_helper)
     cmd_to_run = f'{cluster_setting} {wrapper} python3 {script_path} {script_args}'
     options.submit_to_cluster_args = [paths_helper.submit_helper, cmd_to_run]
-    execute_with_checkpoint(submit_wrapper, job_type, options)
+    if use_checkpoint:
+        execute_with_checkpoint(submit_wrapper, job_type, options)
+    else:
+        submit_wrapper(options)
 
 
 def submit_to_heavy_lab(script_path, script_args, job_stdout_path, job_stderr_path):

@@ -35,7 +35,7 @@ class Simulation:
 
         ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.POP_SAMPLE_SIZE for i in range(self.NUMBER_OF_SUBPOPS)}, sequence_length=5e8, demography=demography,
                                   recombination_rate=1e-8, random_seed=1)
-        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-7, random_seed=1)
+        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
         return mts
 
     def run_simulation_and_save_vcf(self, paths_helper, simulation_name):

@@ -268,11 +268,11 @@ def get_class2sites(dataset_name):
     return class2sites
 
 
-def add_time_to_controller_file(paths_helper, duration, step):
-    if not os.path.exists(paths_helper.data_dir + 'times.json'):
+def add_time_to_controller_file(data_dir, duration, step):
+    if not os.path.exists(data_dir + 'times.json'):
         js = {}
     else:
-        with open(paths_helper.data_dir + 'times.json', 'r') as f:
+        with open(data_dir + 'times.json', 'r') as f:
             js = json.load(f)
     if step in js:
         return
@@ -283,7 +283,7 @@ def add_time_to_controller_file(paths_helper, duration, step):
     else:
         duration_str = f'{duration / 3600} hours'
     js[step] = duration_str
-    with open(paths_helper.data_dir + 'times.json', 'w') as f:
+    with open(data_dir + 'times.json', 'w') as f:
         json.dump(js, f)
 
 
@@ -299,6 +299,8 @@ def args_parser():
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
                         help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--num_of_trees", dest="num_of_trees", default="100",
+                        help="num of trees in each class to create (B in bootstraps)")
     parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
                         help="Net-struct step size (relevant for step 5 only)")
     parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',

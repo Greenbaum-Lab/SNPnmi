@@ -71,7 +71,7 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                            scats=None, polynomials=None,
                            colors=plot_colors + base_line_colors,
                            base_lines=np.array(base_lines),
-                           labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
+                           labels=scores,
                            title=f'{options.dataset_name} - {plot_title} - {mac_maf}',
                            legend_title="Scores",
                            output=plot_path.format(mac_maf=mac_maf, num_of_snp=num_of_snp))

@@ -42,15 +42,16 @@ def get_max_chr(dataset_name):
     chr_numbers = [int(name[len("chr"):]) for name in data_config[dataset_name]['vcf_files_short_names']]
     return np.max(chr_numbers)
 
-
 def get_sample_sites_file_name(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[dataset_name]['sample_sites_file_name']
+    dataset_dict = data_config.get(dataset_name, {'sample_sites_file_name': "sampleSite.txt"})
+    return dataset_dict['sample_sites_file_name']
 
 
 def get_indlist_file_name(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
-    return data_config[dataset_name]['indlist_file_name']
+    dataset_dict = data_config.get(dataset_name, {'indlist_file_name': "inlist.txt"})
+    return dataset_dict['indlist_file_name']
 
 
 def get_dataset_ftp_source_host(dataset_name):
@@ -78,7 +79,7 @@ def get_dataset_metadata_files_names(dataset_name):
     return data_config[dataset_name]['metadata_files_names']
 
 
-def is_dataset_exists(dataset_name):
+def is_dataset_in_config(dataset_name):
     data_config = get_config(CONFIG_NAME_DATA)
     return dataset_name in data_config
 

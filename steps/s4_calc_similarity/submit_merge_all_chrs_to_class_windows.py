@@ -54,7 +54,7 @@ def submit_merge_all_chrs_to_class_windows(options):
             python_script_params = f'-d {dataset_name} --args {cls.mac_maf},{cls.int_val},{min_windows_index},' \
                                    f'{max_windows_index}'
             submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
-                              job_stdout_file, job_stderr_file, num_hours_to_run=2)
+                              job_stdout_file, job_stderr_file, num_hours_to_run=2, use_checkpoint=False)
     jobs_func = warp_how_many_jobs("3m")
     with Loader("Merging jobs are running", jobs_func):
         while jobs_func():

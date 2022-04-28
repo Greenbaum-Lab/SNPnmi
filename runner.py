@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 # given a step number and params, will run the step.
+import subprocess
 import sys
 import os
 from os.path import dirname
@@ -23,6 +24,7 @@ from steps.s7_join_to_summary import run_all_summaries, plot_all_plots
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper
+
 
 step_to_func_and_name = {
     "1.1": (get_data.main, 'get_data'),
@@ -64,19 +66,18 @@ def run_all_pipeline(options):
 
         elif _step == '4.1':
             _options.args = [_orig_args[1]]  # num_of_winds_per_job
-
-        elif _step in ['5.4.1', '6.2.1']:
-            _options.args = [str(_options.data_size[0]), '100']
-        elif _step in ['5.4.2', '6.2.2']:
-            _options.args = [str(_options.data_size[1]), '100']
+        elif '6.2' in _step:
+            iteration = int(_step.split('.')[-1])
+            _options.args = [str(_options.data_size[iteration]), options.num_of_trees]
         else:
             _options.args = _orig_args
         return _options
 
     paths_helper = get_paths_helper(options.dataset_name)
     orig_args = options.args
-    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '5.4.1', '5.4.2', '6.1',
-             '6.2.1', '6.2.2', '7.1', '7.2']
+    size_rng = list(range(len(options.data_size)))
+    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '5.4'] +\
+            ['6.1'] + [f'6.2.{i}' for i in size_rng] + ['7.1', '7.2']
     for step in s_lst:
         start_step_time = time()
         print(f'start step {step}')
@@ -85,7 +86,10 @@ def run_all_pipeline(options):
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
-            add_time_to_controller_file(paths_helper, (time() - start_step_time), step)
+            add_time_to_controller_file(paths_helper.data_dir, (time() - start_step_time), step)
+
+    subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
+
 
 
 def runner(options):

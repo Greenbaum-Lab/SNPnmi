@@ -31,11 +31,11 @@ class Simulation:
         for i in range(self.NUMBER_OF_SUBPOPS):
             demography.add_population(name=ascii_uppercase[i], initial_size=self.INDV_PER_POP)
         demography.add_population(name="AB", initial_size=self.POPULATION_SIZE)
-        demography.add_population_split(time=5000, derived=[e for e in ascii_uppercase[:self.NUMBER_OF_SUBPOPS]], ancestral="AB")
+        demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.NUMBER_OF_SUBPOPS]], ancestral="AB")
 
         ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.POP_SAMPLE_SIZE for i in range(self.NUMBER_OF_SUBPOPS)}, sequence_length=5e8, demography=demography,
                                   recombination_rate=1e-8, random_seed=1)
-        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=5e-7, random_seed=1)
+        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
         return mts
 
     def run_simulation_and_save_vcf(self, paths_helper, simulation_name):
@@ -68,7 +68,7 @@ class Simulation:
         with open(data_json, "r") as f:
             js = json.load(f)
         assert simulation_name not in js, "Cannot overwrite simulations! First delete old simulation"
-        js[simulation_name] = {'vcf_files_name': [f'{simulation_name}.vcf'],
+        js[simulation_name] = {'vcf_files_names': [f'{simulation_name}.vcf'],
                                'vcf_files_short_names': ['chr1'],
                                'num_chrs': 1,
                                'num_individuals': self.OUTPUT_SIZE,

@@ -1,17 +1,13 @@
-import gzip
-import time
 import sys
 import os
 from os.path import dirname, abspath
 import numpy as np
-import re
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-from utils.loader import Timer
-from utils.common import build_empty_upper_left_matrix, write_upper_left_matrix_to_file, write_pairwise_similarity
 
+from utils.common import build_empty_upper_left_matrix, write_pairwise_similarity, handle_hash_file
 
 
 # TODO rename - similiarty
@@ -94,3 +90,17 @@ def matrix_to_edges_file(similarity_matrix, count_matrix, edges_file_path):
             result_file += f"{i} {j} {similarity_matrix[i, j] / max_e}\n"
     with open(edges_file_path, 'w') as f:
         f.write(result_file[:-1])
+
+
+def sum_windows(class_name, windows_id_list, similarity_window_template, count_window_template, output_dir,
+                paths_helper):
+    similarity_files = [similarity_window_template.format(window_id=index, class_name=class_name) for index in
+                        windows_id_list]
+    count_files = [count_window_template.format(window_id=index, class_name=class_name) for index in windows_id_list]
+
+    new_hash = handle_hash_file(class_name, paths_helper, [int(wind) for wind in windows_id_list])
+
+    generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_hash{new_hash}',
+                               save_np=False, save_edges=True)
+
+    return new_hash

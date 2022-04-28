@@ -105,7 +105,6 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
     return stderr_files
 
 
-
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size, data_size):
     num_of_trees = int(options.num_of_trees)
 
@@ -118,7 +117,7 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(
-        f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
+        f"For class {class_name} there are {num_computed_trees} trees in size {data_size} ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
 
     if options.run_ns_together and rest_num_of_trees:
         return submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees,

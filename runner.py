@@ -7,9 +7,11 @@ import os
 from os.path import dirname
 from time import time
 
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.scripts import sync_to_gdrive
 from utils.loader import Timer
 from steps.s1_get_data import get_data, get_vcfs_stats, fix_ref_allele
 from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class, collect_split_vcf_stats
@@ -76,7 +78,7 @@ def run_all_pipeline(options):
     paths_helper = get_paths_helper(options.dataset_name)
     orig_args = options.args
     size_rng = list(range(len(options.data_size)))
-    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '5.4'] +\
+    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.4'] +\
             ['6.1'] + [f'6.2.{i}' for i in size_rng] + ['7.1', '7.2']
     for step in s_lst:
         start_step_time = time()
@@ -88,8 +90,9 @@ def run_all_pipeline(options):
         if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
             add_time_to_controller_file(paths_helper.data_dir, (time() - start_step_time), step)
 
-    subprocess.run(['rclone',  'sync',  paths_helper.summary_dir,  f'remote:gili_lab/vcf/{options.dataset_name}/'])
-
+    sync_to_gdrive.sync_cluster_to_google_drive(source_file=paths_helper.summary_dir,
+                                                dest_dir=f'remote:gili_lab/vcf/{options.dataset_name}/',
+                                                dest_file=None)
 
 
 def runner(options):
@@ -101,7 +104,7 @@ def runner(options):
         is_executed = run_step(options, step)
         print(f'is executed: {is_executed}')
 
-# python3 runner.py -d sim_dip_v1 --args 100,5000 --run_all
+# python3 runner.py -d sim_dip_v1 --args 100,3000 --run_all
 
 #  python3 runner.py -d hgdp -s 1.1
 

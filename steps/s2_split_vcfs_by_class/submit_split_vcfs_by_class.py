@@ -37,6 +37,8 @@ def submit_split_vcfs_by_class(options):
     for cls in class_iter(options):
         stderr_files += submit_one_class_split(cls, options, output_dir, vcf_files, vcf_files_short_names, vcfs_dir)
 
+    stderr_files += submit_upload_vcf_to_gdrive(options, paths_helper)
+
     jobs_func = warp_how_many_jobs("s2")
     with Loader("Splitting jobs are running", jobs_func):
         while jobs_func():
@@ -72,7 +74,6 @@ def submit_one_class_split(cls, options, output_dir, vcf_files, vcf_files_short_
             submit_to_cluster(options, job_type, job_name, python_script_to_run, python_script_params,
                               job_stdout_file, job_stderr_file)
 
-    stderr_files += submit_upload_vcf_to_gdrive(options, paths_helper)
     return stderr_files
 
 
@@ -81,7 +82,8 @@ def submit_upload_vcf_to_gdrive(options, paths_helper):
     sync_job_type = 'sync_to_gdrive'
     python_script = f'{paths_helper.repo}utils/scripts/sync_to_gdrive.py'
     gdrive_path = f'remote:gili_lab/vcf/{options.dataset_name}/'
-    vcf_file_names = [f'{paths_helper.data_dir} + {e}' for e in get_dataset_vcf_files_names(options.dataset_name)]
+    vcf_file_names = [f'{paths_helper.data_dir}{e}' for e in get_dataset_vcf_files_names(options.dataset_name)]
+    vcf_file_names.append(f'{paths_helper.data_dir}simulation_runner.py')   # add simulation file for reproduction
     for vcf_name in vcf_file_names:
         stdout = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=sync_job_type, job_name=vcf_name)
         stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=sync_job_type, job_name=vcf_name)

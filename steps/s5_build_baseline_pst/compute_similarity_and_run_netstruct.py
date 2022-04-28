@@ -7,9 +7,9 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.similarity_helper import sum_windows
 from steps.s6_compare_to_random_pst.nmi_helper import collect_all_nodes_if_needed
 from utils.netstrcut_helper import build_netstruct_cmd
-from steps.s5_build_baseline_pst.per_class_sum_n_windows import sum_windows
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser, load_dict_from_json, delete_extra_files
 

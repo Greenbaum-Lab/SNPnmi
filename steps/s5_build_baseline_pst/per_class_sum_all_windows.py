@@ -1,19 +1,11 @@
-# NOTE - can only run after per_class_sum_n_windows.py - uses the output it generates!
-# given a class and N, we will take N windows from the class and create a distance matrix based on them
-# python3 per_class_sum_all_windows.py maf 0.40 1000
-
-# takes ~40 seconds for 100 windows.
-import pandas as pd
 import json
 import os
-import gzip
-import sys
-import time
 import sys
 from os.path import dirname, abspath
 
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
+from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run_net_struct
 sys.path.append(root_path)
 
 from utils.loader import Timer
@@ -53,6 +45,10 @@ def main(options):
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_all',
                                save_np=True, save_edges=True)
 
+    # Run net struct for all the class
+    edge_file = f'{output_dir}{class_name}_all_edges.txt'
+    output_dir = f'{paths_helper.net_struct_dir_class.format(class_name=class_name)}/{class_name}_all/'
+    run_net_struct(options, 'class_ns', edge_file, output_dir=output_dir)
 
 if __name__ == "__main__":
     arguments = args_parser()

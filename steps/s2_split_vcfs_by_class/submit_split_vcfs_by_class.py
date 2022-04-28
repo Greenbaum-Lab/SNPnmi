@@ -3,14 +3,13 @@
 # Per vcf file, per class, will submit a job (if checkpoint does not exist)
 import sys
 import time
-import os
+
 from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Loader, Timer
-from utils.common import get_paths_helper, warp_how_many_jobs, validate_stderr_empty, args_parser, str_for_timer, \
-    is_cluster, how_many_local_jobs_run, class_iter
+from utils.common import warp_how_many_jobs, args_parser, class_iter
 from utils.config import *
 from utils.cluster.cluster_helper import submit_to_cluster, submit_to_heavy_lab
 from utils.checkpoint_helper import *
@@ -20,8 +19,10 @@ SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'split_vcf_by_class'
 path_to_python_script_to_run = '{base_dir}snpnmi/steps/s2_split_vcfs_by_class/split_vcf_by_class.py'
 
+
 def generate_job_long_name(mac_maf, class_val, vcf_file_short_name):
     return f'class_{mac_maf}{class_val}_vcf_{vcf_file_short_name}'
+
 
 def submit_split_vcfs_by_class(options):
     dataset_name = options.dataset_name

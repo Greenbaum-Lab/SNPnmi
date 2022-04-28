@@ -4,8 +4,6 @@ DEBUG = False
 # Per class will submit a job which will generate a file per chr, holding a mapping of sites indexes to windows ids
 # such that the windows sizes are window_size or window_size + 1 (across all chrs)
 import sys
-import time
-import os
 from os.path import dirname, abspath
 import subprocess
 
@@ -73,7 +71,7 @@ def submit_prepare_for_split_to_windows(options):
     write_class_to_number_of_windows_file(options, classes)
 
     assert validate_stderr_empty(stderr_files)
-
+    return True
 
 def main(options):
     with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):

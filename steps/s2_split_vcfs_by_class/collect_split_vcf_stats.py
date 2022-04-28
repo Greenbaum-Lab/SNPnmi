@@ -18,6 +18,7 @@ from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class
 
 SCRIPT_NAME = os.path.basename(__file__)
 
+
 def get_split_vcf_stats(filepath, chr_name):
     # extract stats from the stderr file
     # return a dictionary
@@ -27,7 +28,7 @@ def get_split_vcf_stats(filepath, chr_name):
     values['maf'] = '-'
     values['max_mac'] = '-'
     values['max_maf'] = '-'
-    #regexes
+    # regexes
     # After filtering, kept 929 out of 929 Individuals
     r = r'After filtering, kept (\d+) out of (\d+) Individuals'
     indv_regex = re.compile(r)
@@ -40,22 +41,22 @@ def get_split_vcf_stats(filepath, chr_name):
 
     with open(filepath) as fp:
         for cnt, line in enumerate(fp):
-            if ('--gzvcf ' in line):
+            if '--gzvcf ' in line:
                 values['input_file'] = line.split('--gzvcf ')[1].strip()
                 continue
-            elif ('--mac ' in line):
+            elif '--mac ' in line:
                 values['mac'] = line.split('--mac ')[1].strip()
                 continue
-            elif ('--max-mac ' in line):
+            elif '--max-mac ' in line:
                 values['max_mac'] = line.split('--max-mac ')[1].strip()
                 continue
-            elif ('--maf ' in line):
+            elif '--maf ' in line:
                 values['maf'] = line.split('--maf ')[1].strip()
                 continue
-            elif ('--max-maf ' in line):
+            elif '--max-maf ' in line:
                 values['max_maf'] = line.split('--max-maf ')[1].strip()
                 continue
-            elif ('--out ' in line):
+            elif '--out ' in line:
                 values['out_path'] = line.split('--out ')[1].strip()
                 continue
             else:
@@ -90,6 +91,7 @@ def get_split_vcf_stats(filepath, chr_name):
     values['012_max_num_of_sites'] = max_c-1
     return values
 
+
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
@@ -103,6 +105,7 @@ def min_max_number_of_columns(file_path):
                 max_c = c
             line = file.readline()
     return min_c, max_c
+
 
 def write_values_to_csv(values, output_path):
     # first, assert we have all values
@@ -142,7 +145,7 @@ def collect_and_validate_vcf_classes_stats(options):
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
     vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
     macs = range(min_mac_range, max_mac_range+1)
-    #mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1)]
+    # mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1)]
     mafs = range(min_maf_range, max_maf_range+1)
     log_files = []
     chr_names_for_logs = []
@@ -173,7 +176,7 @@ def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
     min_chr = get_min_chr(options.dataset_name)
     max_chr = get_max_chr(options.dataset_name)
     df = pd.read_csv(split_vcf_output_stats_file)
-    df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)
+    df['mac_or_maf'] = df.apply(lambda r: r['mac'] if r['mac'] != '-' else r['maf'], axis=1)
 
     # first validate all data is here
     assert validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf)

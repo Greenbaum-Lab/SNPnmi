@@ -1,11 +1,14 @@
 import sys
-import os
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+
 from utils.config import *
 
 repo_dir_name = 'snpnmi'
+
+
 class PathsHelper:
     # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", dataset_name='hgdp'
     def __init__(self, root_data_folder: str, root_code_folder: str, dataset_name: str):

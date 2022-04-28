@@ -105,7 +105,6 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
     return stderr_files
 
 
-
 def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
     data_size = int(options.args[0])
     num_of_trees = int(options.args[1])

@@ -47,6 +47,7 @@ def main(options):
         print(msg)
     return is_executed
 
+
 if __name__ == "__main__":
     arguments = args_parser()
     main(arguments)

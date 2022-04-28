@@ -13,18 +13,13 @@ from utils.common import args_parser
 
 def sync_cluster_to_google_drive(source_file, dest_dir, dest_file):
     if dest_file:
-        # subprocess.run(['rclone', 'sync', source_file, dest_dir + dest_file])
-        pass
+        subprocess.run(['rclone', 'sync', source_file, dest_dir + dest_file])
     else:
-        pass
-        # subprocess.run(['rclone', 'sync', source_file, dest_dir])
+        subprocess.run(['rclone', 'sync', source_file, dest_dir])
+
     output = subprocess.run(['rclone', 'check', source_file, dest_dir], check=True, capture_output=True)
-    print(output)
-    print(type(output))
-    output = str(output)
-    print(output)
-    print(type(output))
-    print(len(output))
+    error = 'ERROR' in output.stderr.decode()
+    assert not error, f"{source_file} was not found in {dest_dir}. Sync to google drive failed!"
 
 
 def main(options):

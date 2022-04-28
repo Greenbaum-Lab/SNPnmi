@@ -71,7 +71,25 @@ def submit_one_class_split(cls, options, output_dir, vcf_files, vcf_files_short_
             python_script_to_run = path_to_python_script_to_run.format(base_dir=get_cluster_code_folder())
             submit_to_cluster(options, job_type, job_name, python_script_to_run, python_script_params,
                               job_stdout_file, job_stderr_file)
+
+    stderr_files += submit_upload_vcf_to_gdrive(options, paths_helper)
     return stderr_files
+
+
+def submit_upload_vcf_to_gdrive(options, paths_helper):
+    stderrs = []
+    sync_job_type = 'sync_to_gdrive'
+    python_script = f'{paths_helper.repo}utils/scripts/sync_to_gdrive.py'
+    gdrive_path = f'remote:gili_lab/vcf/{options.dataset_name}/'
+    vcf_file_names = [f'{paths_helper.data_dir} + {e}' for e in get_dataset_vcf_files_names(options.dataset_name)]
+    for vcf_name in vcf_file_names:
+        stdout = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=sync_job_type, job_name=vcf_name)
+        stderr = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=sync_job_type, job_name=vcf_name)
+        submit_to_cluster(options, sync_job_type, job_name='s2', script_path=python_script,
+                          script_args=f'--args {vcf_name},{gdrive_path}',
+                          job_stdout_file=stdout, job_stderr_file=stderr)
+        stderrs += stderr
+    return stderrs
 
 
 def is_output_exits(class_max_val, class_min_val, mac_maf, output_dir):

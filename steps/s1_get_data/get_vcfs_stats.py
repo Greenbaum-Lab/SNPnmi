@@ -70,6 +70,9 @@ def generate_vcfs_stats(options, stat_types):
     with Loader("Computing stats", jobs_func):
         while jobs_func():
             time.sleep(5)
+    for err_f in stderr_files:
+        with open(err_f, 'r') as f:
+            assert 'Run Time' in f.read(), f"Error in file {err_f}"
 
     return all_stats_done
 

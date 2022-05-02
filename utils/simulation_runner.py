@@ -114,5 +114,6 @@ def simulation_runner(simulation_name):
 
 if __name__ == '__main__':
     simulation = Simulation()
-    paths_helper = get_paths_helper(sys.args[1])
+    print(f"simulation name is {sys.argv[1]}")
+    paths_helper = get_paths_helper(sys.argv[1])
     simulation.write_gt_ns_output(paths_helper)

@@ -1,9 +1,9 @@
 
 import sys
 import os
-from os.path import dirname, basename
+from os.path import dirname, basename, abspath
 import time
-import pyhash
+
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -15,7 +15,7 @@ from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty
 
 job_type = 'nmi_per_gt_per_size'
-SCRIPT_NAME = basename(__file__)
+root_path = dirname(dirname(dirname(abspath(__file__))))
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s6_compare_to_random_pst/run_nmi_on_mini_trees.py'
 
 

@@ -9,8 +9,8 @@ sys.path.append(root_path)
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees
-from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi, \
-    check_if_nmi_was_computed, collect_all_nodes_if_needed
+from steps.s6_compare_to_random_pst.nmi_helper import run_all_types_nmi, check_if_nmi_was_computed,\
+    collect_all_nodes_if_needed
 
 from utils.common import get_paths_helper, args_parser, get_window_size, class_iter
 from utils.loader import Timer

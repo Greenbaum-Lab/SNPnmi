@@ -1,7 +1,8 @@
 import os
 import sys
 from os.path import dirname, abspath, basename
-
+print(sys.version)
+print(sys.path)
 from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))

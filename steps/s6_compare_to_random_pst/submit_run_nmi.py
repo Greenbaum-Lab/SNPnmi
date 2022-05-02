@@ -15,8 +15,8 @@ from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty
 
 job_type = 'nmi_per_gt_per_size'
-root_path = dirname(dirname(dirname(abspath(__file__))))
 path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s6_compare_to_random_pst/run_nmi_on_mini_trees.py'
+SCRIPT_NAME = basename(__file__)
 
 
 def get_gt_path_dictionary(options, paths_helper):

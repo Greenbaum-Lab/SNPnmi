@@ -28,7 +28,7 @@ class PathsHelper:
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
         self.net_struct_dir_class = f'{self.net_struct_dir}' + '{class_name}/'
         self.net_struct_dir_tree = f'{self.net_struct_dir_class}' + '{class_name}_{tree_hash}'
-        self.nmi_dir = f'{self.classes_dir}nmi/'
+        self.nmi_dir = self.classes_dir + 'nmi_{gt_name}/'
         self.nmi_class_template = self.nmi_dir + '{class_name}/'
         self.nmi_tree_template = self.nmi_class_template + '{class_name}_{tree_hash}/step_{ns_ss}/'
         self.nmi_file_template = self.nmi_tree_template + '{nmi_type}.txt'

@@ -101,6 +101,7 @@ class Simulation:
         with open(vcf_dir + '2_Leafs_WithOverlap.txt', 'w') as f:
             f.write(leaves_text)
 
+
 def simulation_runner(simulation_name):
     paths_helper = get_paths_helper(simulation_name)
     simulation = Simulation()
@@ -112,8 +113,8 @@ def simulation_runner(simulation_name):
 
     return True
 
-if __name__ == '__main__':
-    simulation = Simulation()
-    print(f"simulation name is {sys.argv[1]}")
-    paths_helper = get_paths_helper(sys.argv[1])
-    simulation.write_gt_ns_output(paths_helper)
+# if __name__ == '__main__':
+#     simulation = Simulation()
+#     print(f"simulation name is {sys.argv[1]}")
+#     paths_helper = get_paths_helper(sys.argv[1])
+#     simulation.write_gt_ns_output(paths_helper)

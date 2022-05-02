@@ -87,7 +87,7 @@ def run_all_pipeline(options):
         options.step = step[:3]
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
-        if time() - start_step_time > 1:   #  > 1 second means there was no checkpoint
+        if time() - start_step_time > 1:   # > 1 second means there was no checkpoint
             add_time_to_controller_file(paths_helper.data_dir, (time() - start_step_time), step)
 
     sync_to_gdrive.sync_cluster_to_google_drive(source_file=paths_helper.summary_dir,

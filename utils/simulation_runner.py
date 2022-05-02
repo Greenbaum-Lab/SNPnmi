@@ -7,6 +7,7 @@ from io import BytesIO
 from os.path import dirname, abspath
 import json
 import cairosvg as cairosvg
+import numpy as np
 from PIL import Image
 import subprocess
 import matplotlib.pyplot as plt
@@ -18,13 +19,14 @@ sys.path.append(root_path)
 from utils.loader import Loader
 from utils.common import get_paths_helper
 
+
 class Simulation:
     def __init__(self):
         self.OUTPUT_SIZE = 1000
         self.POPULATION_SIZE = 2000
         self.NUMBER_OF_SUBPOPS = 2
         self.INDV_PER_POP = self.POPULATION_SIZE // self.NUMBER_OF_SUBPOPS
-        self.POP_SAMPLE_SIZE = self.OUTPUT_SIZE / self.NUMBER_OF_SUBPOPS
+        self.POP_SAMPLE_SIZE = self.OUTPUT_SIZE // self.NUMBER_OF_SUBPOPS
 
     def run_simulation(self):
         demography = msprime.Demography()
@@ -43,7 +45,7 @@ class Simulation:
             mts = self.run_simulation()
         os.makedirs(paths_helper.data_dir, exist_ok=True)
         with Loader("Saving VCF"):
-            with open(paths_helper.data_dir + simulation_name + '.vcf', 'w+') as f:
+            with open(paths_helper.data_dir + simulation_name + '.vcf', 'w') as f:
                 mts.write_vcf(f)
 
     def plot_tree(self, ts):
@@ -77,6 +79,27 @@ class Simulation:
         with open(data_json, "w") as f:
             json.dump(js, f)
 
+    def write_gt_ns_output(self, paths_helper):
+        all_individuals = np.arange(self.OUTPUT_SIZE)
+        sub_pops = [all_individuals[i * self.POP_SAMPLE_SIZE: (i + 1) * self.POP_SAMPLE_SIZE] for i in range(self.NUMBER_OF_SUBPOPS)]
+        all_text = str(all_individuals)[1:-1] + '\n'
+        for sub_pop in sub_pops:
+            all_text += str(sub_pop)[1:-1] + '\n'
+        leaves_text = ''
+        for sub_pop in sub_pops:
+            leaves_text += str(sub_pop)[1:-1] + '\n'
+        common_text = f"----------- LEVEL 0 -----------\n Size_{self.OUTPUT_SIZE}_Level_0_Entry_0_Line_0_TH_0_Modularity" \
+                      f"_       |A:{self.OUTPUT_SIZE}\n ----------- LEVEL 1 ----------- \n"
+        for idx, sub_pop in enumerate(sub_pops):
+            common_text += f"Size_{self.POP_SAMPLE_SIZE}_Level_1_Entry_0_Line_{idx}_ParentLevel_0_ParentEntry_0" \
+                           f"_ParentLine_0_TH_0.2_Modularity_        |A:{self.POP_SAMPLE_SIZE}\n"
+        vcf_dir = paths_helper.data_dir
+        with open(vcf_dir + 'AllNodes.txt', 'w') as f:
+            f.write(all_text)
+        with open(vcf_dir + f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_0.01.txt', 'w') as f:
+            f.write(common_text)
+        with open(vcf_dir + '2_Leafs_WithOverlap.txt', 'w') as f:
+            f.write(leaves_text)
 
 def simulation_runner(simulation_name):
     paths_helper = get_paths_helper(simulation_name)
@@ -85,5 +108,11 @@ def simulation_runner(simulation_name):
     simulation.run_simulation_and_save_vcf(paths_helper, simulation_name)
     simulation.copy_runner_to_vcf_dir(paths_helper)
     simulation.write_ind_list_for_ns(paths_helper)
+    simulation.write_gt_ns_output(paths_helper)
 
     return True
+
+if __name__ == '__main__':
+    simulation = Simulation()
+    paths_helper = get_paths_helper(sys.args[1])
+    simulation.write_gt_ns_output(paths_helper)

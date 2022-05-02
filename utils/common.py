@@ -7,8 +7,8 @@ import pandas as pd
 from os.path import dirname, abspath
 import os
 import gzip
-import pyhash
-hasher = pyhash.metro_64()
+# import pyhash
+# hasher = pyhash.metro_64()
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)

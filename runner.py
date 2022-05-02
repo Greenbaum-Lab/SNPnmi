@@ -21,7 +21,7 @@ from steps.s4_calc_similarity import submit_merge_all_chrs_to_class_windows
 from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     sum_similarities_from_all_classes_and_run_netstrcut, submit_netstruct_per_class, \
     submit_many_netstructs_based_on_fix_size
-from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, run_nmi_on_mini_trees
+from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, submit_run_nmi
 from steps.s7_join_to_summary import run_all_summaries, plot_all_plots
 
 from utils.checkpoint_helper import execute_with_checkpoint
@@ -39,10 +39,10 @@ step_to_func_and_name = {
     "4.1": (submit_merge_all_chrs_to_class_windows.main, 'submit_merge_all_chrs_to_class_windows'),
     "5.1": (submit_per_class_sum_all_windows.main, 'submit_per_class_sum_all_windows'),
     "5.2": (sum_similarities_from_all_classes_and_run_netstrcut.main, 'sum_similarities_from_all_classes_and_run_netstrcut'),
-    "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
-    "5.4": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
+    # "5.3": (submit_netstruct_per_class.main, 'submit_netstruct_per_class'),
+    "5.3": (submit_many_netstructs_based_on_fix_size.main, 'submit_many_netstructs_based_on_fix_size'),
     "6.1": (run_nmi_on_full_classes.main, 'run_nmi_on_full_classes'),
-    "6.2": (run_nmi_on_mini_trees.main, 'run_nmi_on_mini_trees'),
+    "6.2": (submit_run_nmi.main, 'run_nmi_on_mini_trees'),
     "7.1": (run_all_summaries.main, 'run_all_summaries'),
     "7.2": (plot_all_plots.main, 'plot_all_plots')
 }
@@ -68,23 +68,18 @@ def run_all_pipeline(options):
 
         elif _step == '4.1':
             _options.args = [_orig_args[1]]  # num_of_winds_per_job
-        elif '6.2' in _step:
-            iteration = int(_step.split('.')[-1])
-            _options.args = [str(_options.data_size[iteration]), options.num_of_trees]
         else:
             _options.args = _orig_args
         return _options
 
     paths_helper = get_paths_helper(options.dataset_name)
     orig_args = options.args
-    size_rng = list(range(len(options.data_size)))
-    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.4'] +\
-            ['6.1'] + [f'6.2.{i}' for i in size_rng] + ['7.1', '7.2']
+    s_lst = ['1.1', '1.2', '1.3', '2.1', '2.2', '3.1', '3.2', '4.1', '5.1', '5.2', '5.3', '6.1', '6.2', '7.1', '7.2']
     for step in s_lst:
         start_step_time = time()
         print(f'start step {step}')
         options = set_options_args(options, step, orig_args)
-        options.step = step[:3]
+        options.step = step
         success_run = run_step(options, options.step)
         assert success_run, f"Failed in step {step}"
         if time() - start_step_time > 1:   # > 1 second means there was no checkpoint

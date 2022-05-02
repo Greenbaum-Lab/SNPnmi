@@ -1,8 +1,10 @@
 import sys
 import os
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+
 from utils.common import get_paths_helper, hash_args, str_for_timer
 from datetime import datetime
 

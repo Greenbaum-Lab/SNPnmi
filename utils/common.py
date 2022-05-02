@@ -7,6 +7,8 @@ import pandas as pd
 from os.path import dirname, abspath
 import os
 import gzip
+print(sys.path)
+print(sys.version)
 import pyhash
 hasher = pyhash.metro_64()
 

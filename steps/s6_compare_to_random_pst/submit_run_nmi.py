@@ -34,7 +34,7 @@ def submit_nmi_runs(options):
     stderr_files = []
     for dsize in options.data_size:
         for gt_name, gt_path in gt_paths.items():
-            job_long_name = f'nmi - {dsize} - {gt_name}'
+            job_long_name = f'nmi-{dsize}-{gt_name}'
             job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                     job_name=job_long_name)
             job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,

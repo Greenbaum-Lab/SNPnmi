@@ -4,12 +4,12 @@ import os
 from os.path import dirname, basename
 import time
 
-from utils.cluster.cluster_helper import submit_to_cluster
-from utils.config import get_cluster_code_folder
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.config import get_cluster_code_folder
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer, Loader
 from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty

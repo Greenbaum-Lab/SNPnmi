@@ -37,7 +37,7 @@ class SFSSimulation(Simulation):
         for i in range(self.num_of_subpops):
             demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
         for i in range(self.num_of_subpops - 1):
-            derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + i]]
+            derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + 1]]
             demography.add_population(name=ascii_lowercase[i], initial_size=self.indv_per_pop * (i + 2))
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])

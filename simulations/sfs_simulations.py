@@ -7,11 +7,11 @@ from io import BytesIO
 from os.path import dirname, abspath
 import msprime
 
-from utils.scripts.freq_to_sfs import freq2sfs
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
+from utils.scripts.freq_to_sfs import freq2sfs
 from simulations.simulation_runner import Simulation
 from utils.loader import Loader
 from utils.common import get_paths_helper

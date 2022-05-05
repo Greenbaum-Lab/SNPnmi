@@ -13,6 +13,8 @@ import subprocess
 import matplotlib.pyplot as plt
 import msprime
 
+from utils.scripts.freq_to_sfs import freq2sfs
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
@@ -49,14 +51,26 @@ class SFSSimulation(Simulation):
         mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=1, random_seed=1)
         return mts
 
+    def simulation_to_sfs(self):
+        subprocess.Popen("vcftools --gzvcf demo.vcf --freq --out demo")
+        macs_range = range(2, 71)
+        mafs_range = range(1, 51)
+        working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo'
+        file_name = 'demo.frq'
+        freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
+                 stats_dir=working_dir, file_name=file_name)
+
 
 if __name__ == '__main__':
     sim = SFSSimulation(ne=100, individuals_per_group=10,
                         num_of_groups=4,
                         generations_between_pops=100,
                         gene_flow_matrix=None)
-    with Loader("Running simulation"):
-        mts = sim.run_simulation()
-    with Loader("saving VCF"):
-        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo.vcf", 'w') as f:
-            mts.write_vcf(f)
+    sim.simulation_to_sfs()
+    # with Loader("Running simulation"):
+    #     mts = sim.run_simulation()
+    # with Loader("saving VCF"):
+    #     with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo.vcf", 'w') as f:
+    #         mts.write_vcf(f)
+    #
+    #

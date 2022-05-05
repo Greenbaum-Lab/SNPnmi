@@ -15,12 +15,9 @@ from utils.common import get_paths_helper, args_parser, class_iter
 from utils.loader import Timer, Loader
 
 
-def freq2sfs(options):
-    paths_helper = get_paths_helper(options.dataset_name)
-    stats_dir = paths_helper.vcf_stats_folder
-    file_name = f'{options.dataset_name}.vcf.freq.frq'
-    macs = {i: 0 for i in range(options.mac[0] - 1, options.mac[1] + 1)}
-    mafs = {i: 0 for i in range(options.maf[0], options.maf[1] + 2)}
+def freq2sfs(macs_range, mafs_range, stats_dir, file_name):
+    macs = {i: 0 for i in macs_range}
+    mafs = {i: 0 for i in mafs_range}
     line_num = 0
     with open(stats_dir + file_name, 'r') as f:
         f.readline()  # Throw headers
@@ -42,7 +39,7 @@ def freq2sfs(options):
             assert int(mac) == mac, f"line number: {line_num}\n, line: {line}"
             if freq >= 0.01:
                 mafs[int(freq * 100)] += 1
-            if mac <= options.mac[1]:
+            if mac in macs:
                 macs[mac] += 1
             line = f.readline()
 
@@ -51,8 +48,15 @@ def freq2sfs(options):
     with open(f"{stats_dir}/mafs_macs_dicts.json", 'w') as output_file:
         json.dump(([mafs, macs]), output_file)
 
+
 def main(options):
-    freq2sfs(options)
+    paths_helper = get_paths_helper(options.dataset_name)
+    stats_dir = paths_helper.vcf_stats_folder
+    file_name = f'{options.dataset_name}.vcf.freq.frq'
+    macs_range = range(options.mac[0] - 1, options.mac[1] + 1)
+    mafs_range = range(options.maf[0], options.maf[1] + 2)
+    freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
+             stats_dir=stats_dir, file_name=file_name)
 
 
 if __name__ == "__main__":

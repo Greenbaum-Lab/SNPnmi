@@ -22,20 +22,20 @@ from utils.common import get_paths_helper
 
 class Simulation:
     def __init__(self):
-        self.OUTPUT_SIZE = 100
-        self.POPULATION_SIZE = 2000
-        self.NUMBER_OF_SUBPOPS = 2
-        self.INDV_PER_POP = self.POPULATION_SIZE // self.NUMBER_OF_SUBPOPS
-        self.POP_SAMPLE_SIZE = self.OUTPUT_SIZE // self.NUMBER_OF_SUBPOPS
+        self.output_size = 100
+        self.population_size = 2000
+        self.num_of_subpops = 2
+        self.indv_per_pop = self.population_size // self.num_of_subpops
+        self.pop_sample_size = self.output_size // self.num_of_subpops
 
     def run_simulation(self):
         demography = msprime.Demography()
-        for i in range(self.NUMBER_OF_SUBPOPS):
-            demography.add_population(name=ascii_uppercase[i], initial_size=self.INDV_PER_POP)
-        demography.add_population(name="AB", initial_size=self.POPULATION_SIZE)
-        demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.NUMBER_OF_SUBPOPS]], ancestral="AB")
+        for i in range(self.num_of_subpops):
+            demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
+        demography.add_population(name="AB", initial_size=self.population_size)
+        demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.num_of_subpops]], ancestral="AB")
 
-        ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.POP_SAMPLE_SIZE for i in range(self.NUMBER_OF_SUBPOPS)}, sequence_length=5e3, demography=demography,
+        ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=5e3, demography=demography,
                                   recombination_rate=1e-8, random_seed=1)
         mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
         return mts
@@ -63,7 +63,7 @@ class Simulation:
         with open(paths_helper.data_dir + 'sampleSite.txt', 'w+') as f:
             f.write('A')
         with open(paths_helper.data_dir + 'inlist.txt', 'w+') as f:
-            f.write('A\n' * self.OUTPUT_SIZE)
+            f.write('A\n' * self.output_size)
 
     def add_simulation_to_data_config_file(self, paths_helper, simulation_name):
         data_json = paths_helper.repo + 'config/config.data.json'
@@ -73,26 +73,26 @@ class Simulation:
         js[simulation_name] = {'vcf_files_names': [f'{simulation_name}.vcf'],
                                'vcf_files_short_names': ['chr1'],
                                'num_chrs': 1,
-                               'num_individuals': self.OUTPUT_SIZE,
+                               'num_individuals': self.output_size,
                                'indlist_file_name': 'inlist.txt',
                                'sample_sites_file_name': 'sampleSite.txt'}
         with open(data_json, "w") as f:
             json.dump(js, f)
 
     def write_gt_ns_output(self, paths_helper):
-        all_individuals = np.arange(self.OUTPUT_SIZE)
-        sub_pops = [all_individuals[i * self.POP_SAMPLE_SIZE: (i + 1) * self.POP_SAMPLE_SIZE] for i in range(self.NUMBER_OF_SUBPOPS)]
+        all_individuals = np.arange(self.output_size)
+        sub_pops = [all_individuals[i * self.pop_sample_size: (i + 1) * self.pop_sample_size] for i in range(self.num_of_subpops)]
         all_text = str(all_individuals)[1:-1] + '\n'
         for sub_pop in sub_pops:
             all_text += str(sub_pop)[1:-1] + '\n'
         leaves_text = ''
         for sub_pop in sub_pops:
             leaves_text += str(sub_pop)[1:-1] + '\n'
-        common_text = f"----------- LEVEL 0 -----------\n Size_{self.OUTPUT_SIZE}_Level_0_Entry_0_Line_0_TH_0_Modularity" \
-                      f"_       |A:{self.OUTPUT_SIZE}\n ----------- LEVEL 1 ----------- \n"
+        common_text = f"----------- LEVEL 0 -----------\n Size_{self.output_size}_Level_0_Entry_0_Line_0_TH_0_Modularity" \
+                      f"_       |A:{self.output_size}\n ----------- LEVEL 1 ----------- \n"
         for idx, sub_pop in enumerate(sub_pops):
-            common_text += f"Size_{self.POP_SAMPLE_SIZE}_Level_1_Entry_0_Line_{idx}_ParentLevel_0_ParentEntry_0" \
-                           f"_ParentLine_0_TH_0.2_Modularity_        |A:{self.POP_SAMPLE_SIZE}\n"
+            common_text += f"Size_{self.pop_sample_size}_Level_1_Entry_0_Line_{idx}_ParentLevel_0_ParentEntry_0" \
+                           f"_ParentLine_0_TH_0.2_Modularity_        |A:{self.pop_sample_size}\n"
         vcf_dir = paths_helper.data_dir
         with open(vcf_dir + 'AllNodes.txt', 'w') as f:
             f.write(all_text)

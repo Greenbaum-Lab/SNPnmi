@@ -52,10 +52,10 @@ class SFSSimulation(Simulation):
         return mts
 
     def simulation_to_sfs(self):
-        subprocess.Popen("vcftools --gzvcf demo.vcf --freq --out demo")
+        working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/'
+        # subprocess.Popen(f"vcftools --gzvcf {working_dir}demo.vcf --freq --out {working_dir}demo")
         macs_range = range(2, 71)
         mafs_range = range(1, 51)
-        working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo'
         file_name = 'demo.frq'
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
                  stats_dir=working_dir, file_name=file_name)

@@ -5,12 +5,6 @@ import sys
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
-import json
-import cairosvg as cairosvg
-import numpy as np
-from PIL import Image
-import subprocess
-import matplotlib.pyplot as plt
 import msprime
 
 from utils.scripts.freq_to_sfs import freq2sfs

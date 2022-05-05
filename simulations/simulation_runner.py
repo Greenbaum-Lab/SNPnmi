@@ -6,7 +6,6 @@ from string import ascii_uppercase
 from io import BytesIO
 from os.path import dirname, abspath
 import json
-import cairosvg as cairosvg
 import numpy as np
 from PIL import Image
 import subprocess
@@ -47,12 +46,6 @@ class Simulation:
         with Loader("Saving VCF"):
             with open(paths_helper.data_dir + simulation_name + '.vcf', 'w') as f:
                 mts.write_vcf(f)
-
-    def plot_tree(self, ts):
-        img = cairosvg.svg2png(ts.draw_svg(y_axis=True))
-        img = Image.open(BytesIO(img))
-        plt.imshow(img)
-        plt.show()
 
     def copy_runner_to_vcf_dir(self, paths_helper):
         SCRIPT_PATH = os.path.abspath(__file__)

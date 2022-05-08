@@ -40,9 +40,6 @@ def run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class
 
 
 def prepare_inputs_and_gt(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
-
     # prepare paths
     paths_helper = get_paths_helper(options.dataset_name)
     ns_base_dir = paths_helper.net_struct_dir

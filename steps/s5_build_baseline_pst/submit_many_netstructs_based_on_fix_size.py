@@ -12,8 +12,8 @@ sys.path.append(root_path)
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.config import get_cluster_code_folder
-from utils.common import get_paths_helper, how_many_jobs_run, validate_stderr_empty, args_parser, get_window_size, \
-    load_dict_from_json, handle_hash_file, is_class_valid
+from utils.common import get_paths_helper, warp_how_many_jobs, validate_stderr_empty, args_parser, get_window_size, \
+    load_dict_from_json, handle_hash_file, class_iter
 from utils.loader import Loader, Timer
 from utils.netstrcut_helper import is_tree_exists
 
@@ -37,14 +37,14 @@ def submit_specific_tree(options, mac_maf, class_val, paths_helper, winds):
         print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
         return job_stderr_file
     submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, script_args, job_stdout_file,
-                      job_stderr_file, num_hours_to_run=4, memory=8, debug=False)
+                      job_stderr_file, num_hours_to_run=4, memory=8)
     return job_stderr_file
 
 
-def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, paths_helper):
-    if len(v) != num_of_winds:
+def is_tree_valid_and_correct_size(options, hash_key, wind_ids, num_of_winds, class_name, paths_helper):
+    if len(wind_ids) != num_of_winds:
         return False
-    job_long_name = f'{class_name}_hash{k}_ns_{options.ns_ss}_weighted_true'
+    job_long_name = f'{class_name}_hash{hash_key}_ns_{options.ns_ss}_weighted_true'
     stderr_file_name = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                              job_name=job_long_name)
     if not os.path.exists(stderr_file_name):
@@ -52,9 +52,9 @@ def is_tree_valid_and_correct_size(options, k, v, num_of_winds, class_name, path
     if os.stat(stderr_file_name).st_size > 0:
         return False
     net_struct_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
-    if not os.path.isdir(f'{net_struct_dir}{class_name}_{k}'):
+    if not os.path.isdir(f'{net_struct_dir}{class_name}_{hash_key}'):
         return False
-    list_trees = os.listdir(f'{net_struct_dir}{class_name}_{k}')
+    list_trees = os.listdir(f'{net_struct_dir}{class_name}_{hash_key}')
     trees_with_correct_ns_ss = [tree for tree in list_trees if f"SS_{options.ns_ss}" in tree]
     if len(trees_with_correct_ns_ss) == 0:
         return False
@@ -82,7 +82,6 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
     tree_hashes = []
     stderr_files = []
     for tree_idx in range(num_of_trees):
-        time.sleep(0.02)  # To avoid FileLock failures.
         winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
         tree_hash = handle_hash_file(class_name, paths_helper, winds)
         tree_hashes.append(tree_hash)
@@ -101,14 +100,13 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
 
     job_short_name = f'ns_{class_name}'
     submit_to_cluster(options, job_type="step5.4 per class", job_name=job_short_name, script_path=script_to_run,
-                      script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file)
+                      script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file,
+                      num_hours_to_run=24)
     return stderr_files
 
 
-
-def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size):
-    data_size = options.args[0]
-    num_of_trees = options.args[1]
+def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, window_size, data_size):
+    num_of_trees = int(options.num_of_trees)
 
     class_name = f'{mac_maf}_{class_val}'
     num_of_windows_per_tree = data_size / window_size
@@ -119,41 +117,32 @@ def submit_mini_net_struct_for_class(options, mac_maf, class_val, paths_helper, 
     num_computed_trees = how_many_tree_computed_before(options, paths_helper, class_name, num_of_windows_per_tree)
     rest_num_of_trees = max(0, num_of_trees - num_computed_trees)
     print(
-        f"For class {class_name} there are {num_computed_trees} trees ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
+        f"For class {class_name} there are {num_computed_trees} trees in size {data_size} ready. running {rest_num_of_trees} trees to get to {num_of_trees}")
 
     if options.run_ns_together and rest_num_of_trees:
         return submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_helper, rest_num_of_trees,
                                                       num_of_windows, num_of_windows_per_tree)
-    stderr_files = []
-    for tree_idx in range(rest_num_of_trees):
-        time.sleep(0.02)  # To avoid FileLock failures.
-        winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
-        stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
-    return stderr_files
+    else:
+        stderr_files = []
+        for tree_idx in range(rest_num_of_trees):
+            time.sleep(0.02)  # To avoid FileLock failures.
+            winds = np.sort(sample(range(num_of_windows), int(num_of_windows_per_tree)))
+            stderr_files.append(submit_specific_tree(options, mac_maf, class_val, paths_helper, winds))
+        return stderr_files
 
 
 def submit_mini_net_struct_for_all_classes(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
     paths_helper = get_paths_helper(options.dataset_name)
     window_size = get_window_size(paths_helper)
     stderr_files = []
+    for data_size in options.data_size:
+        for cls in class_iter(options):
+            stderr_files += submit_mini_net_struct_for_class(options, cls.mac_maf, cls.val, paths_helper, window_size,
+                                                             data_size)
 
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range >= 0:
-            for val in range(min_range, max_range + 1):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                stderr_files += submit_mini_net_struct_for_class(options, mac_maf, val, paths_helper, window_size)
-
-    with Loader("Running NetStruct_Hierarchy per many classes", string_to_find='ns'):
-        while how_many_jobs_run(string_to_find="ns"):
+    jobs_func = warp_how_many_jobs('ns')
+    with Loader("Running NetStruct_Hierarchy per many classes", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(stderr_files)

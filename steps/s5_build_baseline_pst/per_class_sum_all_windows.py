@@ -1,19 +1,11 @@
-# NOTE - can only run after per_class_sum_n_windows.py - uses the output it generates!
-# given a class and N, we will take N windows from the class and create a distance matrix based on them
-# python3 per_class_sum_all_windows.py maf 0.40 1000
-
-# takes ~40 seconds for 100 windows.
-import pandas as pd
 import json
 import os
-import gzip
-import sys
-import time
 import sys
 from os.path import dirname, abspath
 
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
+from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run_net_struct
 sys.path.append(root_path)
 
 from utils.loader import Timer
@@ -24,7 +16,7 @@ from utils.similarity_helper import generate_similarity_matrix
 def _get_similarity_per_window_files_names(paths_helper, class_str):
     with open(paths_helper.number_of_windows_per_class_path, 'r') as f:
         num_of_wind_per_class = json.load(f)
-    windows_similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_str) + 'per_window_similarity/'
+    windows_similarity_dir = paths_helper.per_window_similarity.format(class_name=class_str)
     count_similarity_files = os.listdir(windows_similarity_dir)
     assert int(num_of_wind_per_class[class_str]) == len(count_similarity_files) / 2  # count and similarity are diff files
     count_files = [windows_similarity_dir + file for file in count_similarity_files if "count" in file]
@@ -51,8 +43,12 @@ def main(options):
     print('output_dir', output_dir)
 
     generate_similarity_matrix(similarity_files, count_files, output_dir, f'{output_dir}{class_name}_all',
-                               override=options.override)
+                               save_np=True, save_edges=True)
 
+    # Run net struct for all the class
+    edge_file = f'{output_dir}{class_name}_all_edges.txt'
+    output_dir = f'{paths_helper.net_struct_dir_class.format(class_name=class_name)}/{class_name}_all/'
+    run_net_struct(options, 'class_ns', edge_file, output_dir=output_dir)
 
 if __name__ == "__main__":
     arguments = args_parser()

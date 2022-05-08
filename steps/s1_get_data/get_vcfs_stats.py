@@ -13,7 +13,7 @@ sys.path.append(root_path)
 from utils.loader import Loader, Timer
 from steps.s1_get_data.get_single_vcf_stats import get_vcf_stats, validate_stat_types, StatTypes
 from utils.checkpoint_helper import *
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty
 from utils.config import *
 
 job_type = 'get_vcf_stats'
@@ -64,12 +64,15 @@ def generate_vcfs_stats(options, stat_types):
         print("Done submissions with no errors!")
     else:
         print(f"Errors in:\n{errors}")
+        all_stats_done = False
 
-    with Loader("Computing stats", string_to_find="s1"):
-        while how_many_jobs_run(string_to_find="s1"):
+    jobs_func = warp_how_many_jobs("s1")
+    with Loader("Computing stats", jobs_func):
+        while jobs_func():
             time.sleep(5)
-
-    # assert validate_stderr_empty(stderr_files)
+    for err_f in stderr_files:
+        with open(err_f, 'r') as f:
+            assert 'Run Time' in f.read(), f"Error in file {err_f}"
 
     return all_stats_done
 
@@ -77,7 +80,6 @@ def generate_vcfs_stats(options, stat_types):
 # wrappers for execution
 def get_vcfs_stats(options):
     stat_types = options.args
-    assert validate_dataset_name(options.dataset_name)
     assert validate_stat_types(stat_types), f'one of {stat_types} is not included in {",".join(StatTypes)}'
     all_stats_done = generate_vcfs_stats(options, stat_types)
     return all_stats_done

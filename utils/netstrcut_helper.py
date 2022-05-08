@@ -36,7 +36,8 @@ def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matr
     netstruct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_dir, options.ns_ss)
     if netstruct_cmd:
         cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
-        subprocess.run([paths_helper.submit_helper, cmd_to_run])
+        with open(paths_helper.garbage, "wb") as garbage_output:
+            subprocess.run([paths_helper.submit_helper, cmd_to_run], stdout=garbage_output)
     return job_stderr_file
 
 

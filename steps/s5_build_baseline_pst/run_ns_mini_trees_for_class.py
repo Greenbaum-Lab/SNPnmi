@@ -40,11 +40,13 @@ def submit_mini_net_struct_trees(options):
             subprocess.run(cmd_list, stdout=out, stderr=err)
         print(f"Done with hash {tree_hash}")
 
+
 def main(options):
     with Timer(f"run net-struct multiple times with {options}"):
         is_executed, msg = execute_with_checkpoint(submit_mini_net_struct_trees, SCRIPT_NAME, options)
         print(msg)
     return is_executed
+
 
 if __name__ == "__main__":
     arguments = args_parser()

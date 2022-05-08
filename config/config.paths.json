@@ -1,7 +1,7 @@
 {
-    "cluster_data_folder": "/vol/sci/bio/data/gil.greenbaum/shahar.mazie/",
-    "cluster_code_folder": "/vol/sci/bio/data/gil.greenbaum/shahar.mazie/code/",
-    "local_data_folder": "/media/lab-heavy/Data/shahar/",
-    "local_code_folder": "/media/lab-heavy/Data/shahar/",
+    "cluster_data_folder": "/sci/labs/gilig/shahar.mazie/icore-data/",
+    "cluster_code_folder": "/sci/labs/gilig/shahar.mazie/icore-data/code/",
+    "local_data_folder": "C:\\Users\\Shahar\\OneDrive\\Desktop\\Studies\\Lab\\",
+    "local_code_folder": "C:\\Users\\Shahar\\OneDrive\\Desktop\\Studies\\Bayesian Machine Learning\\Ex5\\",
     "cluster_username": "shahar.mazie"
 }

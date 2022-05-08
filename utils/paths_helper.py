@@ -1,11 +1,14 @@
 import sys
-import os
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+
 from utils.config import *
 
 repo_dir_name = 'snpnmi'
+
+
 class PathsHelper:
     # example: data_folder="/vol/sci/bio/data/gil.greenbaum/amir.rubin/", dataset_name='hgdp'
     def __init__(self, root_data_folder: str, root_code_folder: str, dataset_name: str):
@@ -25,14 +28,14 @@ class PathsHelper:
         self.net_struct_dir = f'{self.classes_dir}netstruct/'
         self.net_struct_dir_class = f'{self.net_struct_dir}' + '{class_name}/'
         self.net_struct_dir_tree = f'{self.net_struct_dir_class}' + '{class_name}_{tree_hash}'
-        self.nmi_dir = f'{self.classes_dir}nmi/'
+        self.nmi_dir = self.classes_dir + 'nmi_{gt_name}/'
         self.nmi_class_template = self.nmi_dir + '{class_name}/'
         self.nmi_tree_template = self.nmi_class_template + '{class_name}_{tree_hash}/step_{ns_ss}/'
         self.nmi_file_template = self.nmi_tree_template + '{nmi_type}.txt'
         self.class_by_chr_template = self.classes_dir + '{chr_name}/{class_name}.012'
         self.window_by_class_and_chr_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.vcf.gz'
         self.window_by_class_and_chr_np_template = self.windows_dir + '{class_name}/{chr_name}/window_{window_id}.012.npy'
-        self.window_by_class_template = self.windows_dir + '{class_name}/window_{window_id}.012.vcf.gz'
+        self.window_by_class_template = self.windows_dir + '{class_name}/window_{window_id}.012.npy'
         self.windows_indexes_folder = f'{self.windows_dir}indexes/'
         self.windows_indexes_template = self.windows_indexes_folder + '{class_name}/windows_indexes_{chr_name}.pkl'
 
@@ -40,8 +43,8 @@ class PathsHelper:
         self.similarity_dir = f'{self.classes_dir}similarity/'
         self.similarity_by_class_folder_template = self.similarity_dir + '{class_name}/'
         self.per_window_similarity = self.similarity_by_class_folder_template + 'per_window_similarity/'
-        self.similarity_by_class_and_window_template = self.per_window_similarity + 'similarity_by_window_{window_id}.npy'
-        self.count_by_class_and_window_template = self.per_window_similarity + 'count_by_window_{window_id}.npy'
+        self.similarity_by_class_and_window_template = self.per_window_similarity + 'similarity_by_window_{window_id}.npz'
+        self.count_by_class_and_window_template = self.per_window_similarity + 'count_by_window_{window_id}.npz'
         self.hash_windows_list_template = self.similarity_by_class_folder_template + 'hash_windows_list.json'
         self.hash_winds_lengths_template = self.similarity_by_class_folder_template + 'hash_windows_length.json'
 
@@ -67,11 +70,13 @@ class PathsHelper:
         self.netstructh_sample_sites_path = f'{self.data_dir}{get_sample_sites_file_name(dataset_name)}'
 
         # paths to entry points
-        self.submit_helper = f'{root_code_folder}{repo_dir_name}/utils/cluster/submit_helper.sh'
-        self.wrapper_max_30_params = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_max_30_params.sh'
-        self.wrapper_ulimit_2048 = f'{root_code_folder}{repo_dir_name}/utils/cluster/wrapper_u_limit_2048.sh'
+        self.repo = f'{root_code_folder}{repo_dir_name}/'
+        self.submit_helper = f'{self.repo }utils/cluster/submit_helper.sh'
+        self.wrapper_max_30_params = f'{self.repo }utils/cluster/wrapper_max_30_params.sh'
+        self.wrapper_ulimit_2048 = f'{self.repo}utils/cluster/wrapper_u_limit_2048.sh'
         self.netstruct_jar = f'{root_code_folder}NetStruct_Hierarchy/NetStruct_Hierarchy_v1.1.jar'
         self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
+        self.garbage = f'{root_data_folder}tmp/garbage.txt'
 
         # sanity check folders:
         # TODO -remove?

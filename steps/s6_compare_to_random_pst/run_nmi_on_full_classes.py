@@ -1,53 +1,41 @@
 # Run nmi on all outputs of netstruct w.r.t ground truth
 
-
 import sys
 from os.path import dirname, abspath, basename
-
 from tqdm import tqdm
+
+from steps.s6_compare_to_random_pst.submit_run_nmi import get_gt_path_dictionary
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.checkpoint_helper import execute_with_checkpoint
-from steps.s6_compare_to_random_pst.nmi_helper import get_tree_path, collect_all_nodes_if_needed, run_nmi, \
-    prepare_inputs_and_gt, run_all_types_nmi
-
-
-from utils.common import args_parser, is_class_valid
+from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi, \
+    collect_all_nodes_if_needed
+from utils.common import args_parser, class_iter, get_paths_helper
 from utils.loader import Timer
 SCRIPT_NAME = basename(__file__)
 
 
 def run_nmi_on_all(options):
-    mac_min_range, mac_max_range = options.mac
-    maf_min_range, maf_max_range = options.maf
-    gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper = prepare_inputs_and_gt(options)
+    paths_helper = get_paths_helper(options.dataset_name)
+    gt_paths = get_gt_path_dictionary(options, paths_helper)
+    for gt_name, gt_path in gt_paths.items():
+        gt_leafs_overlap = f'{gt_path}2_Leafs_WithOverlap.txt'
+        gt_all_nodes = collect_all_nodes_if_needed(gt_path)
 
-    # go over classes
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in tqdm(range(min_range, max_range + 1), desc=f'Go over {mac_maf}'):
-                if not is_class_valid(options, mac_maf, val):
-                    continue
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
-                class_name = f"{mac_maf}_{val}"
-                nmi_output_dir = paths_helper.nmi_class_template.format(class_name=class_name)
-                run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir,
-                                  f'{ns_base_dir}{class_name}/', options, 'all')
-
+        # go over classes
+        for cls in tqdm(list(class_iter(options))):
+            nmi_output_dir = paths_helper.nmi_class_template.format(gt_name=gt_name, class_name=cls.name)
+            run_all_types_nmi(gt_all_nodes, gt_leafs_overlap, cls.name, nmi_output_dir,
+                              f'{paths_helper.net_struct_dir_class.format(class_name=cls.name)}', options, 'all')
+    return True
 
 def main(options):
     with Timer(f"run nmi with {options}"):
-        is_executed, msg = execute_with_checkpoint(run_nmi_on_all, SCRIPT_NAME, options)
+        is_success, msg = execute_with_checkpoint(run_nmi_on_all, SCRIPT_NAME, options)
         print(msg)
-    return is_executed
+    return is_success
 
 
 if __name__ == "__main__":

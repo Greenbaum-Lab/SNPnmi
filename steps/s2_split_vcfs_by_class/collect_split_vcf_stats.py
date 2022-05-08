@@ -1,13 +1,11 @@
 # collects stats from the split vcfs by class
 # TOD rename? - collect_vcf_classes_stats?
 import re
-import sys
 import os.path
 import sys
-import os
-from os import path
 from os.path import dirname, abspath
 
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -20,6 +18,7 @@ from steps.s2_split_vcfs_by_class import submit_split_vcfs_by_class
 
 SCRIPT_NAME = os.path.basename(__file__)
 
+
 def get_split_vcf_stats(filepath, chr_name):
     # extract stats from the stderr file
     # return a dictionary
@@ -29,8 +28,7 @@ def get_split_vcf_stats(filepath, chr_name):
     values['maf'] = '-'
     values['max_mac'] = '-'
     values['max_maf'] = '-'
-    print(filepath)
-    #regexes
+    # regexes
     # After filtering, kept 929 out of 929 Individuals
     r = r'After filtering, kept (\d+) out of (\d+) Individuals'
     indv_regex = re.compile(r)
@@ -43,22 +41,22 @@ def get_split_vcf_stats(filepath, chr_name):
 
     with open(filepath) as fp:
         for cnt, line in enumerate(fp):
-            if ('--gzvcf ' in line):
+            if '--gzvcf ' in line:
                 values['input_file'] = line.split('--gzvcf ')[1].strip()
                 continue
-            elif ('--mac ' in line):
+            elif '--mac ' in line:
                 values['mac'] = line.split('--mac ')[1].strip()
                 continue
-            elif ('--max-mac ' in line):
+            elif '--max-mac ' in line:
                 values['max_mac'] = line.split('--max-mac ')[1].strip()
                 continue
-            elif ('--maf ' in line):
+            elif '--maf ' in line:
                 values['maf'] = line.split('--maf ')[1].strip()
                 continue
-            elif ('--max-maf ' in line):
+            elif '--max-maf ' in line:
                 values['max_maf'] = line.split('--max-maf ')[1].strip()
                 continue
-            elif ('--out ' in line):
+            elif '--out ' in line:
                 values['out_path'] = line.split('--out ')[1].strip()
                 continue
             else:
@@ -93,6 +91,7 @@ def get_split_vcf_stats(filepath, chr_name):
     values['012_max_num_of_sites'] = max_c-1
     return values
 
+
 def min_max_number_of_columns(file_path):
     min_c = sys.maxsize
     max_c = -1
@@ -107,6 +106,7 @@ def min_max_number_of_columns(file_path):
             line = file.readline()
     return min_c, max_c
 
+
 def write_values_to_csv(values, output_path):
     # first, assert we have all values
     expected_keys = ['chr_name', 'mac', 'max_mac', 'maf', 'max_maf', 'num_of_indv_after_filter', 'indv_num_of_lines',
@@ -117,6 +117,7 @@ def write_values_to_csv(values, output_path):
     for exp_key in expected_keys:
         assert exp_key in values_keys
     write_header = not os.path.isfile(output_path)
+
     with open(output_path, "a+") as f:
         if write_header:
             f.write(','.join(expected_keys) + '\n')
@@ -126,12 +127,14 @@ def write_values_to_csv(values, output_path):
 
 def collect_vcf_classes_stats(log_files, chr_names, split_vcf_stats_csv_path):
     assert len(log_files) == len(chr_names)
-    for i in range(len(log_files)):
+    # if the csv was exist, delete it, so we won't have each line twice.
+    if os.path.exists(split_vcf_stats_csv_path):
+        subprocess.run(['rm', '-f', split_vcf_stats_csv_path])
+    for i in tqdm(range(len(log_files)), desc='Parsing log files and building csv file'):
         chr_name = chr_names[i]
         log_file = log_files[i]
         values = get_split_vcf_stats(log_file, chr_name)
         write_values_to_csv(values, split_vcf_stats_csv_path)
-        print(f'done with file {i} out of {len(log_files)} - {log_file}')
 
 
 def collect_and_validate_vcf_classes_stats(options):
@@ -142,7 +145,7 @@ def collect_and_validate_vcf_classes_stats(options):
     split_vcf_stats_csv_path = paths_helper.split_vcf_stats_csv_path
     vcf_file_short_names = get_dataset_vcf_files_short_names(dataset_name)
     macs = range(min_mac_range, max_mac_range+1)
-    #mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1)]
+    # mafs = ["{0:.2f}".format(float(v)/100) for v in range(min_maf_range,max_maf_range+1)]
     mafs = range(min_maf_range, max_maf_range+1)
     log_files = []
     chr_names_for_logs = []
@@ -173,7 +176,7 @@ def validate_split_vcf_output_stats_file(options, split_vcf_output_stats_file):
     min_chr = get_min_chr(options.dataset_name)
     max_chr = get_max_chr(options.dataset_name)
     df = pd.read_csv(split_vcf_output_stats_file)
-    df['mac_or_maf'] = df.apply(lambda r : r['mac'] if r['mac']!='-' else r['maf'], axis=1)
+    df['mac_or_maf'] = df.apply(lambda r: r['mac'] if r['mac'] != '-' else r['maf'], axis=1)
 
     # first validate all data is here
     assert validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, min_maf)
@@ -233,7 +236,7 @@ def validate_all_data_exists(df, max_chr, max_mac, max_maf, min_chr, min_mac, mi
     for chr_i in range(min_chr, max_chr + 1):
         chr_name = f'chr{chr_i}'
         for mac in range(min_mac, max_mac + 1):
-            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == mac)])
+            count = len(df[(df['chr_name'] == f'chr{chr_i}') & (df['mac'] == str(mac))])
             if count != 1:
                 passed = False
                 print(f'{chr_name}, mac {mac} appears {count} times')
@@ -250,11 +253,3 @@ def main(options):
     with Timer(f"Collect split vcf stats with {str_for_timer(options)}"):
         is_executed, msg = execute_with_checkpoint(collect_and_validate_vcf_classes_stats, SCRIPT_NAME, options)
     return is_executed
-
-
-if __name__ == '__main__':
-    # arguments = args_parser()
-    # main(arguments)
-    df_path = "C:\\Users\\lab4\\OneDrive\\Desktop\\df.xlsx"
-    df = pd.read_excel(df_path)
-    validate_all_data_exists(df, 22, 0, 1, 1, 1, 1)

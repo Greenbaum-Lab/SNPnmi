@@ -8,11 +8,13 @@ sys.path.append(root_path)
 
 from utils.common import get_paths_helper
 
-def check_if_nmi_was_computed(options, paths_helper, class_name, hash_trees):
-    NMI_FILES_NAMES = ['AllNodes.txt', 'Leaves_NoOverlap.txt', 'Leaves_WithOverlap.txt']
+
+def check_if_nmi_was_computed(options, paths_helper, class_name, hash_trees, gt_name):
+    NMI_FILES_NAMES = ['AllNodes.txt', 'Leaves_WithOverlap.txt']
     not_computed_nmi = []
     for tree in hash_trees:
-        nmi_tree_dir = paths_helper.nmi_tree_template.format(class_name=class_name, tree_hash=tree, ns_ss=options.ns_ss)
+        nmi_tree_dir = paths_helper.nmi_tree_template.format(gt_path=gt_name, class_name=class_name, tree_hash=tree,
+                                                             ns_ss=options.ns_ss)
         if not os.path.exists(nmi_tree_dir):
             not_computed_nmi.append(tree)
             continue
@@ -23,20 +25,18 @@ def check_if_nmi_was_computed(options, paths_helper, class_name, hash_trees):
 
     return not_computed_nmi
 
-def run_all_types_nmi(gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
+def run_all_types_nmi(gt_all_nodes, gt_leafs_overlap, class_name, nmi_output_dir, ns_base_dir,
                       options, tree_hash):
     class_ns_dir = get_tree_path(f'{ns_base_dir}{class_name}_{tree_hash}/', options)
     class_leafs_overlap = f'{class_ns_dir}2_Leafs_WithOverlap.txt'
-    class_leafs_no_overlap = f'{class_ns_dir}2_Leafs_NoOverlap.txt'
     class_all_nodes = collect_all_nodes_if_needed(class_ns_dir)
-    class_nmi_output = f'{nmi_output_dir}{class_name}_{tree_hash}/'
-    os.makedirs(class_nmi_output, exist_ok=True)
-    class_step_size_nmi_output = f'{class_nmi_output}step_{options.ns_ss}/'
-    os.makedirs(class_step_size_nmi_output, exist_ok=True)
+    tree_nmi_output = f'{nmi_output_dir}{class_name}_{tree_hash}/'
+    os.makedirs(tree_nmi_output, exist_ok=True)
+    tree_step_size_nmi_output = f'{tree_nmi_output}step_{options.ns_ss}/'
+    os.makedirs(tree_step_size_nmi_output, exist_ok=True)
     # calc nmi
-    run_nmi(options, gt_leafs_overlap, class_leafs_overlap, class_step_size_nmi_output + 'Leaves_WithOverlap.txt')
-    run_nmi(options, gt_leafs_no_overlap, class_leafs_no_overlap, class_step_size_nmi_output + 'Leaves_NoOverlap.txt')
-    run_nmi(options, gt_all_nodes, class_all_nodes, class_step_size_nmi_output + 'AllNodes.txt')
+    run_nmi(options, gt_leafs_overlap, class_leafs_overlap, tree_step_size_nmi_output + 'Leaves_WithOverlap.txt')
+    run_nmi(options, gt_all_nodes, class_all_nodes, tree_step_size_nmi_output + 'AllNodes.txt')
 
 
 def prepare_inputs_and_gt(options):
@@ -50,9 +50,8 @@ def prepare_inputs_and_gt(options):
     gt_base_dir = f'{ns_base_dir}all/'
     gt_dir = get_tree_path(gt_base_dir, options)
     gt_leafs_overlap = f'{gt_dir}2_Leafs_WithOverlap.txt'
-    gt_leafs_no_overlap = f'{gt_dir}2_Leafs_NoOverlap.txt'
     gt_all_nodes = collect_all_nodes_if_needed(gt_dir)
-    return gt_all_nodes, gt_leafs_no_overlap, gt_leafs_overlap, ns_base_dir, paths_helper
+    return gt_all_nodes, gt_leafs_overlap, ns_base_dir, paths_helper
 
 
 def get_tree_path(tree_base_dir, options):

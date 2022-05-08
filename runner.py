@@ -132,6 +132,7 @@ def runner(options):
 
 
 if __name__ == "__main__":
+    print("danaaaaaa")
     arguments = args_parser()
     if arguments.run_all:
         run_all_pipeline(arguments)

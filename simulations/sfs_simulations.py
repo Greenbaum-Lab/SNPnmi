@@ -60,11 +60,10 @@ if __name__ == '__main__':
                         num_of_groups=4,
                         generations_between_pops=100,
                         gene_flow_matrix=None)
+    with Loader("Running simulation"):
+        mts = sim.run_simulation()
+    with Loader("saving VCF"):
+        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo.vcf", 'w') as f:
+            mts.write_vcf(f)
     sim.simulation_to_sfs()
-    # with Loader("Running simulation"):
-    #     mts = sim.run_simulation()
-    # with Loader("saving VCF"):
-    #     with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo.vcf", 'w') as f:
-    #         mts.write_vcf(f)
-    #
-    #
+

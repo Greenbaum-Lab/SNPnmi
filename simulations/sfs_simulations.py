@@ -47,7 +47,7 @@ class SFSSimulation(Simulation):
 
     def simulation_to_sfs(self):
         working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/'
-        # subprocess.Popen(f"vcftools --gzvcf {working_dir}demo.vcf --freq --out {working_dir}demo")
+        os.system(f"vcftools --gzvcf {working_dir}demo.vcf --freq --out {working_dir}demo")
         macs_range = range(2, 71)
         mafs_range = range(1, 51)
         file_name = 'demo.frq'

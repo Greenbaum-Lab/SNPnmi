@@ -30,6 +30,7 @@ def freq2sfs(macs_range, mafs_range, stats_dir, file_name):
             freq = line_lst[-1].split(sep=":")[-1]
             freq = float(freq)
             if 0 >= freq or freq >= 1:
+                print(f"Error in:  {line}")
                 line = f.readline()
                 continue
             if freq > 0.5:

@@ -2,7 +2,7 @@
 
 import os
 import sys
-sys.path.append('/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
+sys.path.insert(0, '/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath

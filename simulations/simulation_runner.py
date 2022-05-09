@@ -10,11 +10,11 @@ import numpy as np
 from PIL import Image
 import subprocess
 import matplotlib.pyplot as plt
-# import msprime
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
+import msprime
 from utils.loader import Loader
 from utils.common import get_paths_helper
 
@@ -27,17 +27,17 @@ class Simulation:
         self.indv_per_pop = self.population_size // self.num_of_subpops
         self.pop_sample_size = self.output_size // self.num_of_subpops
 
-    # def run_simulation(self):
-    #     demography = msprime.Demography()
-    #     for i in range(self.num_of_subpops):
-    #         demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
-    #     demography.add_population(name="AB", initial_size=self.population_size)
-    #     demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.num_of_subpops]], ancestral="AB")
-    #
-    #     ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=5e3, demography=demography,
-    #                               recombination_rate=1e-8, random_seed=1)
-    #     mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
-    #     return mts
+    def run_simulation(self):
+        demography = msprime.Demography()
+        for i in range(self.num_of_subpops):
+            demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
+        demography.add_population(name="AB", initial_size=self.population_size)
+        demography.add_population_split(time=1000, derived=[e for e in ascii_uppercase[:self.num_of_subpops]], ancestral="AB")
+
+        ts = msprime.sim_ancestry(samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=5e3, demography=demography,
+                                  recombination_rate=1e-8, random_seed=1)
+        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
+        return mts
 
     def run_simulation_and_save_vcf(self, paths_helper, simulation_name):
         with Loader("Running simulation"):

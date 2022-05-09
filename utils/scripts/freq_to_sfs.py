@@ -38,7 +38,8 @@ def freq2sfs(macs_range, mafs_range, stats_dir, file_name):
             mac = round(freq * num_of_chrs, 10)
             assert int(mac) == mac, f"line number: {line_num}\n, line: {line}"
             if freq >= 0.01:
-                mafs[int(freq * 100)] += 1
+                if mafs:
+                    mafs[int(freq * 100)] += 1
             if mac in macs:
                 macs[mac] += 1
             line = f.readline()

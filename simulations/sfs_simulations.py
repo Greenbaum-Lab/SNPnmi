@@ -43,7 +43,7 @@ class SFSSimulation(Simulation):
             samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=500,
             demography=demography,
             recombination_rate=.5, random_seed=1)
-        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=.0001, random_seed=1)
+        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=10, random_seed=1)
         return mts
 
     def simulation_to_sfs(self):

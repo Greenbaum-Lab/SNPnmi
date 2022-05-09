@@ -2,15 +2,15 @@
 
 import os
 import sys
+sys.path.append('/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
-
+import msprime
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 
-import msprime
 from utils.scripts.freq_to_sfs import freq2sfs
 from simulations.simulation_runner import Simulation
 from utils.loader import Loader

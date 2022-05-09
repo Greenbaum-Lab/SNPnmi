@@ -42,6 +42,8 @@ def freq2sfs(macs_range, mafs_range, stats_dir, file_name):
                     mafs[int(freq * 100)] += 1
             if mac in macs:
                 macs[mac] += 1
+            else:
+                print(f"{mac} was not supported in line {line}")
             line = f.readline()
 
     num_of_snps = sum([v for k, v in mafs.items()]) + sum([v for k, v in macs.items()])

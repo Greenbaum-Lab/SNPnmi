@@ -1,12 +1,10 @@
-#!/usr/bin/python3
-
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 # given a step number and params, will run the step.
 import subprocess
 import sys
 import os
 from os.path import dirname
 from time import time
-
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -132,7 +130,6 @@ def runner(options):
 
 
 if __name__ == "__main__":
-    print("danaaaaaa")
     arguments = args_parser()
     if arguments.run_all:
         run_all_pipeline(arguments)

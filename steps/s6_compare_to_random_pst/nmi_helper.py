@@ -13,7 +13,7 @@ def check_if_nmi_was_computed(options, paths_helper, class_name, hash_trees, gt_
     NMI_FILES_NAMES = ['AllNodes.txt', 'Leaves_WithOverlap.txt']
     not_computed_nmi = []
     for tree in hash_trees:
-        nmi_tree_dir = paths_helper.nmi_tree_template.format(gt_path=gt_name, class_name=class_name, tree_hash=tree,
+        nmi_tree_dir = paths_helper.nmi_tree_template.format(gt_name=gt_name, class_name=class_name, tree_hash=tree,
                                                              ns_ss=options.ns_ss)
         if not os.path.exists(nmi_tree_dir):
             not_computed_nmi.append(tree)

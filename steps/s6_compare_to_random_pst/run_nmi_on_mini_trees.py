@@ -1,3 +1,6 @@
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3
+
+import subprocess
 import os
 import sys
 from os.path import dirname, abspath, basename
@@ -33,7 +36,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     gt_all_nodes = collect_all_nodes_if_needed(gt_path)
     nmi_output_dir = paths_helper.nmi_class_template.format(gt_name=gt_name, class_name=class_name)
 
-    for hash_tree in tqdm(not_computed_trees[:num_of_trees_to_run], leave=False, desc="trees "):
+    for hash_tree in not_computed_trees[:num_of_trees_to_run]:
         run_all_types_nmi(gt_all_nodes, gt_leafs_overlap, class_name, nmi_output_dir,
                           paths_helper.net_struct_dir_class.format(class_name=class_name), options, hash_tree)
 

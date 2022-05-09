@@ -1,3 +1,5 @@
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3
+
 import sys
 import os
 from os.path import dirname, basename, abspath
@@ -39,7 +41,7 @@ def submit_nmi_runs(options):
             job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                     job_name=job_long_name)
             stderr_files.append(job_stderr_file)
-            script_args = f'--args {dsize},{gt_name},{gt_path}'
+            script_args = f'--args {dsize},{gt_name},{gt_path} -d {options.dataset_name}'
             submit_to_cluster(options, job_type, 's6', path_to_python_script_to_run, script_args, job_stdout_file,
                               job_stderr_file, num_hours_to_run=2, memory=4)
 

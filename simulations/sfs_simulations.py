@@ -1,17 +1,16 @@
 #!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 
 import os
-import sys
-sys.path.insert(0, '/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
-from string import ascii_uppercase, ascii_lowercase
-from io import BytesIO
 from os.path import dirname, abspath
-
-import msprime
-
+import sys
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+from utils import config
+sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+from string import ascii_uppercase, ascii_lowercase
+from io import BytesIO
+import msprime
 from utils.scripts.freq_to_sfs import freq2sfs
 from simulations.simulation_runner import Simulation
 from utils.loader import Loader

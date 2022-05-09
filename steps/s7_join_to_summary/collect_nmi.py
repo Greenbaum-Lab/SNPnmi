@@ -72,9 +72,9 @@ def collect_nmi(options):
 
         df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame()
 
-        for cls in tqdm(list(class_iter(options)), desc='collect nmi'):
+        for cls in tqdm(list(class_iter(options)), desc=f'collect nmi {gt_name}'):
             df = collect_nmi_per_class(options, paths_helper, cls.name, df,
-                                       t_size[t_size['Class'] == cls.name].drop(['Class'], axis=1))
+                                       t_size[t_size['Class'] == cls.name].drop(['Class'], axis=1), gt_name)
         df.to_csv(csv_path, index=False)
 
 

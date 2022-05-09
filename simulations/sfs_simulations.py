@@ -5,7 +5,7 @@ import sys
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
-import msprime
+# import msprime
 
 
 root_path = dirname(dirname(abspath(__file__)))
@@ -56,14 +56,14 @@ class SFSSimulation(Simulation):
 
 
 if __name__ == '__main__':
-    sim = SFSSimulation(ne=100, individuals_per_group=10,
-                        num_of_groups=4,
-                        generations_between_pops=100,
-                        gene_flow_matrix=None)
-    with Loader("Running simulation"):
-        mts = sim.run_simulation()
-    with Loader("saving VCF"):
-        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
-            mts.write_vcf(f)
+    # sim = SFSSimulation(ne=100, individuals_per_group=10,
+    #                     num_of_groups=4,
+    #                     generations_between_pops=100,
+    #                     gene_flow_matrix=None)
+    # with Loader("Running simulation"):
+    #     mts = sim.run_simulation()
+    # with Loader("saving VCF"):
+    #     with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
+    #         mts.write_vcf(f)
     sim.simulation_to_sfs()
 

@@ -6,6 +6,7 @@ sys.path.append('/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
+print(sys.path)
 import msprime
 
 root_path = dirname(dirname(abspath(__file__)))

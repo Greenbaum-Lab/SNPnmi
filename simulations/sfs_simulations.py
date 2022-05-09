@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 
 import os
 import sys

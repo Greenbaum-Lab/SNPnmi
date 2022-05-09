@@ -1,1 +1,169 @@
-{"hgdp": {"ftp_source_host": "ngs.sanger.ac.uk", "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/", "num_individuals": 929, "num_chrs": 22, "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt", "ftp_metadata_path": "ftp://ngs.sanger.ac.uk/production/hgdp/hgdp_structural_variation/HGDP.metadata", "indlist_file_name": "hgdp_wgs.20190516.indlist.csv", "indlist_coords_file_name": "hgdp_wgs.20190516.indlist_coords.csv", "vcf_files_names": ["hgdp_wgs.20190516.full.chr1.vcf.gz", "hgdp_wgs.20190516.full.chr2.vcf.gz", "hgdp_wgs.20190516.full.chr3.vcf.gz", "hgdp_wgs.20190516.full.chr4.vcf.gz", "hgdp_wgs.20190516.full.chr5.vcf.gz", "hgdp_wgs.20190516.full.chr6.vcf.gz", "hgdp_wgs.20190516.full.chr7.vcf.gz", "hgdp_wgs.20190516.full.chr8.vcf.gz", "hgdp_wgs.20190516.full.chr9.vcf.gz", "hgdp_wgs.20190516.full.chr10.vcf.gz", "hgdp_wgs.20190516.full.chr11.vcf.gz", "hgdp_wgs.20190516.full.chr12.vcf.gz", "hgdp_wgs.20190516.full.chr13.vcf.gz", "hgdp_wgs.20190516.full.chr14.vcf.gz", "hgdp_wgs.20190516.full.chr15.vcf.gz", "hgdp_wgs.20190516.full.chr16.vcf.gz", "hgdp_wgs.20190516.full.chr17.vcf.gz", "hgdp_wgs.20190516.full.chr18.vcf.gz", "hgdp_wgs.20190516.full.chr19.vcf.gz", "hgdp_wgs.20190516.full.chr20.vcf.gz", "hgdp_wgs.20190516.full.chr21.vcf.gz", "hgdp_wgs.20190516.full.chr22.vcf.gz"], "vcf_files_short_names": ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22"], "metadata_files_names": ["README.data-access.hgdp_wgs.20190516.txt", "hgdp_wgs.20190516.full.chr4.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr3.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr1.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr2.vcf.gz.tbi", "hgdp_wgs.20190516.full.chrY.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr22.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr19.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr20.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr18.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr16.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr17.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr15.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr14.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr13.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr9.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr12.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr10.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr11.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr8.vcf.gz.tbi", "hgdp_wgs.20190516.full.chrX.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr7.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr6.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr5.vcf.gz.tbi"]}, "hgdp_test": {"ftp_source_host": "ngs.sanger.ac.uk", "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/", "num_individuals": 929, "num_chrs": 2, "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt", "indlist_file_name": "hgdp_wgs.20190516.indlist.csv", "indlist_coords_file_name": "hgdp_wgs.20190516.indlist_coords.csv", "vcf_files_names": ["hgdp_wgs.20190516.full.chr21.vcf.gz", "hgdp_wgs.20190516.full.chr20.vcf.gz"], "vcf_files_short_names": ["chr21", "chr20"], "metadata_files_names": ["README.data-access.hgdp_wgs.20190516.txt", "hgdp_wgs.20190516.full.chr20.vcf.gz.tbi", "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi"]}, "arabidopsis": {"vcf_files_names": ["africa_and1001.EVA.vcf.gz"], "vcf_files_short_names": ["chr1"], "num_chrs": 1, "num_individuals": 1217, "indlist_file_name": "inlist.txt", "sample_sites_file_name": "sampleSite.txt"}, "sim_dip_v0": {"vcf_files_names": ["sim_dip_v0.vcf"], "vcf_files_short_names": ["chr1"], "num_chrs": 1, "num_individuals": 1000, "indlist_file_name": "inlist.txt", "sample_sites_file_name": "sampleSite.txt"}, "sim_dip_v1": {"vcf_files_names": ["sim_dip_v1.vcf"], "vcf_files_short_names": ["chr1"], "num_chrs": 1, "num_individuals": 1000, "indlist_file_name": "inlist.txt", "sample_sites_file_name": "sampleSite.txt"}, "sim_dip_v2": {"vcf_files_names": ["sim_dip_v2.vcf"], "vcf_files_short_names": ["chr1"], "num_chrs": 1, "num_individuals": 1000, "indlist_file_name": "inlist.txt", "sample_sites_file_name": "sampleSite.txt"}, "sim_demo": {"vcf_files_names": ["sim_demo.vcf"], "vcf_files_short_names": ["chr1"], "num_chrs": 1, "num_individuals": 100, "indlist_file_name": "inlist.txt", "sample_sites_file_name": "sampleSite.txt"}}
+{
+  "hgdp": {
+    "ftp_source_host": "ngs.sanger.ac.uk",
+    "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
+    "num_individuals": 929,
+    "num_chrs": 22,
+    "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt",
+    "ftp_metadata_path": "ftp://ngs.sanger.ac.uk/production/hgdp/hgdp_structural_variation/HGDP.metadata",
+    "indlist_file_name": "hgdp_wgs.20190516.indlist.csv",
+    "indlist_coords_file_name": "hgdp_wgs.20190516.indlist_coords.csv",
+    "vcf_files_names": [
+      "hgdp_wgs.20190516.full.chr1.vcf.gz",
+      "hgdp_wgs.20190516.full.chr2.vcf.gz",
+      "hgdp_wgs.20190516.full.chr3.vcf.gz",
+      "hgdp_wgs.20190516.full.chr4.vcf.gz",
+      "hgdp_wgs.20190516.full.chr5.vcf.gz",
+      "hgdp_wgs.20190516.full.chr6.vcf.gz",
+      "hgdp_wgs.20190516.full.chr7.vcf.gz",
+      "hgdp_wgs.20190516.full.chr8.vcf.gz",
+      "hgdp_wgs.20190516.full.chr9.vcf.gz",
+      "hgdp_wgs.20190516.full.chr10.vcf.gz",
+      "hgdp_wgs.20190516.full.chr11.vcf.gz",
+      "hgdp_wgs.20190516.full.chr12.vcf.gz",
+      "hgdp_wgs.20190516.full.chr13.vcf.gz",
+      "hgdp_wgs.20190516.full.chr14.vcf.gz",
+      "hgdp_wgs.20190516.full.chr15.vcf.gz",
+      "hgdp_wgs.20190516.full.chr16.vcf.gz",
+      "hgdp_wgs.20190516.full.chr17.vcf.gz",
+      "hgdp_wgs.20190516.full.chr18.vcf.gz",
+      "hgdp_wgs.20190516.full.chr19.vcf.gz",
+      "hgdp_wgs.20190516.full.chr20.vcf.gz",
+      "hgdp_wgs.20190516.full.chr21.vcf.gz",
+      "hgdp_wgs.20190516.full.chr22.vcf.gz"
+    ],
+    "vcf_files_short_names": [
+      "chr1",
+      "chr2",
+      "chr3",
+      "chr4",
+      "chr5",
+      "chr6",
+      "chr7",
+      "chr8",
+      "chr9",
+      "chr10",
+      "chr11",
+      "chr12",
+      "chr13",
+      "chr14",
+      "chr15",
+      "chr16",
+      "chr17",
+      "chr18",
+      "chr19",
+      "chr20",
+      "chr21",
+      "chr22"
+    ],
+    "metadata_files_names": [
+      "README.data-access.hgdp_wgs.20190516.txt",
+      "hgdp_wgs.20190516.full.chr4.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr3.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr1.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr2.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chrY.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr22.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr19.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr20.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr18.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr16.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr17.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr15.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr14.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr13.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr9.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr12.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr10.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr11.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr8.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chrX.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr7.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr6.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr5.vcf.gz.tbi"
+    ]
+  },
+  "hgdp_test": {
+    "ftp_source_host": "ngs.sanger.ac.uk",
+    "ftp_source_path": "/production/hgdp/hgdp_wgs.20190516/",
+    "num_individuals": 929,
+    "num_chrs": 2,
+    "sample_sites_file_name": "hgdp_wgs.20190516.SampleSites.txt",
+    "indlist_file_name": "hgdp_wgs.20190516.indlist.csv",
+    "indlist_coords_file_name": "hgdp_wgs.20190516.indlist_coords.csv",
+    "vcf_files_names": [
+      "hgdp_wgs.20190516.full.chr21.vcf.gz",
+      "hgdp_wgs.20190516.full.chr20.vcf.gz"
+    ],
+    "vcf_files_short_names": [
+      "chr21",
+      "chr20"
+    ],
+    "metadata_files_names": [
+      "README.data-access.hgdp_wgs.20190516.txt",
+      "hgdp_wgs.20190516.full.chr20.vcf.gz.tbi",
+      "hgdp_wgs.20190516.full.chr21.vcf.gz.tbi"
+    ]
+  },
+  "arabidopsis": {
+    "vcf_files_names": [
+      "africa_and1001.EVA.vcf.gz"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 1217,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_dip_v0": {
+    "vcf_files_names": [
+      "sim_dip_v0.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_dip_v1": {
+    "vcf_files_names": [
+      "sim_dip_v1.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_dip_v2": {
+    "vcf_files_names": [
+      "sim_dip_v2.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_demo": {
+    "vcf_files_names": [
+      "sim_demo.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 100,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  }
+}

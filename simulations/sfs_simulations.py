@@ -5,6 +5,8 @@ import sys
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
+import subprocess
+subprocess.run(["which", "python"])
 import msprime
 
 

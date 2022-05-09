@@ -100,6 +100,6 @@ def plot_nmi_scores(options):
 
 
 def main(options):
-    with Timer(f"Per class sum all windows on {str_for_timer(options)}"):
+    with Timer(f"plot nmi scores {str_for_timer(options)}"):
         is_success, msg = execute_with_checkpoint(plot_nmi_scores, SCRIPT_NAME, options)
     return is_success

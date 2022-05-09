@@ -38,6 +38,6 @@ def plot_num_of_snp_per_class(options):
     return True
 
 def main(options):
-    with Timer(f"Per class sum all windows on {str_for_timer(options)}"):
+    with Timer(f"Plot number of SNPs per class {str_for_timer(options)}"):
         is_success, msg = execute_with_checkpoint(plot_num_of_snp_per_class, SCRIPT_NAME, options)
     return is_success

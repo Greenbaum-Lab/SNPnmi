@@ -39,7 +39,7 @@ class SFSSimulation(Simulation):
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
 
         ts = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=990,
+            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=5000,
             demography=demography,
             recombination_rate=.5, random_seed=1)
         mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=.001, random_seed=1)
@@ -48,7 +48,7 @@ class SFSSimulation(Simulation):
     def simulation_to_sfs(self):
         working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/'
         os.system(f"vcftools --gzvcf {working_dir}demo.vcf --freq --out {working_dir}demo")
-        macs_range = range(1, self.output_size)
+        macs_range = range(1, self.output_size + 1)
         mafs_range = []
         file_name = 'demo.frq'
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,

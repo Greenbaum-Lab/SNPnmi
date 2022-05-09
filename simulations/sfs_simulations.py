@@ -5,7 +5,7 @@ import sys
 from string import ascii_uppercase, ascii_lowercase
 from io import BytesIO
 from os.path import dirname, abspath
-# import msprime
+import msprime
 
 
 root_path = dirname(dirname(abspath(__file__)))
@@ -28,22 +28,22 @@ class SFSSimulation(Simulation):
         self.generations_between_pops = generations_between_pops
         self.gene_flow_matrix = gene_flow_matrix
 
-    # def run_simulation(self):
-    #     demography = msprime.Demography()
-    #     for i in range(self.num_of_subpops):
-    #         demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
-    #     for i in range(self.num_of_subpops - 1):
-    #         derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + 1]]
-    #         demography.add_population(name=ascii_lowercase[i], initial_size=self.indv_per_pop * (i + 2))
-    #         demography.add_population_split(time=self.generations_between_pops * (i + 1),
-    #                                         derived=derived_pops, ancestral=ascii_lowercase[i])
-    #
-    #     ts = msprime.sim_ancestry(
-    #         samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=990,
-    #         demography=demography,
-    #         recombination_rate=.5, random_seed=1)
-    #     mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=1, random_seed=1)
-    #     return mts
+    def run_simulation(self):
+        demography = msprime.Demography()
+        for i in range(self.num_of_subpops):
+            demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
+        for i in range(self.num_of_subpops - 1):
+            derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + 1]]
+            demography.add_population(name=ascii_lowercase[i], initial_size=self.indv_per_pop * (i + 2))
+            demography.add_population_split(time=self.generations_between_pops * (i + 1),
+                                            derived=derived_pops, ancestral=ascii_lowercase[i])
+
+        ts = msprime.sim_ancestry(
+            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=990,
+            demography=demography,
+            recombination_rate=.5, random_seed=1)
+        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=.001, random_seed=1)
+        return mts
 
     def simulation_to_sfs(self):
         working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/'
@@ -60,10 +60,10 @@ if __name__ == '__main__':
                         num_of_groups=4,
                         generations_between_pops=100,
                         gene_flow_matrix=None)
-    # with Loader("Running simulation"):
-    #     mts = sim.run_simulation()
-    # with Loader("saving VCF"):
-    #     with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
-    #         mts.write_vcf(f)
-    sim.simulation_to_sfs()
+    with Loader("Running simulation"):
+        mts = sim.run_simulation()
+    with Loader("saving VCF"):
+        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
+            mts.write_vcf(f)
+    # sim.simulation_to_sfs()
 

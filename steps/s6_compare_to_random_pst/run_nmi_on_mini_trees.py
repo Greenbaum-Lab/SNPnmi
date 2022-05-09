@@ -1,10 +1,9 @@
-#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3
+#!/usr/bin/python3
 
-import subprocess
 import os
 import sys
 from os.path import dirname, abspath, basename
-from tqdm import tqdm
+
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)

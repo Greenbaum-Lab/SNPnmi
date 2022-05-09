@@ -33,7 +33,7 @@ def _get_scores_from_nmi_file(nmi_file):
 def get_inputs_for_plot_func(options, gt_name):
     paths_helper = get_paths_helper(options.dataset_name)
     summary_dir = paths_helper.summary_dir
-    nmi_dir = paths_helper.nmi_dir.format(gt_anme=gt_name)
+    nmi_dir = paths_helper.nmi_dir.format(gt_name=gt_name)
     nmi_matrix_path = summary_dir + f'nmi_{gt_name}_sum_matrix.csv'
     nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
 

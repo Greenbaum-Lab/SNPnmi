@@ -49,7 +49,7 @@ def plot_nmi_scores(options):
     gt_paths = get_gt_path_dictionary(options, paths_helper)
     for gt_name, gt_path in gt_paths.items():
         pairs, df, nmi_dir, nmi_file_template, summary_dir = get_inputs_for_plot_func(options, gt_name)
-        os.makedirs(f'{summary_dir}fix_size_nmi_scores', exist_ok=True)
+        os.makedirs(f'{summary_dir}nmi_{gt_name}_scores', exist_ok=True)
         for nmi_type, score in pairs:
             score_name = f'{nmi_type}_{score}'
             nmi_type_rep = 'Full PST' if nmi_type == 'AllNodes' else 'Fine Scale'
@@ -95,7 +95,7 @@ def plot_nmi_scores(options):
                                title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
                                y_label="NMI score",
                                legend_title="Num of SNPs",
-                               output=f'{summary_dir}fix_size_nmi_scores/{mac_maf}_{score_name}.svg')
+                               output=f'{summary_dir}nmi_{gt_name}_scores/{mac_maf}_{score_name}.svg')
     return True
 
 

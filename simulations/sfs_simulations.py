@@ -39,7 +39,7 @@ class SFSSimulation(Simulation):
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
 
         ts = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=130,
+            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=1300,
             demography=demography,
             recombination_rate=.5, random_seed=1)
         mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=1, random_seed=1)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     with Loader("Running simulation"):
         mts = sim.run_simulation()
     with Loader("saving VCF"):
-        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo.vcf", 'w') as f:
+        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
             mts.write_vcf(f)
     sim.simulation_to_sfs()
 

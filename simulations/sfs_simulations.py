@@ -48,8 +48,8 @@ class SFSSimulation(Simulation):
     def simulation_to_sfs(self):
         working_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/'
         os.system(f"vcftools --gzvcf {working_dir}demo.vcf --freq --out {working_dir}demo")
-        macs_range = range(2, 71)
-        mafs_range = range(1, 51)
+        macs_range = range(1, self.output_size)
+        mafs_range = [1, 0]
         file_name = 'demo.frq'
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
                  stats_dir=working_dir, file_name=file_name)

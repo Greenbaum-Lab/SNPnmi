@@ -49,8 +49,8 @@ def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.00
 
     indlist_path = paths_helper.netstructh_indlist_path
     sample_sites_path = paths_helper.netstructh_sample_sites_path
-    return f'java -jar {jar_path} -ss {ss} -minb 5 -mino 5 -pro {output_folder} -pe {similarity_matrix_path}' \
-           f' -pmn {indlist_path} -pss {sample_sites_path} -w true'
+    return f'java -jar {jar_path} -ss {ss} -minb 5{options.min_pop_size} -mino {options.min_pop_size} -pro' \
+           f' {output_folder} -pe {similarity_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
 
 
 def is_tree_exists(options, output_dir, job_err_file):

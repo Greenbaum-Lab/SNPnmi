@@ -21,7 +21,7 @@ SCRIPT_NAME = basename(__file__)
 
 
 def get_gt_path_dictionary(options, paths_helper):
-    ns_gt_path = ('ns_all', paths_helper.net_struct_dir + f'all/W_1_D_0_Min_5_SS_{options.ns_ss}_B_1.0/')
+    ns_gt_path = ('ns_all', paths_helper.net_struct_dir + f'all/W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/')
     sim_gt_path = ('sim_gt', paths_helper.data_dir)
     gt_to_run_with = {ns_gt_path[0]: ns_gt_path[1]}
     if 'sim' in options.dataset_name:

@@ -6,7 +6,7 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from notebooks import number_of_snp_per_class, plot_nmi_scores, tree_heights_plot
+from plots import number_of_snp_per_class, plot_nmi_scores, tree_heights_plot
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import str_for_timer, args_parser
 from utils.loader import Timer

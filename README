@@ -30,7 +30,7 @@ If you add new dependencies, please include them with the stable version number 
 ## Structure
 
 ### runner.py
-This script can be used to run a specific step on a specific data set
+This script can be used to run all the pipeline on a specific data set, or a specific step on a specific data set.
 
 ### steps
 A module which holds scripts used for every processing step
@@ -39,10 +39,11 @@ A module which holds scripts used for every processing step
 A module which holds utitlity modules and helpers
 
 ### tests
-A module which holds tests for the different steps
+A module which holds tests for the different steps.
+Some steps implements their own tests, so this module is a bit out of sync.
 
-### notebooks
-This is where we store adhoc and dev-test notebooks
+### plots
+We have here some python scripts to plot the analyzed data.
 
 ### config
 This is where we store configuration data for both the cluster environment (like root folder),
@@ -54,9 +55,12 @@ and the different VCFs we use (like name, source, number of individuals etc.)
 ### 1. s1_get_data (single run)
 
  1.1 get_data - gets the VCFs according to the config.
+     In case the string 'sim' in the dataset_name attribute - it will generate a simulation by
+     simulations/simulation_runner.py. The simulation script will be save with the outputs, for later in a case of need.
+
 
  1.2 get_vcfs_stats - gets VCFs stats. You should at least look at 'freq' which is fundamental to this work. 
- Others are super useful for understanding the data we have! See the notebook "Analyze basic vcftools stats.ipynb"
+ Others are super useful for understanding the data we have!
 
  ---
 
@@ -68,23 +72,22 @@ and the different VCFs we use (like name, source, number of individuals etc.)
 
 ---
 
-### 3. 3_split_to_windows
+### 3. s3_split_to_windows
 
-1. prepare_for_split_to_windows - Per class run a job(or maybe can run this once?) which builds a mapping of chr to
-   site index to window_index, so that each window size is window_size (or window_size + 1).
+1. prepare_for_split_to_windows - Per class build a mapping of chr to site index to window_index,
+   so that each window size is window_size (or window_size + 1).
 
-2. Per chr and class we run a job (or maybe more than one?) which writes the sites to a {chr}_{class}_{window_id} 
-   file using the mapping from the previous step (TODO - think about the format - currently transposed w.r.t 012)
+2. Per chr and class we run a job which writes the sites to a {chr}_{class}_{window_id}
+   file using the mapping from the previous step
 
-3. Per class and max number of window_ids to process in each run, we run a job which collects the files from the
-   previous step to create {class}_{window_id} files (in a 012 gz format)
 
 ---
 
-### 4. 4_calc_similarity
-- submit_calc_similarity_windows.py
-- fill_calc_distances_in_windows - TODO - currently we need to run this twice before the validation as it generates flags consumed by the validation script, but only if the input exists (otherwise it submits a job to generate it)
--  validate_calc_distances_in_windows.py
+### 4. s4_calc_similarity
+    Per class we run a job which collects the files from the
+    previous step to create {class}_{window_id} files (which are not save!).
+    After each window is computed, we straight ahead compute the similarity matrix of that window, and store both
+    the similarity matrix and the count matrix, in a npz (numpy compress matrix)
 
 
  ---

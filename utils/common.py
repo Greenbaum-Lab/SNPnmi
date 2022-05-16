@@ -298,11 +298,11 @@ def args_parser():
                         default='1000,5000')
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
-                        help="Net-struct step size (relevant for step 5 only)")
+                        help="Net-struct step size")
     parser.add_argument("--num_of_trees", dest="num_of_trees", default="100", type=int,
                         help="num of trees in each class to create (B in bootstraps)")
-    parser.add_argument("--local_jobs", dest="local_jobs", default=False, action='store_true',
-                        help="Net-struct step size (relevant for step 5 only)")
+    parser.add_argument("--min_pop_size", dest="min_pop_size", default=5,
+                        help="minimum size of population in netstruct runs")
     parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',
                         help="run all pipeline (from step 1.2 till step 5.3) instead of a single step")
     parser.add_argument("--ns_combine", dest="run_ns_together", default=True, action='store_true',

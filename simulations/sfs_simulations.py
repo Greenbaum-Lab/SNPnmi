@@ -1,49 +1,53 @@
 #!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 
 import os
-import sys
-sys.path.insert(0, '/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
-from string import ascii_uppercase, ascii_lowercase
-from io import BytesIO
 from os.path import dirname, abspath
-
-import msprime
+import sys
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+sys.path.insert(0, '/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/lib/python3.7/site-packages')
 
+from matplotlib import pyplot as plt
+from string import ascii_uppercase, ascii_lowercase
+import msprime
 from utils.scripts.freq_to_sfs import freq2sfs
 from simulations.simulation_runner import Simulation
 from utils.loader import Loader
+import numpy as np
 from utils.common import get_paths_helper
 
 
-class SFSSimulation(Simulation):
-    def __init__(self, ne, individuals_per_group, num_of_groups, generations_between_pops, gene_flow_matrix):
-        Simulation.__init__(self)
-        self.output_size = individuals_per_group * num_of_groups
+class SFSSimulation():
+    def __init__(self, ne, pop_sizes, generations_between_pops, gene_flow_matrix):
+        self.pop_sizes = pop_sizes
+        self.output_size = np.sum(pop_sizes)
         self.population_size = ne
-        self.num_of_subpops = num_of_groups
-        self.indv_per_pop = ne // num_of_groups
-        self.pop_sample_size = self.output_size // num_of_groups
+        self.num_of_subpops = pop_sizes.size
         self.generations_between_pops = generations_between_pops
         self.gene_flow_matrix = gene_flow_matrix
 
     def run_simulation(self):
         demography = msprime.Demography()
         for i in range(self.num_of_subpops):
-            demography.add_population(name=ascii_uppercase[i], initial_size=self.indv_per_pop)
+            demography.add_population(name=ascii_uppercase[i], initial_size=self.population_size / self.num_of_subpops)
         for i in range(self.num_of_subpops - 1):
             derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + 1]]
-            demography.add_population(name=ascii_lowercase[i], initial_size=self.indv_per_pop * (i + 2))
+            demography.add_population(name=ascii_lowercase[i], initial_size=(self.population_size / self.num_of_subpops) * (i+2))
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
 
-        ts = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sample_size for i in range(self.num_of_subpops)}, sequence_length=500,
-            demography=demography,
-            recombination_rate=.5, random_seed=1)
-        mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=10, random_seed=1)
+        ts_iterator = msprime.sim_ancestry(
+            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1000,
+            demography=demography, random_seed=1)
+        mts = np.empty(0)
+        for ts in ts_iterator:
+            mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
+                                             rate=1/(self.num_of_subpops * self.generations_between_pops), random_seed=1,
+                                             discrete_genome=False)
+            mt_matrix = np.array([e.genotypes for e in mt.variants()])
+            if mt_matrix.size:
+                mts = np.concatenate((mts, mt_matrix), axis=0) if mts.size else mt_matrix
         return mts
 
     def simulation_to_sfs(self):
@@ -55,16 +59,21 @@ class SFSSimulation(Simulation):
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
                  stats_dir=working_dir, file_name=file_name)
 
+    def np_mutations_to_sfs(self, mts_numpy):
+        print(f"There are {mts_numpy.shape[0]} mutations")
+        macs = mts_numpy.sum(axis=1)
+        macs = np.minimum(macs, self.output_size * 2 - macs)
+        min_bin = np.min(macs)
+        max_bin = np.max(macs)
+        hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
+        assert np.all(hist[1] == hist[1].astype(int))
+        plt.plot(np.arange(min_bin, max_bin), hist[0])
+        plt.show()
 
 if __name__ == '__main__':
-    sim = SFSSimulation(ne=100, individuals_per_group=10,
-                        num_of_groups=4,
-                        generations_between_pops=100,
+    sim = SFSSimulation(ne=500, pop_sizes=np.array([6, 28, 14, 10]),
+                        generations_between_pops=400,
                         gene_flow_matrix=None)
-    with Loader("Running simulation"):
-        mts = sim.run_simulation()
-    with Loader("saving VCF"):
-        with open("/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/demo/demo.vcf", 'w') as f:
-            mts.write_vcf(f)
-    sim.simulation_to_sfs()
+    mts = sim.run_simulation()
+    sim.np_mutations_to_sfs(mts)
 

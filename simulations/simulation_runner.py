@@ -1,13 +1,14 @@
 #!/usr/bin/python3
-
+import io
 import os
 import sys
 from string import ascii_uppercase
 from io import BytesIO
 from os.path import dirname, abspath
 import json
-import numpy as np
 from PIL import Image
+import cairosvg
+import numpy as np
 import subprocess
 import matplotlib.pyplot as plt
 
@@ -38,6 +39,13 @@ class Simulation:
                                   recombination_rate=1e-8, random_seed=1)
         mts = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(), rate=8e-7, random_seed=1)
         return mts
+
+    @staticmethod
+    def plot_tree(ts):
+        _bytes = cairosvg.svg2png(bytestring=ts.draw_svg(),dpi=1280, write_to=open('demo.png', 'wb'))
+        image = Image.open('demo.png')
+        image.show()
+        print()
 
     def run_simulation_and_save_vcf(self, paths_helper, simulation_name):
         with Loader("Running simulation"):

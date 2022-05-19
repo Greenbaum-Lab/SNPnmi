@@ -3,5 +3,6 @@
     "cluster_code_folder": "/sci/labs/gilig/shahar.mazie/icore-data/code/",
     "local_data_folder": "C:\\Users\\Shahar\\OneDrive\\Desktop\\Studies\\Lab\\",
     "local_code_folder": "C:\\Users\\Shahar\\OneDrive\\Desktop\\Studies\\Bayesian Machine Learning\\Ex5\\",
-    "cluster_username": "shahar.mazie"
+    "cluster_username": "shahar.mazie",
+    "venv_path": "/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/"
 }

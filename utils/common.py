@@ -2,7 +2,6 @@ import argparse
 import random
 import subprocess
 import sys
-
 import pandas as pd
 from os.path import dirname, abspath
 import os

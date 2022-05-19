@@ -43,7 +43,7 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
     collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
     delete_extra_files(output_dir + ns_output_dir_name,
                        ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
-                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt'])
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.pop_min_size}_{options.ns_ss}.txt'])
 
 
 def main(options):

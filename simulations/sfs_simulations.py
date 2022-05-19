@@ -10,6 +10,7 @@ sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}l
 
 from string import ascii_uppercase, ascii_lowercase
 import msprime
+import matplotlib.pyplot as plt
 from utils.scripts.freq_to_sfs import freq2sfs
 from simulations.simulation_runner import Simulation
 from utils.loader import Loader

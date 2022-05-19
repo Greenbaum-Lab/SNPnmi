@@ -15,8 +15,13 @@ MAX_PARAMS_SUPPORTED = 30
 
 
 def submit_wrapper(options):
+    paths_helper = get_paths_helper(options.dataset_name)
     cmd_to_run = options.cmd_ro_run
-    os.system(cmd_to_run)
+    main_out = sys.stdout
+    with open(paths_helper.garbage, "w+") as f:
+        sys.stdout = f
+        os.system(cmd_to_run)
+        sys.stdout = main_out
 
 
 def submit_to_cluster(options, job_type, job_name, script_path, script_args, job_stdout_file,

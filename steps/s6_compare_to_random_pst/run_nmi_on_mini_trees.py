@@ -1,19 +1,11 @@
-#!/usr/bin/python3
-
 import os
 import sys
 from os.path import dirname, abspath, basename
+from tqdm import tqdm
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
-from utils import config
-sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7')
-sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
-print(f"version : {sys.version}")
-print(f"path: {sys.path}")
-import numpy as np
-print(f"np version: {np.__version__}")
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees
 from steps.s6_compare_to_random_pst.nmi_helper import run_all_types_nmi, check_if_nmi_was_computed,\
@@ -52,7 +44,7 @@ def run_nmi_on_classes_all_trees(options):
     window_size = get_window_size(paths_helper)
     assert data_size // window_size == data_size / window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
-    for cls in class_iter(options):
+    for cls in tqdm(list(class_iter(options))):
         compute_nmi_scores_per_class(options, cls.name, paths_helper, num_of_windows)
     return True
 

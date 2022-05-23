@@ -1,10 +1,7 @@
-#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3
-
 import sys
 import os
 from os.path import dirname, basename, abspath
 import time
-
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)

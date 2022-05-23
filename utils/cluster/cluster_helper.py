@@ -17,10 +17,10 @@ MAX_PARAMS_SUPPORTED = 30
 def submit_wrapper(options):
     paths_helper = get_paths_helper(options.dataset_name)
     cmd_to_run = options.cmd_ro_run
+    print(cmd_to_run)
     main_out = sys.stdout
     with open(paths_helper.garbage, "w+") as f:
         sys.stdout = f
-        print(cmd_to_run)
         os.system(cmd_to_run)
         sys.stdout = main_out
 

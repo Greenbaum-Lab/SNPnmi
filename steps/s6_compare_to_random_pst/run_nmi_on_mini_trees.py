@@ -7,6 +7,7 @@ from os.path import dirname, abspath, basename
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 from utils import config
+sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/')
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
 print(f"version : {sys.version}")

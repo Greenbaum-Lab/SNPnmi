@@ -20,6 +20,7 @@ def submit_wrapper(options):
     main_out = sys.stdout
     with open(paths_helper.garbage, "w+") as f:
         sys.stdout = f
+        print(cmd_to_run)
         os.system(cmd_to_run)
         sys.stdout = main_out
 

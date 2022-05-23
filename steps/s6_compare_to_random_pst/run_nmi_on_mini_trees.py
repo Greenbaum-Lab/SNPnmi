@@ -9,6 +9,8 @@ sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+print(f"version : {sys.version}")
+print(f"path: {sys.path}")
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees
 from steps.s6_compare_to_random_pst.nmi_helper import run_all_types_nmi, check_if_nmi_was_computed,\

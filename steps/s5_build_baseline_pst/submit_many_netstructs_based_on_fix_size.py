@@ -90,9 +90,10 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
                                                                                 job_name=job_long_name)
         stderr_files.append(job_stderr_file)
     script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/run_ns_mini_trees_for_class.py'
-    params_to_run = f'-d {options.dataset_name} --args {mac_maf},{class_val},{",".join([str(i) for i in tree_hashes])} ' \
-                    f'--ns_ss {options.ns_ss}'
-    job_long_name = f'{class_name}_few_trees_ns_{options.ns_ss}_weighted_true'
+    params_to_run = f'-d {options.dataset_name} --ns_ss {options.ns_ss} --min_pop_size {options.min_pop_size} '\
+                    f'--args {mac_maf},{class_val},{",".join([str(i) for i in tree_hashes])}'
+
+    job_long_name = f'{class_name}_few_trees_ns_{options.ns_ss}_{num_of_windows_per_tree}'
     job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                             job_name=job_long_name)
     job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,

@@ -4,9 +4,10 @@ import os
 import sys
 from os.path import dirname, abspath, basename
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
+from utils import config
+sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s5_build_baseline_pst.submit_many_netstructs_based_on_fix_size import get_hashes_for_computed_trees

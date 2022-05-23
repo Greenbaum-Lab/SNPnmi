@@ -38,12 +38,12 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
     similarity_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     similarity_edges_file = similarity_dir + f'{class_name}_hash{tree_hash}_edges.txt'
     output_dir = paths_helper.net_struct_dir_class.format(class_name=class_name) + f'{class_name}_{tree_hash}/'
-    ns_output_dir_name = f'W_1_D_0_Min_5_SS_{options.ns_ss}_B_1.0/'
+    ns_output_dir_name = f'W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/'
     run_net_struct(options, job_type, similarity_edges_file, output_dir)
     collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
     delete_extra_files(output_dir + ns_output_dir_name,
                        ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
-                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt'])
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.pop_min_size}_{options.ns_ss}.txt'])
 
 
 def main(options):

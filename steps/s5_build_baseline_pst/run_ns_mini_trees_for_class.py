@@ -2,7 +2,6 @@ import subprocess
 import sys
 from os.path import basename, dirname, abspath
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 

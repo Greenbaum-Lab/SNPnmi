@@ -37,7 +37,8 @@ def submit_per_class_sum_all_windows(options):
         time_to_run = 24
         err_files.append(job_stderr_file)
         job_name = f's5_{cls.val}'
-        python_script_params = f'-d {options.dataset_name} --args {cls.mac_maf},{cls.val}'
+        python_script_params = f'-d {options.dataset_name}  --ns_ss {options.ns_ss} --min_pop_size {options.min_pop_size}' \
+                               f' --args {cls.mac_maf},{cls.val}'
         submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
                           job_stdout_file, job_stderr_file, num_hours_to_run=time_to_run)
 

@@ -1,3 +1,4 @@
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3
 
 import sys
 import os
@@ -20,7 +21,7 @@ SCRIPT_NAME = basename(__file__)
 
 
 def get_gt_path_dictionary(options, paths_helper):
-    ns_gt_path = ('ns_all', paths_helper.net_struct_dir + f'all/W_1_D_0_Min_5_SS_{options.ns_ss}_B_1.0/')
+    ns_gt_path = ('ns_all', paths_helper.net_struct_dir + f'all/W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/')
     sim_gt_path = ('sim_gt', paths_helper.data_dir)
     gt_to_run_with = {ns_gt_path[0]: ns_gt_path[1]}
     if 'sim' in options.dataset_name:
@@ -40,7 +41,7 @@ def submit_nmi_runs(options):
             job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                     job_name=job_long_name)
             stderr_files.append(job_stderr_file)
-            script_args = f'--args {dsize},{gt_name},{gt_path}'
+            script_args = f'--args {dsize},{gt_name},{gt_path} -d {options.dataset_name}'
             submit_to_cluster(options, job_type, 's6', path_to_python_script_to_run, script_args, job_stdout_file,
                               job_stderr_file, num_hours_to_run=2, memory=4)
 

@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+from steps.s6_compare_to_random_pst.submit_run_nmi import get_gt_path_dictionary
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -37,8 +39,8 @@ def summarize_nmi_per_class(ns_ss, class_name, df, one_class_df):
     return df
 
 
-def summarize_nmi_mat(options, paths_helper, ns_ss, df):
-    nmi_full_matrix_path = paths_helper.summary_dir + f'nmi_matrix_ss_{ns_ss}.csv'
+def summarize_nmi_mat(options, paths_helper, ns_ss, df, gt_name):
+    nmi_full_matrix_path = paths_helper.summary_dir + f'nmi_matrix_{gt_name}_ss_{ns_ss}.csv'
     nmi_matrix = pd.read_csv(nmi_full_matrix_path)
 
     for cls in tqdm(list(class_iter(options))):
@@ -51,12 +53,14 @@ def main(options):
         paths_helper = get_paths_helper(options.dataset_name)
         ns_ss_args = options.ns_ss.split(',')
         ns_ss_args = [float(i) for i in ns_ss_args]
-        df = pd.DataFrame()
-        output_matrix_path = paths_helper.summary_dir + f'nmi_sum_matrix.csv'
+        gt_paths = get_gt_path_dictionary(options, paths_helper)
+        for gt_name, gt_path in gt_paths.items():
+            df = pd.DataFrame()
+            output_matrix_path = paths_helper.summary_dir + f'nmi_{gt_name}_sum_matrix.csv'
 
-        for ss in ns_ss_args:
-            df = summarize_nmi_mat(options, paths_helper, ss, df)
-        df.to_csv(output_matrix_path, index_label='Class')
+            for ss in ns_ss_args:
+                df = summarize_nmi_mat(options, paths_helper, ss, df, gt_name)
+            df.to_csv(output_matrix_path, index_label='Class')
 
 if __name__ == "__main__":
     arguments = args_parser()

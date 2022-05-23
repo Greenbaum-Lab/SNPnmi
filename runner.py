@@ -1,12 +1,10 @@
-#!/usr/bin/python3
-
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 # given a step number and params, will run the step.
 import subprocess
 import sys
 import os
 from os.path import dirname
 from time import time
-
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
@@ -23,7 +21,6 @@ from steps.s5_build_baseline_pst import submit_per_class_sum_all_windows,\
     submit_many_netstructs_based_on_fix_size
 from steps.s6_compare_to_random_pst import run_nmi_on_full_classes, submit_run_nmi
 from steps.s7_join_to_summary import run_all_summaries, plot_all_plots
-
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import args_parser, str_for_timer, add_time_to_controller_file, get_paths_helper
 
@@ -120,9 +117,7 @@ def runner(options):
 
 #  python3 runner.py -s 5.2 -d hgdp
 
-#  python3 runner.py -s 5.3 -d hgdp
-
-#  python3 runner.py -s 5.4 -d hgdp --args 1000,3  (# num of SNPs per tree, num of trees)
+#  python3 runner.py -s 5.3-d hgdp --args 1000,3  (# num of SNPs per tree, num of trees)
 
 #  python3 runner.py -s 6.1 -d hgdp
 

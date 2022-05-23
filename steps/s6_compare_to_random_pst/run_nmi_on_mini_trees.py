@@ -1,7 +1,9 @@
+#!/usr/bin/python3
+
 import os
 import sys
 from os.path import dirname, abspath, basename
-from tqdm import tqdm
+
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -33,7 +35,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
     gt_all_nodes = collect_all_nodes_if_needed(gt_path)
     nmi_output_dir = paths_helper.nmi_class_template.format(gt_name=gt_name, class_name=class_name)
 
-    for hash_tree in tqdm(not_computed_trees[:num_of_trees_to_run], leave=False, desc="trees "):
+    for hash_tree in not_computed_trees[:num_of_trees_to_run]:
         run_all_types_nmi(gt_all_nodes, gt_leafs_overlap, class_name, nmi_output_dir,
                           paths_helper.net_struct_dir_class.format(class_name=class_name), options, hash_tree)
 
@@ -44,7 +46,7 @@ def run_nmi_on_classes_all_trees(options):
     window_size = get_window_size(paths_helper)
     assert data_size // window_size == data_size / window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
-    for cls in tqdm(list(class_iter(options)), desc="classes "):
+    for cls in class_iter(options):
         compute_nmi_scores_per_class(options, cls.name, paths_helper, num_of_windows)
     return True
 

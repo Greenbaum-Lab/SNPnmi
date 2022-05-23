@@ -118,8 +118,7 @@
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
   },
-  "sim_dip_v0":
-  {
+  "sim_dip_v0": {
     "vcf_files_names": [
       "sim_dip_v0.vcf"
     ],
@@ -130,9 +129,8 @@
     "num_individuals": 1000,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
-},
-  "sim_dip_v1":
-  {
+  },
+  "sim_dip_v1": {
     "vcf_files_names": [
       "sim_dip_v1.vcf"
     ],
@@ -143,6 +141,29 @@
     "num_individuals": 1000,
     "indlist_file_name": "inlist.txt",
     "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_dip_v2": {
+    "vcf_files_names": [
+      "sim_dip_v2.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 1000,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  },
+  "sim_demo": {
+    "vcf_files_names": [
+      "sim_demo.vcf"
+    ],
+    "vcf_files_short_names": [
+      "chr1"
+    ],
+    "num_chrs": 1,
+    "num_individuals": 100,
+    "indlist_file_name": "inlist.txt",
+    "sample_sites_file_name": "sampleSite.txt"
+  }
 }
-}
-

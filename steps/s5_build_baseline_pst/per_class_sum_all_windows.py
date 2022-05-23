@@ -1,13 +1,15 @@
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 import json
 import os
 import sys
 from os.path import dirname, abspath
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
-from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run_net_struct
 sys.path.append(root_path)
+from utils import config
+sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run_net_struct
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser
 from utils.similarity_helper import generate_similarity_matrix

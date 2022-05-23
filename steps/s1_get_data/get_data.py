@@ -3,21 +3,18 @@
 ## Note that it can take a few hours to download 100GB, so better run in screen.
 import subprocess
 import urllib.request
-import time
 import sys
 import os
-from os.path import dirname, abspath
+from os.path import dirname
 import ftplib
-from pathlib import Path
 
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.common import get_paths_helper
 from utils.config import *
 from utils.checkpoint_helper import *
 from utils.loader import Loader, Timer
-from utils.simulation_runner import simulation_runner
+from simulations.simulation_runner import simulation_runner
 
 
 def get_ftp_source(ftp_source_host, ftp_source_path):

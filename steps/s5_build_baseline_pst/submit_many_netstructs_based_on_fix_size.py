@@ -99,7 +99,7 @@ def submit_run_one_job_for_all_class_trees(options, mac_maf, class_val, paths_he
                                                                             job_name=job_long_name)
 
     job_short_name = f'ns_{class_name}'
-    submit_to_cluster(options, job_type="step5.4 per class", job_name=job_short_name, script_path=script_to_run,
+    submit_to_cluster(options, job_type="step5.3 per class", job_name=job_short_name, script_path=script_to_run,
                       script_args=params_to_run, job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file,
                       num_hours_to_run=24)
     return stderr_files

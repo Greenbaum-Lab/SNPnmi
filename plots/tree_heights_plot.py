@@ -20,7 +20,7 @@ SCORE2COLOR_DICT = {'max_height': 'tab:blue', 'avg_height': 'tab:red', 'avg_leav
 
 def get_base_line_score(options):
     paths_helper = get_paths_helper(options.dataset_name)
-    gt_dir = f'{paths_helper.net_struct_dir_class.format(class_name="all")}W_1_D_0_Min_5_SS_{options.ns_ss}_B_1.0/'
+    gt_dir = f'{paths_helper.net_struct_dir_class.format(class_name="all")}W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/'
     comm_analysis_file = [f for f in os.listdir(gt_dir) if "CommAnalysis" in f][0]
     structure_file = gt_dir + comm_analysis_file
     with open(structure_file, 'r') as f:

@@ -5,10 +5,6 @@ from os.path import dirname, abspath, basename
 from tqdm import tqdm
 
 from steps.s6_compare_to_random_pst.submit_run_nmi import get_gt_path_dictionary
-
-root_path = dirname(dirname(dirname(abspath(__file__))))
-sys.path.append(root_path)
-
 from utils.checkpoint_helper import execute_with_checkpoint
 from steps.s6_compare_to_random_pst.nmi_helper import prepare_inputs_and_gt, run_all_types_nmi, \
     collect_all_nodes_if_needed

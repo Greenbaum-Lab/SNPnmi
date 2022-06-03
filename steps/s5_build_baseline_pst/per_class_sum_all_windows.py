@@ -4,6 +4,7 @@ import os
 import sys
 from os.path import dirname, abspath
 
+
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 from utils import config
@@ -13,6 +14,7 @@ from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run
 from utils.loader import Timer
 from utils.common import get_paths_helper, args_parser, delete_extra_files
 from utils.similarity_helper import generate_similarity_matrix
+from steps.s6_compare_to_random_pst.nmi_helper import collect_all_nodes_if_needed
 
 
 def _get_similarity_per_window_files_names(paths_helper, class_str):

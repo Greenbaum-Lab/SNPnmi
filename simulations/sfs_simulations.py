@@ -59,7 +59,7 @@ class SFSSimulation():
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
                  stats_dir=working_dir, file_name=file_name)
 
-    def np_mutations_to_sfs(self, mts_numpy):
+    def np_mutations_to_sfs(self, mts_numpy, pop_sizes):
         print(f"There are {mts_numpy.shape[0]} mutations")
         macs = mts_numpy.sum(axis=1)
         macs = np.minimum(macs, self.output_size * 2 - macs)
@@ -68,6 +68,7 @@ class SFSSimulation():
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         plt.plot(np.arange(min_bin, max_bin), hist[0])
+        plt.savefig(f"sfs_{str(pop_sizes).strip()}")
         plt.show()
 
 if __name__ == '__main__':
@@ -75,5 +76,5 @@ if __name__ == '__main__':
                         generations_between_pops=400,
                         gene_flow_matrix=None)
     mts = sim.run_simulation()
-    sim.np_mutations_to_sfs(mts)
+    sim.np_mutations_to_sfs(mts, pop_sizes)
 

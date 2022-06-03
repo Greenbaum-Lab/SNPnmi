@@ -3,13 +3,14 @@ import os
 import sys
 from os.path import dirname, abspath
 
+from steps.s6_compare_to_random_pst.nmi_helper import collect_all_nodes_if_needed
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 from steps.s5_build_baseline_pst.compute_similarity_and_run_netstruct import run_net_struct
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from utils.common import get_paths_helper, args_parser
+from utils.common import get_paths_helper, args_parser, delete_extra_files
 from utils.similarity_helper import generate_similarity_matrix
 
 
@@ -49,6 +50,11 @@ def main(options):
     edge_file = f'{output_dir}{class_name}_all_edges.txt'
     output_dir = f'{paths_helper.net_struct_dir_class.format(class_name=class_name)}/{class_name}_all/'
     run_net_struct(options, 'class_ns', edge_file, output_dir=output_dir)
+    ns_output_dir_name = f'W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/'
+    collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
+    delete_extra_files(output_dir + ns_output_dir_name,
+                       ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt '])
 
 if __name__ == "__main__":
     arguments = args_parser()

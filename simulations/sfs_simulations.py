@@ -45,8 +45,8 @@ class SFSSimulation():
         while mts.shape[0] < self.num_of_snps:
             print(mts.shape)
             ts = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1,
-            demography=demography, random_seed=1)[0]
+            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)},
+            demography=demography, random_seed=1)
             mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
                                              rate=1/(self.num_of_subpops * self.generations_between_pops), random_seed=1,
                                              discrete_genome=False)

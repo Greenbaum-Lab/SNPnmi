@@ -82,11 +82,11 @@ class SFSSimulation():
         plt.show()
 
 if __name__ == '__main__':
-    pop_sizes = np.array([6, 28, 14, 10])
+    pop_sizes = np.array([10, 15])
     sim = SFSSimulation(ne=500, pop_sizes=pop_sizes,
                         generations_between_pops=400,
                         gene_flow_matrix=None,
-                        num_of_snps=2500)
+                        num_of_snps=250)
     mts = sim.run_simulation()
     sim.np_mutations_to_sfs(mts, pop_sizes)
 

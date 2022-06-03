@@ -1,7 +1,7 @@
+#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 import subprocess
 import sys
 from os.path import basename, dirname, abspath
-
 
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
@@ -31,7 +31,8 @@ def submit_mini_net_struct_trees(options):
                                                                                 job_name=job_long_name)
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                 job_name=job_long_name)
-        script_args = f'-d {options.dataset_name} --args {mac_maf},{class_val},{tree_hash} --ns_ss {options.ns_ss}'
+        script_args = f'-d {options.dataset_name} --args {mac_maf},{class_val},{tree_hash} --ns_ss {options.ns_ss}' \
+                      f' --min_pop_size {options.min_pop_size}'
         if is_tree_exists(options, output_dir, job_stderr_file):
             print(f"Tree exists already for {job_long_name} with step size {options.ns_ss} - NOT RUNNING!")
             continue

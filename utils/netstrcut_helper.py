@@ -49,7 +49,7 @@ def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.00
 
     indlist_path = paths_helper.netstructh_indlist_path
     sample_sites_path = paths_helper.netstructh_sample_sites_path
-    return f'java -jar {jar_path} -ss {ss} -minb 5{options.min_pop_size} -mino {options.min_pop_size} -pro' \
+    return f'java -jar {jar_path} -ss {ss} -minb {options.min_pop_size} -mino {options.min_pop_size} -pro' \
            f' {output_folder} -pe {similarity_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
 
 

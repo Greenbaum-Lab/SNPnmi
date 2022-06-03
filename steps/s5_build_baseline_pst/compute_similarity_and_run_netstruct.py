@@ -23,8 +23,7 @@ def run_net_struct(options, job_type, similarity_matrix_path, output_dir):
                 exist_ok=True)
 
     net_struct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_dir, options.ns_ss)
-    with open(paths_helper.garbage, "wb") as garbage_output:
-        subprocess.run([paths_helper.submit_helper, net_struct_cmd], stdout=garbage_output)
+    subprocess.run([paths_helper.submit_helper, net_struct_cmd])
 
 
 def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_helper, winds):
@@ -43,7 +42,7 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
     collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
     delete_extra_files(output_dir + ns_output_dir_name,
                        ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
-                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt'])
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.min_pop_size}_{options.ns_ss}.txt'])
 
 
 def main(options):

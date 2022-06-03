@@ -3,7 +3,6 @@ import os
 from os.path import dirname, abspath
 import subprocess
 
-
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
@@ -15,8 +14,13 @@ MAX_PARAMS_SUPPORTED = 30
 
 
 def submit_wrapper(options):
+    paths_helper = get_paths_helper(options.dataset_name)
     cmd_to_run = options.cmd_ro_run
-    os.system(cmd_to_run)
+    main_out = sys.stdout
+    with open(paths_helper.garbage, "w+") as f:
+        sys.stdout = f
+        os.system(cmd_to_run)
+        sys.stdout = main_out
 
 
 def submit_to_cluster(options, job_type, job_name, script_path, script_args, job_stdout_file,
@@ -25,7 +29,7 @@ def submit_to_cluster(options, job_type, job_name, script_path, script_args, job
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(job_stderr_file), exist_ok=True)
 
-    cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
+    cluster_setting = f'sbatch -Q --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     assert len(script_args.split()) <= MAX_PARAMS_SUPPORTED
     wrapper = choose_wrapper(options, paths_helper)
     cmd_to_run = f'{cluster_setting} {wrapper} {script_path} {script_args}'

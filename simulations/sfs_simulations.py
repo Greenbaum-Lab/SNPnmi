@@ -3,6 +3,9 @@
 import os
 from os.path import dirname, abspath
 import sys
+
+from tqdm import tqdm
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
@@ -42,18 +45,19 @@ class SFSSimulation():
         #     samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1000,
         #     demography=demography, random_seed=1)
         mts = np.empty(0)
-        while mts.shape[0] < self.num_of_snps:
-            print(mts.shape)
-            ts = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)},
-            demography=demography, random_seed=1)
-            mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
-                                             rate=1/(self.num_of_subpops * self.generations_between_pops), random_seed=1,
-                                             discrete_genome=False)
-            mt_matrix = np.array([e.genotypes for e in mt.variants()])
-            if mt_matrix.size:
-                single_snp_matrix = mt_matrix[0].reshape(1,-1)
-                mts = np.concatenate((mts, single_snp_matrix), axis=0) if mts.size else mt_matrix
+        with tqdm(total=self.num_of_snps) as pbar:
+            while mts.shape[0] < self.num_of_snps:
+                ts = msprime.sim_ancestry(
+                samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)},
+                demography=demography, random_seed=1)
+                mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
+                                                 rate=1/(self.num_of_subpops * self.generations_between_pops), random_seed=1,
+                                                 discrete_genome=False)
+                mt_matrix = np.array([e.genotypes for e in mt.variants()])
+                if mt_matrix.size:
+                    single_snp_matrix = mt_matrix[0].reshape(1,-1)
+                    mts = np.concatenate((mts, single_snp_matrix), axis=0) if mts.size else mt_matrix
+                    pbar.update()
         return mts
 
     def simulation_to_sfs(self):

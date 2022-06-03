@@ -19,13 +19,14 @@ from utils.common import get_paths_helper
 
 
 class SFSSimulation():
-    def __init__(self, ne, pop_sizes, generations_between_pops, gene_flow_matrix):
+    def __init__(self, ne, pop_sizes, generations_between_pops, gene_flow_matrix, num_of_snps):
         self.pop_sizes = pop_sizes
         self.output_size = np.sum(pop_sizes)
         self.population_size = ne
         self.num_of_subpops = pop_sizes.size
         self.generations_between_pops = generations_between_pops
         self.gene_flow_matrix = gene_flow_matrix
+        self.num_of_snps = num_of_snps
 
     def run_simulation(self):
         demography = msprime.Demography()
@@ -37,17 +38,22 @@ class SFSSimulation():
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
 
-        ts_iterator = msprime.sim_ancestry(
-            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1000,
-            demography=demography, random_seed=1)
+        # ts_iterator = msprime.sim_ancestry(
+        #     samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1000,
+        #     demography=demography, random_seed=1)
         mts = np.empty(0)
-        for ts in ts_iterator:
+        while mts.shape[0] < self.num_of_snps:
+            print(mts.shape)
+            ts = msprime.sim_ancestry(
+            samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1,
+            demography=demography, random_seed=1)[0]
             mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
                                              rate=1/(self.num_of_subpops * self.generations_between_pops), random_seed=1,
                                              discrete_genome=False)
             mt_matrix = np.array([e.genotypes for e in mt.variants()])
             if mt_matrix.size:
-                mts = np.concatenate((mts, mt_matrix), axis=0) if mts.size else mt_matrix
+                single_snp_matrix = mt_matrix[0].reshape(1,-1)
+                mts = np.concatenate((mts, single_snp_matrix), axis=0) if mts.size else mt_matrix
         return mts
 
     def simulation_to_sfs(self):
@@ -75,7 +81,8 @@ if __name__ == '__main__':
     pop_sizes = np.array([6, 28, 14, 10])
     sim = SFSSimulation(ne=500, pop_sizes=pop_sizes,
                         generations_between_pops=400,
-                        gene_flow_matrix=None)
+                        gene_flow_matrix=None,
+                        num_of_snps=2500)
     mts = sim.run_simulation()
     sim.np_mutations_to_sfs(mts, pop_sizes)
 

@@ -73,7 +73,7 @@ def run_nmi(options, input1, input2, output_path):
         f.write(nmi_output)
 
 
-def collect_all_nodes_if_needed(folder):
+def collect_all_nodes_if_needed(options, folder):
     # only if output file does not exist we will create it
     all_nodes_path = f'{folder}AllNodes.txt'
     if os.path.exists(all_nodes_path):
@@ -84,6 +84,8 @@ def collect_all_nodes_if_needed(folder):
         for f in os.listdir(folder):
             if f.endswith('_C.txt'):
                 with open(folder + f) as comm_file:
-                    all_nodes_file.write(comm_file.read())
+                    content = comm_file.readlines()
+                    content = [c for c in content if len(c.split(" ")) - 1 >= options.min_pop_size]
+                    all_nodes_file.writelines(content)
     return all_nodes_path
 

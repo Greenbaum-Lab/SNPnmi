@@ -86,7 +86,7 @@ if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
     for gbp in [50, 100, 150, 200, 250, 300, 350, 400]:
         sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
-                            generations_between_pops=400,
+                            generations_between_pops=gbp,
                             gene_flow_matrix=None,
                             num_of_snps=2000)
         mts = sim.run_simulation()

@@ -296,7 +296,7 @@ def args_parser():
                         help="Net-struct step size")
     parser.add_argument("--num_of_trees", dest="num_of_trees", default="100", type=int,
                         help="num of trees in each class to create (B in bootstraps)")
-    parser.add_argument("--min_pop_size", dest="min_pop_size", default=5,
+    parser.add_argument("--min_pop_size", dest="min_pop_size", default=5, type=int,
                         help="minimum size of population in netstruct runs")
     parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',
                         help="run all pipeline (from step 1.2 till step 5.3) instead of a single step")

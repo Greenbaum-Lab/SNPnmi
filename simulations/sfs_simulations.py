@@ -81,7 +81,7 @@ class SFSSimulation():
         plt.plot(np.arange(min_bin, max_bin), hist[0])
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
-        plt.savefig(f"sfs_{str(pop_sizes).strip().replace(' ', '_')}")
+        plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}.svg")
         plt.show()
 
 if __name__ == '__main__':

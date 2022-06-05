@@ -40,9 +40,9 @@ def compute_similarity_and_run_net_struct(options, mac_maf, class_val, paths_hel
     run_net_struct(options, job_type, similarity_edges_file, output_dir)
     ns_output_dir_name = f'W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/'
     collect_all_nodes_if_needed(options, output_dir + ns_output_dir_name)
-    # delete_extra_files(output_dir + ns_output_dir_name,
-    #                    ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
-    #                     f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.min_pop_size}_{options.ns_ss}.txt'])
+    delete_extra_files(output_dir + ns_output_dir_name,
+                       ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.min_pop_size}_{options.ns_ss}.txt'])
 
 
 def main(options):

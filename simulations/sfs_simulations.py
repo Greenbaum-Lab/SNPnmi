@@ -84,7 +84,7 @@ class SFSSimulation():
         plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}.svg")
 
 if __name__ == '__main__':
-    pop_sizes = np.array([10, 15])
+    pop_sizes = np.array([7, 18])
     sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
                         generations_between_pops=400,
                         gene_flow_matrix=None,

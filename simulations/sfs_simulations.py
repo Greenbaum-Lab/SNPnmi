@@ -41,9 +41,6 @@ class SFSSimulation():
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
 
-        # ts_iterator = msprime.sim_ancestry(
-        #     samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)}, num_replicates=1000,
-        #     demography=demography, random_seed=1)
         mts = np.empty(0)
         with tqdm(total=self.num_of_snps) as pbar:
             while mts.shape[0] < self.num_of_snps:
@@ -84,9 +81,9 @@ class SFSSimulation():
         plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}.svg")
 
 if __name__ == '__main__':
-    pop_sizes = np.array([7, 18])
+    pop_sizes = np.array([10, 20])
     sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
-                        generations_between_pops=400,
+                        generations_between_pops=40,
                         gene_flow_matrix=None,
                         num_of_snps=2000)
     mts = sim.run_simulation()

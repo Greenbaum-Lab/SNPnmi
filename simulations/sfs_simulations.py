@@ -79,15 +79,15 @@ class SFSSimulation():
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         plt.plot(np.arange(min_bin, max_bin), hist[0])
-        plt.savefig(f"sfs_{str(pop_sizes).strip()}")
+        plt.savefig(f"sfs_{str(pop_sizes).strip().replace(' ', '_')}")
         plt.show()
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 15])
-    sim = SFSSimulation(ne=128, pop_sizes=pop_sizes,
-                        generations_between_pops=100,
+    sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
+                        generations_between_pops=400,
                         gene_flow_matrix=None,
-                        num_of_snps=250)
+                        num_of_snps=2000)
     mts = sim.run_simulation()
     sim.np_mutations_to_sfs(mts, pop_sizes)
 

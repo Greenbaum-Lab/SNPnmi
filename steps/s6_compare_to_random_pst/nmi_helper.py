@@ -80,7 +80,7 @@ def collect_all_nodes_if_needed(options, folder):
         return all_nodes_path
 
     # look for community files in the folder, append them to the all_nodes_path file
-    with open(all_nodes_path, 'a') as all_nodes_file:
+    with open(all_nodes_path, 'a+') as all_nodes_file:
         for f in os.listdir(folder):
             if f.endswith('_C.txt'):
                 with open(folder + f) as comm_file:

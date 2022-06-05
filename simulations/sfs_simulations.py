@@ -22,13 +22,13 @@ from utils.common import get_paths_helper
 
 
 class SFSSimulation():
-    def __init__(self, ne, pop_sizes, generations_between_pops, gene_flow_matrix, num_of_snps):
+    def __init__(self, ne, pop_sizes, generations_between_pops, migration_rate, num_of_snps):
         self.pop_sizes = pop_sizes
         self.output_size = np.sum(pop_sizes)
         self.population_size = ne
         self.num_of_subpops = pop_sizes.size
         self.generations_between_pops = generations_between_pops
-        self.gene_flow_matrix = gene_flow_matrix
+        self.migration_rate = migration_rate
         self.num_of_snps = num_of_snps
 
     def run_simulation(self):
@@ -40,6 +40,7 @@ class SFSSimulation():
             demography.add_population(name=ascii_lowercase[i], initial_size=(self.population_size / self.num_of_subpops) * (i+2))
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
+            demography.set_symmetric_migration_rate(['A', 'B'], self.migration_rate)
 
         mts = np.empty(0)
         with tqdm(total=self.num_of_snps) as pbar:
@@ -79,15 +80,15 @@ class SFSSimulation():
         plt.title(f"Generations From Split: {self.generations_between_pops} ")
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
-        plt.savefig(f"sfs_plots/sfs_{'_'.join([str(e) for e in pop_sizes])}--{self.generations_between_pops}.svg")
+        plt.savefig(f"sfs_plots/sfs_{'_'.join([str(e) for e in pop_sizes])}={self.migration_rate}.svg")
         plt.clf()
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
-    for gbp in [500, 700, 1000]:
+    for m_rate in [0, .001, .005, .01, .05, .1]:
         sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
-                            generations_between_pops=gbp,
-                            gene_flow_matrix=None,
+                            generations_between_pops=400,
+                            migration_rate=m_rate,
                             num_of_snps=2000)
         mts = sim.run_simulation()
         sim.np_mutations_to_sfs(mts, pop_sizes)

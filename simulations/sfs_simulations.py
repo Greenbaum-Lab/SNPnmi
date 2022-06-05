@@ -77,7 +77,7 @@ class SFSSimulation():
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         plt.plot(np.arange(min_bin, max_bin), hist[0])
-        plt.title(f"Generations From Split: {self.generations_between_pops} ")
+        plt.title(f"Migration rate: {self.migration_rate} ")
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
         plt.savefig(f"sfs_plots/sfs_{'_'.join([str(e) for e in pop_sizes])}-{self.migration_rate}.svg")
@@ -85,7 +85,7 @@ class SFSSimulation():
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
-    for m_rate in [.0005, .001]:
+    for m_rate in [0, .00001, .00005, .0001, .0005, .001]:
         sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
                             generations_between_pops=400,
                             migration_rate=m_rate,

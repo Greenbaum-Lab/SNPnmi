@@ -82,7 +82,6 @@ class SFSSimulation():
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
         plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}.svg")
-        plt.show()
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 15])

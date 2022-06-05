@@ -83,7 +83,7 @@ class SFSSimulation():
 if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
     sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
-                        generations_between_pops=40,
+                        generations_between_pops=100,
                         gene_flow_matrix=None,
                         num_of_snps=2000)
     mts = sim.run_simulation()

@@ -85,7 +85,7 @@ class SFSSimulation():
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
-    for m_rate in [0, .00001, .00005, .0001, .0005, .001]:
+    for m_rate in [.0005, .001]:
         sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
                             generations_between_pops=400,
                             migration_rate=m_rate,

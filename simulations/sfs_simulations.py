@@ -55,7 +55,8 @@ class SFSSimulation():
                                                  discrete_genome=False)
                 mt_matrix = np.array([e.genotypes for e in mt.variants()])
                 if mt_matrix.size:
-                    single_snp_matrix = mt_matrix[0].reshape(1,-1)
+                    snp_rand_idx = np.random.randint(mt_matrix.shape[0])
+                    single_snp_matrix = mt_matrix[snp_rand_idx].reshape(1, -1)
                     mts = np.concatenate((mts, single_snp_matrix), axis=0) if mts.size else mt_matrix
                     pbar.update()
         return mts

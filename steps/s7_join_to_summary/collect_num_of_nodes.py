@@ -14,10 +14,8 @@ from steps.s7_join_to_summary.collect_tree_heights import combine_attributes_per
 from utils.common import get_paths_helper, args_parser, load_dict_from_json, class_iter
 from utils.loader import Timer
 
-MIN_INDIVIDUAL_PER_NODE = 5
 
-
-def count_num_of_nodes_for_tree(file_path):
+def count_num_of_nodes_for_tree(file_path, min_individual_per_node):
     """
     If given AllNodes.txt file path - return num of nodes.
     If given 2_Leafs_NoOverlap file path - return num of leaves
@@ -26,7 +24,7 @@ def count_num_of_nodes_for_tree(file_path):
         num_of_nodes = 0
         all_nodes = f.readlines()
         for node in all_nodes:
-            if len(node.split(" ")) - 1 >= MIN_INDIVIDUAL_PER_NODE:
+            if len(node.split(" ")) - 1 >= min_individual_per_node:
                 num_of_nodes += 1
     return num_of_nodes
 
@@ -49,9 +47,9 @@ def collect_num_of_nodes_per_class(options, paths_helper, class_name, df, data_s
         assert len(correct_trees) == 1, f"more than 1 tree or tree {tree_hash} for class {class_name} is missing"
         tree_dir = f'{dir}{tree_name}/{correct_trees[0]}/'
         all_nodes_file = f'{tree_dir}AllNodes.txt'
-        num_of_nodes = count_num_of_nodes_for_tree(all_nodes_file)
+        num_of_nodes = count_num_of_nodes_for_tree(all_nodes_file, options.min_pop_size)
         all_leaves_files = f'{tree_dir}2_Leafs_NoOverlap.txt'
-        num_of_leaves = count_num_of_nodes_for_tree(all_leaves_files)
+        num_of_leaves = count_num_of_nodes_for_tree(all_leaves_files, options.min_pop_size)
 
         df_tree = pd.DataFrame([[tree_name, num_of_leaves, num_of_nodes]],
                                columns=["Tree", "num_of_leaves", "num_of_nodes"])
@@ -87,9 +85,9 @@ def combine_num_of_nodes_to_matrix(options, full_mat_df, data_size):
 
 def main(options):
     with Timer(f"Collect num of nodes per tree to csv"):
-        for data_size in [1000, 5000]:
-            df = collect_num_of_nodes(options, data_size)
-            combine_num_of_nodes_to_matrix(options, df, data_size)
+        for size in options.data_size:
+            df = collect_num_of_nodes(options, size)
+            combine_num_of_nodes_to_matrix(options, df, size)
     return True
 
 if __name__ == "__main__":

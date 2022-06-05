@@ -57,7 +57,7 @@ def main(options):
     collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
     delete_extra_files(output_dir + ns_output_dir_name,
                        ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
-                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_{options.ns_ss}.txt '])
+                        f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.min_pop_size}_{options.ns_ss}.txt '])
 
 if __name__ == "__main__":
     arguments = args_parser()

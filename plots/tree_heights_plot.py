@@ -26,8 +26,8 @@ def get_base_line_score(options):
     with open(structure_file, 'r') as f:
         tree_structure = f.readlines()
     max_height, avg_height, avg_leaves = analyze_tree_heights(tree_structure)
-    num_of_nodes = count_num_of_nodes_for_tree(gt_dir + 'AllNodes.txt')
-    num_of_leaves = count_num_of_nodes_for_tree(gt_dir + '2_Leafs_NoOverlap.txt')
+    num_of_nodes = count_num_of_nodes_for_tree(gt_dir + 'AllNodes.txt', options.min_pop_size)
+    num_of_leaves = count_num_of_nodes_for_tree(gt_dir + '2_Leafs_NoOverlap.txt', options.min_pop_size)
     base_line = {'max_height': max_height,
                  'avg_height': avg_height,
                  'avg_leaves': avg_leaves,

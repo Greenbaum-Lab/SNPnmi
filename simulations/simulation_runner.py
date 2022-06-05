@@ -21,7 +21,8 @@ from utils.common import get_paths_helper
 
 
 class Simulation:
-    def __init__(self):
+    def __init__(self, options=None):
+        self.options = options
         self.output_size = 100
         self.population_size = 2000
         self.num_of_subpops = 2
@@ -97,15 +98,16 @@ class Simulation:
         vcf_dir = paths_helper.data_dir
         with open(vcf_dir + 'AllNodes.txt', 'w') as f:
             f.write(all_text)
-        with open(vcf_dir + f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-5_0.01.txt', 'w') as f:
+        with open(vcf_dir + f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{self.options.min_pop_size}_{self.options.ns_ss}.txt', 'w') as f:
             f.write(common_text)
         with open(vcf_dir + '2_Leafs_WithOverlap.txt', 'w') as f:
             f.write(leaves_text)
 
 
-def simulation_runner(simulation_name):
+def simulation_runner(options):
+    simulation_name = options.dataset_name
     paths_helper = get_paths_helper(simulation_name)
-    simulation = Simulation()
+    simulation = Simulation(options)
     simulation.add_simulation_to_data_config_file(paths_helper, simulation_name)
     simulation.run_simulation_and_save_vcf(paths_helper, simulation_name)
     simulation.copy_runner_to_vcf_dir(paths_helper)

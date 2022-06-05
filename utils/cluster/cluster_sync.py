@@ -23,7 +23,7 @@ def sync_dir(source_list):
         cmd_line = f'rclone sync /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source} remote:gili_lab/vcf/{source}'
         warp_30_params_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/wrapper_max_30_params.sh'
         submit_helper_path = '/sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/utils/cluster/submit_helper.sh'
-        subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {cmd_line}'])
+        subprocess.run([f'{cluster_setting} {warp_30_params_path} {cmd_line}'])
 
     jobs_func = warp_how_many_jobs("dr")
     with Loader(f"uploading dir {dirname(source_list[0])}", jobs_func):
@@ -41,7 +41,7 @@ def del_dir(source_list):
         delete_line = f'rm -rf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'rm' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name}'
-        subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {delete_line}'])
+        subprocess.run([f'{cluster_setting} {warp_30_params_path} {delete_line}'])
     jobs_func = warp_how_many_jobs("rm")
     with Loader(f"deleting {dirname(dirname(source_list[0]))}", jobs_func):
         while jobs_func():
@@ -59,7 +59,7 @@ def tar_files(source_list):
         tar_line = f'tar -czf /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}.tar.gz /sci/labs/gilig/shahar.mazie/icore-data/vcf/{source}'
         job_name = 'tr' + source[-3:]
         cluster_setting = f'sbatch --time={num_hours_to_run}:00:00 --mem={memory}G --job-name={job_name} --error="{job_stderr_file}"'
-        subprocess.run([submit_helper_path, f'{cluster_setting} {warp_30_params_path} {tar_line}'])
+        subprocess.run([f'{cluster_setting} {warp_30_params_path} {tar_line}'])
     jobs_func = warp_how_many_jobs("tr")
     with Loader(f"Taring {dirname(source_list[0])}", jobs_func):
         while jobs_func():

@@ -19,7 +19,7 @@ from utils.config import get_cluster_code_folder
 
 SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'per_class_sum_all_windows'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows.py'
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows_and_run_ns.py'
 
 
 def submit_per_class_sum_all_windows(options):

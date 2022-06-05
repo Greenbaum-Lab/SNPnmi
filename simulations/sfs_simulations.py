@@ -79,6 +79,8 @@ class SFSSimulation():
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         plt.plot(np.arange(min_bin, max_bin), hist[0])
+        plt.xlabel("Minor allele count")
+        plt.ylabel("Number of SNPs")
         plt.savefig(f"sfs_{str(pop_sizes).strip().replace(' ', '_')}")
         plt.show()
 

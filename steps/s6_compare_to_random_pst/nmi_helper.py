@@ -29,7 +29,7 @@ def run_all_types_nmi(gt_all_nodes, gt_leafs_overlap, class_name, nmi_output_dir
                       options, tree_hash):
     class_ns_dir = get_tree_path(f'{ns_base_dir}{class_name}_{tree_hash}/', options)
     class_leafs_overlap = f'{class_ns_dir}2_Leafs_WithOverlap.txt'
-    class_all_nodes = collect_all_nodes_if_needed(class_ns_dir)
+    class_all_nodes = collect_all_nodes_if_needed(options, class_ns_dir)
     tree_nmi_output = f'{nmi_output_dir}{class_name}_{tree_hash}/'
     os.makedirs(tree_nmi_output, exist_ok=True)
     tree_step_size_nmi_output = f'{tree_nmi_output}step_{options.ns_ss}/'
@@ -50,7 +50,7 @@ def prepare_inputs_and_gt(options):
     gt_base_dir = f'{ns_base_dir}all/'
     gt_dir = get_tree_path(gt_base_dir, options)
     gt_leafs_overlap = f'{gt_dir}2_Leafs_WithOverlap.txt'
-    gt_all_nodes = collect_all_nodes_if_needed(gt_dir)
+    gt_all_nodes = collect_all_nodes_if_needed(options, gt_dir)
     return gt_all_nodes, gt_leafs_overlap, ns_base_dir, paths_helper
 
 

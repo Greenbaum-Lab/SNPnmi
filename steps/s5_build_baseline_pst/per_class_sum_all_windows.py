@@ -54,7 +54,7 @@ def main(options):
     output_dir = f'{paths_helper.net_struct_dir_class.format(class_name=class_name)}/{class_name}_all/'
     run_net_struct(options, 'class_ns', edge_file, output_dir=output_dir)
     ns_output_dir_name = f'W_1_D_0_Min_{options.min_pop_size}_SS_{options.ns_ss}_B_1.0/'
-    collect_all_nodes_if_needed(output_dir + ns_output_dir_name)
+    collect_all_nodes_if_needed(options, output_dir + ns_output_dir_name)
     delete_extra_files(output_dir + ns_output_dir_name,
                        ['2_Leafs_WithOverlap.txt', '2_Leafs_NoOverlap.txt', 'AllNodes.txt',
                         f'1_CommAnalysis_dynamic-false_modularity-true_minCommBrake-{options.min_pop_size}_{options.ns_ss}.txt '])

@@ -30,7 +30,7 @@ def compute_nmi_scores_per_class(options, class_name, paths_helper, num_of_winds
 
     os.makedirs(paths_helper.nmi_dir.format(gt_name=gt_name), exist_ok=True)
     gt_leafs_overlap = f'{gt_path}2_Leafs_WithOverlap.txt'
-    gt_all_nodes = collect_all_nodes_if_needed(gt_path)
+    gt_all_nodes = collect_all_nodes_if_needed(options, gt_path)
     nmi_output_dir = paths_helper.nmi_class_template.format(gt_name=gt_name, class_name=class_name)
 
     for hash_tree in not_computed_trees[:num_of_trees_to_run]:

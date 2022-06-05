@@ -18,7 +18,7 @@ def run_nmi_on_all(options):
     gt_paths = get_gt_path_dictionary(options, paths_helper)
     for gt_name, gt_path in gt_paths.items():
         gt_leafs_overlap = f'{gt_path}2_Leafs_WithOverlap.txt'
-        gt_all_nodes = collect_all_nodes_if_needed(gt_path)
+        gt_all_nodes = collect_all_nodes_if_needed(options, gt_path)
 
         # go over classes
         for cls in tqdm(list(class_iter(options))):

@@ -79,7 +79,7 @@ class SFSSimulation():
         plt.title(f"Generations From Split: {self.generations_between_pops} ")
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
-        plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}--{self.generations_between_pops}.svg")
+        plt.savefig(f"sfs_plots/sfs_{'_'.join([str(e) for e in pop_sizes])}--{self.generations_between_pops}.svg")
         plt.clf()
 
 if __name__ == '__main__':

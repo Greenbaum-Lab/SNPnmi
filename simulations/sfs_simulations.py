@@ -76,16 +76,19 @@ class SFSSimulation():
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         plt.plot(np.arange(min_bin, max_bin), hist[0])
+        plt.title(f"Generations From Split: {self.generations_between_pops} ")
         plt.xlabel("Minor allele count")
         plt.ylabel("Number of SNPs")
-        plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}.svg")
+        plt.savefig(f"sfs_{'_'.join([str(e) for e in pop_sizes])}--{self.generations_between_pops}.svg")
+        plt.clf()
 
 if __name__ == '__main__':
     pop_sizes = np.array([10, 20])
-    sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
-                        generations_between_pops=200,
-                        gene_flow_matrix=None,
-                        num_of_snps=2000)
-    mts = sim.run_simulation()
-    sim.np_mutations_to_sfs(mts, pop_sizes)
+    for gbp in [50, 100, 150, 200, 250, 300, 350, 400]:
+        sim = SFSSimulation(ne=250, pop_sizes=pop_sizes,
+                            generations_between_pops=400,
+                            gene_flow_matrix=None,
+                            num_of_snps=2000)
+        mts = sim.run_simulation()
+        sim.np_mutations_to_sfs(mts, pop_sizes)
 

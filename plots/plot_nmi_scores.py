@@ -92,7 +92,7 @@ def plot_nmi_scores(options):
                                polynomials=polynomial,
                                base_lines=None,
                                labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
-                               title=f'{options.dataset_name} - {nmi_type_rep} - {mac_maf}',
+                               title=f'Simulation - {nmi_type_rep} - {mac_maf}',
                                y_label="NMI score",
                                legend_title="Num of SNPs",
                                output=f'{summary_dir}nmi_{gt_name}_scores/{mac_maf}_{score_name}.svg')

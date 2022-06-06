@@ -44,7 +44,7 @@ def run_nmi_on_classes_all_trees(options):
     window_size = get_window_size(paths_helper)
     assert data_size // window_size == data_size / window_size, "data size is not dividable in window size"
     num_of_windows = data_size // window_size
-    for cls in tqdm(list(class_iter(options))):
+    for cls in class_iter(options):
         compute_nmi_scores_per_class(options, cls.name, paths_helper, num_of_windows)
     return True
 

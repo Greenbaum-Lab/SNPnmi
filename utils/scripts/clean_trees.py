@@ -20,7 +20,6 @@ def track_invalid_hashes_per_class(options, paths_helper, class_name):
     ns_dir = paths_helper.net_struct_dir_class.format(class_name=class_name)
     sim_dir = paths_helper.similarity_by_class_folder_template.format(class_name=class_name)
     hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
-    print(hash_file)
     hash_list_dict = load_dict_from_json(hash_file)
     invalid_hashes = []
     for k in hash_list_dict.keys():

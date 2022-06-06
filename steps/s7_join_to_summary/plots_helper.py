@@ -86,4 +86,4 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
     legend = plt.legend(title=legend_title, loc='best', fontsize=12)
     plt.setp(legend.get_title(), fontsize=12)
     plt.savefig(output)
-    plt.clf()
+    plt.close()

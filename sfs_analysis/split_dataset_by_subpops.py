@@ -88,13 +88,16 @@ def create_vcf_per_2_sites(options, paths_helper, site, special_list):
     for other_site in sites_list[idx + 1:]:
         if other_site not in special_list:
             continue
+        print(f"start with {site} & {other_site}")
         other_site_vcf_file = f"{paths_helper.sfs_dir}{other_site}/{other_site}.vcf.gz"
         combined_sites_vcf_file_tmp = f"{paths_helper.sfs_dir}{site}/{site}-{other_site}_tmp.vcf.gz"
         combined_sites_vcf_file = f"{paths_helper.sfs_dir}{site}/{site}-{other_site}.vcf.gz"
         if os.path.exists(combined_sites_vcf_file):
             continue
         bcftools_cmd = ["bcftools", 'merge', site_vcf_file, other_site_vcf_file, '-O', 'z', '-o', combined_sites_vcf_file_tmp]
+        print(bcftools_cmd)
         subprocess.run([paths_helper.submit_helper, ' '.join(bcftools_cmd)])
+        print("Done generate tmp vcf")
         subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {combined_sites_vcf_file} -i "F_MISSING=0" {combined_sites_vcf_file_tmp}'])
         os.remove(f'{combined_sites_vcf_file_tmp}')
 

@@ -83,7 +83,7 @@ def create_vcf_per_site(paths_helper):
 
 def create_vcf_per_2_sites(options, paths_helper, site, special_list):
     sites_list = get_sample_site_list(options, paths_helper)
-    site_vcf_file = f"{paths_helper.sfs_dir}{site}/{site}.vcf.gz'"
+    site_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz'
     idx = sites_list.index(site)
     for other_site in sites_list[idx + 1:]:
         if other_site not in special_list:

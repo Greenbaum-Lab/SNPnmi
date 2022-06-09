@@ -82,6 +82,7 @@ def create_vcf_per_site(paths_helper):
             os.remove(f'{paths_helper.sfs_dir}{site}/{site}_tmp.vcf.gz')
 
 def create_vcf_per_2_sites(options, paths_helper, site, special_list):
+    print("### Start stage 2 ###")
     sites_list = get_sample_site_list(options, paths_helper)
     site_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz'
     idx = sites_list.index(site)
@@ -93,6 +94,7 @@ def create_vcf_per_2_sites(options, paths_helper, site, special_list):
         combined_sites_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}.vcf.gz'
         if os.path.exists(combined_sites_vcf_file):
             continue
+        print(f"Run {site} & {other_site}")
         bcftools_cmd = ['bcftools', 'merge', f'{site_vcf_file}', f'{other_site_vcf_file}', '-O', 'z', '-o', combined_sites_vcf_file_tmp]
         subprocess.run([paths_helper.submit_helper, ' '.join(bcftools_cmd)])
         subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {combined_sites_vcf_file} -i "F_MISSING=0" {combined_sites_vcf_file_tmp}'])
@@ -100,7 +102,7 @@ def create_vcf_per_2_sites(options, paths_helper, site, special_list):
 
 
 def vcf2matrix2sfs(options, paths_helper, special_list):
-    print("start vcf2matrix2sfs")
+    print("### Start stage 3 ###")
     sites_list = get_sample_site_list(options, paths_helper)
     for site in sites_list:
         if site not in special_list:
@@ -109,7 +111,7 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
         for other_site in sites_list[idx + 1:]:
             if other_site not in special_list:
                 continue
-            print(f"start {site} & {other_site}")
+            print(f"Run {site} & {other_site}")
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
             vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
             subprocess.run([paths_helper.submit_helper, vcftools_cmd])

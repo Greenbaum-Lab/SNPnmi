@@ -101,6 +101,19 @@ def create_vcf_per_2_sites(options, paths_helper, site, special_list):
         os.remove(f'{combined_sites_vcf_file_tmp}')
 
 
+def vcf2matrix2sfs(options, paths_helper, special_list):
+    sites_list = get_sample_site_list(options, paths_helper)
+    for site in sites_list:
+        if site not in special_list:
+            continue
+        idx = sites_list.index(site)
+        for other_site in sites_list[idx + 1:]:
+            if other_site not in special_list:
+                continue
+            vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
+            vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
+            subprocess.run([paths_helper.submit_helper, vcftools_cmd])
+
 def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
@@ -112,7 +125,7 @@ def main():
         with open(f"{paths_helper.sfs_dir}site2sample.json", "w") as f:
             json.dump(site2sample, f)
 
-    # create_vcf_per_site(paths_helper)
+    create_vcf_per_site(paths_helper)
 
     sites_list = get_sample_site_list(arguments, paths_helper)
     special_list = ['Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka']
@@ -120,6 +133,7 @@ def main():
         if site not in special_list:
             continue
         create_vcf_per_2_sites(arguments, paths_helper, site, special_list)
+    vcf2matrix2sfs(arguments, paths_helper, special_list)
 
 
 if __name__ == '__main__':

@@ -113,6 +113,8 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
             vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
             subprocess.run([paths_helper.submit_helper, vcftools_cmd])
+            matrix_file = f'{vcf_file_path}.012'
+
 
 def main():
     arguments = args_parser()
@@ -128,7 +130,8 @@ def main():
     create_vcf_per_site(paths_helper)
 
     sites_list = get_sample_site_list(arguments, paths_helper)
-    special_list = ['Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka']
+    special_list = ['Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
+                    'Orcadian', 'Russian', 'French', 'Oroqen']
     for site in sites_list:
         if site not in special_list:
             continue

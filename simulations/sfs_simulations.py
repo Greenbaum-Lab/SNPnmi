@@ -1,4 +1,3 @@
-#!/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python
 
 import os
 from os.path import dirname, abspath
@@ -15,10 +14,7 @@ from string import ascii_uppercase, ascii_lowercase
 import msprime
 import matplotlib.pyplot as plt
 from utils.scripts.freq_to_sfs import freq2sfs
-from simulations.simulation_runner import Simulation
-from utils.loader import Loader
 import numpy as np
-from utils.common import get_paths_helper
 
 
 class SFSSimulation():

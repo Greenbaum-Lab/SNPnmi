@@ -32,7 +32,7 @@ def submit_to_cluster(options, job_type, job_name, script_path, script_args, job
     cluster_setting = f'sbatch -Q --time={num_hours_to_run}:00:00 --mem={memory}G --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
     assert len(script_args.split()) <= MAX_PARAMS_SUPPORTED
     wrapper = choose_wrapper(options, paths_helper)
-    cmd_to_run = f'{cluster_setting} {wrapper} {script_path} {script_args}'
+    cmd_to_run = f'{cluster_setting} {wrapper} python3 {script_path} {script_args}'
     options.cmd_ro_run = cmd_to_run
     if use_checkpoint:
         execute_with_checkpoint(submit_wrapper, job_type, options)

@@ -51,7 +51,6 @@ class PathsHelper:
         self.validate_similarity_dir = f'{self.windows_folder_template}/validated_count_similarity/'
         self.validate_similarity_flag_template = self.validate_similarity_dir + '/validated_count_similarity_window_{i}.txt'
 
-        # deprecated
         self.windows_per_class_folder = f'{self.windows_dir}' + '{class_name}/'
         self.number_of_windows_per_class_path = f'{self.windows_dir}number_of_windows_per_class.txt'
         self.number_of_windows_per_class_template = f'{self.windows_dir}' + '{class_name}/number_of_windows.txt'
@@ -78,9 +77,5 @@ class PathsHelper:
         self.nmi_exe = f'{root_code_folder}Overlapping-NMI/onmi'
         self.garbage = f'{root_data_folder}tmp/garbage.txt'
 
-        # sanity check folders:
-        # TODO -remove?
-        self.sanity_check_folder = f'{self.classes_dir}sanity_check/'
-        self.sanity_check_dist_folder = f'{self.sanity_check_folder}distances/'
-        self.sanity_check_netstruct_folder = f'{self.sanity_check_folder}netstruct/'
-        self.sanity_check_nmi_folder = f'{self.sanity_check_folder}nmi/'
+        #sfs paths
+        self.sfs_dir = f'{self.data_dir}sfs_analysis/'

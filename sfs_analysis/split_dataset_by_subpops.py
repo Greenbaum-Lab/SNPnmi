@@ -133,7 +133,8 @@ def main():
 
     sites_list = get_sample_site_list(arguments, paths_helper)
     special_list = ['Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
-                    'Orcadian', 'Russian', 'French', 'Oroqen']
+                    'Orcadian', 'Russian', 'French', 'Oroqen', 'Adygei', 'Burusho', 'Brahui', 'Bougainville',
+                    'BergamoItalian', 'Bedouin', 'Basque', 'BantuSouthAfrica', 'BantuKenya', 'Balochi']
     for site in sites_list:
         if site not in special_list:
             continue

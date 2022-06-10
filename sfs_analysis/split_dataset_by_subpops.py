@@ -111,8 +111,10 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
         for other_site in sites_list[idx + 1:]:
             if other_site not in special_list:
                 continue
-            print(f"Run {site} & {other_site}")
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
+            if os.path.exists(f'{vcf_file_path}.012'):
+                continue
+            print(f"Run {site} & {other_site}")
             vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
             subprocess.run([paths_helper.submit_helper, vcftools_cmd])
             matrix_file = f'{vcf_file_path}.012'

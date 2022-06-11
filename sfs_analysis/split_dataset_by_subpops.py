@@ -106,10 +106,9 @@ def convert_012_to_sfs(matrix_012_file_path, site_size, other_site_size):
     num_of_genomes = 2 * (site_size + other_site_size)
     assert np_matrix.min() == 0 and np_matrix.max() <= 2
     assert np_matrix.shape[0] == num_of_genomes / 2
-    matrix_minor_count = np.sum(np_matrix, axis=1)
+    matrix_minor_count = np.sum(np_matrix, axis=0)
     matrix_minor_count = np.minimum(matrix_minor_count, num_of_genomes - matrix_minor_count)
-    hst = np.histogram(matrix_minor_count, bins=num_of_genomes // 2)
-    assert (all([int(e) == e for e in hst[1]]))  # make sure the bins are valid
+    hst = np.histogram(matrix_minor_count, bins=num_of_genomes // 2 + 1)
     return hst[0]
 
 def vcf2matrix2sfs(options, paths_helper, special_list):

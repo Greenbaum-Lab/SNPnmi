@@ -1,4 +1,6 @@
-from utils.config import get_sample_sites_file_name, get_indlist_file_name
+import json
+
+from utils.config import get_sample_sites_file_name
 
 
 def get_sample_site_list(options, paths_helper):
@@ -7,3 +9,9 @@ def get_sample_site_list(options, paths_helper):
         sites_list = f.readlines()
     sites_list = [e.replace('\n', '') for e in sites_list]
     return sorted(sites_list)
+
+
+def get_site2size(paths_helper):
+    with open(f"{paths_helper.sfs_dir}site2size.json", "r") as f:
+        site2size = json.load(f)
+    return site2size

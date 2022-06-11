@@ -6,6 +6,8 @@ from io import StringIO
 from os.path import dirname, abspath
 import sys
 
+from utils.similarity_helper import file012_to_numpy
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
@@ -16,7 +18,7 @@ from utils.loader import Timer
 from scipy.ndimage.filters import gaussian_filter
 from utils.config import get_sample_sites_file_name, get_indlist_file_name, get_dataset_metadata_files_names
 from utils.common import args_parser, get_paths_helper
-from sfs_analysis.sfs_utils import get_sample_site_list
+from sfs_analysis.sfs_utils import get_sample_site_list, get_site2size
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,7 +27,6 @@ import pandas as pd
 
 def plot_subpopulations_size_histogram(options, paths_helper):
     vcf_dir = paths_helper.data_dir
-    sample_sites_path = get_sample_sites_file_name(options.dataset_name)
     indlist_path = get_indlist_file_name(options.dataset_name)
     sites_list = get_sample_site_list(options, paths_helper)
     with open(vcf_dir + indlist_path, "r") as f:
@@ -82,7 +83,6 @@ def create_vcf_per_site(paths_helper):
             os.remove(f'{paths_helper.sfs_dir}{site}/{site}_tmp.vcf.gz')
 
 def create_vcf_per_2_sites(options, paths_helper, site, special_list):
-    print("### Start stage 2 ###")
     sites_list = get_sample_site_list(options, paths_helper)
     site_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz'
     idx = sites_list.index(site)
@@ -101,8 +101,20 @@ def create_vcf_per_2_sites(options, paths_helper, site, special_list):
         os.remove(f'{combined_sites_vcf_file_tmp}')
 
 
+def convert_012_to_sfs(matrix_012_file_path, site_size, other_site_size):
+    np_matrix = file012_to_numpy(matrix_012_file_path)
+    num_of_genomes = 2 * (site_size + other_site_size)
+    assert np_matrix.min() == 0 and np_matrix.max() <= 2
+    assert np.matrix.shape[1] == num_of_genomes / 2
+    matrix_minor_count = np.sum(np_matrix, axis=1)
+    matrix_minor_count = np.minimum(matrix_minor_count, num_of_genomes - matrix_minor_count)
+    hst = np.histogram(matrix_minor_count, bins=num_of_genomes / 2)
+    assert (all([int(e) == e for e in hst[1]]))  # make sure the bins are valid
+    return hst[0]
+
 def vcf2matrix2sfs(options, paths_helper, special_list):
     print("### Start stage 3 ###")
+    site2size = get_site2size(paths_helper)
     sites_list = get_sample_site_list(options, paths_helper)
     for site in sites_list:
         if site not in special_list:
@@ -112,12 +124,16 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
             if other_site not in special_list:
                 continue
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
-            if os.path.exists(f'{vcf_file_path}.012'):
-                continue
-            print(f"Run {site} & {other_site}")
-            vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
-            subprocess.run([paths_helper.submit_helper, vcftools_cmd])
-            matrix_file = f'{vcf_file_path}.012'
+            if not os.path.exists(f'{vcf_file_path}.012'):
+                print(f"Run {site} & {other_site}")
+                vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
+                subprocess.run([paths_helper.submit_helper, vcftools_cmd])
+            hst_file_name = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
+            if not os.path.exists(hst_file_name):
+                site_size = site2size[site]
+                other_site_size = site2size[other_site]
+                hst = convert_012_to_sfs(f'{vcf_file_path}.012', site_size, other_site_size)
+                np.save(hst_file_name, hst)
 
 
 def main():
@@ -130,6 +146,8 @@ def main():
         site2sample = create_site2samples(arguments, paths_helper)
         with open(f"{paths_helper.sfs_dir}site2sample.json", "w") as f:
             json.dump(site2sample, f)
+        with open(f"{paths_helper.sfs_dir}site2size.json", "w") as f:
+            json.dump({k: len(v) for (k, v) in site2sample.items()}, f)
 
     create_vcf_per_site(paths_helper)
 

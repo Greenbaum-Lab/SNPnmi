@@ -71,7 +71,9 @@ def file012_to_numpy(input_file_path):
     with open(input_file_path, 'r') as f:
         line = f.readline()
         while line:
-            sites = line[:-1].split('\t')
+            if line[-1] == '\n':
+                line = line[:-1]
+            sites = line.split('\t')
             individual_array = np.array(sites, dtype=np.int8)
             final_matrix = np.vstack((final_matrix, individual_array)) if final_matrix.shape[0] else individual_array
             line = f.readline()

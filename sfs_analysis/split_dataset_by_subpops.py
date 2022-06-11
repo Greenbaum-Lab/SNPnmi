@@ -116,13 +116,10 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
     print("### Start stage 3 ###")
     site2size = get_site2size(paths_helper)
     sites_list = get_sample_site_list(options, paths_helper)
-    for site in sites_list:
-        if site not in special_list:
-            continue
-        idx = sites_list.index(site)
-        for other_site in sites_list[idx + 1:]:
-            if other_site not in special_list:
-                continue
+    special_list = sorted(special_list)
+    for idx, site in enumerate(special_list):
+        print(f"Run {site}")
+        for other_site in special_list[idx + 1:]:
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
             if not os.path.exists(f'{vcf_file_path}.012'):
                 print(f"Run {site} & {other_site}")
@@ -153,7 +150,7 @@ def main():
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     if not os.path.exists(paths_helper.sfs_dir + 'subpopulations_histogram.svg'):
         plot_subpopulations_size_histogram(arguments, paths_helper)
-    if os.path.exists(paths_helper.sfs_dir + 'site2sample.json'):
+    if not os.path.exists(paths_helper.sfs_dir + 'site2sample.json'):
         site2sample = create_site2samples(arguments, paths_helper)
         with open(f"{paths_helper.sfs_dir}site2sample.json", "w") as f:
             json.dump(site2sample, f)

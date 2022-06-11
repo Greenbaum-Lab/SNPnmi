@@ -137,11 +137,22 @@ def create_heat_map(options, paths_helper, special_list):
     num_of_sites = len(special_list)
     special_list = sorted(special_list)
     heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
-    for idx1, site in special_list:
-        for idx2, other_site in special_list[idx1 + 1:]:
+    for idx1, site in enumerate(special_list):
+        for idx2, other_site in enumerate(special_list[idx1 + 1:]):
             hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
+            hst = np.load(hst_path)
+            hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))
+            assert hot_spot_idx <= hst.size - 1
+            if hot_spot_idx < hst.size - 1:
+                divider = np.sqrt(hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1]) if hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1] > 0 else 1
+                res = hst[hot_spot_idx] / divider
+            else:
+                divider = hst[hot_spot_idx - 1] if hst[hot_spot_idx - 1] > 0 else 1
+                res = hst[hot_spot_idx] / divider
+            heat_map_matrix[idx1, idx2] = res
+            heat_map_matrix[idx2, idx1] = res
 
-
+    np.save(f'{paths_helper.sfs_dir}heatmap.npy', heat_map_matrix)
 
 def main():
     arguments = args_parser()

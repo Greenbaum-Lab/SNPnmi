@@ -6,7 +6,6 @@ from io import StringIO
 from os.path import dirname, abspath
 import sys
 
-from utils.similarity_helper import file012_to_numpy
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -14,6 +13,7 @@ from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
 
+from utils.similarity_helper import file012_to_numpy
 from utils.loader import Timer
 from scipy.ndimage.filters import gaussian_filter
 from utils.config import get_sample_sites_file_name, get_indlist_file_name, get_dataset_metadata_files_names
@@ -136,6 +136,17 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
                 np.save(hst_file_name, hst)
 
 
+def create_heat_map(options, paths_helper, special_list):
+    sites_size = get_site2size(paths_helper)
+    num_of_sites = len(special_list)
+    special_list = sorted(special_list)
+    heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
+    for idx1, site in special_list:
+        for idx2, other_site in special_list[idx1 + 1:]:
+            hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
+
+
+
 def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
@@ -161,6 +172,7 @@ def main():
             continue
         create_vcf_per_2_sites(arguments, paths_helper, site, special_list)
     vcf2matrix2sfs(arguments, paths_helper, special_list)
+
 
 
 if __name__ == '__main__':

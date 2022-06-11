@@ -105,7 +105,7 @@ def convert_012_to_sfs(matrix_012_file_path, site_size, other_site_size):
     np_matrix = file012_to_numpy(matrix_012_file_path)
     num_of_genomes = 2 * (site_size + other_site_size)
     assert np_matrix.min() == 0 and np_matrix.max() <= 2
-    assert np.matrix.shape[0] == num_of_genomes / 2
+    assert np_matrix.shape[0] == num_of_genomes / 2
     matrix_minor_count = np.sum(np_matrix, axis=1)
     matrix_minor_count = np.minimum(matrix_minor_count, num_of_genomes - matrix_minor_count)
     hst = np.histogram(matrix_minor_count, bins=num_of_genomes / 2)

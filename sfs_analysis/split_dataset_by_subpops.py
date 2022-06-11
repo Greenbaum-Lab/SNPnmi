@@ -153,7 +153,7 @@ def main():
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     if not os.path.exists(paths_helper.sfs_dir + 'subpopulations_histogram.svg'):
         plot_subpopulations_size_histogram(arguments, paths_helper)
-    if not os.path.exists(paths_helper.sfs_dir + 'site2sample.json'):
+    if os.path.exists(paths_helper.sfs_dir + 'site2sample.json'):
         site2sample = create_site2samples(arguments, paths_helper)
         with open(f"{paths_helper.sfs_dir}site2sample.json", "w") as f:
             json.dump(site2sample, f)

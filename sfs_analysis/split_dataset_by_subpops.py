@@ -117,7 +117,7 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
     site2size = get_site2size(paths_helper)
     sites_list = get_sample_site_list(options, paths_helper)
     special_list = sorted(special_list)
-    for idx, site in tqdm(enumerate(special_list)):
+    for idx, site in enumerate(tqdm(special_list)):
         for other_site in tqdm(special_list[idx + 1:], leave=False):
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
             if not os.path.exists(f'{vcf_file_path}.012'):
@@ -170,8 +170,9 @@ def main():
 
     create_vcf_per_site(paths_helper)
 
+
     sites_list = get_sample_site_list(arguments, paths_helper)
-    special_list = list({'Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
+    special_list = list({'Mandenka', 'Mbuti', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
                     'Orcadian', 'Russian', 'French', 'Oroqen', 'Adygei', 'Burusho', 'Brahui', 'Bougainville',
                     'BergamoItalian', 'Bedouin', 'Basque', 'BantuSouthAfrica', 'BantuKenya', 'Balochi', 'Colombian',
                     'Cambodian', 'Dai', 'Druze', 'Daur', 'Hezhen', 'NorthernHan', 'Han', 'PapuanHighlands', 'Hazara'})

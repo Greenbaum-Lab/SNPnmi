@@ -171,10 +171,10 @@ def main():
     create_vcf_per_site(paths_helper)
 
     sites_list = get_sample_site_list(arguments, paths_helper)
-    special_list = ['Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
+    special_list = list({'Mandenka', 'Mbuti', 'BantuKenya', 'Yoruba', 'Biaka', 'Tuscan', 'BergamoItalian', 'Sardinian',
                     'Orcadian', 'Russian', 'French', 'Oroqen', 'Adygei', 'Burusho', 'Brahui', 'Bougainville',
                     'BergamoItalian', 'Bedouin', 'Basque', 'BantuSouthAfrica', 'BantuKenya', 'Balochi', 'Colombian',
-                    'Cambodian', 'Dai', 'Druze', 'Daur', 'Hezhen', 'NorthernHan', 'Han', 'PapuanHighlands', 'Hazara']
+                    'Cambodian', 'Dai', 'Druze', 'Daur', 'Hezhen', 'NorthernHan', 'Han', 'PapuanHighlands', 'Hazara'})
     for site in sites_list:
         if site not in special_list:
             continue

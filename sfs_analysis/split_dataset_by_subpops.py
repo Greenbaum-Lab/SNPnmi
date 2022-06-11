@@ -6,6 +6,7 @@ from io import StringIO
 from os.path import dirname, abspath
 import sys
 
+from tqdm import tqdm
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -116,9 +117,8 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
     site2size = get_site2size(paths_helper)
     sites_list = get_sample_site_list(options, paths_helper)
     special_list = sorted(special_list)
-    for idx, site in enumerate(special_list):
-        print(f"Run {site}")
-        for other_site in special_list[idx + 1:]:
+    for idx, site in tqdm(enumerate(special_list)):
+        for other_site in tqdm(special_list[idx + 1:], leave=False):
             vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
             if not os.path.exists(f'{vcf_file_path}.012'):
                 print(f"Run {site} & {other_site}")
@@ -133,6 +133,7 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
 
 
 def create_heat_map(options, paths_helper, special_list):
+    print("### Stage 4 ###")
     sites_size = get_site2size(paths_helper)
     num_of_sites = len(special_list)
     special_list = sorted(special_list)
@@ -179,7 +180,7 @@ def main():
             continue
         create_vcf_per_2_sites(arguments, paths_helper, site, special_list)
     vcf2matrix2sfs(arguments, paths_helper, special_list)
-
+    create_heat_map(arguments, paths_helper, special_list)
 
 
 if __name__ == '__main__':

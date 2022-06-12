@@ -145,7 +145,7 @@ def create_heat_map(options, paths_helper, special_list):
                 continue
             hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
             hst = np.load(hst_path)
-            hists[f'{site}-{other_site}'] = hst
+            hists[f'{site}-{other_site}'] = hst.tolist()
             hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))
             assert hot_spot_idx <= hst.size - 1
             if hot_spot_idx < hst.size - 1:

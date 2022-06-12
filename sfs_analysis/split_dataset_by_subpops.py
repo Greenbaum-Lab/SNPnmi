@@ -193,7 +193,7 @@ def main():
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
         create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
-        return
+        return True
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     if not os.path.exists(f"{paths_helper.sfs_dir}summary/subpopulations_histogram.svg"):
         plot_subpopulations_size_histogram(arguments, paths_helper)

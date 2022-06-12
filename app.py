@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from sfs_analysis.sfs_utils import get_site2size
+from sfs_analysis.sfs_utils import get_site2size, get_sample_site_list
 from utils.common import args_parser, get_paths_helper
 
 current_fig = None
@@ -42,9 +42,8 @@ def callbacks(app, options):
 def init(options):
     paths_helper = get_paths_helper(options.dataset_name)
     heatmap_np = np.load(f'{paths_helper.sfs_dir}summary/heatmap.npy')
-    sites_list = get_site_list()
-    heat_df = pd.DataFrame(data=heatmap_np, index=[f'name_{i}' for i in range(5)],
-                           columns=[f'name_{i}' for i in range(5)])
+    sites_list = get_sample_site_list(options, paths_helper)
+    # heat_df = pd.DataFrame(data=heatmap_np, index=sites_list, columns=sites_list)
 
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
     app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -53,7 +52,7 @@ def init(options):
         html.Div([
             dcc.Graph(
                 id='heatmap',
-                figure=px.imshow(heat_df)
+                figure=px.imshow(heatmap_np, x=sites_list, y=sites_list, text_auto=True)
             )
         ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 20'}),
         html.Div([

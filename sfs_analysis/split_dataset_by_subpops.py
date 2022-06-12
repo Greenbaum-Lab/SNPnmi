@@ -139,7 +139,9 @@ def create_heat_map(options, paths_helper, special_list):
     special_list = sorted(special_list)
     heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
     for idx1, site in enumerate(special_list):
-        for idx2, other_site in enumerate(special_list[idx1 + 1:]):
+        for idx2, other_site in enumerate(special_list):
+            if idx1 <= idx2:
+                continue
             hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
             hst = np.load(hst_path)
             hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))

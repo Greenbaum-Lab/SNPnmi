@@ -157,6 +157,7 @@ def create_heat_map(options, paths_helper, special_list):
 
     np.save(f'{paths_helper.sfs_dir}heatmap.npy', heat_map_matrix)
 
+
 def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)

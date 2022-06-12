@@ -205,7 +205,7 @@ def main():
             json.dump({k: len(v) for (k, v) in site2sample.items()}, f)
 
     create_vcf_per_site(paths_helper)
-    submit_all_sites(arguments, paths_helper)
+    # submit_all_sites(arguments, paths_helper)
     sites_list = get_sample_site_list(arguments, paths_helper)
     vcf2matrix2sfs(arguments, paths_helper, sites_list)
     create_heat_map(arguments, paths_helper, sites_list)

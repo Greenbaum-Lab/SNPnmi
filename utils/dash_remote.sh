@@ -23,4 +23,4 @@ echo -e "After creating the tunnel copy and paste the URL that DASH created\n"
 # cd /to/path/of/your/code/folder
 
 # Start Jupyter
-/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3 /sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/app.py --port=$dash_port
+/sci/labs/gilig/shahar.mazie/icore-data/snpnmi_venv/bin/python3 /sci/labs/gilig/shahar.mazie/icore-data/code/snpnmi/app.py -d hgdp --port=$dash_port

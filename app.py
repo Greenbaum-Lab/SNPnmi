@@ -66,4 +66,4 @@ def init(options):
 if __name__ == '__main__':
     options = args_parser()
     app = init(options)
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=options.port)

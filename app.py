@@ -29,7 +29,9 @@ def callbacks(app, options):
 
 
 def init(options):
-    heatmap_np = (np.arange(25).reshape(-5, 5) + 10) / 20
+    paths_helper = get_paths_helper(options.dataset_name)
+    heatmap_np = np.load(f'{paths_helper.sfs_dir}summary/heatmap.npy')
+    sites_list = get_site_list()
     heat_df = pd.DataFrame(data=heatmap_np, index=[f'name_{i}' for i in range(5)],
                            columns=[f'name_{i}' for i in range(5)])
 

@@ -137,6 +137,7 @@ def create_heat_map(options, paths_helper, special_list):
     sites_size = get_site2size(paths_helper)
     num_of_sites = len(special_list)
     special_list = sorted(special_list)
+    hists = {}
     heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
     for idx1, site in enumerate(special_list):
         for idx2, other_site in enumerate(special_list):
@@ -144,6 +145,7 @@ def create_heat_map(options, paths_helper, special_list):
                 continue
             hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
             hst = np.load(hst_path)
+            hists[f'{site}-{other_site}'] = hst
             hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))
             assert hot_spot_idx <= hst.size - 1
             if hot_spot_idx < hst.size - 1:
@@ -154,6 +156,8 @@ def create_heat_map(options, paths_helper, special_list):
                 res = hst[hot_spot_idx] / divider
             heat_map_matrix[idx1, idx2] = res
             heat_map_matrix[idx2, idx1] = res
+    with open(f"{paths_helper.sfs_dir}all_hists.json", "w") as f:
+        json.dump(hists, f)
 
     np.save(f'{paths_helper.sfs_dir}heatmap.npy', heat_map_matrix)
 

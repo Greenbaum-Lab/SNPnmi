@@ -139,7 +139,7 @@ def create_heat_map(options, paths_helper, special_list):
     special_list = sorted(special_list)
     hists = {}
     heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
-    for idx1, site in enumerate(special_list):
+    for idx1, site in enumerate(tqdm(special_list)):
         for idx2, other_site in enumerate(special_list):
             if idx1 >= idx2:
                 continue

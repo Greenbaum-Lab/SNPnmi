@@ -12,6 +12,6 @@ def get_sample_site_list(options, paths_helper):
 
 
 def get_site2size(paths_helper):
-    with open(f"{paths_helper.sfs_dir}site2size.json", "r") as f:
+    with open(f"{paths_helper.sfs_dir}summary/site2size.json", "r") as f:
         site2size = json.load(f)
     return site2size

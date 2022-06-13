@@ -20,7 +20,7 @@ from utils.loader import Timer, Loader
 from scipy.ndimage.filters import gaussian_filter
 from utils.config import get_indlist_file_name, get_cluster_code_folder
 from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
-from sfs_analysis.sfs_utils import get_sample_site_list, get_site2size
+from sfs_analysis.sfs_utils import get_sample_site_list, get_site2size, get_theoretical_sfs
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -139,15 +139,18 @@ def create_heat_map(options, paths_helper, special_list):
     num_of_sites = len(special_list)
     special_list = sorted(special_list)
     hists = {}
-    heat_map_matrix = np.zeros(shape=(num_of_sites, num_of_sites))
+    relative_heat = np.zeros(shape=(num_of_sites, num_of_sites))
+    theoretical_heat = np.zeros(shape=(num_of_sites, num_of_sites))
     for idx1, site in enumerate(tqdm(special_list)):
         for idx2, other_site in enumerate(special_list):
             if idx1 >= idx2:
                 continue
             hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
             hst = np.load(hst_path)
+            hst[-1] *= 2
             hists[f'{site}-{other_site}'] = hst.tolist()
             hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))
+            theoretical = get_theoretical_sfs(np.sum(hst[1:]), sites_size[site] + sites_size[other_site])
             assert hot_spot_idx <= hst.size - 1
             if hot_spot_idx < hst.size - 1:
                 divider = np.sqrt(hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1]) if hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1] > 0 else 1
@@ -155,12 +158,15 @@ def create_heat_map(options, paths_helper, special_list):
             else:
                 divider = hst[hot_spot_idx - 1] if hst[hot_spot_idx - 1] > 0 else 1
                 res = hst[hot_spot_idx] / divider
-            heat_map_matrix[idx1, idx2] = res
-            heat_map_matrix[idx2, idx1] = res
+            relative_heat[idx1, idx2] = res
+            relative_heat[idx2, idx1] = res
+            theoretical_heat[idx1, idx2] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
+            theoretical_heat[idx2, idx1] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
     with open(f"{paths_helper.sfs_dir}summary/all_hists.json", "w") as f:
         json.dump(hists, f)
 
-    np.save(f'{paths_helper.sfs_dir}summary/heatmap.npy', heat_map_matrix)
+    np.save(f'{paths_helper.sfs_dir}summary/theoretical_heat.npy', theoretical_heat)
+    np.save(f'{paths_helper.sfs_dir}summary/relative_heat.npy', relative_heat)
 
 
 def submit_all_sites(options, paths_helper):
@@ -207,7 +213,7 @@ def main():
     create_vcf_per_site(paths_helper)
     # submit_all_sites(arguments, paths_helper)
     sites_list = get_sample_site_list(arguments, paths_helper)
-    vcf2matrix2sfs(arguments, paths_helper, sites_list)
+    # vcf2matrix2sfs(arguments, paths_helper, sites_list)
     create_heat_map(arguments, paths_helper, sites_list)
 
 

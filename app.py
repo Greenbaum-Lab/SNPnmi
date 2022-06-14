@@ -42,6 +42,27 @@ def callbacks(app, options):
             yaxis_title="Number of SNPs")
         return current_fig
 
+    @app.callback(
+        Output('heatmap', 'figure'),
+        Input('comparison_method', 'value'))
+    def update_graph(comparison_method):
+        paths_helper = get_paths_helper(options.dataset_name)
+        heatmap_dir_path = f'{paths_helper.sfs_dir}summary/'
+        heatmap_path = None
+        if comparison_method == 'Theoretical comparison':
+            heatmap_path = heatmap_dir_path + 'theoretical_heat.npy'
+        if comparison_method == 'Relative comparison':
+            heatmap_path = heatmap_dir_path + 'relative_heat.npy'
+
+        heatmap_np = np.load(heatmap_path)
+        sites_list = get_sample_site_list(options, paths_helper)
+        heatmap_fig = px.imshow(heatmap_np, x=sites_list, y=sites_list, text_auto=True,
+                                color_continuous_scale='RdBu_r', origin='lower', aspect='auto', width=650, height=650)
+        heatmap_fig.update_coloraxes(showscale=False)
+        heatmap_fig.update_layout(title=f'Populations HeatMap by {comparison_method} - {options.dataset_name}', title_x=.5)
+
+        return heatmap_fig
+
 
 def init(options):
     paths_helper = get_paths_helper(options.dataset_name)
@@ -56,6 +77,13 @@ def init(options):
     heatmap_fig.update_coloraxes(showscale=False)
     heatmap_fig.update_layout(title=f'Populations HeatMap - {options.dataset_name}', title_x=.5)
     app.layout = html.Div([
+        html.Div([
+            html.Div([
+            dcc.Dropdown(
+                ['Theoretical comparison', 'Relative comparison'],
+                'Theoretical comparison',
+                id='comparison_method',
+            )])]),
         html.Div([
             dcc.Graph(
                 id='heatmap',

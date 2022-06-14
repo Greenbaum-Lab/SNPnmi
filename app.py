@@ -57,6 +57,7 @@ def callbacks(app, options):
 
         heatmap_np = np.load(heatmap_path)
         sites_list = get_sample_site_list(options, paths_helper)
+        np.fill_diagonal(heatmap_np, np.nan)
         heatmap_fig = px.imshow(heatmap_np, x=sites_list, y=sites_list, text_auto=True,
                                 color_continuous_scale='RdBu_r', origin='lower', aspect='auto', width=650, height=650)
         heatmap_fig.update_coloraxes(showscale=False)

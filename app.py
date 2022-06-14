@@ -25,6 +25,7 @@ def callbacks(app, options):
             return current_fig
         paths_helper = get_paths_helper(options.dataset_name)
         sfs = np.load(f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy')[1:]
+        sfs[-1] *= 2
         site2size = get_site2size(paths_helper)
         hotspot = 2 * min(site2size[site], site2size[other_site])
         num_of_snps = np.sum(sfs)

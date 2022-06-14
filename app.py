@@ -84,7 +84,7 @@ def init(options):
                 ['Theoretical comparison', 'Relative comparison'],
                 'Theoretical comparison',
                 id='comparison_method',
-            )])]),
+            )], style={'width': '49%', 'display': 'inline-block'})]),
         html.Div([
             dcc.Graph(
                 id='heatmap',

@@ -210,7 +210,7 @@ def multichromosome_stats(options, paths_helper):
 
 
 def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
-    heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv', index_label="sites")
+    heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
     fst_x = []
     heatmap_y = []
     with open(f'{paths_helper.sfs_dir}/summary/{fst_file_name}', 'r') as f:

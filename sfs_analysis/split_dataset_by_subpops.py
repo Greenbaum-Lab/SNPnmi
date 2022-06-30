@@ -220,7 +220,16 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
             assert len(line_lst) == 3
             heatmap_y.append(float(heat_map_df[heat_map_df['sites'] == line_lst[0]][line_lst[1]]))
             fst_x.append(float(line_lst[2]))
+    fst_x = np.array(fst_x)
+    heatmap_y = np.array(heatmap_y)
+    first_element = np.sum((fst_x - np.mean(fst_x)) @ (heatmap_y - np.sum(heatmap_y)))
+    second_element = np.sum((fst_x - np.mean(fst_x)) ** 2) * np.sum((heatmap_y - np.mean(heatmap_y)) ** 2)
+    R = first_element / np.sqrt(second_element)
+    assert R == np.corrcoef(fst_x, heatmap_y)[0, 1]
     plt.scatter(x=fst_x, y=heatmap_y, s=2)
+    plt.xlabel("Pairwise Fst score")
+    plt.ylabel("Relative peak score")
+    plt.title(f"Relative peak score and Fst (R = {R})")
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/relative2fst_plot.svg')
 
 

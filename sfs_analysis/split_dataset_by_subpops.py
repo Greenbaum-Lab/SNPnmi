@@ -162,17 +162,20 @@ def create_heat_map(options, paths_helper, sites_list):
             relative_heat.at[other_site, site] = res
             theoretical_heat.at[site, other_site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
             theoretical_heat.at[other_site, site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
-    with open(f"{paths_helper.sfs_dir}summary/all_hists.json", "w") as f:
+    with open(f"{paths_helper.sfs_dir_chr}summary/all_hists.json", "w") as f:
         json.dump(hists, f)
 
-    relative_heat.to_csv(f'{paths_helper.sfs_dir}summary/relative_heat.csv', index_label="sites")
-    theoretical_heat.to_csv(f'{paths_helper.sfs_dir}summary/theoretical_heat.csv', index_label="sites")
+    relative_heat.to_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv', index_label="sites")
+    theoretical_heat.to_csv(f'{paths_helper.sfs_dir_chr}summary/theoretical_heat.csv', index_label="sites")
 
 
 def submit_all_sites(options, paths_helper):
     sites_list = get_sample_site_list(options, paths_helper)
     errs = []
-    for site in sites_list:
+    for idx, site in enumerate(sites_list):
+        combine_files = [f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}.vcf.gz' for other_site in sites_list[idx + 1:]]
+        if all([os.path.exists(path) for path in combine_files]):
+            continue
         script_args = f'-d {options.dataset_name} --args {site} --chr {options.chr_num}'
         job_type = 'sfs_analysis'
         job_name = f'vcf_{site}'
@@ -211,6 +214,9 @@ def main():
     multichromosome_stats(arguments, paths_helper)
     paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
+    os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
+    os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)
+
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
         create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)

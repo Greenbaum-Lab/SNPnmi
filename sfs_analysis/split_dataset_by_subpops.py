@@ -67,33 +67,34 @@ def create_site2samples(options, paths_helper):
         return hgdp_create_site2samples(options, paths_helper)
 
 
-def create_vcf_per_site(paths_helper):
+def create_vcf_per_site(options, paths_helper):
     with open(f"{paths_helper.sfs_dir}summary/site2sample.json", "r") as f:
         site2sample = json.load(f)
     for site, samples in site2sample.items():
-        if os.path.exists(f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz.tbi'):
+        if os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz.tbi'):
             continue
-        vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr21.vcf"
+
+        vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
         with Timer(f"Create VCF for site {site}"):
-            os.makedirs(f'{paths_helper.sfs_dir}{site}', exist_ok=True)
+            os.makedirs(f'{paths_helper.sfs_dir_chr}{site}', exist_ok=True)
             bcftools_cmd = ["bcftools", 'view', "-s", f"{','.join(samples)}", "--max-alleles", "2", "-O", "z",
-                            "--min-alleles", '2', '--output-file', f'{paths_helper.sfs_dir}{site}/{site}_tmp.vcf.gz', vcf_file]
+                            "--min-alleles", '2', '--output-file', f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz', vcf_file]
             subprocess.run([paths_helper.submit_helper, ' '.join(bcftools_cmd)])
 
-            subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {paths_helper.sfs_dir}{site}/{site}.vcf.gz -i "F_MISSING=0" {paths_helper.sfs_dir}{site}/{site}_tmp.vcf.gz'])
-            subprocess.run([paths_helper.submit_helper, f'tabix -p vcf {paths_helper.sfs_dir}{site}/{site}.vcf.gz'])
-            os.remove(f'{paths_helper.sfs_dir}{site}/{site}_tmp.vcf.gz')
+            subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz -i "F_MISSING=0" {paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz'])
+            subprocess.run([paths_helper.submit_helper, f'tabix -p vcf {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'])
+            os.remove(f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz')
 
 def create_vcf_per_2_sites(options, paths_helper, site, special_list):
     sites_list = get_sample_site_list(options, paths_helper)
-    site_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}.vcf.gz'
+    site_vcf_file = f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'
     idx = sites_list.index(site)
     for other_site in sites_list[idx + 1:]:
         if other_site not in special_list:
             continue
-        other_site_vcf_file = f'{paths_helper.sfs_dir}{other_site}/{other_site}.vcf.gz'
-        combined_sites_vcf_file_tmp = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}_tmp.vcf.gz'
-        combined_sites_vcf_file = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}.vcf.gz'
+        other_site_vcf_file = f'{paths_helper.sfs_dir_chr}{other_site}/{other_site}.vcf.gz'
+        combined_sites_vcf_file_tmp = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}_tmp.vcf.gz'
+        combined_sites_vcf_file = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}.vcf.gz'
         if os.path.exists(combined_sites_vcf_file):
             continue
         print(f"Run {site} & {other_site}")
@@ -120,12 +121,12 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
     special_list = sorted(special_list)
     for idx, site in enumerate(tqdm(special_list)):
         for other_site in tqdm(special_list[idx + 1:], leave=False):
-            vcf_file_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}'
+            vcf_file_path = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}'
             if not os.path.exists(f'{vcf_file_path}.012'):
                 print(f"Run {site} & {other_site}")
                 vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
                 subprocess.run([paths_helper.submit_helper, vcftools_cmd])
-            hst_file_name = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
+            hst_file_name = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy'
             if not os.path.exists(hst_file_name):
                 site_size = site2size[site]
                 other_site_size = site2size[other_site]
@@ -133,19 +134,19 @@ def vcf2matrix2sfs(options, paths_helper, special_list):
                 np.save(hst_file_name, hst)
 
 
-def create_heat_map(options, paths_helper, special_list):
+def create_heat_map(options, paths_helper, sites_list):
     print("### Stage 4 ###")
     sites_size = get_site2size(paths_helper)
-    num_of_sites = len(special_list)
-    special_list = sorted(special_list)
+    num_of_sites = len(sites_list)
+    sites_list = sorted(sites_list)
     hists = {}
-    relative_heat = np.zeros(shape=(num_of_sites, num_of_sites))
-    theoretical_heat = np.zeros(shape=(num_of_sites, num_of_sites))
-    for idx1, site in enumerate(tqdm(special_list)):
-        for idx2, other_site in enumerate(special_list):
+    relative_heat = pd.DataFrame(columns=sites_list, index=sites_list)
+    theoretical_heat = pd.DataFrame(columns=sites_list, index=sites_list)
+    for idx1, site in enumerate(tqdm(sites_list)):
+        for idx2, other_site in enumerate(sites_list):
             if idx1 >= idx2:
                 continue
-            hst_path = f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy'
+            hst_path = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy'
             hst = np.load(hst_path)
             hst[-1] *= 2
             hists[f'{site}-{other_site}'] = hst.tolist()
@@ -158,22 +159,22 @@ def create_heat_map(options, paths_helper, special_list):
             else:
                 divider = hst[hot_spot_idx - 1] if hst[hot_spot_idx - 1] > 0 else 1
                 res = hst[hot_spot_idx] / divider
-            relative_heat[idx1, idx2] = res
-            relative_heat[idx2, idx1] = res
-            theoretical_heat[idx1, idx2] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
-            theoretical_heat[idx2, idx1] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
+            relative_heat.at[site, other_site] = res
+            relative_heat.at[other_site, site] = res
+            theoretical_heat.at[site, other_site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
+            theoretical_heat.at[other_site, site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
     with open(f"{paths_helper.sfs_dir}summary/all_hists.json", "w") as f:
         json.dump(hists, f)
 
-    np.save(f'{paths_helper.sfs_dir}summary/theoretical_heat.npy', theoretical_heat)
-    np.save(f'{paths_helper.sfs_dir}summary/relative_heat.npy', relative_heat)
+    relative_heat.tv_csv(f'{paths_helper.sfs_dir}summary/relative_heat.csv', index_label="sites")
+    theoretical_heat.tv_csv(f'{paths_helper.sfs_dir}summary/theoretical_heat.csv', index_label="sites")
 
 
 def submit_all_sites(options, paths_helper):
     sites_list = get_sample_site_list(options, paths_helper)
     errs = []
     for site in sites_list:
-        script_args = f'-d {options.dataset_name} --args {site}'
+        script_args = f'-d {options.dataset_name} --args {site} --chr {options.chr_num}'
         job_type = 'sfs_analysis'
         job_name = f'vcf_{site}'
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
@@ -192,26 +193,32 @@ def submit_all_sites(options, paths_helper):
 
     assert validate_stderr_empty(errs)
 
+def multichromosome_stats(options, paths_helper):
 
-def main():
-    arguments = args_parser()
-    paths_helper = get_paths_helper(arguments.dataset_name)
-    if arguments.args:
-        sites_list = get_sample_site_list(arguments, paths_helper)
-        create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
-        return True
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
+    os.makedirs(paths_helper.sfs_dir + 'summary', exist_ok=True)
     if not os.path.exists(f"{paths_helper.sfs_dir}summary/subpopulations_histogram.svg"):
-        plot_subpopulations_size_histogram(arguments, paths_helper)
+        plot_subpopulations_size_histogram(options, paths_helper)
     if not os.path.exists(f"{paths_helper.sfs_dir}summary/site2sample.json"):
-        site2sample = create_site2samples(arguments, paths_helper)
+        site2sample = create_site2samples(options, paths_helper)
         with open(f"{paths_helper.sfs_dir}summary/site2sample.json", "w") as f:
             json.dump(site2sample, f)
         with open(f"{paths_helper.sfs_dir}summary/site2size.json", "w") as f:
             json.dump({k: len(v) for (k, v) in site2sample.items()}, f)
 
-    create_vcf_per_site(paths_helper)
-    # submit_all_sites(arguments, paths_helper)
+def main():
+    arguments = args_parser()
+    paths_helper = get_paths_helper(arguments.dataset_name)
+    multichromosome_stats(arguments, paths_helper)
+    paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
+    os.makedirs(paths_helper.sfs_dir, exist_ok=True)
+    if arguments.args:
+        sites_list = get_sample_site_list(arguments, paths_helper)
+        create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
+        return True
+
+    create_vcf_per_site(arguments, paths_helper)
+    submit_all_sites(arguments, paths_helper)
     sites_list = get_sample_site_list(arguments, paths_helper)
     vcf2matrix2sfs(arguments, paths_helper, sites_list)
     create_heat_map(arguments, paths_helper, sites_list)

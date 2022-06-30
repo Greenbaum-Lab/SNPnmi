@@ -298,6 +298,8 @@ def args_parser():
                         help="num of trees in each class to create (B in bootstraps)")
     parser.add_argument("--min_pop_size", dest="min_pop_size", default=5, type=int,
                         help="minimum size of population in netstruct runs")
+    parser.add_argument("--chr", dest="chr_num", default=1, type=int,
+                        help="chromosome number to work on (relevant only for HGDP)")
     parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',
                         help="run all pipeline (from step 1.2 till step 5.3) instead of a single step")
     parser.add_argument("--ns_combine", dest="run_ns_together", default=True, action='store_true',

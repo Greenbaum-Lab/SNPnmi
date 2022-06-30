@@ -217,7 +217,7 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
         for line in f.readlines():
             line_lst = line.split(' ')
             assert len(line_lst) == 3
-            heatmap_y.append(heat_map_df.at[line_lst[0], line_lst[1]])
+            heatmap_y.append(heat_map_df[heat_map_df['sites'] == line_lst[0]][line_lst[1]][0])
             fst_x.append(float(line_lst[2]))
     plt.scatter(x=fst_x, y=heatmap_y)
     plt.show()

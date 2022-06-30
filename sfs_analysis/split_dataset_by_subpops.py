@@ -114,10 +114,9 @@ def convert_012_to_sfs(matrix_012_file_path, site_size, other_site_size):
     hst = np.histogram(matrix_minor_count, bins=num_of_genomes // 2 + 1)
     return hst[0]
 
-def vcf2matrix2sfs(options, paths_helper):
+def vcf2matrix2sfs(options, paths_helper, sites_list):
     print("### Start stage 3 ###")
     site2size = get_site2size(paths_helper)
-    sites_list = get_sample_site_list(options, paths_helper)
     for idx, site in enumerate(tqdm(sites_list)):
         for other_site in tqdm(sites_list[idx + 1:], leave=False):
             vcf_file_path = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}'
@@ -137,7 +136,6 @@ def create_heat_map(options, paths_helper, sites_list):
     print("### Stage 4 ###")
     sites_size = get_site2size(paths_helper)
     num_of_sites = len(sites_list)
-    sites_list = sorted(sites_list)
     hists = {}
     relative_heat = pd.DataFrame(columns=sites_list, index=sites_list)
     theoretical_heat = pd.DataFrame(columns=sites_list, index=sites_list)

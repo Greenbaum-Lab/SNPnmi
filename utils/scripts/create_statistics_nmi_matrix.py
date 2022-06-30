@@ -1,4 +1,4 @@
-# python3 utils/scripts/collect_nmi.py -d hgdp
+# python3 utils/scripts/create_statistics_nmi_matrix.py -d hgdp
 import itertools
 import os
 from os.path import dirname, abspath, basename

@@ -87,11 +87,11 @@ def runner(options):
 
 #  python3 runner.py -s 5.3 -d hgdp
 
-#  python3 runner.py -s 5.4 -d hgdp --args 1000,3
+#  python3 runner.py -s 5.4 -d hgdp --args 1000,10
 
 #  python3 runner.py -s 6.1 -d hgdp
 
-#  python3 runner.py -s 6.2 -d hgdp --args 1000,3
+#  python3 runner.py -s 6.2 -d hgdp --args 10000,10
 
 
 

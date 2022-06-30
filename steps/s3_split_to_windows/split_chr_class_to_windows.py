@@ -6,6 +6,7 @@
 # each line contains data per individual.
 # we read line by line, and for each site, we look in the dictionary from the previous step, to which window id it should be writen.
 import os
+import pickle
 import sys
 import json
 import time
@@ -15,8 +16,8 @@ from os.path import dirname, abspath
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.similarity_helper import file012_to_numpy, numpy_to_file012
-from utils.common import get_paths_helper, AlleleClass, args_parser
+from utils.similarity_helper import file012_to_numpy
+from utils.common import get_paths_helper, AlleleClass, args_parser, Cls, comp_and_save_012_mat
 from utils.loader import Timer, Loader
 from utils.config import *
 from utils.checkpoint_helper import *
@@ -62,7 +63,7 @@ def split_chr_class_to_windows(options):
             # for the given individual, go over the sites, and write them to the designated window (skip the first index which is the individual id)
             sites_only = islice(line.split('\t'), 1, None)
             for site_index, value in enumerate(sites_only):
-                window_id = site_index_2_window_id[str(site_index)]
+                window_id = site_index_2_window_id[site_index]
                 per_window_values[window_id].extend([value])
             assert site_index == max_site_index
             line_index += 1
@@ -76,44 +77,44 @@ def pre_split_chr_class_to_windows(options):
     dataset_name = options.dataset_name
     chr_short_name, mac_maf, class_value = options.args
     class_value = int(class_value)
-    allele_class = AlleleClass(mac_maf, class_value)
+    cls = Cls(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
-    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name,
-                                                                           chr_name=chr_short_name)
-    site_index_2_window_id = json.load(open(chr_windows_indexes_file, 'r'))
+    chr_windows_indexes_file = path_helper.windows_indexes_template.format(class_name=cls.name, chr_name=chr_short_name)
+    with open(chr_windows_indexes_file, 'rb') as f:
+        site_index_2_window_id = pickle.load(f)
     min_site_index = min(site_index_2_window_id.keys())
     max_site_index = max([int(site) for site in site_index_2_window_id.keys()])
     assert int(min_site_index) == 0, f'site indexes must be zero based, but the min index found is {min_site_index}'
     max_window_id = max(site_index_2_window_id.values())
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_template
     # Generate the folder
-    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=allele_class.class_name,
+    window_per_class_and_chr_sample = window_per_class_and_chr_template.format(class_name=cls.name,
                                                                                chr_name=chr_short_name, window_id=0)
     os.makedirs(dirname(window_per_class_and_chr_sample), exist_ok=True)
-    return allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id
+    return cls, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id
 
 
 def alternative_split_to_windows(options):
-    allele_class, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id = \
+    cls, chr_short_name, max_site_index, max_window_id, path_helper, site_index_2_window_id = \
         pre_split_chr_class_to_windows(options)
     window_per_class_and_chr_template = path_helper.window_by_class_and_chr_np_template
-    input_file = path_helper.class_by_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
+    input_file = path_helper.class_by_chr_template.format(class_name=cls.name, chr_name=chr_short_name)
     assert np.all(np.sort(np.array([int(i) for i in site_index_2_window_id.keys()])) == np.arange(max_site_index + 1))
     with Timer("Reformatting 012 file to numpy array"):
         mat012_transpose = file012_to_numpy(input_file).T
     windows_matrix = {}
     for site_id in range(mat012_transpose.shape[0]):
         site = mat012_transpose[site_id]
-        window_id = site_index_2_window_id[str(site_id)]
+        window_id = site_index_2_window_id[site_id]
         if window_id in windows_matrix:
             windows_matrix[window_id] = np.concatenate([windows_matrix[window_id], site.reshape(1, -1)])
         else:
             windows_matrix[window_id] = site.reshape(1, -1)
 
     for wind_id, window in windows_matrix.items():
-        with open(window_per_class_and_chr_template.format(class_name=allele_class.class_name, chr_name=chr_short_name,
-                                                           window_id=wind_id), 'wb') as window_file:
-            np.save(window_file, window.T)
+        window_file = window_per_class_and_chr_template.format(class_name=cls.name, chr_name=chr_short_name,
+                                                               window_id=wind_id)
+        comp_and_save_012_mat(window.T, window_file)
 
 
 def main(options):

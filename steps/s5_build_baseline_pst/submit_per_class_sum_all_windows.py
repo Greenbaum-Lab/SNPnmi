@@ -1,85 +1,59 @@
-# python3 submit_per_class_sum_all_windows.py -1 -1 49 49 1000
 
-import subprocess
 import sys
 import os
 import time
 from os.path import dirname, abspath
 
+from tqdm import tqdm
+
+
 root_path = dirname(dirname(dirname(os.path.abspath(__file__))))
 sys.path.append(root_path)
 
-from utils.loader import Loader
-from utils.common import get_paths_helper, args_parser, how_many_jobs_run, validate_stderr_empty
+from utils.checkpoint_helper import execute_with_checkpoint
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.loader import Loader, Timer
+from utils.common import get_paths_helper, args_parser, warp_how_many_jobs, validate_stderr_empty, class_iter, \
+    str_for_timer
 from utils.config import get_cluster_code_folder
 
-# will submit calc_distances_in_window of given classes and windows
+SCRIPT_NAME = os.path.basename(__file__)
 job_type = 'per_class_sum_all_windows'
-path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows.py'
+path_to_python_script_to_run = f'{get_cluster_code_folder()}snpnmi/steps/s5_build_baseline_pst/per_class_sum_all_windows_and_run_ns.py'
 
 
 def submit_per_class_sum_all_windows(options):
-    mac_min_range, mac_max_range, maf_min_range, maf_max_range = get_args(options)
     # create output folders
     paths_helper = get_paths_helper(options.dataset_name)
     os.makedirs(dirname(paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type, job_name='dummy')),
                 exist_ok=True)
     err_files = []
-    for mac_maf in ['mac', 'maf']:
-        is_mac = mac_maf == 'mac'
-        min_range = mac_min_range if is_mac else maf_min_range
-        max_range = mac_max_range if is_mac else maf_max_range
-        if min_range > 0:
-            print(f'go over {mac_maf} values: [{min_range},{max_range}]')
-            for val in range(min_range, max_range + 1):
-                # in maf we take 0.x
-                if not is_mac:
-                    val = f'{val * 1.0 / 100}'
+    for cls in tqdm(list(class_iter(options)), desc="Submitting compute class similarity per class"):
+        job_long_name = f'sum_all_{cls.mac_maf}{cls.val}'
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                job_name=job_long_name)
+        time_to_run = 24
+        err_files.append(job_stderr_file)
+        job_name = f's5_{cls.val}'
+        python_script_params = f'-d {options.dataset_name}  --ns_ss {options.ns_ss} --min_pop_size {options.min_pop_size}' \
+                               f' --args {cls.mac_maf},{cls.val}'
+        submit_to_cluster(options, job_type, job_name, path_to_python_script_to_run, python_script_params,
+                          job_stdout_file, job_stderr_file, num_hours_to_run=time_to_run)
 
-                job_long_name = f'sum_all_{mac_maf}{val}'
-                job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
-                                                                                        job_name=job_long_name)
-                err_files.append(job_stderr_file)
-                job_name = f's5_{val}'
-                cluster_setting = f'sbatch --time=8:00:00 --error="{job_stderr_file}" --output="{job_stdout_file}" --job-name="{job_name}"'
-                override = ' --override' if options.override else ''
-                python_script_params = f'-d {options.dataset_name} --args {mac_maf},{val}{override}'
-                cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} python3 {path_to_python_script_to_run} {python_script_params}'
-                print(cmd_to_run)
-                subprocess.run([paths_helper.submit_helper, cmd_to_run])
-
-    with Loader(f"Summing all similarity windows per class", string_to_find="s5_"):
-        while how_many_jobs_run(string_to_find="s5_"):
+    jobs_func = warp_how_many_jobs("s5_")
+    with Loader(f"Summing all similarity windows per class", jobs_func):
+        while jobs_func():
             time.sleep(5)
 
     assert validate_stderr_empty(err_files)
-
-
-def get_args(options):
-    # by mac
-    if options.mac:
-        mac_min_range = int(options.mac[0])
-        mac_max_range = int(options.mac[1])
-    else:
-        mac_min_range = 0
-        mac_max_range = 0
-
-    # by maf
-    if options.maf:
-        maf_min_range = int(options.maf[0])
-        maf_max_range = int(options.maf[1])
-    else:
-        maf_min_range = 0
-        maf_max_range = 0
-
-    return mac_min_range, mac_max_range, maf_min_range, maf_max_range
-
+    return True
 
 def main(options):
-    submit_per_class_sum_all_windows(options)
-    return True
+    with Timer(f"Per class sum all windows on {str_for_timer(options)}"):
+        is_success, msg = execute_with_checkpoint(submit_per_class_sum_all_windows, SCRIPT_NAME, options)
+    return is_success
 
 
 if __name__ == '__main__':

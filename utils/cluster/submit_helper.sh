@@ -1,9 +1,6 @@
 #!/bin/bash
-
-
+module load bcftools
+module load vcftools
+module load rclone
 cmd2run=$1
-
-echo "$cmd2run"
-module load bioinfo
-module load bio
 eval "$cmd2run"

@@ -36,15 +36,12 @@ def submit_netstruct(options, job_type, job_long_name, job_name, similarity_matr
     netstruct_cmd = build_netstruct_cmd(options, similarity_matrix_path, output_dir, options.ns_ss)
     if netstruct_cmd:
         cmd_to_run = f'{cluster_setting} {paths_helper.wrapper_max_30_params} {netstruct_cmd}'
-        subprocess.run([paths_helper.submit_helper, cmd_to_run])
+        with open(paths_helper.garbage, "wb") as garbage_output:
+            subprocess.run([paths_helper.submit_helper, cmd_to_run], stdout=garbage_output)
     return job_stderr_file
 
 
 def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.001'):
-    # validate the input
-    if not _validate_count_dist_file(options, similarity_matrix_path):
-        print(f'{similarity_matrix_path} not valid, wont run netstruct')
-        # return None
 
     paths_helper = get_paths_helper(options.dataset_name)
     jar_path = paths_helper.netstruct_jar
@@ -52,8 +49,8 @@ def build_netstruct_cmd(options, similarity_matrix_path, output_folder, ss='0.00
 
     indlist_path = paths_helper.netstructh_indlist_path
     sample_sites_path = paths_helper.netstructh_sample_sites_path
-    return f'java -jar {jar_path} -ss {ss} -minb 5 -mino 5 -pro {output_folder} -pe {similarity_matrix_path}' \
-           f' -pmn {indlist_path} -pss {sample_sites_path} -w true'
+    return f'java -jar {jar_path} -ss {ss} -minb {options.min_pop_size} -mino {options.min_pop_size} -pro' \
+           f' {output_folder} -pe {similarity_matrix_path} -pmn {indlist_path} -pss {sample_sites_path} -w true'
 
 
 def is_tree_exists(options, output_dir, job_err_file):

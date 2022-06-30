@@ -1,2 +1,9 @@
-pandas
-numpy
+pandas~=1.4.2
+numpy~=1.22.3
+tqdm~=4.64.0
+matplotlib~=3.5.1
+scipy~=1.8.0
+CairoSVG~=2.5.2
+msprime~=1.1.1
+Pillow~=9.1.0
+scikit-learn~=1.0.2

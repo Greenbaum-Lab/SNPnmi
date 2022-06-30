@@ -1,21 +1,42 @@
 import argparse
-import itertools
 import random
 import subprocess
 import sys
-import time
 import pandas as pd
 from os.path import dirname, abspath
-
-root_path = dirname(dirname(abspath(__file__)))
-sys.path.append(root_path)
-
 import os
 import gzip
+import pyhash
+hasher = pyhash.metro_64()
 
 from utils.config import *
-
+from utils.filelock import FileLock
 from utils.paths_helper import PathsHelper
+
+
+class Cls:
+    def __init__(self, mac_maf, int_val):
+        self.mac_maf = mac_maf
+        self.is_mac = mac_maf == 'mac'
+        self.int_val = int_val
+        self.val = int_val if self.is_mac else int_val / 100
+        self.name = f"{mac_maf}_{self.val}"
+        self.max_val = self.val if self.is_mac else (int_val + 1) / 100
+
+def class_iter(options):
+    if options.mac[1] >= options.mac[0]:
+        for val in range(options.mac[0], options.mac[1] + 1):
+            if options.dataset_name == 'arabidopsis' and val % 2 == 1:
+                continue
+            obj = Cls('mac', val)
+            yield obj
+
+    if options.maf[1] >= options.maf[0]:
+        for val in range(options.maf[0], options.maf[1] + 1):
+            if val > 49:
+                continue
+            obj = Cls('maf', val)
+            yield obj
 
 
 # a class to represent classes of alleles count/frequency (mac/maf)
@@ -29,7 +50,7 @@ class AlleleClass:
                           int), f'The class_min_int_val must be an int, even if its maf - we convert it.'
         assert class_min_int_val >= 0, f'The class_min_int_val must be non-negative.'
         # maf must be lower than 50
-        assert self.is_mac | class_min_int_val < 50
+        assert self.is_mac | (class_min_int_val < 50)
         # the name of the class value is the int min value, even if its maf
         self.class_int_val_name = class_min_int_val
         # set the max val of the class
@@ -52,9 +73,20 @@ class AlleleClass:
         self.class_name = f'{mac_maf}_{self.class_min_val}'
 
 
+def delete_extra_files(in_dir, files_to_keep):
+    assert os.path.isdir(in_dir)
+    files = os.listdir(in_dir)
+    files_to_remove = []
+    for file in files:
+        if file not in files_to_keep:
+            files_to_remove.append(in_dir + file)
+    subprocess.run(['rm', '-f'] + files_to_remove)
+
+
 def hash_args(options):
-    args = options.args + options.mac + options.maf + [options.ns_ss]
-    return hash(tuple(args))
+    args = list(options.args) + options.mac + options.maf + [options.ns_ss]
+    args = [str(e) for e in args]
+    return hasher(*args)
 
 
 def get_paths_helper(dataset_name):
@@ -67,15 +99,58 @@ def get_paths_helper(dataset_name):
 
 def is_cluster():
     # danger! make sure local code is not under this path!
-    return '/vol/sci/' in os.path.abspath(__file__)
+    return '/sci/labs/' in os.path.abspath(__file__)
 
+
+def load_dict_from_json(json_path):
+    with FileLock(json_path):
+        if not os.path.exists(json_path) or os.stat(json_path).st_size == 0:
+            with open(json_path, "w+") as f:
+                f.write("{}")
+            return {}
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        return data
+
+
+def handle_hash_file(class_name, paths_helper, windows_id_list):
+    windows_id_list = [int(wind) for wind in windows_id_list]
+    hash_file = paths_helper.hash_windows_list_template.format(class_name=class_name)
+    data = load_dict_from_json(hash_file)
+    with FileLock(hash_file):
+        hash_codes = [int(i) for i in data.keys()]
+        new_hash = 0 if len(hash_codes) == 0 else min([i+1 for i in hash_codes if (i+1) not in hash_codes])
+        if windows_id_list not in data.values():
+            data[str(new_hash)] = windows_id_list
+            with open(hash_file, "w") as f:
+                json.dump(data, f)
+            return new_hash
+        else:
+            reverse_dict = {tuple(val): key for (key, val) in data.items()}
+            return reverse_dict[tuple(windows_id_list)]
+
+
+def comp_and_save_012_mat(mat, path):
+    bin_mat = np.empty(shape=(mat.shape[0], mat.shape[1], 2), dtype=bool)
+    bin_mat[:, :, 0] = mat > 0
+    bin_mat[:, :, 1] = mat % 2 == 0
+    comped_mat = np.packbits(bin_mat)
+    np.save(path, comped_mat)
+
+
+def load_and_decomp_012_mat(path, num_individuals):
+    comp_mat = np.load(path)
+    unpacked = np.unpackbits(comp_mat).astype(bool).reshape((num_individuals, -1, 2))
+    decomp_mat = np.empty(shape=(unpacked.shape[0], unpacked.shape[1]), dtype=np.int8)
+    decomp_mat[:, :] = unpacked[:, :, 0] & ~ unpacked[:, :, 1]
+    decomp_mat[:, :] -= ~unpacked[:, :, 0] & ~ unpacked[:, :, 1]
+    decomp_mat[:, :] += 2 * (unpacked[:, :, 0] & unpacked[:, :, 1])
+    return decomp_mat
 
 
 def write_pairwise_similarity(output_similarity_file, similarity_matrix, output_count_file, count_matrix):
-    with open(output_similarity_file, 'wb') as f:
-        np.save(f, similarity_matrix)
-    with open(output_count_file, 'wb') as f:
-        np.save(f, count_matrix.astype(np.uint32))
+    np.savez_compressed(output_similarity_file, similarity_matrix)
+    np.savez_compressed(output_count_file, count_matrix.astype(np.uint32))
 
 
 def get_number_of_windows_by_class(paths_helper):
@@ -110,13 +185,19 @@ def str2bool(v) -> bool:
     raise Exception('Boolean value expected.')
 
 
-def get_num_lines_in_file(p, gzip=False):
+def get_num_lines_in_file(path, gzip=False):
     if gzip:
-        with gzip.open(p, 'rb') as f:
-            return sum(1 for _ in f)
+        with gzip.open(path, 'rb') as f:
+            i = 0
+            while f.readline():
+                i += 1
+            return i
     else:
-        with open(p, 'r') as f:
-            return sum(1 for _ in f)
+        with open(path, 'rb') as f:
+            i = 0
+            while f.readline():
+                i += 1
+            return i
 
 
 def get_num_columns_in_file(p, sep='\t', gzip=False):
@@ -139,15 +220,26 @@ def validate_stderr_empty(err_files):
     return True
 
 
-def how_many_jobs_run(string_to_find=""):
-    assert is_cluster(), "Cannot check for jobs when run locally"
-    username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
-    ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE, encoding='utf8')
-    try:  # if grep is empty, it raise subprocess.CalledProcessError
-        output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout, encoding='utf8')
-        return output.count('\n')
-    except subprocess.CalledProcessError:
-        return 0
+def warp_how_many_jobs(txt_to_find):
+
+    def how_many_jobs_run(string_to_find=txt_to_find):
+        assert is_cluster(), "Cannot check for jobs when run locally"
+        username = get_config(CONFIG_NAME_PATHS)["cluster_username"]
+        ps = subprocess.Popen(['squeue', '-u', username], stdout=subprocess.PIPE, encoding='utf8')
+        try:  # if grep is empty, it raise subprocess.CalledProcessError
+            output = subprocess.check_output(('grep', string_to_find), stdin=ps.stdout, encoding='utf8')
+            num_of_jobs = output.count("\n")
+            return f'({num_of_jobs} running jobs) '
+        except subprocess.CalledProcessError:
+            return ""
+
+    return how_many_jobs_run
+
+
+def how_many_local_jobs_run(string_to_find=""):
+    top_outputs = os.popen('top -bi -n 1').readlines()
+    num_of_running_jobs = len([i for i in top_outputs if string_to_find in i])
+    return num_of_running_jobs
 
 
 # Deprecated?
@@ -171,21 +263,55 @@ def get_class2sites(dataset_name):
     return class2sites
 
 
+def add_time_to_controller_file(data_dir, duration, step):
+    if not os.path.exists(data_dir + 'times.json'):
+        js = {}
+    else:
+        with open(data_dir + 'times.json', 'r') as f:
+            js = json.load(f)
+    if step in js:
+        return
+    if duration < 60:
+        duration_str = f'{duration} seconds'
+    elif duration < 3600:
+        duration_str = f'{duration / 60} minutes'
+    else:
+        duration_str = f'{duration / 3600} hours'
+    js[step] = duration_str
+    with open(data_dir + 'times.json', 'w') as f:
+        json.dump(js, f)
+
+
 def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--step", dest="step", help="Step number - see README for further info")
     parser.add_argument("-d", "--dataset_name", dest="dataset_name", help="Name of dataset")
-    parser.add_argument("--mac", dest="mac", default="2,18", help="min value, max value, delta")
-    parser.add_argument("--override", dest="override", action="store_true", help="If true, can override existing files")
+    parser.add_argument("--mac", dest="mac", default="2,70", help="min value, max value, delta")
     parser.add_argument("--maf", dest="maf", default="1,49", help="min value, max value, delta")
     parser.add_argument("--args", dest="args", help="Any additional args")
+    parser.add_argument("--data_size", dest="data_size", help="Num of SNPSs per tree. Provide as list split by commas",
+                        default='1000,5000')
     parser.add_argument("--min_max_allele", dest="min_max_allele", default="2,2", )
     parser.add_argument("--ns_ss", dest="ns_ss", default="0.01",
-                        help="Net-struct step size (relevant for step 5 only)")
+                        help="Net-struct step size")
+    parser.add_argument("--num_of_trees", dest="num_of_trees", default="100", type=int,
+                        help="num of trees in each class to create (B in bootstraps)")
+    parser.add_argument("--min_pop_size", dest="min_pop_size", default=5, type=int,
+                        help="minimum size of population in netstruct runs")
+    parser.add_argument("--chr", dest="chr_num", default=1, type=int,
+                        help="chromosome number to work on (relevant only for HGDP)")
+    parser.add_argument("--run_all", dest="run_all", default=False, action='store_true',
+                        help="run all pipeline (from step 1.2 till step 5.3) instead of a single step")
+    parser.add_argument("--ns_combine", dest="run_ns_together", default=True, action='store_true',
+                        help="If use this flag - run NetStruct together per class - submit a single job that will run"
+                             "all trees of a certain class one after the other")
+    parser.add_argument("--port", '-p', dest="port", default=None, help="port for dash plots")
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []
     options.args = [int(i) if i.isdecimal() else i for i in options.args]
+    options.data_size = options.data_size.split(',') if options.data_size else []
+    options.data_size = [int(i) for i in options.data_size]
     options.mac = options.mac.split(',') if options.mac else []
     options.mac = [int(i) if i.isdecimal() else i for i in options.mac]
     options.maf = options.maf.split(',') if options.maf else []
@@ -203,3 +329,13 @@ def str_for_timer(options):
         str += f"args--{options.args}"
     return str
 
+
+def repr_num(x):
+    if x > 10e4 or x < -10e4:
+        return f'{x:.2e}'
+    if -1 / 10e4 < x < 1 / 10e4:
+        return f'{x:.2e}'
+    else:
+        num_length = np.log10(np.abs(x))
+        max_num_of_digits_after_dot = min(5 - int(num_length), 5)
+        return round(x, max_num_of_digits_after_dot)

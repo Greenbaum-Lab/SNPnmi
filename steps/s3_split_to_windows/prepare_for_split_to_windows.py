@@ -3,8 +3,7 @@
 # per class, we generate a shuffled list of sites (chr and index(!) not site name)
 # given a window size we split the shuffled list to windows of approximatly this size
 # running on mac 2, where we have about 7.3M sites, it takes around 5 minutes.
-
-
+import pickle
 import sys
 import pandas as pd
 import random
@@ -15,7 +14,7 @@ root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
 from utils.loader import Timer
-from utils.common import get_paths_helper, AlleleClass, str_for_timer, args_parser
+from utils.common import args_parser, Cls
 from utils.config import *
 from utils.checkpoint_helper import *
 
@@ -130,11 +129,11 @@ def build_windows_indexes_files(options):
     dataset_name = options.dataset_name
     mac_maf, class_value, window_size = options.args
     class_value = int(class_value)
-    allele_class = AlleleClass(mac_maf, class_value)
+    cls = Cls(mac_maf, class_value)
     path_helper = get_paths_helper(dataset_name)
 
     chr_2_num_of_sites = get_num_of_sites_per_chr(dataset_name, mac_maf, class_value)
-    print(f'class {mac_maf}_{class_value}')
+    print(f'class {cls.name}')
     for chr_name in chr_2_num_of_sites.keys():
         print(f'chr {chr_name} has {chr_2_num_of_sites[chr_name]} sites')
 
@@ -142,24 +141,22 @@ def build_windows_indexes_files(options):
     validate_windows(chr_2_index_2_window_id, chr_2_num_of_sites, window_size)
 
     # log number of windows to file for future use
-    os.makedirs(path_helper.windows_per_class_folder.format(class_name=allele_class.class_name),
+    os.makedirs(path_helper.windows_per_class_folder.format(class_name=cls.name),
                 exist_ok=True)
-    with open(path_helper.number_of_windows_per_class_template.format(class_name=allele_class.class_name), 'w')\
+    with open(path_helper.number_of_windows_per_class_template.format(class_name=cls.name), 'w')\
             as number_of_windows_per_class_file:
         number_of_windows_per_class_file.write(str(total_num_of_windows))
 
     for chr_short_name, index_2_window_id in chr_2_index_2_window_id.items():
-        output_file = path_helper.windows_indexes_template.format(class_name=allele_class.class_name, chr_name=chr_short_name)
+        output_file = path_helper.windows_indexes_template.format(class_name=cls.name, chr_name=chr_short_name)
         os.makedirs(dirname(output_file), exist_ok=True)
-        with open(output_file, "w") as f:
-            json.dump(index_2_window_id, f)
+        with open(output_file, "wb") as f:
+            pickle.dump(index_2_window_id, f)
     return True
 
 
 def main(options):
-    with Timer(f"Prepare for split to windows with {str_for_timer(options)}"):
-        is_executed, msg = execute_with_checkpoint(build_windows_indexes_files, SCRIPT_NAME, options)
-    return is_executed
+    build_windows_indexes_files(options)
 
 
 if __name__ == '__main__':

@@ -1,10 +1,11 @@
 import sys
 import os
 from os.path import dirname, abspath
+
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
+
 from utils.common import get_paths_helper, hash_args, str_for_timer
-from utils.config import validate_dataset_name
 from datetime import datetime
 
 def get_checkpoint_file_path(dataset_name, checkpoint_name, options):
@@ -39,13 +40,12 @@ def checkpoint_file_check(dataset_name, checkpoint_name, options):
 # 1. the first argument in args is dataset_name
 # 2. func accepts args and returns bool
 def execute_with_checkpoint(func, checkpoint_name, options):
-    assert validate_dataset_name(options.dataset_name), f'{options.dataset_name} is not a known dataset name'
     is_checkpoint_exists, checkpoint_file = checkpoint_file_check(options.dataset_name, checkpoint_name, options)
     if is_checkpoint_exists:
-        return False, 'checkpoint found'
+        return True, 'checkpoint found'
 
     success = func(options)
     if success:
         write_checkpoint_file(checkpoint_file, options.args)
         return True, 'successful run'
-    return True, 'non successful run'
+    return False, 'non successful run'

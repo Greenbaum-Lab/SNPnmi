@@ -166,8 +166,8 @@ def create_heat_map(options, paths_helper, sites_list):
     with open(f"{paths_helper.sfs_dir}summary/all_hists.json", "w") as f:
         json.dump(hists, f)
 
-    relative_heat.tv_csv(f'{paths_helper.sfs_dir}summary/relative_heat.csv', index_label="sites")
-    theoretical_heat.tv_csv(f'{paths_helper.sfs_dir}summary/theoretical_heat.csv', index_label="sites")
+    relative_heat.to_csv(f'{paths_helper.sfs_dir}summary/relative_heat.csv', index_label="sites")
+    theoretical_heat.to_csv(f'{paths_helper.sfs_dir}summary/theoretical_heat.csv', index_label="sites")
 
 
 def submit_all_sites(options, paths_helper):

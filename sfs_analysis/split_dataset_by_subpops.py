@@ -195,8 +195,8 @@ def submit_all_sites(options, paths_helper):
 
     assert validate_stderr_empty(errs)
 
-def multichromosome_stats(options, paths_helper):
 
+def multichromosome_stats(options, paths_helper):
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir + 'summary', exist_ok=True)
     if not os.path.exists(f"{paths_helper.sfs_dir}summary/subpopulations_histogram.svg"):
@@ -207,6 +207,22 @@ def multichromosome_stats(options, paths_helper):
             json.dump(site2sample, f)
         with open(f"{paths_helper.sfs_dir}summary/site2size.json", "w") as f:
             json.dump({k: len(v) for (k, v) in site2sample.items()}, f)
+
+
+def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
+    heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv', index_label="sites")
+    fst_x = []
+    heatmap_y = []
+    with open(f'{paths_helper.sfs_dir}/summary/{fst_file_name}', 'r') as f:
+        for line in f.readlines():
+            line_lst = line.split(' ')
+            assert len(line_lst) == 3
+            heatmap_y.append(heat_map_df.at[line_lst[0], line_lst[1]])
+            fst_x.append(float(line_lst[2]))
+    plt.scatter(x=fst_x, y=heatmap_y)
+    plt.show()
+
+
 
 def main():
     arguments = args_parser()
@@ -227,6 +243,7 @@ def main():
     sites_list = get_sample_site_list(arguments, paths_helper)
     vcf2matrix2sfs(arguments, paths_helper, sites_list)
     create_heat_map(arguments, paths_helper, sites_list)
+    compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst_nonnegative.txt')
 
 
 if __name__ == '__main__':

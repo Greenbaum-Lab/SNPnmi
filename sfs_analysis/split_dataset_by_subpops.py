@@ -47,6 +47,7 @@ def plot_subpopulations_size_histogram(options, paths_helper):
     plt.xlabel("Number of individuals")
     plt.ylabel("Number of subpopulations")
     plt.savefig(f"{paths_helper.sfs_dir}subpopulations_histogram.svg")
+    plt.clf()
 
 
 def hgdp_create_site2samples(options, paths_helper):

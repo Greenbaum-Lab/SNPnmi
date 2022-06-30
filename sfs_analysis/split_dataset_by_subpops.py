@@ -140,8 +140,8 @@ def create_heat_map(options, paths_helper, sites_list):
     relative_heat = pd.DataFrame(columns=sites_list, index=sites_list)
     theoretical_heat = pd.DataFrame(columns=sites_list, index=sites_list)
     for idx1, site in enumerate(tqdm(sites_list)):
-        relative_heat.at[site, site] = np.nan
-        theoretical_heat.at[site, site] = np.nan
+        relative_heat.at[site, site] = 0
+        theoretical_heat.at[site, site] = 0
         for idx2, other_site in enumerate(sites_list):
             if idx1 >= idx2:
                 continue

@@ -62,10 +62,21 @@ def hgdp_create_site2samples(options, paths_helper):
         site2samples[site] = list(mini_meta['sample'])
     return site2samples
 
+def arabidopsis_create_site2samples(options, paths_helper):
+    meta_data_file_path = paths_helper.data_dir + 'full_sample_sites.csv'
+    meta_df = pd.read_csv(meta_data_file_path, sep='\t')
+    sample_sites = get_sample_site_list(options, paths_helper)
+    site2samples = {}
+    for site in sample_sites:
+        mini_meta = meta_df.query(f"Country == '{site}'")
+        site2samples[site] = list(mini_meta['Individual_name'])
+    return site2samples
 
 def create_site2samples(options, paths_helper):
     if options.dataset_name == 'hgdp':
         return hgdp_create_site2samples(options, paths_helper)
+    if options.dataset_name == 'arabidopsis':
+        return arabidopsis_create_site2samples(options, paths_helper)
 
 
 def create_vcf_per_site(options, paths_helper):
@@ -74,8 +85,10 @@ def create_vcf_per_site(options, paths_helper):
     for site, samples in site2sample.items():
         if os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz.tbi'):
             continue
-
-        vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
+        if options.dataset_name == 'hgdp':
+                vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
+        if options.dataset_name == 'arabidopsis':
+                vcf_file = f"{paths_helper.data_dir}africa_and1001.EVA.vcf.gz"
         with Timer(f"Create VCF for site {site}"):
             os.makedirs(f'{paths_helper.sfs_dir_chr}{site}', exist_ok=True)
             bcftools_cmd = ["bcftools", 'view', "-s", f"{','.join(samples)}", "--max-alleles", "2", "-O", "z",

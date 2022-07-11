@@ -79,25 +79,25 @@ def create_site2samples(options, paths_helper):
         return arabidopsis_create_site2samples(options, paths_helper)
 
 
-def create_vcf_per_site(options, paths_helper):
+def create_vcf_per_site(options, site, paths_helper):
     with open(f"{paths_helper.sfs_dir}summary/site2sample.json", "r") as f:
         site2sample = json.load(f)
-    for site, samples in site2sample.items():
-        if os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz.tbi'):
-            continue
-        if options.dataset_name == 'hgdp':
-                vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
-        if options.dataset_name == 'arabidopsis':
-                vcf_file = f"{paths_helper.data_dir}africa_and1001.EVA.vcf.gz"
-        with Timer(f"Create VCF for site {site}"):
-            os.makedirs(f'{paths_helper.sfs_dir_chr}{site}', exist_ok=True)
-            bcftools_cmd = ["bcftools", 'view', "-s", f"{','.join(samples)}", "--max-alleles", "2", "-O", "z",
-                            "--min-alleles", '2', '--output-file', f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz', vcf_file]
-            subprocess.run([paths_helper.submit_helper, ' '.join(bcftools_cmd)])
+    samples = site2sample[site]
+    if os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz.tbi'):
+        continue
+    if options.dataset_name == 'hgdp':
+            vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
+    if options.dataset_name == 'arabidopsis':
+            vcf_file = f"{paths_helper.data_dir}africa_and1001.EVA.vcf.gz"
+    with Timer(f"Create VCF for site {site}"):
+        os.makedirs(f'{paths_helper.sfs_dir_chr}{site}', exist_ok=True)
+        bcftools_cmd = ["bcftools", 'view', "-s", f"{','.join(samples)}", "--max-alleles", "2", "-O", "z",
+                        "--min-alleles", '2', '--output-file', f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz', vcf_file]
+        subprocess.run([paths_helper.submit_helper, ' '.join(bcftools_cmd)])
 
-            subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz -i "F_MISSING=0" {paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz'])
-            subprocess.run([paths_helper.submit_helper, f'tabix -p vcf {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'])
-            os.remove(f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz')
+        subprocess.run([paths_helper.submit_helper, f'bcftools filter -O z -o {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz -i "F_MISSING=0" {paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz'])
+        subprocess.run([paths_helper.submit_helper, f'tabix -p vcf {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'])
+        os.remove(f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz')
 
 def create_vcf_per_2_sites(options, paths_helper, site, special_list):
     sites_list = get_sample_site_list(options, paths_helper)
@@ -258,15 +258,15 @@ def main():
 
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
-        create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
+        create_vcf_per_site(arguments, arguments.args[0], paths_helper)
+#         create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
         return True
 
-    create_vcf_per_site(arguments, paths_helper)
     submit_all_sites(arguments, paths_helper)
-    sites_list = get_sample_site_list(arguments, paths_helper)
-    vcf2matrix2sfs(arguments, paths_helper, sites_list)
-    create_heat_map(arguments, paths_helper, sites_list)
-    compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst_nonnegative.txt')
+#     sites_list = get_sample_site_list(arguments, paths_helper)
+#     vcf2matrix2sfs(arguments, paths_helper, sites_list)
+#     create_heat_map(arguments, paths_helper, sites_list)
+#     compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst_nonnegative.txt')
 
 
 if __name__ == '__main__':

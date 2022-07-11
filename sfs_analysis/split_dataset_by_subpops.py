@@ -200,7 +200,7 @@ def submit_all_sites(options, paths_helper):
         errs.append(job_stderr_file)
         submit_to_cluster(options, job_type='sfs_analysis', job_name=f'vcf_{site}', script_args=script_args,
                           job_stdout_file=job_stdout_file, job_stderr_file=job_stderr_file, num_hours_to_run=12,
-                          script_path=f'{get_cluster_code_folder()}snpnmi/sfs_analysis/split_dataset_by_subpops.py')
+                          script_path=f'{get_cluster_code_folder()}SNPnmi/sfs_analysis/split_dataset_by_subpops.py')
 
     jobs_func = warp_how_many_jobs('vcf')
     with Loader("Merging VCF files for pairwise sub-populations", jobs_func):

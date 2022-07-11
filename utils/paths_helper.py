@@ -6,7 +6,7 @@ sys.path.append(root_path)
 
 from utils.config import *
 
-repo_dir_name = 'snpnmi'
+repo_dir_name = 'SNPnmi'
 
 
 class PathsHelper:

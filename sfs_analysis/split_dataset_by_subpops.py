@@ -84,7 +84,7 @@ def create_vcf_per_site(options, site, paths_helper):
         site2sample = json.load(f)
     samples = site2sample[site]
     if os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz') and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz.tbi'):
-        continue
+        return True
     if options.dataset_name == 'hgdp':
             vcf_file = f"{paths_helper.data_dir}hgdp_wgs.20190516.full.chr{options.chr_num}.vcf.gz"
     if options.dataset_name == 'arabidopsis':

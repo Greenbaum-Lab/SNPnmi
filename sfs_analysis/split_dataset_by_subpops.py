@@ -64,7 +64,7 @@ def hgdp_create_site2samples(options, paths_helper):
 
 def arabidopsis_create_site2samples(options, paths_helper):
     meta_data_file_path = paths_helper.data_dir + 'full_sample_sites.csv'
-    meta_df = pd.read_csv(meta_data_file_path, sep='\t')
+    meta_df = pd.read_csv(meta_data_file_path)
     sample_sites = get_sample_site_list(options, paths_helper)
     site2samples = {}
     for site in sample_sites:

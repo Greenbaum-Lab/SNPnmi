@@ -50,7 +50,7 @@ def plot_subpopulations_size_histogram(options, paths_helper):
     plt.title(f"Histogram of subpopulation sizes in {options.dataset_name}")
     plt.xlabel("Number of individuals")
     plt.ylabel("Number of subpopulations")
-    plt.savefig(f"{paths_helper.sfs_dir}subpopulations_histogram.svg")
+    plt.savefig(f"{paths_helper.sfs_dir}summary/subpopulations_histogram.svg")
     plt.clf()
 
 
@@ -262,7 +262,6 @@ def main():
     run_step = 1
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
-        create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
         if run_step == 1:
             create_vcf_per_site(arguments, arguments.args[0], paths_helper)
         if run_step == 2:

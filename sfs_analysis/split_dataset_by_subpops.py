@@ -183,7 +183,7 @@ def create_heat_map(options, paths_helper, sites_list):
     theoretical_heat.to_csv(f'{paths_helper.sfs_dir_chr}summary/theoretical_heat.csv', index_label="sites")
 
 
-def submit_all_sites(options, paths_helper):
+def submit_all_sites(options, paths_helper, run_step):
     sites_list = get_sample_site_list(options, paths_helper)
     errs = []
     for idx, site in enumerate(sites_list):
@@ -192,7 +192,7 @@ def submit_all_sites(options, paths_helper):
             continue
         script_args = f'-d {options.dataset_name} --args {site} --chr {options.chr_num}'
         job_type = 'sfs_analysis'
-        job_name = f'vcf_{site}'
+        job_name = f'vcf_{run_step}_{site}'
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
@@ -255,14 +255,16 @@ def main():
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)
-
+    run_step = 1
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
-        create_vcf_per_site(arguments, arguments.args[0], paths_helper)
-#         create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
+        if run_step == 1:
+            create_vcf_per_site(arguments, arguments.args[0], paths_helper)
+        if run_step == 2:
+            create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
         return True
 
-    submit_all_sites(arguments, paths_helper)
+    submit_all_sites(arguments, paths_helper, run_step)
 #     sites_list = get_sample_site_list(arguments, paths_helper)
 #     vcf2matrix2sfs(arguments, paths_helper, sites_list)
 #     create_heat_map(arguments, paths_helper, sites_list)

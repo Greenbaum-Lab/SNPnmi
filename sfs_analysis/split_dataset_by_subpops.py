@@ -103,13 +103,10 @@ def create_vcf_per_site(options, site, paths_helper):
         subprocess.run([paths_helper.submit_helper, f'tabix -p vcf {paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'])
         os.remove(f'{paths_helper.sfs_dir_chr}{site}/{site}_tmp.vcf.gz')
 
-def create_vcf_per_2_sites(options, paths_helper, site, special_list):
-    sites_list = get_sample_site_list(options, paths_helper)
+def create_vcf_per_2_sites(options, paths_helper, site, sites_list):
     site_vcf_file = f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'
     idx = sites_list.index(site)
     for other_site in sites_list[idx + 1:]:
-        if other_site not in special_list:
-            continue
         other_site_vcf_file = f'{paths_helper.sfs_dir_chr}{other_site}/{other_site}.vcf.gz'
         combined_sites_vcf_file_tmp = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}_tmp.vcf.gz'
         combined_sites_vcf_file = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}.vcf.gz'

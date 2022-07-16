@@ -258,8 +258,8 @@ def main():
 
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
-        create_vcf_per_site(arguments, arguments.args[0], paths_helper)
-#         create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
+#        create_vcf_per_site(arguments, arguments.args[0], paths_helper)
+        create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
         return True
 
     submit_all_sites(arguments, paths_helper)

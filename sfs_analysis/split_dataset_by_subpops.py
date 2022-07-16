@@ -36,6 +36,8 @@ def plot_subpopulations_size_histogram(options, paths_helper):
     indlist = [e.replace('\n', '') for e in indlist]
     site_hist = {e: 0 for e in sites_list}
     for site in indlist:
+        if site == "Removed":
+            continue
         site_hist[site] += 1
     assert sum(site_hist.values()) == len(indlist)
     freq_hist = np.zeros(max(site_hist.values()))

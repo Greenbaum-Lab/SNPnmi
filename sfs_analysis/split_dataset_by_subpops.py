@@ -259,7 +259,7 @@ def main():
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)
-    run_step = 1
+    run_step = 2
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
         if run_step == 1:

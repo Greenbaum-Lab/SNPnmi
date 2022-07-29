@@ -74,12 +74,12 @@ def file012_to_numpy(input_file_path):
             if line[-1] == '\n':
                 line = line[:-1]
             sites = line.split('\t')
-            individual_array = np.array(sites, dtype=np.int8)
+            individual_array = np.array(sites, dtype=np.int16)
             final_matrix = np.vstack((final_matrix, individual_array)) if final_matrix.shape[0] else individual_array
             line = f.readline()
-    if np.any(final_matrix[:, 0] > 2):
+    if np.all(np.arange(final_matrix.shape[0]) == final_matrix[:, 0]):
         final_matrix = final_matrix[:, 1:]  # First column is individual number.
-    return final_matrix
+    return final_matrix.astype(np.int8)
 
 
 def matrix_to_edges_file(similarity_matrix, count_matrix, edges_file_path):

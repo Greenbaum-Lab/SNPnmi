@@ -20,11 +20,17 @@ def callbacks(app, options):
         if hoverData:
             site, other_site = sorted([hoverData['points'][0]['x'], hoverData['points'][0]['y']])
         else:
-            site, other_site = 'Adygei', 'Balochi'
+            if options.dataset_name == 'hgdp':
+                site, other_site = 'Adygei', 'Balochi'
+            elif options.dataset_name == 'arabidopsis':
+                site, other_site = 'Afghanistan', 'Armenia'
+            else:
+                raise NotImplementedError
         if site == other_site:
             return current_fig
         paths_helper = get_paths_helper(options.dataset_name)
-        sfs = np.load(f'{paths_helper.sfs_dir}{site}/{site}-{other_site}-hst.npy')[1:]
+        paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{options.chr_num}/'
+        sfs = np.load(f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy')[1:]
         sfs[-1] *= 2
         site2size = get_site2size(paths_helper)
         hotspot = 2 * min(site2size[site], site2size[other_site])
@@ -36,9 +42,12 @@ def callbacks(app, options):
                                                  mode='lines+markers', showlegend=False),
                                       go.Scatter(x=[hotspot], y=[sfs[hotspot - 1]], line=dict(color='orange'),
                                                  showlegend=False)])
-
+        if hoverData:
+            score = hoverData["points"][0]["z"]
+        else:
+            score = '----'
         current_fig.update_layout(
-            title=f'{site} ({site2size[site]}) & {other_site} ({site2size[other_site]}) - Score {hoverData["points"][0]["z"]}',
+            title=f'{site} ({site2size[site]}) & {other_site} ({site2size[other_site]}) - Score {score}',
             xaxis_title="Minor Allele Count",
             yaxis_title="Number of SNPs")
         return current_fig
@@ -48,15 +57,16 @@ def callbacks(app, options):
         Input('comparison_method', 'value'))
     def update_graph(comparison_method):
         paths_helper = get_paths_helper(options.dataset_name)
-        heatmap_dir_path = f'{paths_helper.sfs_dir}summary/'
+        paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{options.chr_num}/'
+        heatmap_dir_path = f'{paths_helper.sfs_dir_chr}summary/'
         heatmap_path = None
         if comparison_method == 'Theoretical comparison':
-            heatmap_path = heatmap_dir_path + 'theoretical_heat.npy'
+            heatmap_path = heatmap_dir_path + 'theoretical_heat.csv'
         if comparison_method == 'Relative comparison':
-            heatmap_path = heatmap_dir_path + 'relative_heat.npy'
-
-        heatmap_np = np.load(heatmap_path)
-        sites_list = get_sample_site_list(options, paths_helper)
+            heatmap_path = heatmap_dir_path + 'relative_heat.csv'
+        df = pd.read_csv(heatmap_path)
+        heatmap_np = pd.DataFrame.to_numpy(df)[:, 1:]
+        sites_list = df['sites']
         np.fill_diagonal(heatmap_np, np.nan)
         heatmap_fig = px.imshow(heatmap_np, x=sites_list, y=sites_list, text_auto=True,
                                 color_continuous_scale='RdBu_r', origin='lower', aspect='auto', width=650, height=650)
@@ -68,7 +78,9 @@ def callbacks(app, options):
 
 def init(options):
     paths_helper = get_paths_helper(options.dataset_name)
-    heatmap_np = np.load(f'{paths_helper.sfs_dir}summary/heatmap.npy')
+    paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{options.chr_num}/'
+    df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/theoretical_heat.csv')
+    heatmap_np = pd.DataFrame.to_numpy(df)[:, 1:]
     np.fill_diagonal(heatmap_np, np.nan)
     sites_list = get_sample_site_list(options, paths_helper)
 

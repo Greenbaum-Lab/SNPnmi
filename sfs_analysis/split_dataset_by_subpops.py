@@ -126,25 +126,25 @@ def convert_012_to_sfs(matrix_012_file_path, site_size, other_site_size):
     assert np_matrix.shape[0] == num_of_genomes / 2
     matrix_minor_count = np.sum(np_matrix, axis=0)
     matrix_minor_count = np.minimum(matrix_minor_count, num_of_genomes - matrix_minor_count)
-    hst = np.histogram(matrix_minor_count, bins=num_of_genomes // 2 + 1)
+    hst = np.histogram(matrix_minor_count, bins=np.arange(num_of_genomes // 2 + 2))
     return hst[0]
 
-def vcf2matrix2sfs(options, paths_helper, sites_list):
-    print("### Start stage 3 ###")
+
+def vcf2matrix2sfs(options, paths_helper, site, sites_list):
     site2size = get_site2size(paths_helper)
-    for idx, site in enumerate(tqdm(sites_list)):
-        for other_site in tqdm(sites_list[idx + 1:], leave=False):
-            vcf_file_path = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}'
-            if not os.path.exists(f'{vcf_file_path}.012'):
-                print(f"Run {site} & {other_site}")
-                vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
-                subprocess.run([paths_helper.submit_helper, vcftools_cmd])
-            hst_file_name = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy'
-            if not os.path.exists(hst_file_name):
-                site_size = site2size[site]
-                other_site_size = site2size[other_site]
-                hst = convert_012_to_sfs(f'{vcf_file_path}.012', site_size, other_site_size)
-                np.save(hst_file_name, hst)
+    idx = sites_list.index(site)
+    for other_site in sites_list[idx + 1:]:
+        vcf_file_path = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}'
+        if not os.path.exists(f'{vcf_file_path}.012'):
+            print(f"Run {site} & {other_site}")
+            vcftools_cmd = f'vcftools --gzvcf {vcf_file_path}.vcf.gz --012 --out {vcf_file_path}'
+            subprocess.run([paths_helper.submit_helper, vcftools_cmd])
+        hst_file_name = f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy'
+        if not os.path.exists(hst_file_name):
+            site_size = site2size[site]
+            other_site_size = site2size[other_site]
+            hst = convert_012_to_sfs(f'{vcf_file_path}.012', site_size, other_site_size)
+            np.save(hst_file_name, hst)
 
 
 def create_heat_map(options, paths_helper, sites_list):
@@ -166,17 +166,25 @@ def create_heat_map(options, paths_helper, sites_list):
             hists[f'{site}-{other_site}'] = hst.tolist()
             hot_spot_idx = 2 * (min(sites_size[site], sites_size[other_site]))
             theoretical = get_theoretical_sfs(np.sum(hst[1:]), sites_size[site] + sites_size[other_site])
+            gap = 2 if options.dataset_name == 'arabidopsis' else 1
             assert hot_spot_idx <= hst.size - 1
-            if hot_spot_idx < hst.size - 1:
-                divider = np.sqrt(hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1]) if hst[hot_spot_idx - 1] * hst[hot_spot_idx + 1] > 0 else 1
-                res = hst[hot_spot_idx] / divider
+            if hot_spot_idx <= gap:
+                if hot_spot_idx >= hst.size - gap * 2:
+                    divider = np.nan
+                else:
+                    divider = hst[hot_spot_idx + gap] ** 2 / hst[hot_spot_idx + gap * 2]
+            elif hot_spot_idx >= hst.size - gap:
+                if hot_spot_idx <= gap * 2:
+                    divider = np.nan
+                else:
+                    divider = hst[hot_spot_idx - gap] ** 2 / hst[hot_spot_idx - gap * 2]
             else:
-                divider = hst[hot_spot_idx - 1] if hst[hot_spot_idx - 1] > 0 else 1
-                res = hst[hot_spot_idx] / divider
+                divider = np.sqrt(hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap]) if hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap] > 0 else np.nan
+            res = hst[hot_spot_idx] / divider
             relative_heat.at[site, other_site] = res
             relative_heat.at[other_site, site] = res
-            theoretical_heat.at[site, other_site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
-            theoretical_heat.at[other_site, site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - 1]
+            theoretical_heat.at[site, other_site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - gap]
+            theoretical_heat.at[other_site, site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - gap]
     with open(f"{paths_helper.sfs_dir_chr}summary/all_hists.json", "w") as f:
         json.dump(hists, f)
 
@@ -189,7 +197,13 @@ def submit_all_sites(options, paths_helper, run_step):
     errs = []
     for idx, site in enumerate(sites_list):
         combine_files = [f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}.vcf.gz' for other_site in sites_list[idx + 1:]]
-        if all([os.path.exists(path) for path in combine_files]):
+        if run_step == 2 and all([os.path.exists(path) for path in combine_files]):
+            continue
+        if run_step == 1 and os.path.exists(f'{paths_helper.sfs_dir_chr}{site}/{site}.vcf.gz'):
+            continue
+        combine_files = [f'{paths_helper.sfs_dir_chr}{site}/{site}-{other_site}-hst.npy' for other_site in
+                         sites_list[idx + 1:]]
+        if run_step == 3 and all([os.path.exists(path) for path in combine_files]):
             continue
         script_args = f'-d {options.dataset_name} --args {site} --chr {options.chr_num}'
         job_type = 'sfs_analysis'
@@ -251,24 +265,25 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
 def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
-    multichromosome_stats(arguments, paths_helper)
+    sites_list = get_sample_site_list(arguments, paths_helper)
     paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
+    multichromosome_stats(arguments, paths_helper)
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)
-    run_step = 2
+    run_step = 3
     if arguments.args:
         sites_list = get_sample_site_list(arguments, paths_helper)
         if run_step == 1:
             create_vcf_per_site(arguments, arguments.args[0], paths_helper)
         if run_step == 2:
             create_vcf_per_2_sites(arguments, paths_helper, arguments.args[0], sites_list)
+        if run_step == 3:
+            vcf2matrix2sfs(arguments, paths_helper, arguments.args[0], sites_list)
         return True
 
-    submit_all_sites(arguments, paths_helper, run_step)
-#     sites_list = get_sample_site_list(arguments, paths_helper)
-#     vcf2matrix2sfs(arguments, paths_helper, sites_list)
-#     create_heat_map(arguments, paths_helper, sites_list)
+    # submit_all_sites(arguments, paths_helper, run_step)
+    create_heat_map(arguments, paths_helper, sites_list)
 #     compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst_nonnegative.txt')
 
 

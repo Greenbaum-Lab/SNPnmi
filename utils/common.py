@@ -305,7 +305,7 @@ def args_parser():
     parser.add_argument("--ns_combine", dest="run_ns_together", default=True, action='store_true',
                         help="If use this flag - run NetStruct together per class - submit a single job that will run"
                              "all trees of a certain class one after the other")
-    parser.add_argument("--port", '-p', dest="port", default=None, help="port for dash plots")
+    parser.add_argument("--port", '-p', dest="port", default=8050, help="port for dash plots")
 
     options = parser.parse_args()
     options.args = options.args.split(',') if options.args else []

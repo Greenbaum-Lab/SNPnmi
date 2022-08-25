@@ -111,6 +111,11 @@ if __name__ == '__main__':
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)
         gens2R_var[idx] = np.var(hot_spots_per_gen)
     plt.plot(gens, gens2R_mean)
+    plt.xlabel(f"Generations since split", fontsize=16)
+    plt.ylabel("Relatives Peak", fontsize=16)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.title("Relatives Peak increase with generations since split", fontsize=18)
     plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
                      alpha=0.3)
     plt.savefig(plots_base_dir + 'generations.svg')

@@ -43,7 +43,7 @@ class SFSSimulation():
                 demography.add_mass_migration(time=self.time_to_mass_migration, source='B', dest='A', proportion=0.2)
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
-            demography.set_symmetric_migration_rate(['A', 'B'], self.migration_rate)
+            # demography.set_symmetric_migration_rate(['A', 'B'], self.migration_rate)
 
         mts = np.empty(0)
         while mts.shape[0] < self.num_of_snps:
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         hot_spots_per_gen = np.empty(shape=iterations)
         prev_min_bin = None
         prev_max_bin = None
-        for i, iter in enumerate(tqdm(range(iterations), leave=False)):
+        for iter in tqdm(range(iterations), leave=False):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=0,
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 assert max_bin == prev_max_bin
             prev_max_bin = max_bin
             prev_min_bin = min_bin
-            hot_spots_per_gen[i] = sfs2R(sfs, hot_spot)
+            hot_spots_per_gen[iter] = sfs2R(sfs, hot_spot)
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)
         gens2R_var[idx] = np.var(hot_spots_per_gen)
     plt.plot(gens, gens2R_mean)

@@ -83,26 +83,21 @@ def sfs2R(sfs, hot_spot):
     return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])
 
 
-if __name__ == '__main__':
-    options = args_parser()
-    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
-    paths_helper = get_paths_helper(options.dataset_name)
+def plot_by_generations(options, plots_base_dir):
     pop_sizes = np.array([8, 12])
-    iterations = 25
+    iterations = 100
     gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
     gens2R_var = np.empty(shape=gens.size)
 
     for idx, generations_between_pops in enumerate(tqdm(gens)):
-        # if os.path.exists(f"{paths_helper.sfs_proj}shifting_migration_window_plots/sfs_{time_to_mass_migration}.svg"):
-        #     continue
         hot_spots_per_gen = np.empty(shape=iterations)
         for iter in tqdm(range(iterations), leave=False):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=0,
-                                num_of_snps=1000,
+                                num_of_snps=5000,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)
@@ -115,8 +110,13 @@ if __name__ == '__main__':
     plt.ylabel("Relatives Peak", fontsize=16)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.title("Relatives Peak increase with generations since split", fontsize=18)
+    plt.title("Relatives Peak increase with generations since split", fontsize=16)
     plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
                      alpha=0.3)
     plt.savefig(plots_base_dir + 'generations.svg')
 
+if __name__ == '__main__':
+    options = args_parser()
+    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
+    paths_helper = get_paths_helper(options.dataset_name)
+    plot_by_generations(options, plots_base_dir)

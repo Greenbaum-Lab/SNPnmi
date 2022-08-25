@@ -153,5 +153,5 @@ if __name__ == '__main__':
     if not options.args:
         submit_all_migration_rates(options, paths_helper)
     else:
-        m = float(options.args)
+        m = float(options.args[0])
         plot_by_generations(options, plots_base_dir, migration_rate=m)

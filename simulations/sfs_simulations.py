@@ -95,9 +95,9 @@ def plot_by_generations(options, plots_base_dir, migration_rate):
     gens2R_mean = np.empty(shape=gens.size)
     gens2R_var = np.empty(shape=gens.size)
 
-    for idx, generations_between_pops in enumerate(tqdm(gens)):
+    for idx, generations_between_pops in enumerate(gens):
         hot_spots_per_gen = np.empty(shape=iterations)
-        for iter in tqdm(range(iterations), leave=False):
+        for iter in range(iterations):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,

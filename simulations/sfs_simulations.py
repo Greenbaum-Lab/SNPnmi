@@ -105,7 +105,7 @@ if __name__ == '__main__':
                                 num_of_snps=2000,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
-            min_bin, max_bin, sfs = sim.np_mutations_to_sfs(mts)
+            sfs = sim.np_mutations_to_sfs(mts)
 
             hot_spots_per_gen[iter] = sfs2R(sfs, hot_spot)
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)

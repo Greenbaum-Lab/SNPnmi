@@ -76,7 +76,7 @@ class SFSSimulation():
         max_bin = np.max(macs)
         hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
-        return min_bin, max_bin, hist[0]
+        return hist[0]
 
 
 def sfs2R(sfs, hot_spot):
@@ -98,8 +98,6 @@ if __name__ == '__main__':
         # if os.path.exists(f"{paths_helper.sfs_proj}shifting_migration_window_plots/sfs_{time_to_mass_migration}.svg"):
         #     continue
         hot_spots_per_gen = np.empty(shape=iterations)
-        prev_min_bin = None
-        prev_max_bin = None
         for iter in tqdm(range(iterations), leave=False):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
@@ -108,11 +106,7 @@ if __name__ == '__main__':
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             min_bin, max_bin, sfs = sim.np_mutations_to_sfs(mts)
-            if prev_min_bin is not None:
-                assert min_bin == prev_min_bin
-                assert max_bin == prev_max_bin
-            prev_max_bin = max_bin
-            prev_min_bin = min_bin
+
             hot_spots_per_gen[iter] = sfs2R(sfs, hot_spot)
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)
         gens2R_var[idx] = np.var(hot_spots_per_gen)

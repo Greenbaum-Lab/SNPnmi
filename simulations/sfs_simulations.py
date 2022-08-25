@@ -38,8 +38,9 @@ class SFSSimulation():
         for i in range(self.num_of_subpops - 1):
             derived_pops = ['A', 'B'] if i == 0 else [ascii_lowercase[i - 1], ascii_uppercase[i + 1]]
             demography.add_population(name=ascii_lowercase[i], initial_size=(self.population_size / self.num_of_subpops) * (i+2))
-            demography.add_mass_migration(time=self.time_to_mass_migration, source='A', dest='B', proportion=0.2)
-            demography.add_mass_migration(time=self.time_to_mass_migration, source='B', dest='A', proportion=0.2)
+            if self.time_to_mass_migration > 0:
+                demography.add_mass_migration(time=self.time_to_mass_migration, source='A', dest='B', proportion=0.2)
+                demography.add_mass_migration(time=self.time_to_mass_migration, source='B', dest='A', proportion=0.2)
             demography.add_population_split(time=self.generations_between_pops * (i + 1),
                                             derived=derived_pops, ancestral=ascii_lowercase[i])
             demography.set_symmetric_migration_rate(['A', 'B'], self.migration_rate)

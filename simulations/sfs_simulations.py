@@ -102,7 +102,7 @@ if __name__ == '__main__':
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=0,
-                                num_of_snps=200,
+                                num_of_snps=1000,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)

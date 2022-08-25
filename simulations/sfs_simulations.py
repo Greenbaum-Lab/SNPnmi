@@ -5,7 +5,6 @@ import sys
 
 from tqdm import tqdm
 
-from steps.s7_join_to_summary.plots_helper import plot_per_class
 from utils.common import args_parser, get_paths_helper
 
 root_path = dirname(dirname(abspath(__file__)))

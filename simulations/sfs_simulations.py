@@ -3,9 +3,9 @@ import os
 from os.path import dirname, abspath
 import sys
 
-import gif
 from tqdm import tqdm
 
+from steps.s7_join_to_summary.plots_helper import plot_per_class
 from utils.common import args_parser, get_paths_helper
 
 root_path = dirname(dirname(abspath(__file__)))
@@ -69,7 +69,7 @@ class SFSSimulation():
         freq2sfs(macs_range=macs_range, mafs_range=mafs_range,
                  stats_dir=working_dir, file_name=file_name)
 
-    def np_mutations_to_sfs(self, mts_numpy, pop_sizes):
+    def np_mutations_to_sfs(self, mts_numpy):
         macs = mts_numpy.sum(axis=1)
         macs = np.minimum(macs, self.output_size * 2 - macs)
         min_bin = np.min(macs)
@@ -91,32 +91,45 @@ def plot_sfs_with_std(sfs, min_bin, max_bin, paths_helper, time_to_mass_migratio
     # plt.clf()
 
 
+def sfs2R(sfs, hot_spot):
+    return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])
+
+
 if __name__ == '__main__':
     options = args_parser()
+    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
     paths_helper = get_paths_helper(options.dataset_name)
-    pop_sizes = np.array([10, 20])
-    frames_for_gif = []
-    for time_to_mass_migration in tqdm([0, 1, 2,3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 100, 150, 200, 300]):
+    pop_sizes = np.array([8, 12])
+    iterations = 50
+    gens = np.arange(10) ** 2
+    hot_spot = np.min(pop_sizes) * 2
+    gens2R_mean = np.empty(shape=gens.size)
+    gens2R_var = np.empty(shape=gens.size)
+
+    for idx, generations_between_pops in enumerate(tqdm(gens)):
         # if os.path.exists(f"{paths_helper.sfs_proj}shifting_migration_window_plots/sfs_{time_to_mass_migration}.svg"):
         #     continue
-        sfs_over_iterations = []
+        hot_spots_per_gen = np.empty(shape=iterations)
         prev_min_bin = None
         prev_max_bin = None
-        for iter in tqdm(range(10), leave=False):
-            sim = SFSSimulation(options=options, ne=250, pop_sizes=pop_sizes,
-                                generations_between_pops=400,
+        for i, iter in enumerate(tqdm(range(iterations), leave=False)):
+            sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
+                                generations_between_pops=generations_between_pops,
                                 migration_rate=0,
                                 num_of_snps=2000,
-                                time_to_mass_migration=time_to_mass_migration)
+                                time_to_mass_migration=0)
             mts = sim.run_simulation()
-            min_bin, max_bin, sfs = sim.np_mutations_to_sfs(mts, pop_sizes)
+            min_bin, max_bin, sfs = sim.np_mutations_to_sfs(mts)
             if prev_min_bin is not None:
                 assert min_bin == prev_min_bin
                 assert max_bin == prev_max_bin
             prev_max_bin = max_bin
             prev_min_bin = min_bin
-            sfs_over_iterations.append(sfs)
-        sfs_over_iterations = np.array(sfs_over_iterations)
-        frames_for_gif.append(plot_sfs_with_std(sfs_over_iterations, prev_min_bin, prev_max_bin, paths_helper, time_to_mass_migration))
-    gif.save(frames_for_gif, f"{paths_helper.sfs_proj}shifting_migration_window_plots/all.gif", duration=30, unit='s')
+            hot_spots_per_gen[i] = sfs2R(sfs, hot_spot)
+        gens2R_mean[idx] = np.mean(hot_spots_per_gen)
+        gens2R_var[idx] = np.var(hot_spots_per_gen)
+    plt.plot(gens, gens2R_mean)
+    plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
+                     alpha=0.3)
+    plt.savefig(plots_base_dir + 'generations.svg')
 

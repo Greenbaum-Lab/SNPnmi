@@ -6,14 +6,14 @@ import sys
 
 from tqdm import tqdm
 
-from utils.cluster.cluster_helper import submit_to_cluster
-from utils.loader import Loader
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.loader import Loader
 from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
 from string import ascii_uppercase, ascii_lowercase
 import msprime

@@ -1,22 +1,26 @@
 
 import os
+import time
 from os.path import dirname, abspath
 import sys
 
 from tqdm import tqdm
 
+from utils.cluster.cluster_helper import submit_to_cluster
+from utils.loader import Loader
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
-from utils.common import args_parser, get_paths_helper
+from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
 from string import ascii_uppercase, ascii_lowercase
 import msprime
 import matplotlib.pyplot as plt
 from utils.scripts.freq_to_sfs import freq2sfs
 import numpy as np
+import json
 
 
 class SFSSimulation():
@@ -83,9 +87,9 @@ def sfs2R(sfs, hot_spot):
     return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])
 
 
-def plot_by_generations(options, plots_base_dir):
+def plot_by_generations(options, plots_base_dir, migration_rate):
     pop_sizes = np.array([8, 12])
-    iterations = 100
+    iterations = 10
     gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
@@ -96,8 +100,8 @@ def plot_by_generations(options, plots_base_dir):
         for iter in tqdm(range(iterations), leave=False):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
-                                migration_rate=0,
-                                num_of_snps=5000,
+                                migration_rate=migration_rate,
+                                num_of_snps=500,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)
@@ -114,9 +118,40 @@ def plot_by_generations(options, plots_base_dir):
     plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
                      alpha=0.3)
     plt.savefig(plots_base_dir + 'generations.svg')
+    with open(plots_base_dir + f'm={migration_rate}.json', "w") as f:
+        json.dump([float(e) for e in gens2R_mean], f)
+
+
+def submit_all_migration_rates(options, paths_helper):
+    m_rates = (np.arange(10) + 1) / (10 ** 4)
+    job_type = 'simulations_job'
+    script_path = os.path.abspath(__file__)
+    errs = []
+    for m in m_rates:
+        job_name = f'm_{m}'
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_name)
+        errs.append(job_stderr_file)
+        job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                job_name=job_name)
+        submit_to_cluster(options, job_type, job_name, script_path, f"--args {m}", job_stdout_file, job_stderr_file,
+                          num_hours_to_run=24, memory=16, use_checkpoint=True)
+
+    jobs_func = warp_how_many_jobs('m_')
+    with Loader("Simulationg coalecent simulations", jobs_func):
+        while jobs_func():
+            time.sleep(5)
+
+    assert validate_stderr_empty(errs)
+    print("Done!")
 
 if __name__ == '__main__':
     options = args_parser()
+    options.dataset = 'simulations'
     plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
     paths_helper = get_paths_helper(options.dataset_name)
-    plot_by_generations(options, plots_base_dir)
+    if not options.args:
+        submit_all_migration_rates(options, paths_helper)
+    else:
+        m = float(options.args)
+        plot_by_generations(options, plots_base_dir, migration_rate=m)

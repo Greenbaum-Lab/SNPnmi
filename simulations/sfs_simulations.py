@@ -51,7 +51,7 @@ class SFSSimulation():
             samples={ascii_uppercase[i]: self.pop_sizes[i] for i in range(self.num_of_subpops)},
             demography=demography)
             mt = msprime.sim_mutations(ts, model=msprime.BinaryMutationModel(),
-                                             rate=1/(self.num_of_subpops * self.generations_between_pops * 2), random_seed=1,
+                                             rate=1/(self.pop_sizes * 2),
                                              discrete_genome=False)
             mt_matrix = np.array([e.genotypes for e in mt.variants()])
             if mt_matrix.size:

@@ -77,18 +77,6 @@ class SFSSimulation():
         assert np.all(hist[1] == hist[1].astype(int))
         return min_bin, max_bin, hist[0]
 
-@gif.frame
-def plot_sfs_with_std(sfs, min_bin, max_bin, paths_helper, time_to_mass_migration):
-    average = sfs.mean(axis=0)
-    std = np.std(sfs, axis=0)
-    plt.plot(np.arange(min_bin, max_bin), average)
-    plt.fill_between(np.arange(min_bin, max_bin), y1=average - std, y2=average + std, alpha=0.3)
-    plt.title(f"Time to pulse: {time_to_mass_migration} ")
-    plt.xlabel("Minor allele count")
-    plt.ylabel("Number of SNPs")
-    # plt.savefig(f"{paths_helper.sfs_proj}shifting_migration_window_plots/sfs_{time_to_mass_migration}.svg")
-    # plt.clf()
-
 
 def sfs2R(sfs, hot_spot):
     return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])

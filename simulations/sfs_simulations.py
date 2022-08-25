@@ -5,13 +5,13 @@ import sys
 
 from tqdm import tqdm
 
-from utils.common import args_parser, get_paths_helper
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+from utils.common import args_parser, get_paths_helper
 from string import ascii_uppercase, ascii_lowercase
 import msprime
 import matplotlib.pyplot as plt

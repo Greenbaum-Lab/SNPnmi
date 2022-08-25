@@ -88,8 +88,8 @@ if __name__ == '__main__':
     plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
     paths_helper = get_paths_helper(options.dataset_name)
     pop_sizes = np.array([8, 12])
-    iterations = 5
-    gens = np.arange(10) ** 2 + 1
+    iterations = 25
+    gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
     gens2R_var = np.empty(shape=gens.size)

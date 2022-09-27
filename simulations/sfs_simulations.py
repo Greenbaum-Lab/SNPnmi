@@ -150,6 +150,7 @@ if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
     plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
+    os.makedirs(plots_base_dir, exist_ok=True)
     paths_helper = get_paths_helper(options.dataset_name)
     if not options.args:
         submit_all_migration_rates(options, paths_helper)

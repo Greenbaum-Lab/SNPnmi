@@ -76,15 +76,15 @@ class SFSSimulation():
     def np_mutations_to_sfs(self, mts_numpy):
         macs = mts_numpy.sum(axis=1)
         macs = np.minimum(macs, self.output_size * 2 - macs)
-        min_bin = np.min(macs)
-        max_bin = np.max(macs)
-        hist = np.histogram(macs, bins=(max_bin - min_bin), density=False)
+        # min_bin = np.min(macs)
+        # max_bin = np.max(macs)
+        hist = np.histogram(macs, bins=np.arange(self.output_size + 2), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         return hist[0]
 
 
 def sfs2R(sfs, hot_spot):
-    return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])
+    return sfs[hot_spot] / np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1])
 
 
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
@@ -124,7 +124,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
 
 
 def submit_all_migration_rates(options, paths_helper):
-    m_rates = (np.arange(100) + 1) / (10 ** 4)
+    m_rates = (np.arange(10) + 1) / (10 ** 4)
     job_type = 'simulations_job'
     script_path = os.path.abspath(__file__)
     errs = []

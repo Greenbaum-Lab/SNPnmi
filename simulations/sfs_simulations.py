@@ -123,7 +123,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
 
 
 def submit_all_migration_rates(options, paths_helper):
-    m_rates = (np.arange(10) + 1) / (10 ** 4)
+    m_rates = (np.arange(100) + 1) / (10 ** 4)
     job_type = 'simulations_job'
     script_path = os.path.abspath(__file__)
     errs = []

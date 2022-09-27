@@ -76,15 +76,13 @@ class SFSSimulation():
     def np_mutations_to_sfs(self, mts_numpy):
         macs = mts_numpy.sum(axis=1)
         macs = np.minimum(macs, self.output_size * 2 - macs)
-        # min_bin = np.min(macs)
-        # max_bin = np.max(macs)
         hist = np.histogram(macs, bins=np.arange(self.output_size + 2), density=False)
         assert np.all(hist[1] == hist[1].astype(int))
         return hist[0]
 
 
 def sfs2R(sfs, hot_spot):
-    return sfs[hot_spot] / np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1])
+    return sfs[hot_spot] / np.max(1, np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1]))
 
 
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
@@ -101,7 +99,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,
-                                num_of_snps=50,
+                                num_of_snps=200,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)

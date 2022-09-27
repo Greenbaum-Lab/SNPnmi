@@ -82,14 +82,14 @@ class SFSSimulation():
 
 
 def sfs2R(sfs, hot_spot):
-    return sfs[hot_spot] / np.max(1, np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1]))
+    return sfs[hot_spot] / np.max([1, np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1])])
 
 
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
     iterations = 5
     gens = np.arange(20) ** 2 + 1
-    hot_spot = int(np.min(pop_sizes) * 2)
+    hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
     gens2R_var = np.empty(shape=gens.size)
 

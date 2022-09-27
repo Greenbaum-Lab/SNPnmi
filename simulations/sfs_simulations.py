@@ -87,7 +87,7 @@ def sfs2R(sfs, hot_spot):
     return sfs[hot_spot - 1] / np.sqrt(sfs[hot_spot - 2] * sfs[hot_spot])
 
 
-def plot_by_generations(options, plots_base_dir, migration_rate):
+def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
     iterations = 5
     gens = np.arange(20) ** 2 + 1
@@ -101,7 +101,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,
-                                num_of_snps=2000,
+                                num_of_snps=50,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)
@@ -109,15 +109,16 @@ def plot_by_generations(options, plots_base_dir, migration_rate):
             hot_spots_per_gen[iter] = sfs2R(sfs, hot_spot)
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)
         gens2R_var[idx] = np.var(hot_spots_per_gen)
-    plt.plot(gens, gens2R_mean)
-    plt.xlabel(f"Generations since split", fontsize=16)
-    plt.ylabel("Relatives Peak", fontsize=16)
-    plt.xticks(fontsize=10)
-    plt.yticks(fontsize=10)
-    plt.title("Relatives Peak increase with generations since split", fontsize=16)
-    plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
-                     alpha=0.3)
-    plt.savefig(plots_base_dir + 'generations.svg')
+    if single_plot:
+        plt.plot(gens, gens2R_mean)
+        plt.xlabel(f"Generations since split", fontsize=16)
+        plt.ylabel("Relatives Peak", fontsize=16)
+        plt.xticks(fontsize=10)
+        plt.yticks(fontsize=10)
+        plt.title("Relatives Peak increase with generations since split", fontsize=16)
+        plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
+                         alpha=0.3)
+        plt.savefig(plots_base_dir + 'generations.svg')
     with open(plots_base_dir + f'm_{migration_rate}.json', "w") as f:
         json.dump([float(e) for e in gens2R_mean], f)
 

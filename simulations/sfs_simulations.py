@@ -87,7 +87,7 @@ def sfs2R(sfs, hot_spot):
 
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
-    iterations = 100
+    iterations = 10
     gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
@@ -123,7 +123,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
 
 
 def submit_all_migration_rates(options, paths_helper):
-    m_rates = (np.arange(100) + 1) / (10 ** 4)
+    m_rates = (np.arange(10) + 1) / (10 ** 2)
     job_type = 'simulations_job'
     script_path = os.path.abspath(__file__)
     errs = []
@@ -148,10 +148,10 @@ def submit_all_migration_rates(options, paths_helper):
 if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
-    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
-    os.makedirs(plots_base_dir, exist_ok=True)
+    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots2/'
     paths_helper = get_paths_helper(options.dataset_name)
     if not options.args:
+        os.makedirs(plots_base_dir, exist_ok=True)
         submit_all_migration_rates(options, paths_helper)
     else:
         m = float(options.args[0])

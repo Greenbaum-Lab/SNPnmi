@@ -87,7 +87,7 @@ def sfs2R(sfs, hot_spot):
 
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
-    iterations = 10
+    iterations = 5
     gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=gens.size)
@@ -100,7 +100,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,
-                                num_of_snps=2000,
+                                num_of_snps=200,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)

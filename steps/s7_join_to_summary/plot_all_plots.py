@@ -17,11 +17,11 @@ def main(options):
 
         is_success1, msg1 = execute_with_checkpoint(number_of_snp_per_class.main, 'number_of_snp_per_class', options)
         print(msg1)
-        is_success2, msg2 = execute_with_checkpoint(plot_nmi_scores.main, 'plot_nmi_scores', options)
-        print(msg2)
+        # is_success2, msg2 = execute_with_checkpoint(plot_nmi_scores.main, 'plot_nmi_scores', options)
+        # print(msg2)
         is_success3, msg3 = execute_with_checkpoint(tree_heights_plot.main, 'tree_heights_plot', options)
         print(msg3)
-    return is_success1 and is_success2 and is_success3
+    return is_success1 and is_success3
 
 
 if __name__ == '__main__':

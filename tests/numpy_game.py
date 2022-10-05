@@ -16,7 +16,7 @@ ttl.set_position([0.5, 1.02])
 plt.xlabel("Generations")
 plt.ylabel("Migration rate")
 ax.set_xticks(GENERATIONS)
-s = sns.heatmap(a, fmt="", cmap='RdYlGn', linewidths=0.30, ax=ax, xticklabels=GENERATIONS,
+s = sns.heatmap(a, fmt="", linewidths=0.30, ax=ax, xticklabels=GENERATIONS,
             yticklabels=M_RATES)
 s.set_xlabel('Generations', fontsize=16)
 s.set_ylabel('Migration rate', fontsize=16)

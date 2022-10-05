@@ -3,7 +3,7 @@ import os
 import time
 from os.path import dirname, abspath
 import sys
-
+import seaborn as sns
 from tqdm import tqdm
 
 
@@ -21,6 +21,9 @@ import matplotlib.pyplot as plt
 from utils.scripts.freq_to_sfs import freq2sfs
 import numpy as np
 import json
+
+M_RATES = (np.arange(100) + 1) / (10 ** 5)
+GENERATIONS = np.arange(20) ** 2 + 1
 
 
 class SFSSimulation():
@@ -88,12 +91,11 @@ def sfs2R(sfs, hot_spot):
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
     iterations = 100
-    gens = np.arange(20) ** 2 + 1
     hot_spot = np.min(pop_sizes) * 2
-    gens2R_mean = np.empty(shape=gens.size)
-    gens2R_var = np.empty(shape=gens.size)
+    gens2R_mean = np.empty(shape=GENERATIONS.size)
+    gens2R_var = np.empty(shape=GENERATIONS.size)
 
-    for idx, generations_between_pops in enumerate(gens):
+    for idx, generations_between_pops in enumerate(GENERATIONS):
         print(f"Done with {idx} out of 20")
         hot_spots_per_gen = np.empty(shape=iterations)
         for iter in range(iterations):
@@ -109,26 +111,28 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
         gens2R_mean[idx] = np.mean(hot_spots_per_gen)
         gens2R_var[idx] = np.var(hot_spots_per_gen)
     if single_plot:
-        plt.plot(gens, gens2R_mean)
+        plt.plot(GENERATIONS, gens2R_mean)
         plt.xlabel(f"Generations since split", fontsize=16)
         plt.ylabel("Relatives Peak", fontsize=16)
         plt.xticks(fontsize=10)
         plt.yticks(fontsize=10)
         plt.title("Relatives Peak increase with generations since split", fontsize=16)
-        plt.fill_between(gens, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
+        plt.fill_between(GENERATIONS, y1=gens2R_mean - gens2R_var, y2=gens2R_mean + gens2R_var,
                          alpha=0.3)
         plt.savefig(plots_base_dir + 'generations.svg')
     with open(plots_base_dir + f'm_{migration_rate}.json', "w") as f:
         json.dump([float(e) for e in gens2R_mean], f)
 
 
-def submit_all_migration_rates(options, paths_helper):
-    m_rates = (np.arange(100) + 1) / (10 ** 5)
+def submit_all_migration_rates(options, paths_helper, plots_base_dir):
+
     job_type = 'simulations_job'
     script_path = os.path.abspath(__file__)
     errs = []
-    for m in m_rates:
+    for m in M_RATES:
         job_name = f'm_{m}'
+        if os.path.exists(f"{plots_base_dir}{job_name}.json"):
+            continue
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)
         errs.append(job_stderr_file)
@@ -145,6 +149,30 @@ def submit_all_migration_rates(options, paths_helper):
     assert validate_stderr_empty(errs)
     print("Done!")
 
+def combine_json2heatmap(options, paths_helper, plots_base_dir):
+    all_peak_scores = []
+    for m in M_RATES:
+        path = f"{plots_base_dir}m_{m}.json"
+        with open(path, "rb") as f:
+            all_peak_scores.append(json.load(f))
+    peak_scores = np.array(all_peak_scores)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Add title to the Heat map
+    title = "Heat Map of Peak scores"
+
+    # Set the font size and the distance of the title from the plot
+    plt.title(title, fontsize=18)
+    ttl = ax.title
+    ttl.set_position([0.5, 1.05])
+
+    # Hide ticks for X & Y axis
+    ax.set_xticks(GENERATIONS)
+    ax.set_yticks(M_RATES)
+    sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', linewidths=0.30, ax=ax)
+    plt.savefig(f"{plots_base_dir}heatmap_fig.png")
+
 if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
@@ -152,7 +180,8 @@ if __name__ == '__main__':
     paths_helper = get_paths_helper(options.dataset_name)
     if not options.args:
         os.makedirs(plots_base_dir, exist_ok=True)
-        submit_all_migration_rates(options, paths_helper)
+        submit_all_migration_rates(options, paths_helper, plots_base_dir)
+
     else:
         m = float(options.args[0])
         plot_by_generations(options, plots_base_dir, migration_rate=m)

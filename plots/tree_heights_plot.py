@@ -72,7 +72,7 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                            colors=plot_colors + base_line_colors,
                            base_lines=np.array(base_lines),
                            labels=scores,
-                           title=f'Simulation - {plot_title} - {num_of_snp} SNPs',
+                           title=f'{plot_title}',
                            legend_title="Scores",
                            output=plot_path.format(mac_maf=mac_maf, num_of_snp=num_of_snp))
 

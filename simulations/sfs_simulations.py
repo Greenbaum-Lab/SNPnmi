@@ -22,7 +22,7 @@ from utils.scripts.freq_to_sfs import freq2sfs
 import numpy as np
 import json
 
-M_RATES = (np.arange(100) + 1) / (10 ** 5)
+M_RATES = (np.arange(100) + 1) / (10 ** 6)
 GENERATIONS = np.arange(20) ** 2 + 1
 
 

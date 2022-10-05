@@ -140,7 +140,8 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
                                                                                 job_name=job_name)
         submit_to_cluster(options, job_type, job_name, script_path, f"--args {m}", job_stdout_file, job_stderr_file,
                           num_hours_to_run=24, memory=16, use_checkpoint=True)
-
+    if len(errs) == 0:
+        return
     jobs_func = warp_how_many_jobs('m_')
     with Loader("Simulationg coalecent simulations", jobs_func):
         while jobs_func():
@@ -151,26 +152,22 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
 
 def combine_json2heatmap(plots_base_dir):
     all_peak_scores = []
-    for m in M_RATES:
+    for m in tqdm(M_RATES):
         path = f"{plots_base_dir}m_{m}.json"
         with open(path, "rb") as f:
             all_peak_scores.append(json.load(f))
     peak_scores = np.array(all_peak_scores)
 
     fig, ax = plt.subplots(figsize=(12, 8))
-
-    # Add title to the Heat map
     title = "Heat Map of Peak scores"
-
-    # Set the font size and the distance of the title from the plot
     plt.title(title, fontsize=18)
     ttl = ax.title
     ttl.set_position([0.5, 1.05])
 
-    # Hide ticks for X & Y axis
-    ax.set_xticks(GENERATIONS)
-    ax.set_yticks(M_RATES)
-    sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', linewidths=0.30, ax=ax)
+    # ax.set_xticks(GENERATIONS)
+    # ax.set_yticks(M_RATES)
+    sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', linewidths=0.30, ax=ax, xticklabels=GENERATIONS,
+                yticklabels=M_RATES)
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
 if __name__ == '__main__':

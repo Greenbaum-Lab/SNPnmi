@@ -1,33 +1,24 @@
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
-import json
 
-# path = '/home/data1/shahar/sim_dip_v0/mafs_macs_dicts.json'
-# with open(path, 'r') as f:
-#     dicts = json.load(f)
-# mafs = dicts[0]
-# macs = dicts[1]
-# plt.plot(np.arange(2, 71), list(macs.values())[1:])
-# plt.title('mac')
-# plt.yscale('log')
-# plt.savefig('/home/data1/shahar/sim_dip_v0/mac_plot.svg')
-# plt.clf()
-#
-# maf = list(mafs)
-# maf[-2] += maf[-1]
-# plt.plot(np.arange(1, 50)/100, list(mafs.values())[:-1])
-# plt.title('maf')
-# plt.yscale('log')
-# plt.savefig('/home/data1/shahar/sim_dip_v0/maf_plot.svg')
+M_RATES = (np.arange(100) + 1) / (10 ** 5)
+GENERATIONS = np.arange(20) ** 2 + 1
 
-N = 200
-mu = 10e-6
-theta = 4 * N * mu
-dist = []
-for i in range(1,101):
-    dist.append(theta/i + theta/(N - i))
-plt.plot((np.arange(100) + 1)/N, dist)
-plt.title("Expected SFS")
-plt.yticks([])
-plt.xlabel("Site frequency class")
+
+a = np.arange(M_RATES.size * GENERATIONS.size).reshape(M_RATES.size, GENERATIONS.size)
+fig, ax = plt.subplots(figsize=(12, 8))
+title = "Heat Map of Peak scores"
+plt.title(title, fontsize=18)
+ttl = ax.title
+ttl.set_position([0.5, 1.02])
+
+plt.xlabel("Generations")
+plt.ylabel("Migration rate")
+ax.set_xticks(GENERATIONS)
+s = sns.heatmap(a, fmt="", cmap='RdYlGn', linewidths=0.30, ax=ax, xticklabels=GENERATIONS,
+            yticklabels=M_RATES)
+s.set_xlabel('Generations', fontsize=16)
+s.set_ylabel('Migration rate', fontsize=16)
+ax.set_yticks(np.linspace(0, 99, 20, dtype=np.int))
 plt.show()

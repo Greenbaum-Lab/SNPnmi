@@ -77,7 +77,7 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
 
     if log_scale:
         plt.yscale('log')
-    plt.xlabel(f"{mac_maf}", fontsize=16)
+    plt.xlabel(f"AFC({mac_maf.upper()})", fontsize=16)
     if y_label:
         plt.ylabel(y_label, fontsize=16)
     plt.xticks(fontsize=10)

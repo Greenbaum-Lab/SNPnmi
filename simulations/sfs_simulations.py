@@ -149,7 +149,7 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
     assert validate_stderr_empty(errs)
     print("Done!")
 
-def combine_json2heatmap(options, paths_helper, plots_base_dir):
+def combine_json2heatmap(plots_base_dir):
     all_peak_scores = []
     for m in M_RATES:
         path = f"{plots_base_dir}m_{m}.json"
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     if not options.args:
         os.makedirs(plots_base_dir, exist_ok=True)
         submit_all_migration_rates(options, paths_helper, plots_base_dir)
-
+        combine_json2heatmap(plots_base_dir)
     else:
         m = float(options.args[0])
         plot_by_generations(options, plots_base_dir, migration_rate=m)

@@ -167,7 +167,7 @@ def combine_json2heatmap(plots_base_dir):
     s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS,
                     yticklabels=M_RATES)
     s.set_xlabel('Generations', fontsize=16)
-    s.set_ylabel('Migration rate', fontsize=16)
+    # s.set_ylabel('Migration rate', fontsize=16)
     s.set_yticks(np.linspace(0, M_RATES.size - 1, 20, dtype=np.int))
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 

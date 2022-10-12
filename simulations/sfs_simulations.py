@@ -23,6 +23,7 @@ import numpy as np
 import json
 
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
+M_RATES = np. array([0, 10 ** -6, 5 * (10 ** -6), 10 ** -5, 5 * (10 ** -5), 10 ** -4])
 GENERATIONS = np.arange(20) ** 2 + 1
 
 
@@ -122,6 +123,8 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
         plt.savefig(plots_base_dir + 'generations.svg')
     with open(plots_base_dir + f'm_{migration_rate}.json', "w") as f:
         json.dump([float(e) for e in gens2R_mean], f)
+    with open(plots_base_dir + f'm_{migration_rate}_var.json', "w") as f:
+        json.dump([float(e) for e in gens2R_var], f)
 
 
 def submit_all_migration_rates(options, paths_helper, plots_base_dir):
@@ -131,7 +134,7 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
     errs = []
     for m in M_RATES:
         job_name = f'm_{m}'
-        if os.path.exists(f"{plots_base_dir}{job_name}.json"):
+        if os.path.exists(f"{plots_base_dir}{job_name}_var.json"):
             continue
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)
@@ -165,7 +168,7 @@ def combine_json2heatmap(plots_base_dir):
     ttl.set_position([0.5, 1.02])
     ax.set_xticks(GENERATIONS)
     s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS,
-                    yticklabels=M_RATES, cbar_kws={"ticks": np.arange(10) + 1})
+                    yticklabels=M_RATES, cbar_kws={"ticks": np.arange(int(np.max(peak_scores))) + 1})
     plt.locator_params(axis='y', nbins=20)
     s.set_xlabel('Generations', fontsize=16)
     s.set_ylabel('Migration rate', fontsize=16)

@@ -26,9 +26,9 @@ DEBUG = True
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
-BOUND_SAMPLE_SIZE = [1, 6]
+BOUND_SAMPLE_SIZE = [1, 10]
 pop_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
-ITERATIONS = 3 if DEBUG else 100
+ITERATIONS = 8 if DEBUG else 100
 CONST_GENERATIONS = 300
 CONST_MIGRATION = 10 ** -5
 CONST_NUM_OF_SNPS = 200 if DEBUG else 2000
@@ -235,7 +235,7 @@ def combine_migration_json2heatmap(plots_base_dir):
     ttl.set_position([0.5, 1.02])
     ax.set_xticks(GENERATIONS)
     s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS,
-                    yticklabels=M_RATES, cbar_kws={"ticks": np.arange(int(np.max(peak_scores))) + 1})
+                    yticklabels=M_RATES, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     plt.locator_params(axis='y', nbins=20)
     s.set_xlabel('Generations', fontsize=16)
     s.set_ylabel('Migration rate', fontsize=16)
@@ -260,7 +260,7 @@ def combine_sample_size2heatmap(plots_dir):
                     yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     s.set_xlabel('Sample size of population 1', fontsize=16)
     s.set_ylabel('Sample size of population 1', fontsize=16)
-    plt.savefig(f"{plots_dir}heatmap_fig.png")
+    plt.savefig(f"{plots_dir}ss_heatmap_fig.png")
 
 def combine_json2_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']

@@ -206,6 +206,7 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
             with open(output_name, "rb") as f:
                 dict = json.load(f)
             if all([str(e) in dict for e in pop_sizes_range]):
+                print(f"file exists for populatoin size {pop1_size}")
                 continue
 
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
@@ -256,7 +257,7 @@ def combine_sample_size2heatmap(plots_dir):
     ttl.set_position([0.5, 1.02])
     ax.set_xticks(pop_sizes_range)
     s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=pop_sizes_range,
-                    yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.max(peak_scores))) + 1})
+                    yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     s.set_xlabel('Sample size of population 1', fontsize=16)
     s.set_ylabel('Sample size of population 1', fontsize=16)
     plt.savefig(f"{plots_dir}heatmap_fig.png")

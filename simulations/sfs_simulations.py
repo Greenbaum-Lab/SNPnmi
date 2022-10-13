@@ -301,7 +301,7 @@ def manage_sample_size_runs(options, paths_helper, base_dir):
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
         submit_all_sample_sizes(options, paths_helper, output_dir)
-        combine_migration_json2heatmap(output_dir)
+        combine_sample_size2heatmap(output_dir)
     else:
         p1 = int(options.args[0])
         simulate_different_pop_sizes(options, output_dir, pop1_size=p1)

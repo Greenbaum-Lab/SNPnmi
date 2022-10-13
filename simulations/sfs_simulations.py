@@ -27,6 +27,7 @@ M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
 BOUND_SAMPLE_SIZE = [1, 6]
+pop_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
 ITERATIONS = 3 if DEBUG else 100
 CONST_GENERATIONS = 300
 CONST_MIGRATION = 10 ** -5
@@ -98,14 +99,13 @@ def sfs2R(sfs, hot_spot):
 
 
 def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot=False):
-    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
     output_path = plots_base_dir + f'p_{pop1_size}.json'
     if os.path.exists(output_path):
         with open(output_path, "rb") as f:
             pop2res = json.load(f)
     else:
         pop2res = {}
-    for idx, pop2_size in enumerate(pop2_sizes_range):
+    for idx, pop2_size in enumerate(pop_sizes_range):
         if str(pop2_size) in pop2res:
             continue
         if pop2_size == pop1_size:
@@ -197,11 +197,16 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
     wait_and_validate_jobs('m_', "Simulating coalescent simulations", errs)
 
 
-def submit_all_sample_sizes(options, paths_helper):
+def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
     errs = []
-
-    for pop1_size in np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1):
+    for pop1_size in pop_sizes_range:
         job_name = f'p_{pop1_size}'
+        output_name = f"{plots_base_dir}{job_name}.json"
+        if os.path.exists(output_name):
+            with open(output_name, "rb") as f:
+                dict = json.load(f)
+            if all([str(e) in dict for e in pop_sizes_range]):
+                continue
 
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)
@@ -213,7 +218,8 @@ def submit_all_sample_sizes(options, paths_helper):
 
     wait_and_validate_jobs('p_', "Simulating coalescent simulations", errs)
 
-def combine_json2heatmap(plots_base_dir):
+
+def combine_migration_json2heatmap(plots_base_dir):
     all_peak_scores = []
     for m in tqdm(M_RATES):
         path = f"{plots_base_dir}m_{m}.json"
@@ -234,6 +240,26 @@ def combine_json2heatmap(plots_base_dir):
     s.set_ylabel('Migration rate', fontsize=16)
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
+def combine_sample_size2heatmap(plots_dir):
+    all_peak_scores = []
+    for p1 in tqdm(pop_sizes_range):
+        path = f"{plots_dir}p_{p1}.json"
+        with open(path, "rb") as f:
+            current_p1_scores = json.load(f)
+            all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
+    peak_scores = np.array(all_peak_scores)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+    title = "Heat Map of Peak scores"
+    plt.title(title, fontsize=18)
+    ttl = ax.title
+    ttl.set_position([0.5, 1.02])
+    ax.set_xticks(pop_sizes_range)
+    s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=pop_sizes_range,
+                    yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.max(peak_scores))) + 1})
+    s.set_xlabel('Sample size of population 1', fontsize=16)
+    s.set_ylabel('Sample size of population 1', fontsize=16)
+    plt.savefig(f"{plots_dir}heatmap_fig.png")
 
 def combine_json2_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']
@@ -261,7 +287,7 @@ def manage_migration_runs(options, paths_helper, base_dir):
         os.makedirs(output_dir, exist_ok=True)
         submit_all_migration_rates(options, paths_helper, output_dir)
         if len(M_RATES) > 6:
-            combine_json2heatmap(output_dir)
+            combine_migration_json2heatmap(output_dir)
         else:
             combine_json2_plot(output_dir)
     else:
@@ -274,8 +300,8 @@ def manage_sample_size_runs(options, paths_helper, base_dir):
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
-        submit_all_sample_sizes(options, paths_helper)
-        combine_json2heatmap(output_dir)
+        submit_all_sample_sizes(options, paths_helper, output_dir)
+        combine_migration_json2heatmap(output_dir)
     else:
         p1 = int(options.args[0])
         simulate_different_pop_sizes(options, output_dir, pop1_size=p1)

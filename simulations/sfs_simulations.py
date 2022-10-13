@@ -174,7 +174,7 @@ def combine_json2heatmap(plots_base_dir):
     s.set_ylabel('Migration rate', fontsize=16)
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
-def combine_json2_plot(plot_base_dir):
+def combine_json2_plot(plots_base_dir):
     colors = ['b', 'r', 'o', 'g', 'c', 'y']
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
@@ -186,8 +186,11 @@ def combine_json2_plot(plot_base_dir):
         plt.plot(GENERATIONS, mean_vals, color=colors[i], label=m)
         plt.fill_between(GENERATIONS, y1=mean_vals - var_vals, y2=mean_vals + var_vals,
                          alpha=0.3, color=colors[i])
-        plt.legend()
-        plt.savefig(f"{plots_base_dir}plot.png")
+    plt.title("Peak score with different migration rates")
+    plt.xlabel("Generations")
+    plt.ylabel("Peak score")
+    plt.legend()
+    plt.savefig(f"{plots_base_dir}plot.png")
 
 if __name__ == '__main__':
     options = args_parser()

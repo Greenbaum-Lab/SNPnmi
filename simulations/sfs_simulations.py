@@ -22,11 +22,11 @@ from utils.scripts.freq_to_sfs import freq2sfs
 import numpy as np
 import json
 
-DEBUG = True
+DEBUG = False
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
-BOUND_SAMPLE_SIZE = [1, 10]
+BOUND_SAMPLE_SIZE = [1, 6] if DEBUG else [1, 20]
 pop_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
 ITERATIONS = 8 if DEBUG else 100
 CONST_GENERATIONS = 300

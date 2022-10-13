@@ -249,7 +249,7 @@ def combine_sample_size2heatmap(plots_dir):
             current_p1_scores = json.load(f)
             all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
     peak_scores = np.array(all_peak_scores)
-
+    np.save(f"{plots_dir}ss_heatmap.npy", peak_scores)
     fig, ax = plt.subplots(figsize=(12, 8))
     title = "Heat Map of Peak scores"
     plt.title(title, fontsize=18)
@@ -260,7 +260,7 @@ def combine_sample_size2heatmap(plots_dir):
                     yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     s.set_xlabel('Sample size of population 1', fontsize=16)
     s.set_ylabel('Sample size of population 1', fontsize=16)
-    plt.savefig(f"{plots_dir}ss_heatmap_fig.png")
+    plt.savefig(f"{plots_dir}ss_heatmap_fig.svg")
 
 def combine_json2_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']

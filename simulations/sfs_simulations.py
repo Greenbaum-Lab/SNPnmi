@@ -179,10 +179,10 @@ def combine_json2_plot(plots_base_dir):
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
         with open(mean_path, "rb") as f:
-            mean_vals = (json.load(f))
+            mean_vals = np.array(json.load(f))
         var_path = f"{plots_base_dir}m_{m}_var.json"
         with open(var_path, "rb") as f:
-            var_vals = (json.load(f))
+            var_vals = np.array(json.load(f))
         plt.plot(GENERATIONS, mean_vals, color=colors[i], label=m)
         plt.fill_between(GENERATIONS, y1=mean_vals - var_vals, y2=mean_vals + var_vals,
                          alpha=0.3, color=colors[i])

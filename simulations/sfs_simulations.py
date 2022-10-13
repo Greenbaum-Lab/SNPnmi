@@ -13,7 +13,7 @@ from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
 from utils.cluster.cluster_helper import submit_to_cluster
-from utils.loader import Loader, wait_and_validate_jobs
+from utils.loader import wait_and_validate_jobs
 from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
 from string import ascii_uppercase, ascii_lowercase
 import msprime
@@ -98,7 +98,7 @@ def sfs2R(sfs, hot_spot):
 
 
 def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot=False):
-    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
+    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1, dtype=int)
     output_path = plots_base_dir + f'p_{pop1_size}.json'
     if os.path.exists(output_path):
         with open(output_path, "rb") as f:

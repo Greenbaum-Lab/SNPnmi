@@ -286,6 +286,7 @@ if __name__ == '__main__':
     paths_helper = get_paths_helper(options.dataset_name)
     if options.step == '1':
         manage_migration_runs(options, paths_helper, base_dir)
-    if options.step == '2':
+    elif options.step == '2':
         manage_sample_size_runs(options, paths_helper, base_dir)
-
+    else:
+        raise KeyError("No step was provided")

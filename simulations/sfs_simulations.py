@@ -190,7 +190,7 @@ def combine_json2_plot(plots_base_dir):
     plt.xlabel("Generations")
     plt.ylabel("Peak score")
     plt.legend()
-    plt.savefig(f"{plots_base_dir}plot.png")
+    plt.savefig(f"{plots_base_dir}plot.svg")
 
 if __name__ == '__main__':
     options = args_parser()

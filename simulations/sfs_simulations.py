@@ -175,7 +175,7 @@ def combine_json2heatmap(plots_base_dir):
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
 def combine_json2_plot(plots_base_dir):
-    colors = ['b', 'r', 'o', 'g', 'c', 'y']
+    colors = ['b', 'r', 'orange', 'g', 'c', 'y']
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
         with open(mean_path, "rb") as f:

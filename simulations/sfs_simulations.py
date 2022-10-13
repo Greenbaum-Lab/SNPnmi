@@ -26,7 +26,7 @@ DEBUG = True
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
-BOUND_SAMPLE_SIZE = [1, 7]
+BOUND_SAMPLE_SIZE = [1, 8]
 ITERATIONS = 3 if DEBUG else 100
 CONST_GENERATIONS = 300
 CONST_MIGRATION = 10 ** -5
@@ -106,7 +106,7 @@ def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot
     else:
         pop2res = {}
     for idx, pop2_size in enumerate(pop2_sizes_range):
-        if pop2_size in pop2res:
+        if str(pop2_size) in pop2res:
             continue
         if pop2_size == pop1_size:
             pop2res[int(pop2_size)] = [np.nan, np.nan]

@@ -174,6 +174,21 @@ def combine_json2heatmap(plots_base_dir):
     s.set_ylabel('Migration rate', fontsize=16)
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
+def combine_json2_plot(plot_base_dir):
+    colors = ['b', 'r', 'o', 'g', 'c', 'y']
+    for i, m in enumerate(tqdm(M_RATES)):
+        mean_path = f"{plots_base_dir}m_{m}.json"
+        with open(mean_path, "rb") as f:
+            mean_vals = (json.load(f))
+        var_path = f"{plots_base_dir}m_{m}_var.json"
+        with open(var_path, "rb") as f:
+            var_vals = (json.load(f))
+        plt.plot(GENERATIONS, mean_vals, color=colors[i], label=m)
+        plt.fill_between(GENERATIONS, y1=mean_vals - var_vals, y2=mean_vals + var_vals,
+                         alpha=0.3, color=colors[i])
+        plt.legend()
+        plt.savefig(f"{plots_base_dir}plot.png")
+
 if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
@@ -182,7 +197,10 @@ if __name__ == '__main__':
     if not options.args:
         os.makedirs(plots_base_dir, exist_ok=True)
         submit_all_migration_rates(options, paths_helper, plots_base_dir)
-        combine_json2heatmap(plots_base_dir)
+        if len(M_RATES) > 6:
+            combine_json2heatmap(plots_base_dir)
+        else:
+            combine_json2_plot(plots_base_dir)
     else:
         m = float(options.args[0])
         plot_by_generations(options, plots_base_dir, migration_rate=m)

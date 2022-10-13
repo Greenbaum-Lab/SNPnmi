@@ -23,7 +23,7 @@ import numpy as np
 import json
 
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
-M_RATES = np. array([0, 10 ** -6, 5 * (10 ** -6), 10 ** -5, 5 * (10 ** -5), 10 ** -4])
+M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
 
 

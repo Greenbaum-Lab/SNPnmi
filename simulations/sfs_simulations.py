@@ -22,13 +22,15 @@ from utils.scripts.freq_to_sfs import freq2sfs
 import numpy as np
 import json
 
+DEBUG = True
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
 BOUND_SAMPLE_SIZE = [2, 5]
-ITERATIONS = 10
+ITERATIONS = 3 if DEBUG else 100
 CONST_GENERATIONS = 300
 CONST_MIGRATION = 10 ** -5
+CONST_NUM_OF_SNPS = 200 if DEBUG else 2000
 
 job_type = 'simulations_job'
 script_path = os.path.abspath(__file__)
@@ -116,7 +118,7 @@ def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=CONST_GENERATIONS,
                                 migration_rate=CONST_MIGRATION,
-                                num_of_snps=2000)
+                                num_of_snps=CONST_NUM_OF_SNPS)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)
 
@@ -152,7 +154,7 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,
-                                num_of_snps=2000,
+                                num_of_snps=CONST_NUM_OF_SNPS,
                                 time_to_mass_migration=0)
             mts = sim.run_simulation()
             sfs = sim.np_mutations_to_sfs(mts)

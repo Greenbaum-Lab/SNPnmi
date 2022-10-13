@@ -98,7 +98,7 @@ def sfs2R(sfs, hot_spot):
 
 
 def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot=False):
-    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1, dtype=int)
+    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
     output_path = plots_base_dir + f'p_{pop1_size}.json'
     if os.path.exists(output_path):
         with open(output_path, "rb") as f:
@@ -109,7 +109,7 @@ def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot
         if pop2_size in pop2res:
             continue
         if pop2_size == pop1_size:
-            pop2res[pop2_size] = [np.nan, np.nan]
+            pop2res[int(pop2_size)] = [np.nan, np.nan]
             continue
         pop_sizes = np.array([pop1_size, pop2_size])
         hot_spot = np.min(pop_sizes) * 2
@@ -123,7 +123,7 @@ def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot
             sfs = sim.np_mutations_to_sfs(mts)
 
             hot_spots_per_pop[iter] = sfs2R(sfs, hot_spot)
-        pop2res[pop2_size] = [np.mean(hot_spots_per_pop), np.var(hot_spots_per_pop)]
+        pop2res[int(pop2_size)] = [np.mean(hot_spots_per_pop), np.var(hot_spots_per_pop)]
     if single_plot:
         mean = np.array([e[0] for e in pop2res.values()])
         var = np.array([e[1] for e in pop2res.values()])

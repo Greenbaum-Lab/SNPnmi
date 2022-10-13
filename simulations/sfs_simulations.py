@@ -13,7 +13,7 @@ from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
 from utils.cluster.cluster_helper import submit_to_cluster
-from utils.loader import Loader
+from utils.loader import Loader, wait_and_validate_jobs
 from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
 from string import ascii_uppercase, ascii_lowercase
 import msprime
@@ -25,10 +25,16 @@ import json
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
 M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
+BOUND_SAMPLE_SIZE = [2, 5]
+ITERATIONS = 10
+CONST_GENERATIONS = 300
+CONST_MIGRATION = 10 ** -5
 
+job_type = 'simulations_job'
+script_path = os.path.abspath(__file__)
 
 class SFSSimulation():
-    def __init__(self,options, ne, pop_sizes, generations_between_pops, migration_rate, num_of_snps, time_to_mass_migration):
+    def __init__(self,options, ne, pop_sizes, generations_between_pops, migration_rate, num_of_snps, time_to_mass_migration=0):
         self.options = options
         self.pop_sizes = pop_sizes
         self.output_size = np.sum(pop_sizes)
@@ -89,17 +95,60 @@ def sfs2R(sfs, hot_spot):
     return sfs[hot_spot] / np.max([1, np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1])])
 
 
+def simulate_different_pop_sizes(options, plots_base_dir, pop1_size, single_plot=False):
+    pop2_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
+    output_path = plots_base_dir + f'p_{pop1_size}.json'
+    if os.path.exists(output_path):
+        with open(output_path, "rb") as f:
+            pop2res = json.load(f)
+    else:
+        pop2res = {}
+    for idx, pop2_size in enumerate(pop2_sizes_range):
+        if pop2_size in pop2res:
+            continue
+        if pop2_size == pop1_size:
+            pop2res[pop2_size] = [np.nan, np.nan]
+            continue
+        pop_sizes = np.array([pop1_size, pop2_size])
+        hot_spot = np.min(pop_sizes) * 2
+        hot_spots_per_pop = np.empty(shape=ITERATIONS)
+        for iter in range(ITERATIONS):
+            sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
+                                generations_between_pops=CONST_GENERATIONS,
+                                migration_rate=CONST_MIGRATION,
+                                num_of_snps=2000)
+            mts = sim.run_simulation()
+            sfs = sim.np_mutations_to_sfs(mts)
+
+            hot_spots_per_pop[iter] = sfs2R(sfs, hot_spot)
+        pop2res[pop2_size] = [np.mean(hot_spots_per_pop), np.var(hot_spots_per_pop)]
+    if single_plot:
+        mean = np.array([e[0] for e in pop2res.values()])
+        var = np.array([e[1] for e in pop2res.values()])
+        plt.plot(pop2res.keys(), [e[0] for e in pop2res.values()])
+        plt.xlabel(f"pop2 size", fontsize=16)
+        plt.ylabel("Relatives Peak", fontsize=16)
+        plt.xticks(fontsize=10)
+        plt.yticks(fontsize=10)
+        plt.title(f"Relatives Peak. Population 1 size fixed to {pop1_size}", fontsize=16)
+        plt.fill_between(pop2res.keys(), y1=mean - var, y2=mean + var,
+                         alpha=0.3)
+        plt.savefig(plots_base_dir + f'pop1_{pop1_size}.svg')
+    with open(output_path, "w") as f:
+        json.dump(pop2res, f)
+
+
 def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=False):
     pop_sizes = np.array([8, 12])
-    iterations = 100
+
     hot_spot = np.min(pop_sizes) * 2
     gens2R_mean = np.empty(shape=GENERATIONS.size)
     gens2R_var = np.empty(shape=GENERATIONS.size)
 
     for idx, generations_between_pops in enumerate(GENERATIONS):
         print(f"Done with {idx} out of 20")
-        hot_spots_per_gen = np.empty(shape=iterations)
-        for iter in range(iterations):
+        hot_spots_per_gen = np.empty(shape=ITERATIONS)
+        for iter in range(ITERATIONS):
             sim = SFSSimulation(options=options, ne=200, pop_sizes=pop_sizes,
                                 generations_between_pops=generations_between_pops,
                                 migration_rate=migration_rate,
@@ -128,9 +177,6 @@ def plot_by_generations(options, plots_base_dir, migration_rate, single_plot=Fal
 
 
 def submit_all_migration_rates(options, paths_helper, plots_base_dir):
-
-    job_type = 'simulations_job'
-    script_path = os.path.abspath(__file__)
     errs = []
     for m in M_RATES:
         job_name = f'm_{m}'
@@ -141,17 +187,29 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
         errs.append(job_stderr_file)
         job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
                                                                                 job_name=job_name)
-        submit_to_cluster(options, job_type, job_name, script_path, f"--args {m}", job_stdout_file, job_stderr_file,
-                          num_hours_to_run=24, memory=16, use_checkpoint=True)
+        submit_to_cluster(options, job_type, job_name, script_path, f"--args {m} -s {options.step}",
+                          job_stdout_file, job_stderr_file, num_hours_to_run=24, memory=16, use_checkpoint=True)
     if len(errs) == 0:
         return
-    jobs_func = warp_how_many_jobs('m_')
-    with Loader("Simulationg coalecent simulations", jobs_func):
-        while jobs_func():
-            time.sleep(5)
 
-    assert validate_stderr_empty(errs)
-    print("Done!")
+    wait_and_validate_jobs('m_', "Simulating coalescent simulations", errs)
+
+
+def submit_all_sample_sizes(options, paths_helper):
+    errs = []
+
+    for pop1_size in np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1):
+        job_name = f'p_{pop1_size}'
+
+        job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
+                                                                                job_name=job_name)
+        errs.append(job_stderr_file)
+        job_stdout_file = paths_helper.logs_cluster_jobs_stdout_template.format(job_type=job_type,
+                                                                                job_name=job_name)
+        submit_to_cluster(options, job_type, job_name, script_path, f"--args {pop1_size} -s {options.step}",
+                          job_stdout_file, job_stderr_file, num_hours_to_run=24, memory=16, use_checkpoint=True)
+
+    wait_and_validate_jobs('p_', "Simulating coalescent simulations", errs)
 
 def combine_json2heatmap(plots_base_dir):
     all_peak_scores = []
@@ -174,6 +232,7 @@ def combine_json2heatmap(plots_base_dir):
     s.set_ylabel('Migration rate', fontsize=16)
     plt.savefig(f"{plots_base_dir}heatmap_fig.png")
 
+
 def combine_json2_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']
     for i, m in enumerate(tqdm(M_RATES)):
@@ -189,21 +248,44 @@ def combine_json2_plot(plots_base_dir):
     plt.title("Peak score with different migration rates")
     plt.xlabel("Generations")
     plt.ylabel("Peak score")
-    plt.legend()
+    plt.legend(title="Migration rates")
     plt.savefig(f"{plots_base_dir}plot.svg")
+
+
+def manage_migration_runs(options, paths_helper, base_dir):
+    output_dir = base_dir + 'sfs_plots/'
+    os.makedirs(output_dir, exist_ok=True)
+    if not options.args:
+        os.makedirs(output_dir, exist_ok=True)
+        submit_all_migration_rates(options, paths_helper, output_dir)
+        if len(M_RATES) > 6:
+            combine_json2heatmap(output_dir)
+        else:
+            combine_json2_plot(output_dir)
+    else:
+        m = float(options.args[0])
+        plot_by_generations(options, output_dir, migration_rate=m)
+
+
+def manage_sample_size_runs(options, paths_helper, base_dir):
+    output_dir = base_dir + 'sample_size_grid/'
+    os.makedirs(output_dir, exist_ok=True)
+    if not options.args:
+        os.makedirs(output_dir, exist_ok=True)
+        submit_all_sample_sizes(options, paths_helper)
+        combine_json2heatmap(output_dir)
+    else:
+        p1 = int(options.args[0])
+        simulate_different_pop_sizes(options, output_dir, pop1_size=p1)
+
 
 if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
-    plots_base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/sfs_plots/'
+    base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/'
     paths_helper = get_paths_helper(options.dataset_name)
-    if not options.args:
-        os.makedirs(plots_base_dir, exist_ok=True)
-        submit_all_migration_rates(options, paths_helper, plots_base_dir)
-        if len(M_RATES) > 6:
-            combine_json2heatmap(plots_base_dir)
-        else:
-            combine_json2_plot(plots_base_dir)
-    else:
-        m = float(options.args[0])
-        plot_by_generations(options, plots_base_dir, migration_rate=m)
+    if options.step == '1':
+        manage_migration_runs(options, paths_helper, base_dir)
+    if options.step == '2':
+        manage_sample_size_runs(options, paths_helper, base_dir)
+

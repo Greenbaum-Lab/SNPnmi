@@ -1,8 +1,11 @@
 import datetime
+import time
 from itertools import cycle
 from shutil import get_terminal_size
 from threading import Thread
 from time import sleep
+
+from utils.common import warp_how_many_jobs, validate_stderr_empty
 
 
 class Loader:
@@ -101,3 +104,13 @@ class Timer:
                         ms += 1
                     time_str = "%.2fms" % (ms + build_time_us / float(one_millisecond))
         return time_str
+
+
+def wait_and_validate_jobs(str_to_find, loader_title, err_files):
+    jobs_func = warp_how_many_jobs(str_to_find)
+    with Loader(loader_title, jobs_func):
+        while jobs_func():
+            time.sleep(5)
+
+    assert validate_stderr_empty(err_files)
+    print("Done!")

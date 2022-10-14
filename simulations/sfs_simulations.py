@@ -95,6 +95,7 @@ class SFSSimulation():
 
 
 def sfs2R(sfs, hot_spot):
+    sfs[-1] *= 2
     return sfs[hot_spot] / np.max([1, np.sqrt(sfs[hot_spot - 1] * sfs[hot_spot + 1])])
 
 
@@ -239,7 +240,7 @@ def combine_migration_json2heatmap(plots_base_dir):
     plt.locator_params(axis='y', nbins=20)
     s.set_xlabel('Generations', fontsize=16)
     s.set_ylabel('Migration rate', fontsize=16)
-    plt.savefig(f"{plots_base_dir}heatmap_fig.png")
+    plt.savefig(f"{plots_base_dir}heatmap_fig.svg")
 
 def combine_sample_size2heatmap(plots_dir):
     all_peak_scores = []

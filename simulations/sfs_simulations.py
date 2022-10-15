@@ -24,7 +24,7 @@ import json
 
 DEBUG = False
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
-M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
+# M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
 BOUND_SAMPLE_SIZE = [1, 6] if DEBUG else [1, 30]
 pop_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
@@ -228,7 +228,7 @@ def combine_migration_json2heatmap(plots_base_dir):
         with open(path, "rb") as f:
             all_peak_scores.append(json.load(f))
     peak_scores = np.array(all_peak_scores)
-
+    np.save(f"{plots_base_dir}migration_heatmap.npy", peak_scores)
     fig, ax = plt.subplots(figsize=(12, 8))
     title = "Heat Map of Peak scores"
     plt.title(title, fontsize=18)
@@ -240,7 +240,7 @@ def combine_migration_json2heatmap(plots_base_dir):
     plt.locator_params(axis='y', nbins=20)
     s.set_xlabel('Generations', fontsize=16)
     s.set_ylabel('Migration rate', fontsize=16)
-    plt.savefig(f"{plots_base_dir}heatmap_fig.svg")
+    plt.savefig(f"{plots_base_dir}migration_heatmap.svg")
 
 def combine_sample_size2heatmap(plots_dir):
     all_peak_scores = []

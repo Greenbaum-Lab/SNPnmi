@@ -183,7 +183,7 @@ def submit_all_migration_rates(options, paths_helper, plots_base_dir):
     errs = []
     for m in M_RATES:
         job_name = f'm_{m}'
-        if os.path.exists(f"{plots_base_dir}{job_name}_var.json"):
+        if os.path.exists(f"{plots_base_dir}{job_name}.json"):
             continue
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)

@@ -28,3 +28,4 @@ def get_theoretical_sfs(num_of_snps, num_of_genomes):
     assert np.abs(np.sum(res) - num_of_snps) < 0.001, f"there are {num_of_snps} snps but sum of res is {res.sum()}, res={res}"
     res[-1] *= 2
     return res
+

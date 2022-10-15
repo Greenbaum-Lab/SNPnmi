@@ -24,7 +24,7 @@ import json
 
 DEBUG = False
 M_RATES = (np.arange(100) + 1) / (10 ** 6)
-M_RATES = np. array([0, 10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
+M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 GENERATIONS = np.arange(20) ** 2 + 1
 BOUND_SAMPLE_SIZE = [1, 6] if DEBUG else [1, 30]
 pop_sizes_range = np.arange(BOUND_SAMPLE_SIZE[0], BOUND_SAMPLE_SIZE[1] + 1)
@@ -283,7 +283,7 @@ def combine_json2_plot(plots_base_dir):
 
 
 def manage_migration_runs(options, paths_helper, base_dir):
-    output_dir = base_dir + 'sfs_plots/'
+    output_dir = base_dir + 'migrations/'
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)

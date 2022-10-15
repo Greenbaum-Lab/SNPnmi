@@ -235,7 +235,7 @@ def combine_migration_json2heatmap(plots_base_dir):
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
     ax.set_xticks(GENERATIONS)
-    s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS,
+    s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS, cbarlabel='Peak score',
                     yticklabels=M_RATES, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     plt.locator_params(axis='y', nbins=20)
     s.set_xlabel('Generations', fontsize=16)

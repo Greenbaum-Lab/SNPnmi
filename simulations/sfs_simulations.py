@@ -2,7 +2,7 @@
 import os
 from os.path import dirname, abspath
 import sys
-import seaborn as sns
+
 from tqdm import tqdm
 
 from steps.s7_join_to_summary.plots_helper import r2score
@@ -222,6 +222,7 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
 
 
 def combine_migration_json2heatmap(plots_base_dir):
+    import seaborn as sns
     all_peak_scores = []
     for m in tqdm(M_RATES):
         path = f"{plots_base_dir}m_{m}.json"
@@ -244,6 +245,7 @@ def combine_migration_json2heatmap(plots_base_dir):
     plt.savefig(f"{plots_base_dir}migration_heatmap.svg")
 
 def combine_sample_size2heatmap(plots_dir):
+    import seaborn as sns
     all_peak_scores = []
     for p1 in tqdm(pop_sizes_range):
         path = f"{plots_dir}p_{p1}.json"
@@ -325,8 +327,8 @@ def manage_sample_size_runs(options, paths_helper, base_dir):
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
-        submit_all_sample_sizes(options, paths_helper, output_dir)
-        combine_sample_size2heatmap(output_dir)
+        # submit_all_sample_sizes(options, paths_helper, output_dir)
+        # combine_sample_size2heatmap(output_dir)
         combine_json2sample_size_plot(output_dir)
     else:
         p1 = int(options.args[0])

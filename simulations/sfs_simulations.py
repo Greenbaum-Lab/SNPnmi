@@ -291,7 +291,7 @@ def combine_json2sample_size_plot(output_dir):
     res = [[] for _ in range(heatmap.shape[0])]
     for i, row in enumerate(heatmap):
         for j, val in enumerate(row):
-            if isinstance(val, list):
+            if isinstance(val, np.ndarray):
                 res[np.min([i, j])].append(val[1:])
     x_vals = np.concatenate([np.full_like(e, fill_value=(idx + 1) * 2, dtype=int) for idx, e in enumerate(res)])
     y_vals = np.concatenate(res)

@@ -1,6 +1,5 @@
 
 import os
-import time
 from os.path import dirname, abspath
 import sys
 import seaborn as sns
@@ -14,7 +13,7 @@ sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}l
 
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.loader import wait_and_validate_jobs
-from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, validate_stderr_empty
+from utils.common import args_parser, get_paths_helper
 from string import ascii_uppercase, ascii_lowercase
 import msprime
 import matplotlib.pyplot as plt
@@ -263,6 +262,7 @@ def combine_sample_size2heatmap(plots_dir):
     s.set_xlabel('Sample size of population 1', fontsize=16)
     s.set_ylabel('Sample size of population 1', fontsize=16)
     plt.savefig(f"{plots_dir}ss_heatmap_fig.svg")
+    plt.clf()
 
 def combine_json2_migrations_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']
@@ -327,8 +327,8 @@ def manage_sample_size_runs(options, paths_helper, base_dir):
 if __name__ == '__main__':
     options = args_parser()
     options.dataset_name = 'simulations'
-    base_dir = '/sci/labs/gilig/shahar.mazie/icore-data/sfs_proj/'
     paths_helper = get_paths_helper(options.dataset_name)
+    base_dir = paths_helper.sfs_proj
     if options.step == '1':
         manage_migration_runs(options, paths_helper, base_dir)
     elif options.step == '2':

@@ -58,9 +58,9 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
 
     for idx in range(num_of_scats):
         p = np.poly1d(polynomials[idx])
-        plt.plot(class_names, p(class_names), color=colors[num_of_plots + idx], linestyle='--',
+        y_hat = p(class_names)
+        plt.plot(class_names, y_hat, color=colors[num_of_plots + idx], linestyle='--',
                  linewidth=PlotConsts.line_width)
-        y_hat = np.poly1d(polynomials[idx])(class_names)
         e = [f'{repr_num(polynomials[idx, i])}' if i == 0 or polynomials[
             idx, i] < 0 else f'+{repr_num(polynomials[idx, i])}' for i in range(len(polynomials[idx]))]
         equation = [f'{e[i]} x^{len(e) - (i + 1)}' if len(e) - (i + 1) > 1 else f'{e[i]}' if len(e) - (

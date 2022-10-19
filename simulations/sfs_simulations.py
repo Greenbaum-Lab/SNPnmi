@@ -5,6 +5,7 @@ import sys
 import seaborn as sns
 from tqdm import tqdm
 
+from steps.s7_join_to_summary.plots_helper import r2score
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -13,7 +14,7 @@ sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}l
 
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.loader import wait_and_validate_jobs
-from utils.common import args_parser, get_paths_helper
+from utils.common import args_parser, get_paths_helper, repr_num
 from string import ascii_uppercase, ascii_lowercase
 import msprime
 import matplotlib.pyplot as plt
@@ -289,10 +290,16 @@ def combine_json2sample_size_plot(output_dir):
     for i, row in enumerate(heatmap):
         for j, val in enumerate(row):
             res[np.min([i, j])].append(val)
-    fig, ax = plt.subplots(figsize=(12, 8))
-
-    for idx, lst in enumerate(res):
-        plt.scatter(x=[(idx + 1) * 2] * len(lst), y=lst, color='b')
+    x_vals = np.concatenate([np.full_like(e, fill_value=(idx + 1) * 2) for idx, e in enumerate(res)])
+    y_vals = np.concatenate(res)
+    plt.scatter(x=x_vals, y=y_vals)
+    poly = np.array([np.polyfit(x_vals, y_vals, 1)])
+    p = np.poly1d(poly[np.unique(x_vals)])
+    y_hat = p(x_vals)
+    plt.plot(x_vals, y_hat, linestyle='--')
+    text = f"$y={poly[0]}x + {poly[1]}$\n$R^2 = {repr_num(r2score(y_vals, np.repeat(y_hat, [len(e) for e in res])))}$"
+    plt.gca().text(.01, .99, text, transform=plt.gca().transAxes,
+                   fontsize=10, verticalalignment='top')
     plt.title("Peak score correlation to hot spot value", fontsize=18)
     plt.xlabel("Hot-spot", fontsize=16)
     plt.ylabel("Peak score", fontsize=16)

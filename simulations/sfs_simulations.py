@@ -258,13 +258,13 @@ def combine_sample_size2heatmap(plots_dir):
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
     ax.set_xticks(pop_sizes_range)
-    s = sns.heatmap(peak_scores, fmt="", cmap='RdYlGn', ax=ax, xticklabels=pop_sizes_range,
+    s = sns.heatmap(peak_scores, cmap='RdYlGn', ax=ax, xticklabels=pop_sizes_range,
                     yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
     s.set_xlabel('Sample size of population 1', fontsize=16)
     s.set_ylabel('Sample size of population 1', fontsize=16)
     plt.savefig(f"{plots_dir}ss_heatmap_fig.svg")
 
-def combine_json2_plot(plots_base_dir):
+def combine_json2_migrations_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
@@ -283,6 +283,19 @@ def combine_json2_plot(plots_base_dir):
     plt.savefig(f"{plots_base_dir}plot.svg")
 
 
+def combine_json2sample_size_plot(output_dir):
+    heatmap = np.load(f"{output_dir}ss_heatmap.npy")
+    res = [[] for _ in range(heatmap.shape[0])]
+    for i in range(1, heatmap.shape[0] + 1):
+        for j in range(1, heatmap.shape[0] + 1):
+            res[np.min([i, j]) - 1].append(heatmap[i, j])
+    for idx, lst in enumerate(res):
+        plt.scatter(x=[(idx + 1) * 2] * len(lst), y=lst, color='b')
+    plt.title("Peak score correlation to hot spot value")
+    plt.xlabel("Hot-spot")
+    plt.ylabel("Peak score")
+    plt.savefig(f"{output_dir}correlation.svg")
+
 def manage_migration_runs(options, paths_helper, base_dir):
     output_dir = base_dir + 'migrations/'
     os.makedirs(output_dir, exist_ok=True)
@@ -292,7 +305,7 @@ def manage_migration_runs(options, paths_helper, base_dir):
         if len(M_RATES) > 6:
             combine_migration_json2heatmap(output_dir)
         else:
-            combine_json2_plot(output_dir)
+            combine_json2_migrations_plot(output_dir)
     else:
         m = float(options.args[0])
         plot_by_generations(options, output_dir, migration_rate=m)
@@ -305,6 +318,7 @@ def manage_sample_size_runs(options, paths_helper, base_dir):
         os.makedirs(output_dir, exist_ok=True)
         submit_all_sample_sizes(options, paths_helper, output_dir)
         combine_sample_size2heatmap(output_dir)
+        combine_json2sample_size_plot(output_dir)
     else:
         p1 = int(options.args[0])
         simulate_different_pop_sizes(options, output_dir, pop1_size=p1)

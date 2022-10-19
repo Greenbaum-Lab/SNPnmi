@@ -297,7 +297,7 @@ def combine_json2sample_size_plot(output_dir):
     y_vals = np.concatenate(res)
     plt.scatter(x=x_vals, y=y_vals)
     poly = np.array([np.polyfit(x_vals, y_vals, 1)])
-    p = np.poly1d(poly[np.unique(x_vals)])
+    p = np.poly1d(poly)
     y_hat = p(x_vals)
     plt.plot(x_vals, y_hat, linestyle='--')
     text = f"$y={poly[0]}x + {poly[1]}$\n$R^2 = {repr_num(r2score(y_vals, np.repeat(y_hat, [len(e) for e in res])))}$"

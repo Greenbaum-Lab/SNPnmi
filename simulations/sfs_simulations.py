@@ -286,9 +286,9 @@ def combine_json2_migrations_plot(plots_base_dir):
 def combine_json2sample_size_plot(output_dir):
     heatmap = np.load(f"{output_dir}ss_heatmap.npy")
     res = [[] for _ in range(heatmap.shape[0])]
-    for i in range(1, heatmap.shape[0] + 1):
-        for j in range(1, heatmap.shape[0] + 1):
-            res[np.min([i, j]) - 1].append(heatmap[i, j])
+    for i, row in enumerate(heatmap):
+        for j, val in enumerate(row):
+            res[np.min([i, j])].append(val)
     for idx, lst in enumerate(res):
         plt.scatter(x=[(idx + 1) * 2] * len(lst), y=lst, color='b')
     plt.title("Peak score correlation to hot spot value")

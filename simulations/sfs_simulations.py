@@ -293,10 +293,10 @@ def combine_json2sample_size_plot(output_dir):
 
     for idx, lst in enumerate(res):
         plt.scatter(x=[(idx + 1) * 2] * len(lst), y=lst, color='b')
-    ax.title("Peak score correlation to hot spot value", fontsize=18)
-    ax.xlabel("Hot-spot", fontsize=16)
-    ax.ylabel("Peak score", fontsize=16)
-    fig.savefig(f"{output_dir}correlation.svg")
+    plt.title("Peak score correlation to hot spot value", fontsize=18)
+    plt.xlabel("Hot-spot", fontsize=16)
+    plt.ylabel("Peak score", fontsize=16)
+    plt.savefig(f"{output_dir}correlation.svg")
 
 def manage_migration_runs(options, paths_helper, base_dir):
     output_dir = base_dir + 'migrations/'

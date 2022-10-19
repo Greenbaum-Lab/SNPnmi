@@ -300,7 +300,7 @@ def combine_json2sample_size_plot(output_dir):
     p = np.poly1d(poly)
     y_hat = p(x_vals)
     plt.plot(x_vals, y_hat, linestyle='--')
-    text = f"$y={poly[0]}x + {poly[1]}$\n$R^2 = {repr_num(r2score(y_vals, y_hat))}$"
+    text = f"$y={repr_num(poly[0])}x + {repr_num(poly[1])}$\n$R^2 = {repr_num(r2score(y_vals, y_hat))}$"
     plt.gca().text(.01, .99, text, transform=plt.gca().transAxes,
                    fontsize=10, verticalalignment='top')
     plt.title("Peak score correlation to hot spot value", fontsize=18)

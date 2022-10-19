@@ -289,12 +289,14 @@ def combine_json2sample_size_plot(output_dir):
     for i, row in enumerate(heatmap):
         for j, val in enumerate(row):
             res[np.min([i, j])].append(val)
+    fig, ax = plt.subplots(figsize=(12, 8))
+
     for idx, lst in enumerate(res):
         plt.scatter(x=[(idx + 1) * 2] * len(lst), y=lst, color='b')
-    plt.title("Peak score correlation to hot spot value")
-    plt.xlabel("Hot-spot")
-    plt.ylabel("Peak score")
-    plt.savefig(f"{output_dir}correlation.svg")
+    ax.title("Peak score correlation to hot spot value", fontsize=18)
+    ax.xlabel("Hot-spot", fontsize=16)
+    ax.ylabel("Peak score", fontsize=16)
+    fig.savefig(f"{output_dir}correlation.svg")
 
 def manage_migration_runs(options, paths_helper, base_dir):
     output_dir = base_dir + 'migrations/'

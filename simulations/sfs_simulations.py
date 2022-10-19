@@ -292,7 +292,7 @@ def combine_json2sample_size_plot(output_dir):
     for i, row in enumerate(heatmap):
         for j, val in enumerate(row):
             res[np.min([i, j])].append(val)
-    x_vals = np.concatenate([np.full_like(e, fill_value=(idx + 1) * 2) for idx, e in enumerate(res)])
+    x_vals = np.concatenate([np.full_like(e, fill_value=(idx + 1) * 2, dtype=int) for idx, e in enumerate(res)])
     y_vals = np.concatenate(res)
     plt.scatter(x=x_vals, y=y_vals)
     poly = np.array([np.polyfit(x_vals, y_vals, 1)])

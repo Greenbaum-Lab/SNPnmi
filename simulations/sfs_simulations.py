@@ -296,7 +296,7 @@ def combine_json2sample_size_plot(output_dir):
     x_vals = np.concatenate([np.full_like(e, fill_value=(idx + 1) * 2, dtype=int) for idx, e in enumerate(res)])
     y_vals = np.concatenate(res)
     plt.scatter(x=x_vals, y=y_vals)
-    poly = np.array([np.polyfit(x_vals, y_vals, 1)])
+    poly = np.array(np.polyfit(x_vals, y_vals, 1))
     p = np.poly1d(poly)
     y_hat = p(x_vals)
     plt.plot(x_vals, y_hat, linestyle='--')

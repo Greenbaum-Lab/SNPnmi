@@ -33,7 +33,6 @@ def csv_2_box_plot(heatmap_csv, pop2continent, output_dir):
         plt.clf()
 
 
-
 def build_pop2continent(csv_file):
     data = pd.read_csv(csv_file, sep='\t')
     pop2continent = {}
@@ -45,6 +44,7 @@ def build_pop2continent(csv_file):
         else:
             pop2continent[pop] = continent
     return pop2continent
+
 
 if __name__ == '__main__':
     # arguments = args_parser()

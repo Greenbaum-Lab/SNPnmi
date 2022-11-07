@@ -31,7 +31,6 @@ def window_calc_pairwise_similarities(window, min_valid_sites_percentage, min_mi
     :return:list of lists (upper triangular matrix) of the number of valid sites per 2 individuals
             list of lists (upper triangular matrix) of the similarity matrix
     """
-
     num_of_individuals = window.shape[0]
     window[window == -1] = np.nan
     is_valid_window = (~np.isnan(window)).astype(np.uint8)

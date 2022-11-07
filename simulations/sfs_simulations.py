@@ -11,7 +11,7 @@ sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
-from steps.s7_join_to_summary.plots_helper import r2score
+from steps.s7_join_to_summary.plots_helper import r2score, heatmap_plot
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.loader import wait_and_validate_jobs
 from utils.common import args_parser, get_paths_helper, repr_num
@@ -222,7 +222,7 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
 
 
 def combine_migration_json2heatmap(plots_base_dir):
-    import seaborn as sns
+
     all_peak_scores = []
     for m in tqdm(M_RATES):
         path = f"{plots_base_dir}m_{m}.json"
@@ -230,19 +230,17 @@ def combine_migration_json2heatmap(plots_base_dir):
             all_peak_scores.append(json.load(f))
     peak_scores = np.array(all_peak_scores)
     np.save(f"{plots_base_dir}migration_heatmap.npy", peak_scores)
-    fig, ax = plt.subplots(figsize=(12, 8))
-    title = "Heat Map of Peak scores"
-    plt.title(title, fontsize=18)
-    ttl = ax.title
-    ttl.set_position([0.5, 1.02])
-    ax.set_xticks(GENERATIONS)
-    s = sns.heatmap(peak_scores, cmap='RdYlGn', ax=ax, xticklabels=GENERATIONS,
-                    yticklabels=M_RATES, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1,
-                                                   "label": 'Peak score'})
-    plt.locator_params(axis='y', nbins=20)
-    s.set_xlabel('Generations', fontsize=16)
-    s.set_ylabel('Migration rate', fontsize=16)
-    plt.savefig(f"{plots_base_dir}migration_heatmap.svg")
+    heatmap_plot(output=f"{plots_base_dir}migration_heatmap.svg",
+                 data_matrix=peak_scores,
+                 x_label='Generations',
+                 y_label='Migration rate',
+                 x_ticks=GENERATIONS,
+                 y_ticks=M_RATES,
+                 c_bar_label='Peak score',
+                 title="Heat Map of Peak scores",
+                 y_bins=20,
+                 x_bins=15)
+
 
 def combine_sample_size2heatmap(plots_dir):
     import seaborn as sns

@@ -12,14 +12,13 @@ from steps.s7_join_to_summary.plots_helper import plot_per_class, PlotConsts
 from utils.loader import Timer
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import get_paths_helper, class_iter, str_for_timer
-import matplotlib.pyplot as plt
 import pandas as pd
 import itertools
 import numpy as np
 
 
 SCRIPT_NAME = basename(__file__)
-
+NMI_TYPES = {'AllNodes': 'Full PST', 'Leaves_WithOverlap': 'Fine scale'}
 
 def _get_scores_from_nmi_file(nmi_file):
     with open(nmi_file) as f:
@@ -36,11 +35,9 @@ def get_inputs_for_plot_func(options, gt_name):
     nmi_dir = paths_helper.nmi_dir.format(gt_name=gt_name)
     nmi_matrix_path = summary_dir + f'nmi_{gt_name}_sum_matrix.csv'
     nmi_file_template = '{mac_maf}_{val}/{mac_maf}_{val}_all/step_{ns_ss}/{input_type}.txt'
-
     df = pd.read_csv(nmi_matrix_path)
-    NMI_TYPES = ['AllNodes', 'Leaves_WithOverlap']
-    SCORES = ['max', 'lfk']
-    nmi_type_score_pairs = list(itertools.product(NMI_TYPES, SCORES))
+    SCORES = ['lfk']
+    nmi_type_score_pairs = list(itertools.product(NMI_TYPES.keys(), SCORES))
     return nmi_type_score_pairs, df, nmi_dir, nmi_file_template, summary_dir
 
 
@@ -52,14 +49,11 @@ def plot_nmi_scores(options):
         os.makedirs(f'{summary_dir}nmi_{gt_name}_scores', exist_ok=True)
         for nmi_type, score in pairs:
             score_name = f'{nmi_type}_{score}'
-            nmi_type_rep = 'Full PST' if nmi_type == 'AllNodes' else 'Fine Scale'
+            nmi_type_rep = NMI_TYPES[nmi_type]
 
             for mac_maf in ['mac', 'maf']:
                 all_classes_avg = []
                 class_names = PlotConsts.get_class_names(options, mac_maf)
-                f = plt.figure()
-                f.set_figwidth(8)
-                f.set_figheight(6)
                 avg_arr = np.empty(shape=(0,))
                 std_arr = np.empty(shape=(0,))
                 for num_of_snp in options.data_size:
@@ -92,7 +86,7 @@ def plot_nmi_scores(options):
                                polynomials=polynomial,
                                base_lines=None,
                                labels=[f'{e} SNPs' for e in options.data_size] + ['Full class'],
-                               title=f'Simulation - {nmi_type_rep} - {mac_maf}',
+                               title=nmi_type_rep,
                                y_label="NMI score",
                                legend_title="Num of SNPs",
                                output=f'{summary_dir}nmi_{gt_name}_scores/{mac_maf}_{score_name}.svg')

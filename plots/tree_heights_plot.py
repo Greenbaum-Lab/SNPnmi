@@ -15,7 +15,7 @@ from steps.s7_join_to_summary.plots_helper import plot_per_class
 from utils.common import get_paths_helper, class_iter
 
 SCORE2COLOR_DICT = {'max_height': 'tab:blue', 'avg_height': 'tab:red', 'avg_leaves': 'tab:green',
-                    'num_of_leaves': 'tab:blue', 'num_of_nodes': 'tab:red'}
+                    'num_of_leaves': 'tab:purple', 'num_of_nodes': 'tab:orange'}
 
 
 def get_base_line_score(options):
@@ -38,9 +38,6 @@ def get_base_line_score(options):
 
 def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
     for num_of_snp in options.data_size:
-        f = plt.figure()
-        f.set_figwidth(8)
-        f.set_figheight(6)
         path = csv_path.format(size=num_of_snp)
         df = pd.read_csv(path)
         for mac_maf in ['mac', 'maf']:
@@ -71,9 +68,9 @@ def csv_to_plot(options, gt_scores, csv_path, plot_path, plot_title, scores):
                            scats=None, polynomials=None,
                            colors=plot_colors + base_line_colors,
                            base_lines=np.array(base_lines),
+                           y_label='Depth',
                            labels=scores,
                            title=f'{plot_title}',
-                           legend_title="Scores",
                            output=plot_path.format(mac_maf=mac_maf, num_of_snp=num_of_snp))
 
 

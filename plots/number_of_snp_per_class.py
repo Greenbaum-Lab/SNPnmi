@@ -9,7 +9,7 @@ import json
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s7_join_to_summary.plots_helper import plot_per_class
+from utils.s7_join_to_summary.plots_helper import plot_per_class
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.loader import Timer
 from utils.common import get_paths_helper, class_iter, str_for_timer, get_window_size, get_number_of_windows_by_class, \

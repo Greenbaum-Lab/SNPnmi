@@ -99,7 +99,6 @@ def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, c_bar_
     plt.title(title, fontsize=18)
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
-    # ax.set_xticks(x_ticks)
     s = sns.heatmap(data_matrix, cmap='RdYlGn', ax=ax, xticklabels=x_ticks, yticklabels=y_ticks,
                     cbar_kws={"ticks": np.arange(int(np.nanmax(data_matrix))) + 1, "label": c_bar_label})
     if x_bins:
@@ -113,5 +112,5 @@ def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, c_bar_
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     plt.title(title, fontsize=24)
-    plt.show()
     plt.savefig(output)
+    plt.clf()

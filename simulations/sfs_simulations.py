@@ -11,7 +11,7 @@ sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
-from steps.s7_join_to_summary.plots_helper import r2score, heatmap_plot
+from utils.s7_join_to_summary.plots_helper import r2score, heatmap_plot
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.loader import wait_and_validate_jobs
 from utils.common import args_parser, get_paths_helper, repr_num
@@ -243,7 +243,6 @@ def combine_migration_json2heatmap(plots_base_dir):
 
 
 def combine_sample_size2heatmap(plots_dir):
-    import seaborn as sns
     all_peak_scores = []
     for p1 in tqdm(pop_sizes_range):
         path = f"{plots_dir}p_{p1}.json"
@@ -252,18 +251,17 @@ def combine_sample_size2heatmap(plots_dir):
             all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
     peak_scores = np.array(all_peak_scores)
     np.save(f"{plots_dir}ss_heatmap.npy", peak_scores)
-    fig, ax = plt.subplots(figsize=(12, 8))
-    title = "Heat Map of Peak scores"
-    plt.title(title, fontsize=18)
-    ttl = ax.title
-    ttl.set_position([0.5, 1.02])
-    ax.set_xticks(pop_sizes_range)
-    s = sns.heatmap(peak_scores, cmap='RdYlGn', ax=ax, xticklabels=pop_sizes_range,
-                    yticklabels=pop_sizes_range, cbar_kws={"ticks": np.arange(int(np.nanmax(peak_scores))) + 1})
-    s.set_xlabel('Sample size of population 1', fontsize=16)
-    s.set_ylabel('Sample size of population 1', fontsize=16)
-    plt.savefig(f"{plots_dir}ss_heatmap_fig.svg")
-    plt.clf()
+    heatmap_plot(output=f"{plots_dir}ss_heatmap_fig.svg",
+                 data_matrix=peak_scores,
+                 x_label='Sample size of population 1',
+                 y_label='Sample size of population 1',
+                 x_ticks=pop_sizes_range,
+                 y_ticks=pop_sizes_range,
+                 c_bar_label='Peak score',
+                 title="Heat Map of Peak scores",
+                 y_bins=20,
+                 x_bins=20)
+
 
 def combine_json2_migrations_plot(plots_base_dir):
     colors = ['b', 'r', 'orange', 'g', 'c', 'y']

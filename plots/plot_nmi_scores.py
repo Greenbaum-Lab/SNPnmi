@@ -8,7 +8,7 @@ from steps.s6_compare_to_random_pst.submit_run_nmi import get_gt_path_dictionary
 root_path = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(root_path)
 
-from steps.s7_join_to_summary.plots_helper import plot_per_class, PlotConsts
+from utils.s7_join_to_summary.plots_helper import plot_per_class, PlotConsts
 from utils.loader import Timer
 from utils.checkpoint_helper import execute_with_checkpoint
 from utils.common import get_paths_helper, class_iter, str_for_timer

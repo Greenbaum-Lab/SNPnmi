@@ -2,7 +2,6 @@
 import os
 import sys
 from os.path import dirname, abspath
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
@@ -11,7 +10,7 @@ sys.path.append(root_path)
 
 from steps.s7_join_to_summary.collect_num_of_nodes import count_num_of_nodes_for_tree
 from steps.s7_join_to_summary.collect_tree_heights import analyze_tree_heights
-from steps.s7_join_to_summary.plots_helper import plot_per_class
+from utils.s7_join_to_summary.plots_helper import plot_per_class
 from utils.common import get_paths_helper, class_iter
 
 SCORE2COLOR_DICT = {'max_height': 'tab:blue', 'avg_height': 'tab:red', 'avg_leaves': 'tab:green',

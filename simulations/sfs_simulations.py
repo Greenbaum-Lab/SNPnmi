@@ -265,7 +265,7 @@ def combine_sample_size2heatmap(plots_dir):
 
 
 def combine_json2_migrations_plot(plots_base_dir):
-    colors = ['b', 'r', 'orange', 'g', 'c', 'y']
+    colors = ['tab:blue', 'tab:red', 'tab:orange', 'tab:green', 'tab:cyan', 'tab:yellow']
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
         with open(mean_path, "rb") as f:
@@ -306,7 +306,7 @@ def combine_json2sample_size_plot(output_dir):
     plt.savefig(f"{output_dir}correlation.svg")
 
 def manage_migration_runs(options, paths_helper, base_dir):
-    output_dir = base_dir + 'migrations/'
+    output_dir = base_dir + 'migrations_new_gens/'
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)

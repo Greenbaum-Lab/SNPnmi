@@ -106,7 +106,7 @@ def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, xticks
     s.figure.axes[-1].tick_params(labelsize=14)
     plt.xticks(x_ticks, xticks_labels, fontsize=14)
     plt.yticks(y_ticks, yticks_labels, fontsize=14)
-    s.tick_params(axis='y', labelrotation=30)
+    s.set_yticklabels(s.get_yticklabels(), rotation=90)
     plt.title(title, fontsize=24)
     plt.savefig(output)
     plt.clf()

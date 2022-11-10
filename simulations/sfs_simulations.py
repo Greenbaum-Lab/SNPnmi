@@ -24,7 +24,7 @@ import numpy as np
 import json
 
 DEBUG = False
-M_RATES = np.arange(1, 101, 1) / (10 ** 6)
+M_RATES = (np.arange(100) + 1) / (10 ** 6)
 # M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 # GENERATIONS = np.arange(20) ** 2 + 1
 GENERATIONS = np.linspace(1, 401, 41).astype(int)
@@ -245,7 +245,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                  xticks_labels=[repr_num(e) for e in x_labels],
                  yticks_labels=[repr_num(e) for e in y_labels],
                  c_bar_label='Peak score',
-                 title="Heat Map of Peak scores",
+                 title="Heat Map of Peak scores xxxxxxxx",
                  y_bins=10,
                  x_bins=False)
 

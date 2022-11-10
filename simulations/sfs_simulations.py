@@ -235,7 +235,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                  data_matrix=peak_scores,
                  x_label='Generations',
                  y_label='Migration rate',
-                 x_ticks=GENERATIONS,
+                 x_ticks=[0, 100, 200, 300, 400],
                  y_ticks=M_RATES,
                  c_bar_label='Peak score',
                  title="Heat Map of Peak scores",

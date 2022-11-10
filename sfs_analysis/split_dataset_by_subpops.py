@@ -265,7 +265,6 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
 def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
-    sites_list = get_sample_site_list(arguments, paths_helper)
     paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
     multichromosome_stats(arguments, paths_helper)
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
@@ -283,8 +282,8 @@ def main():
         return True
 
     # submit_all_sites(arguments, paths_helper, run_step)
-    create_heat_map(arguments, paths_helper, sites_list)
-    compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst_nonnegative.txt')
+    # create_heat_map(arguments, paths_helper, sites_list)
+    compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
 
 
 if __name__ == '__main__':

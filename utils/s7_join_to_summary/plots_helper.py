@@ -96,7 +96,6 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
 def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, xticks_labels, yticks_labels, c_bar_label,
                  title, y_bins=False, x_bins=False):
     fig, ax = plt.subplots(figsize=(12, 8))
-    plt.title(title + "sdfgsdfgdfG", fontsize=18)
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
     s = sns.heatmap(data_matrix, cmap='RdYlGn', ax=ax,
@@ -107,7 +106,7 @@ def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, xticks
     s.figure.axes[-1].tick_params(labelsize=14)
     plt.xticks(x_ticks, xticks_labels, fontsize=14)
     plt.yticks(y_ticks, yticks_labels, fontsize=14)
-    s.tick_params(axis='y', labelrotation=90)
+    # s.tick_params(axis='y', labelrotation=90)
     plt.title(title, fontsize=24)
     plt.savefig(output)
     plt.clf()

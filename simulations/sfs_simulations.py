@@ -245,7 +245,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                  xticks_labels=[repr_num(e) for e in x_labels],
                  yticks_labels=[repr_num(e) for e in y_labels],
                  c_bar_label='Peak score',
-                 title="Heat Map of Peak scores xxxxxxxx",
+                 title="Heat Map of Peak scores",
                  y_bins=10,
                  x_bins=False)
 

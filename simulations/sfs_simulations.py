@@ -240,7 +240,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                  c_bar_label='Peak score',
                  title="Heat Map of Peak scores",
                  y_bins=10,
-                 x_bins=5)
+                 x_bins=False)
 
 
 def combine_sample_size2heatmap(plots_dir):

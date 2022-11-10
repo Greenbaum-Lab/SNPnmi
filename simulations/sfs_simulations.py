@@ -5,13 +5,13 @@ import sys
 
 from tqdm import tqdm
 
-from sfs_analysis.sfs_utils import get_ticks_locations
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
 from utils import config
 sys.path.insert(0, f'{config.get_config(config.CONFIG_NAME_PATHS)["venv_path"]}lib/python3.7/site-packages')
 
+from sfs_analysis.sfs_utils import get_ticks_locations
 from utils.s7_join_to_summary.plots_helper import r2score, heatmap_plot
 from utils.cluster.cluster_helper import submit_to_cluster
 from utils.loader import wait_and_validate_jobs

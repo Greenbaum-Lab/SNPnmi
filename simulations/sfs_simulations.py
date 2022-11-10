@@ -224,8 +224,9 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
 
 
 def combine_migration_json2heatmap(plots_base_dir):
-    if os.path.exists(f"{plots_base_dir}migration_heatmap.npy"):
-        peak_scores = np.load(f"{plots_base_dir}migration_heatmap.npy")
+    numpy_array_path = f"{plots_base_dir}migration_heatmap.npy"
+    if os.path.exists(numpy_array_path):
+        peak_scores = np.load(numpy_array_path)
     else:
         all_peak_scores = []
         for m in tqdm(M_RATES):
@@ -233,7 +234,7 @@ def combine_migration_json2heatmap(plots_base_dir):
             with open(path, "rb") as f:
                 all_peak_scores.append(json.load(f))
         peak_scores = np.array(all_peak_scores)
-        np.save(f"{plots_base_dir}migration_heatmap.npy", peak_scores)
+        np.save(numpy_array_path, peak_scores)
     y_labels = np.array([1e-6] + [i*1e-5 for i in range(1, 11, 2)])
     x_labels = np.array([1, 100, 200, 300, 400])
     heatmap_plot(output=f"{plots_base_dir}migration_heatmap.svg",
@@ -245,30 +246,33 @@ def combine_migration_json2heatmap(plots_base_dir):
                  xticks_labels=[repr_num(e) for e in x_labels],
                  yticks_labels=[repr_num(e) for e in y_labels],
                  c_bar_label='Peak score',
-                 title="Heat Map of Peak scores",
-                 y_bins=10,
-                 x_bins=False)
+                 title="Heat Map of Peak scores")
 
 
 def combine_sample_size2heatmap(plots_dir):
-    all_peak_scores = []
-    for p1 in tqdm(pop_sizes_range):
-        path = f"{plots_dir}p_{p1}.json"
-        with open(path, "rb") as f:
-            current_p1_scores = json.load(f)
-            all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
-    peak_scores = np.array(all_peak_scores)
-    np.save(f"{plots_dir}ss_heatmap.npy", peak_scores)
+    numpy_array_path = f"{plots_dir}ss_heatmap.npy"
+    if os.path.exists(numpy_array_path):
+        peak_scores = np.load(numpy_array_path)
+    else:
+        all_peak_scores = []
+        for p1 in tqdm(pop_sizes_range):
+            path = f"{plots_dir}p_{p1}.json"
+            with open(path, "rb") as f:
+                current_p1_scores = json.load(f)
+                all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
+        peak_scores = np.array(all_peak_scores)
+        np.save(numpy_array_path, peak_scores)
+    tick_labels = np.array([1, 10, 30])
     heatmap_plot(output=f"{plots_dir}ss_heatmap_fig.svg",
                  data_matrix=peak_scores,
                  x_label='Sample size of population 1',
                  y_label='Sample size of population 1',
                  x_ticks=pop_sizes_range,
                  y_ticks=pop_sizes_range,
+                 xticks_labels=tick_labels,
+                 yticks_labels=tick_labels,
                  c_bar_label='Peak score',
-                 title="Heat Map of Peak scores",
-                 y_bins=20,
-                 x_bins=20)
+                 title="Heat Map of Peak scores")
 
 
 def combine_json2_migrations_plot(plots_base_dir):

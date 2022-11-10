@@ -209,7 +209,6 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
             with open(output_name, "rb") as f:
                 dict = json.load(f)
             if all([str(e) in dict for e in pop_sizes_range]):
-                print(f"file exists for populatoin size {pop1_size}")
                 continue
 
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
@@ -219,6 +218,8 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
                                                                                 job_name=job_name)
         submit_to_cluster(options, job_type, job_name, script_path, f"--args {pop1_size} -s {options.step}",
                           job_stdout_file, job_stderr_file, num_hours_to_run=24, memory=16, use_checkpoint=True)
+    if len(errs) == 0:
+        return
 
     wait_and_validate_jobs('p_', "Simulating coalescent simulations", errs)
 
@@ -267,8 +268,8 @@ def combine_sample_size2heatmap(plots_dir):
                  data_matrix=peak_scores,
                  x_label='Sample size of population 1',
                  y_label='Sample size of population 1',
-                 x_ticks=pop_sizes_range,
-                 y_ticks=pop_sizes_range,
+                 x_ticks=get_ticks_locations(pop_sizes_range, tick_labels),
+                 y_ticks=get_ticks_locations(pop_sizes_range, tick_labels),
                  xticks_labels=tick_labels,
                  yticks_labels=tick_labels,
                  c_bar_label='Peak score',

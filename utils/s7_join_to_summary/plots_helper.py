@@ -93,24 +93,20 @@ def plot_per_class(options, mac_maf, values, std, scats, polynomials, base_lines
     plt.close()
 
 
-def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, c_bar_label, title, y_bins=False,
-                 x_bins=False):
+def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, xticks_labels, yticks_labels, c_bar_label,
+                 title, y_bins=False, x_bins=False):
     fig, ax = plt.subplots(figsize=(12, 8))
     plt.title(title, fontsize=18)
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
-    s = sns.heatmap(data_matrix, cmap='RdYlGn', ax=ax, xticklabels=x_ticks, yticklabels=y_ticks, raster=True,
+    s = sns.heatmap(data_matrix, cmap='RdYlGn', ax=ax,
                     cbar_kws={"ticks": np.arange(int(np.nanmax(data_matrix))) + 1, "label": c_bar_label})
-    if x_bins:
-        plt.locator_params(axis='x', nbins=x_bins)
-    if y_bins:
-        plt.locator_params(axis='y', nbins=y_bins)
     s.set_xlabel(x_label, fontsize=18)
     s.set_ylabel(y_label, fontsize=18)
     s.figure.axes[-1].yaxis.label.set_size(20)
     s.figure.axes[-1].tick_params(labelsize=14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xticks(x_ticks, xticks_labels, fontsize=14)
+    plt.yticks(y_ticks, yticks_labels, fontsize=14)
     plt.title(title, fontsize=24)
     plt.savefig(output)
     plt.clf()

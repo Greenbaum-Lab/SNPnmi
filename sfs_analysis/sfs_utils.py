@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+from scipy.interpolate import interp1d
 
 from utils.config import get_sample_sites_file_name
 
@@ -29,3 +30,6 @@ def get_theoretical_sfs(num_of_snps, num_of_genomes):
     res[-1] *= 2
     return res
 
+def get_ticks_locations(original_labels, desired_labels):
+    p = interp1d(original_labels, np.arange(original_labels.size), fill_value='extrapolate')
+    return p(desired_labels)

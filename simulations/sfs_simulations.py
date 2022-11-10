@@ -224,14 +224,16 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
 
 
 def combine_migration_json2heatmap(plots_base_dir):
-
-    all_peak_scores = []
-    for m in tqdm(M_RATES):
-        path = f"{plots_base_dir}m_{m}.json"
-        with open(path, "rb") as f:
-            all_peak_scores.append(json.load(f))
-    peak_scores = np.array(all_peak_scores)
-    np.save(f"{plots_base_dir}migration_heatmap.npy", peak_scores)
+    if os.path.exists(f"{plots_base_dir}migration_heatmap.npy"):
+        peak_scores = np.load(f"{plots_base_dir}migration_heatmap.npy")
+    else:
+        all_peak_scores = []
+        for m in tqdm(M_RATES):
+            path = f"{plots_base_dir}m_{m}.json"
+            with open(path, "rb") as f:
+                all_peak_scores.append(json.load(f))
+        peak_scores = np.array(all_peak_scores)
+        np.save(f"{plots_base_dir}migration_heatmap.npy", peak_scores)
     y_labels = np.array([1e-6] + [i*1e-5 for i in range(1, 11, 2)])
     x_labels = np.array([1, 100, 200, 300, 400])
     heatmap_plot(output=f"{plots_base_dir}migration_heatmap.svg",
@@ -315,7 +317,8 @@ def manage_migration_runs(options, paths_helper, base_dir):
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
-        submit_all_migration_rates(options, paths_helper, output_dir)
+        if not os.path.exists(f"{output_dir}migration_heatmap.npy"):
+            submit_all_migration_rates(options, paths_helper, output_dir)
         if len(M_RATES) > 6:
             combine_migration_json2heatmap(output_dir)
         else:

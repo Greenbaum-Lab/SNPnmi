@@ -236,7 +236,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                 all_peak_scores.append(json.load(f))
         peak_scores = np.array(all_peak_scores)
         np.save(numpy_array_path, peak_scores)
-    y_labels = [repr_num(x) for x in np.arange(0, 11, 3) * 1e-5]
+    y_labels = np.arange(0, 11, 3) * 1e-5
     x_labels = np.array([1, 100, 200, 300, 400])
     heatmap_plot(output=f"{plots_base_dir}migration_heatmap.svg",
                  data_matrix=peak_scores,

@@ -242,12 +242,25 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
     fst_x = []
     heatmap_y = []
+    colors = []
+    continents_dict = {}
+    with open(f'{paths_helper.data_dir}pops.txt', 'r') as f:
+        continents_txt = f.read()
+        for line in continents_txt.split('\n')[:-1]:
+            continents_dict[line.split(' ')[0]] = line.split(' ')[1]
+
     with open(f'{paths_helper.sfs_dir}/summary/{fst_file_name}', 'r') as f:
         for line in tqdm(f.readlines()):
             line_lst = line.split(' ')
             assert len(line_lst) == 3
             heatmap_y.append(float(heat_map_df[heat_map_df['sites'] == line_lst[0]][line_lst[1]]))
             fst_x.append(float(line_lst[2]))
+            assert line_lst[0] in continents_dict.keys() and line_lst[1] in continents_dict.keys()
+            if any([continents_dict[line_lst[i]] != 'AFRICA' and continents_dict[line_lst[1-i]] == 'AFRICA'
+                    for i in [0, 1]]):
+                colors.append('tab:orange')
+            else:
+                colors.append('tab:blue')
     fst_x = np.array(fst_x)
     heatmap_y = np.array(heatmap_y)
     first_element = np.sum((fst_x - np.mean(fst_x)) @ (heatmap_y - np.sum(heatmap_y)))

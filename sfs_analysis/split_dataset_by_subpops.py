@@ -267,7 +267,7 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
     second_element = np.sum((fst_x - np.mean(fst_x)) ** 2) * np.sum((heatmap_y - np.mean(heatmap_y)) ** 2)
     R = first_element / np.sqrt(second_element)
     assert np.abs(R - np.corrcoef(fst_x, heatmap_y)[0, 1]) <= 0.001, R - np.corrcoef(fst_x, heatmap_y)[0, 1]
-    plt.scatter(x=fst_x, y=heatmap_y, colors=colors, s=2)
+    plt.scatter(x=fst_x, y=heatmap_y, c=colors, s=2)
     plt.xlabel("Pairwise Fst score")
     plt.ylabel("Relative peak score")
     plt.title(f"Relative peak score and Fst (R = {R})")

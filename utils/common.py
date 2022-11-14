@@ -331,6 +331,8 @@ def str_for_timer(options):
 
 
 def repr_num(x):
+    if x == 0:
+        return '0'
     if x > 10e4 or x < -10e4:
         return f'{x:.2e}'
     if -1 / 10e4 < x < 1 / 10e4:

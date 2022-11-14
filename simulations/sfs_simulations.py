@@ -236,7 +236,7 @@ def combine_migration_json2heatmap(plots_base_dir):
                 all_peak_scores.append(json.load(f))
         peak_scores = np.array(all_peak_scores)
         np.save(numpy_array_path, peak_scores)
-    y_labels = np.array([1e-6] + [i*1e-5 for i in range(1, 11, 2)])
+    y_labels = np.arange(0, 11, 2) * 1e-5
     x_labels = np.array([1, 100, 200, 300, 400])
     heatmap_plot(output=f"{plots_base_dir}migration_heatmap.svg",
                  data_matrix=peak_scores,
@@ -263,7 +263,7 @@ def combine_sample_size2heatmap(plots_dir):
                 all_peak_scores.append([current_p1_scores[str(p2)][0] for p2 in pop_sizes_range])
         peak_scores = np.array(all_peak_scores)
         np.save(numpy_array_path, peak_scores)
-    tick_labels = np.array([1, 10, 30])
+    tick_labels = np.array([1, 10, 20, 30])
     heatmap_plot(output=f"{plots_dir}ss_heatmap_fig.svg",
                  data_matrix=peak_scores,
                  x_label='Sample size of population 1',

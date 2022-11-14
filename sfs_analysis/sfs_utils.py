@@ -32,4 +32,4 @@ def get_theoretical_sfs(num_of_snps, num_of_genomes):
 
 def get_ticks_locations(original_labels, desired_labels):
     p = interp1d(original_labels, np.arange(original_labels.size), fill_value='extrapolate')
-    return p(desired_labels)
+    return p(desired_labels) + 0.5

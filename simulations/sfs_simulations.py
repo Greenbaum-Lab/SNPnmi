@@ -318,7 +318,7 @@ def combine_json2sample_size_plot(output_dir):
     plt.savefig(f"{output_dir}correlation.svg")
 
 def manage_migration_runs(options, paths_helper, base_dir):
-    output_dir = base_dir + 'migrations_new_gens/'
+    output_dir = base_dir + 'migrations/'
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)

@@ -23,6 +23,7 @@ from utils.common import args_parser, get_paths_helper, warp_how_many_jobs, vali
 from sfs_analysis.sfs_utils import get_sample_site_list, get_site2size, get_theoretical_sfs
 
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -271,7 +272,8 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
     plt.xlabel("Pairwise Fst score")
     plt.ylabel("Peak score")
     plt.title(f"Peak score and Fst")
-    plt.legend()
+    plt.legend(handles=[Line2D([0], [0], color='w', markerfacecolor='tab:blue', marker='o', label='General'),
+                        Line2D([0], [0], color='w', markerfacecolor='tab:orange', marker='o', label='Africa')])
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/relative2fst_plot.svg')
 
 

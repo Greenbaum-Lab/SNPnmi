@@ -288,6 +288,7 @@ def violin_plot(paths_helper):
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
     pops = list(heat_map_df.iloc[0].index)[1:]
     for _, row in heat_map_df.iterrows():
+        print(_)
         pop1 = row[0]
         for idx, val in enumerate(row[1:]):
             if pops[idx] == pop1:
@@ -297,7 +298,7 @@ def violin_plot(paths_helper):
             else:
                 across_regions.append(val)
     colors = ['tab:blue', 'tab:orange']
-    sns.violinplot([within_regions, across_regions])
+    sns.violinplot([np.array(within_regions).astype('float64'), np.array(across_regions).astype('float64')])
     plt.xticks([0, 1], ['Within regions', 'Across regions'])
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/violin.svg')
 

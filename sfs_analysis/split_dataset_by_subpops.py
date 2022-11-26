@@ -173,8 +173,8 @@ def create_heat_map(options, paths_helper, sites_list):
             else:
                 divider = np.sqrt(hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap]) if hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap] > 0 else np.nan
             res = hst[hot_spot_idx] / divider
-            relative_heat.at[site, other_site] = res
-            relative_heat.at[other_site, site] = res
+            relative_heat.at[site, other_site] = res if ~np.isnan(res) else 0
+            relative_heat.at[other_site, site] = res if ~np.isnan(res) else 0
             theoretical_heat.at[site, other_site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - gap]
             theoretical_heat.at[other_site, site] = hst[hot_spot_idx] / theoretical[hot_spot_idx - gap]
     with open(f"{paths_helper.sfs_dir_chr}summary/all_hists.json", "w") as f:

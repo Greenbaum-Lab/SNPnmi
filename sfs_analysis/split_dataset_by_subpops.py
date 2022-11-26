@@ -168,16 +168,8 @@ def create_heat_map(options, paths_helper, sites_list):
             theoretical = get_theoretical_sfs(np.sum(hst[1:]), sites_size[site] + sites_size[other_site])
             gap = 2 if options.dataset_name == 'arabidopsis' else 1
             assert hot_spot_idx <= hst.size - 1
-            if hot_spot_idx <= gap:
-                if hot_spot_idx >= hst.size - gap * 2:
-                    divider = np.nan
-                else:
-                    divider = hst[hot_spot_idx + gap] ** 2 / hst[hot_spot_idx + gap * 2]
-            elif hot_spot_idx >= hst.size - gap:
-                if hot_spot_idx <= gap * 2:
-                    divider = np.nan
-                else:
-                    divider = hst[hot_spot_idx - gap] ** 2 / hst[hot_spot_idx - gap * 2]
+            if hot_spot_idx <= gap or hot_spot_idx >= hst.size - gap:
+                divider = np.nan
             else:
                 divider = np.sqrt(hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap]) if hst[hot_spot_idx - gap] * hst[hot_spot_idx + gap] > 0 else np.nan
             res = hst[hot_spot_idx] / divider

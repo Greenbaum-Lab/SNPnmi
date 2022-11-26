@@ -302,7 +302,7 @@ def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
     paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
-    multichromosome_stats(arguments, paths_helper)
+    # multichromosome_stats(arguments, paths_helper)
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)

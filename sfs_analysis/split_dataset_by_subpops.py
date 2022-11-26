@@ -297,7 +297,7 @@ def violin_plot(paths_helper):
             else:
                 across_regions.append(val)
     colors = ['tab:blue', 'tab:orange']
-    sns.violinplot([np.array(within_regions), np.array(across_regions)], palette=colors)
+    sns.violinplot([within_regions, across_regions])
     plt.xticks([0, 1], ['Within regions', 'Across regions'])
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/violin.svg')
 

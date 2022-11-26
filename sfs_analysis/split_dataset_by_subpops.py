@@ -287,6 +287,7 @@ def violin_plot(paths_helper):
     across_regions = []
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
     pops = list(heat_map_df.iloc[0].index)[1:]
+    print(f"There are {len(pops)} pops")
     for idx1, row in heat_map_df.iterrows():
         pop1 = row[0]
         for idx2, val in enumerate(row[idx1 + 2:], start=idx1 + 1):

@@ -286,7 +286,7 @@ def violin_plot(paths_helper):
     within_regions = []
     across_regions = []
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
-    for pop1, row in heat_map_df.itterrows():
+    for pop1, row in heat_map_df.iterrows():
         for pop2, val in row.items():
             if continents_dict[pop1] == continents_dict[pop2]:
                 within_regions.append(val)
@@ -302,7 +302,7 @@ def main():
     arguments = args_parser()
     paths_helper = get_paths_helper(arguments.dataset_name)
     paths_helper.sfs_dir_chr = paths_helper.sfs_dir + f'chr{arguments.chr_num}/'
-    # multichromosome_stats(arguments, paths_helper)
+    multichromosome_stats(arguments, paths_helper)
     os.makedirs(paths_helper.sfs_dir, exist_ok=True)
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)

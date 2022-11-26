@@ -301,7 +301,7 @@ def violin_plot(options, paths_helper):
     plt.xticks([0, 1], ['Within regions', 'Across regions'])
     plt.ylabel("Peak score")
     plt.title(f"Peak Score withing regions and across regions at {options.dataset_name}")
-    plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/violin.svg')
+    plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/{options.dataset_name}_violin.svg')
 
 
 def main():

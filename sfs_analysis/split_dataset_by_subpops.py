@@ -291,14 +291,12 @@ def violin_plot(paths_helper):
     for idx1, row in heat_map_df.iterrows():
         pop1 = row[0]
         for idx2, val in enumerate(row[idx1 + 2:], start=idx1 + 1):
-            # if pops[idx2] == pop1:
-            #     continue
             if continents_dict[pop1] == continents_dict[pops[idx2]]:
                 within_regions.append(val)
             else:
                 across_regions.append(val)
     colors = ['tab:blue', 'tab:orange']
-    sns.violinplot([np.array(within_regions).astype('float64'),
+    sns.violinplot(data=[np.array(within_regions).astype('float64'),
                     np.array(across_regions).astype('float64')],
                    palette=colors)
     plt.xticks([0, 1], ['Within regions', 'Across regions'])

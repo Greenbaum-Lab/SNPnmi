@@ -282,7 +282,7 @@ def violin_plot(options, paths_helper):
     with open(f'{paths_helper.data_dir}pops.txt', 'r') as f:
         continents_txt = f.read()
         for line in continents_txt.split('\n')[:-1]:
-            continents_dict[line.split(' ')[0]] = line.split(' ')[1]
+            continents_dict[' '.join(line.split(' ')[:-1])] = line.split(' ')[-1]
     within_regions = []
     across_regions = []
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')

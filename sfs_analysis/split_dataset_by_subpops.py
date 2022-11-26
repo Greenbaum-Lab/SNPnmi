@@ -277,7 +277,7 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/relative2fst_plot.svg')
 
 
-def violin_plot(paths_helper):
+def violin_plot(options, paths_helper):
     continents_dict = {}
     with open(f'{paths_helper.data_dir}pops.txt', 'r') as f:
         continents_txt = f.read()
@@ -287,7 +287,6 @@ def violin_plot(paths_helper):
     across_regions = []
     heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
     pops = list(heat_map_df.iloc[0].index)[1:]
-    print(f"There are {len(pops)} pops")
     for idx1, row in heat_map_df.iterrows():
         pop1 = row[0]
         for idx2, val in enumerate(row[idx1 + 2:], start=idx1 + 1):
@@ -300,6 +299,8 @@ def violin_plot(paths_helper):
                     np.array(across_regions).astype('float64')],
                    palette=colors)
     plt.xticks([0, 1], ['Within regions', 'Across regions'])
+    plt.ylabel("Peak score")
+    plt.title(f"Peak Score withing regions and across regions at {options.dataset_name}")
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/violin.svg')
 
 
@@ -325,7 +326,7 @@ def main():
     # submit_all_sites(arguments, paths_helper, run_step)
     # create_heat_map(arguments, paths_helper, sites_list)
     # compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
-    violin_plot(paths_helper)
+    violin_plot(arguments, paths_helper)
 
 
 if __name__ == '__main__':

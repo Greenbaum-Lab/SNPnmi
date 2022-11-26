@@ -6,7 +6,7 @@ from io import StringIO
 from os.path import dirname, abspath
 import sys
 from tqdm import tqdm
-
+import seaborn as sns
 
 root_path = dirname(dirname(abspath(__file__)))
 sys.path.append(root_path)
@@ -277,6 +277,26 @@ def compare_heatmap_to_fst(options, paths_helper, fst_file_name):
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/relative2fst_plot.svg')
 
 
+def violin_plot(paths_helper):
+    continents_dict = {}
+    with open(f'{paths_helper.data_dir}pops.txt', 'r') as f:
+        continents_txt = f.read()
+        for line in continents_txt.split('\n')[:-1]:
+            continents_dict[line.split(' ')[0]] = line.split(' ')[1]
+    within_regions = []
+    across_regions = []
+    heat_map_df = pd.read_csv(f'{paths_helper.sfs_dir_chr}summary/relative_heat.csv')
+    for pop1, row in heat_map_df.itterrows():
+        for pop2, val in row.items():
+            if continents_dict[pop1] == continents_dict[pop2]:
+                within_regions.append(val)
+            else:
+                across_regions.append(val)
+    colors = ['tab:blue', 'tab:orange']
+    sns.violinplot([within_regions, across_regions], palette=colors)
+    plt.xticks([0, 1], ['Within regions', 'Across regions'])
+    plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/violin.svg')
+
 
 def main():
     arguments = args_parser()
@@ -300,6 +320,7 @@ def main():
     # submit_all_sites(arguments, paths_helper, run_step)
     # create_heat_map(arguments, paths_helper, sites_list)
     compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
+    violin_plot(paths_helper)
 
 
 if __name__ == '__main__':

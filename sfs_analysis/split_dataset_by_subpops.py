@@ -151,7 +151,6 @@ def vcf2matrix2sfs(options, paths_helper, site, sites_list):
 def create_heat_map(options, paths_helper, sites_list):
     print("### Stage 4 ###")
     sites_size = get_site2size(paths_helper)
-    num_of_sites = len(sites_list)
     hists = {}
     relative_heat = pd.DataFrame(columns=sites_list, index=sites_list)
     theoretical_heat = pd.DataFrame(columns=sites_list, index=sites_list)
@@ -315,8 +314,8 @@ def main():
     os.makedirs(paths_helper.sfs_dir_chr, exist_ok=True)
     os.makedirs(f'{paths_helper.sfs_dir_chr}/summary', exist_ok=True)
     run_step = 3
+    sites_list = get_sample_site_list(arguments, paths_helper)
     if arguments.args:
-        sites_list = get_sample_site_list(arguments, paths_helper)
         if run_step == 1:
             create_vcf_per_site(arguments, arguments.args[0], paths_helper)
         if run_step == 2:
@@ -326,7 +325,7 @@ def main():
         return True
 
     # submit_all_sites(arguments, paths_helper, run_step)
-    # create_heat_map(arguments, paths_helper, sites_list)
+    create_heat_map(arguments, paths_helper, sites_list)
     # compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
     violin_plot(arguments, paths_helper)
 

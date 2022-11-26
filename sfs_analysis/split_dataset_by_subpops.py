@@ -294,10 +294,12 @@ def violin_plot(options, paths_helper):
                 within_regions.append(val)
             else:
                 across_regions.append(val)
+    within_regions = np.array(within_regions).astype('float64')
+    across_regions = np.array(across_regions).astype('float64')
+    print(np.max(within_regions))
+    print(np.max(across_regions))
     colors = ['tab:blue', 'tab:orange']
-    sns.violinplot(data=[np.array(within_regions).astype('float64'),
-                    np.array(across_regions).astype('float64')],
-                   palette=colors)
+    sns.violinplot(data=[within_regions, across_regions], palette=colors)
     plt.xticks([0, 1], ['Within regions', 'Across regions'])
     plt.ylabel("Peak score")
     plt.title(f"Peak Score withing regions and across regions at {options.dataset_name}")

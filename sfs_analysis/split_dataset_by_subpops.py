@@ -317,7 +317,7 @@ def main():
         return True
 
     # submit_all_sites(arguments, paths_helper, run_step)
-    create_heat_map(arguments, paths_helper, sites_list)
+    # create_heat_map(arguments, paths_helper, sites_list)
     # compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
     violin_plot(arguments, paths_helper)
 

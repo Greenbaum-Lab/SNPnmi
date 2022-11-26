@@ -11,7 +11,7 @@ def get_sample_site_list(options, paths_helper):
     with open(paths_helper.data_dir + sample_sites_path, "r") as f:
         sites_list = f.readlines()
     sites_list = [e.replace('\n', '') for e in sites_list]
-    sites_list = [e.replace('_', ' ') for e in sites_list]
+    # sites_list = [e.replace('_', ' ') for e in sites_list]
     return sorted(sites_list)
 
 

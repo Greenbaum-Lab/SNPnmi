@@ -312,9 +312,11 @@ def combine_json2sample_size_plot(output_dir):
     text = f"$y={repr_num(poly[0])}x + {repr_num(poly[1])}$\n$R^2 = {repr_num(r2score(y_vals, y_hat))}$"
     plt.gca().text(.01, .99, text, transform=plt.gca().transAxes,
                    fontsize=10, verticalalignment='top')
-    plt.title("Peak score correlation to hot spot value", fontsize=18)
-    plt.xlabel("Hot-spot", fontsize=16)
-    plt.ylabel("Peak score", fontsize=16)
+    plt.title("Peak score correlation to hot spot value", fontsize=24)
+    plt.xlabel("Hot-spot", fontsize=18)
+    plt.ylabel("Peak score", fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.savefig(f"{output_dir}correlation.svg")
 
 def manage_migration_runs(options, paths_helper, base_dir):

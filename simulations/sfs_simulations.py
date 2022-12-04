@@ -210,7 +210,7 @@ def submit_all_sample_sizes(options, paths_helper, plots_base_dir):
                 dict = json.load(f)
             if all([str(e) in dict for e in pop_sizes_range]):
                 continue
-
+        print(pop1_size)
         job_stderr_file = paths_helper.logs_cluster_jobs_stderr_template.format(job_type=job_type,
                                                                                 job_name=job_name)
         errs.append(job_stderr_file)

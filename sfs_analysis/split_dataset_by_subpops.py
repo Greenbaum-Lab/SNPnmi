@@ -296,8 +296,7 @@ def violin_plot(options, paths_helper):
     sns.violinplot(data=[within_regions, across_regions], palette=colors)
     plt.xticks([0, 1], ['Within regions', 'Across regions'], fontsize=18)
     plt.yticks(fontsize=14)
-    plt.ylabel("Peak score (log)", fontsize=18)
-    plt.yscale('log')
+    plt.ylabel("Peak score", fontsize=18)
     plt.title(f"Peak Scores at {options.dataset_name}", fontsize=24)
     plt.savefig(f'{paths_helper.sfs_dir_chr}/summary/{options.dataset_name}_violin.svg')
 
@@ -322,7 +321,7 @@ def main():
         return True
 
     # submit_all_sites(arguments, paths_helper, run_step)
-    create_heat_map(arguments, paths_helper, sites_list)
+    # create_heat_map(arguments, paths_helper, sites_list)
     # compare_heatmap_to_fst(arguments, paths_helper, 'hgdp_fst.txt')
     violin_plot(arguments, paths_helper)
 

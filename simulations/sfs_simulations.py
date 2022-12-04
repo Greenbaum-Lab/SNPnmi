@@ -278,6 +278,9 @@ def combine_sample_size2heatmap(plots_dir):
 
 def combine_json2_migrations_plot(plots_base_dir):
     colors = ['tab:blue', 'tab:red', 'tab:orange', 'tab:green', 'tab:cyan', 'tab:yellow']
+    f = plt.figure()
+    f.set_figwidth(8)
+    f.set_figheight(6)
     for i, m in enumerate(tqdm(M_RATES)):
         mean_path = f"{plots_base_dir}m_{m}.json"
         with open(mean_path, "rb") as f:

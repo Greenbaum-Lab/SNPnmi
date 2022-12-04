@@ -266,8 +266,8 @@ def combine_sample_size2heatmap(plots_dir):
     tick_labels = np.array([1, 10, 20, 30])
     heatmap_plot(output=f"{plots_dir}ss_heatmap_fig.svg",
                  data_matrix=peak_scores,
-                 x_label=r'$n_1',
-                 y_label=r'$n_2',
+                 x_label=r'$n_1$',
+                 y_label=r'$n_2$',
                  x_ticks=get_ticks_locations(pop_sizes_range, tick_labels) + .5,
                  y_ticks=get_ticks_locations(pop_sizes_range, tick_labels) + .5,
                  xticks_labels=tick_labels,

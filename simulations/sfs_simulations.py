@@ -326,8 +326,8 @@ def manage_migration_runs(options, paths_helper, base_dir):
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
-        if not os.path.exists(f"{output_dir}migration_heatmap.npy"):
-            submit_all_migration_rates(options, paths_helper, output_dir)
+        # if not os.path.exists(f"{output_dir}migration_heatmap.npy"):
+        submit_all_migration_rates(options, paths_helper, output_dir)
         if len(M_RATES) > 6:
             combine_migration_json2heatmap(output_dir)
         else:

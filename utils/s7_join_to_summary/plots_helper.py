@@ -99,7 +99,7 @@ def heatmap_plot(output, data_matrix, x_label, y_label, x_ticks, y_ticks, xticks
     ttl = ax.title
     ttl.set_position([0.5, 1.02])
     s = sns.heatmap(data_matrix, cmap='RdYlGn', ax=ax,
-                    cbar_kws={"ticks": np.linspace(1 , int(np.nanmax(data_matrix) + 1), 4).astype(int), "label": c_bar_label})
+                    cbar_kws={"ticks": np.linspace(2, np.nanmax(data_matrix), 4).astype(int), "label": c_bar_label})
     s.set_xlabel(x_label, fontsize=18)
     s.set_ylabel(y_label, fontsize=18)
     s.figure.axes[-1].yaxis.label.set_size(20)

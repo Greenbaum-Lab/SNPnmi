@@ -336,14 +336,20 @@ def manage_migration_runs(options, paths_helper, base_dir):
 
 
 def manage_sample_size_runs(options, paths_helper, base_dir):
+    print("Start")
     output_dir = base_dir + 'sample_size_grid/'
     os.makedirs(output_dir, exist_ok=True)
     if not options.args:
         os.makedirs(output_dir, exist_ok=True)
+        print("Start 1")
         submit_all_sample_sizes(options, paths_helper, output_dir)
+        print("Done 1 - Start 2")
         combine_sample_size2heatmap(output_dir)
+        print("Done 2 - Start 3")
         combine_json2sample_size_plot(output_dir)
+        print("Done 3")
     else:
+        print("In else!")
         p1 = int(options.args[0])
         simulate_different_pop_sizes(options, output_dir, pop1_size=p1)
 

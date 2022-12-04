@@ -24,8 +24,8 @@ import numpy as np
 import json
 
 DEBUG = False
-M_RATES = np.arange(101) / (10 ** 6)
-# M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
+# M_RATES = np.arange(101) / (10 ** 6)
+M_RATES = np. array([0, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2])
 # GENERATIONS = np.arange(20) ** 2 + 1
 GENERATIONS = np.linspace(1, 401, 41).astype(int)
 BOUND_SAMPLE_SIZE = [1, 6] if DEBUG else [1, 30]

@@ -290,7 +290,7 @@ def combine_json2_migrations_plot(plots_base_dir):
                          alpha=0.3, color=colors[i])
     plt.title("Peak score with different migration rates", fontsize=24)
     plt.xlabel("Generations", fontsize=18)
-    plt.ylabel("Peak score", fontsiize=18)
+    plt.ylabel("Peak score", fontsize=18)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     plt.legend(title="Migration rates")

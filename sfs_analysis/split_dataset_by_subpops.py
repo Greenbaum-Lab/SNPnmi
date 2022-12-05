@@ -287,6 +287,8 @@ def violin_plot(options, paths_helper):
                 within_regions.append(val)
             else:
                 across_regions.append(val)
+    print(f"In dataset {options.dataset_name} there are {len(within_regions)} pairs within region and "
+          f"{len(across_regions)} pairs across regions. The sum is {len(within_regions) + len(across_regions)}")
     within_regions = np.array(within_regions).astype('float64')
     across_regions = np.array(across_regions).astype('float64')
     colors = ['tab:blue', 'tab:orange']
